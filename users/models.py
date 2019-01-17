@@ -14,4 +14,4 @@ class Profile(models.Model):
     role = models.OneToOneField(Roles, on_delete=models.PROTECT)
 
     def __str__(self):
-        return f'{user.username}'
+        return f'{self.user.username}'
