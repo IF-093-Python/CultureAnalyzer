@@ -35,8 +35,6 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-env/
-venv/
 build/
 develop-eggs/
 dist/
@@ -87,7 +85,6 @@ target/
 __pycache__/
 local_settings.py
 
-.env
 db.sqlite3
 
 .vscode/*
@@ -96,5 +93,9 @@ db.sqlite3
 # idea
 .idea/
 
-
-
+# virtual env
+.env
+.venv
+env/
+venv/
+ENV/
