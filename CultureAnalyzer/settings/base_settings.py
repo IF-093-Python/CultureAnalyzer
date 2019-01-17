@@ -76,9 +76,11 @@ WSGI_APPLICATION = 'CultureAnalyzer.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'culture_analyzer',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
     }
 }
 
