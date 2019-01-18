@@ -99,3 +99,6 @@ db.sqlite3
 env/
 venv/
 ENV/
+
+# local settings
+local.py
