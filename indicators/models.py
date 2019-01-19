@@ -2,6 +2,9 @@ from django.db import models
 from django.core.exceptions import ValidationError
 
 
+MAX_FIELD_REPRESENTATION = 20
+
+
 class CountryIndicator(models.Model):
     iso_code = models.CharField(max_length=3, primary_key=True)
     name = models.CharField(max_length=50)
@@ -28,7 +31,7 @@ class CountryIndicator(models.Model):
         super(CountryIndicator, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.name[:20]} - {self.iso_code}'
+        return f'{self.name[:MAX_FIELD_REPRESENTATION]} - {self.iso_code}'
 
 
 class Feedback(models.Model):
@@ -38,4 +41,4 @@ class Feedback(models.Model):
         db_table = 'Feedbacks'
 
     def __str__(self):
-        return f'Feedback - {self.feedback[:20]}'
+        return f'Feedback - {self.feedback[:MAX_FIELD_REPRESENTATION]}'
