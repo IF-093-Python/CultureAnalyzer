@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'users',
     'groups',
     'quiz',
-    # 'question',
 ]
 
 MIDDLEWARE = [
