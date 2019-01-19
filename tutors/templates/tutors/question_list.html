@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}All questions{% endblock %}
+{% block all_questions %}
+    <div class="container-fluid bg-1 main col-md-10">
+        <a class="btn-danger"  href="{% url 'create_question' %}">Add
+            new questions</a>
+        {% if questions %}
+            {%for question in questions %}
+            <li class="list-group-item">
+                <a href="">{{category.category}} :</a>
+                        <span class="badge-secondary">{{question
+                            .answer_id.count}}</span>
+                <a class="btn-outline-info"
+                   href="{% url 'upload_question' pk=question.id %}">&#9998;</a>
+                <a class="btn-outline-info"
+                   href="{% url 'delete_question' pk=question.id %}">&#10006;</a>
+            </li>
+            {% endfor %}
+        {% else %}
+        <p>You have not created any question yet.</p>
+        {% endif %}
+    </div>
+{% endblock %}
