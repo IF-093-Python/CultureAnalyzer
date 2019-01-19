@@ -19,10 +19,11 @@ class QuestionCreateForm(forms.ModelForm):
         self.helper.form_class = 'form-horizontal'
         self.helper.layout = Layout(
             Fieldset('Create question', 'question_text')
-        )
+            )
 
     class Meta:
         model = Question
+        fields = ['question_text', ]
 
 
 class AnswerCreateForm(forms.ModelForm):
@@ -40,7 +41,8 @@ class AnswerCreateForm(forms.ModelForm):
         self.helper.form_class = 'form-horizontal'
         self.helper.layout = Layout(
             Fieldset('Create answer', 'answer_text')
-        )
+            )
 
     class Meta:
         model = Answer
+        fields = ['question', 'answer_text', ]

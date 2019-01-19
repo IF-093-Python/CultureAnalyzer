@@ -7,4 +7,4 @@ urlpatterns = [
          name='create_question'),
     path('<int:pk>/delete_question/', DeleteQuestionView.as_view(),
          name='delete_question'),
-]
+    ]

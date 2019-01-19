@@ -1,19 +1,17 @@
-from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, DeleteView
 from .models import Question
 from .forms import QuestionCreateForm
 
 
-@login_required
-class QuestionListView(ListView):
+class QuestionListView(LoginRequiredMixin, ListView):
     model = Question
     template_name = 'tutors/question_list.html'
     context_object_name = 'questions'
 
 
-@login_required
-class CreateQuestionView(CreateView):
+class CreateQuestionView(LoginRequiredMixin, CreateView):
     model = Question
     form_class = QuestionCreateForm
     template_name = 'tutors/question_create.html'
@@ -26,9 +24,7 @@ class CreateQuestionView(CreateView):
         return super().form_valid(form)
 
 
-@login_required
-class DeleteQuestionView(DeleteView):
+class DeleteQuestionView(LoginRequiredMixin, DeleteView):
     model = Question
     template_name = 'tutors/question_delete.html'
     success_url = reverse_lazy('question_list')
-

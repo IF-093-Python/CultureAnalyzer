@@ -1,4 +1,6 @@
 from django.db import models
+
+
 # from quizzes.models import Quiz
 
 
@@ -14,7 +16,8 @@ class Question(models.Model):
 
 
 class Answer(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, db_column='answer_id')
+    question = models.ForeignKey(Question, on_delete=models.CASCADE,
+                                 db_column='answer_id')
     answer_text = models.CharField(max_length=100, null=False)
 
     def _str_(self):
