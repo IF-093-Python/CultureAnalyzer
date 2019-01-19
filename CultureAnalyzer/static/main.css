@@ -13,7 +13,7 @@ ul {
 }
 
 .bg-steel {
-    background-color: #7b0adb;
+    background-color: darkslateblue;
 }
 
 .site-header .navbar-nav .nav-link {
@@ -29,7 +29,7 @@ ul {
 }
 
 .content-section {
-    background: #e4c5ff;
+    background: #ebd7ff;
     padding: 10px 20px;
     border: 1px solid #dddddd;
     border-radius: 3px;
@@ -37,5 +37,5 @@ ul {
 }
 
 .content-section li {
-    background: #e4c5ff;
+    background: #ebd7ff;
 }
