@@ -35,10 +35,10 @@
                     {% if user.is_authenticated %}
 
                     <a class="nav-item nav-link" href="#">Profile</a>
-                    <a class="nav-item nav-link" href="#">Logout</a>
+                    <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
                     {% else %}
-                    <a class="nav-item nav-link" href="#">Login</a>
-                    <a class="nav-item nav-link" href="#">Register</a>
+                    <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+                    <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
                     {% endif %}
                 </div>
             </div>
@@ -48,7 +48,7 @@
 
 <main role="main" class="container">
     <div class="row">
-        <div class="col-md-8">
+        <div class="{% if user.is_authenticated %} col-md-8 {% else %} col-md-12 {% endif %}">
             {% if messages %}
             {% for message in messages %}
             <div class="alert alert-{{ message.tags }}">
@@ -58,6 +58,7 @@
             {% endif %}
             {% block content %}{% endblock %}
         </div>
+        {% if user.is_authenticated %}
         <div class="col-md-4">
             <div class="content-section">
                 <h3>Our Sidebar</h3>
@@ -73,6 +74,7 @@
                 </p>
             </div>
         </div>
+        {% endif %}
     </div>
 </main>
 <!-- Optional JavaScript -->
