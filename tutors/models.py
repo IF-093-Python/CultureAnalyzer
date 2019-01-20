@@ -1,11 +1,10 @@
 from django.db import models
 
-
-# from quizzes.models import Quiz
+from quiz.models import Quizzes
 
 
 class Question(models.Model):
-    # quiz = models.ManyToManyField(Quiz, on_delete=models.CASCADE, db_column='quiz_id')
+    quiz = models.ManyToManyField(Quizzes, db_column='quiz_id')
     question_text = models.CharField(max_length=100, null=False)
 
     def _str_(self):

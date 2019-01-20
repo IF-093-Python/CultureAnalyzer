@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
 
+
+
     'users.apps.UsersConfig',
     'groups.apps.GroupsConfig',
     'tutors.apps.TutorsConfig',
