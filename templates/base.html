@@ -1,88 +1,77 @@
-{%load static%}
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'abstract.html' %}
+{% block sidebar %}
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3>Culture Analyzer</h3>
+        </div>
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-          crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{% static 'main.css'%}">
-    <title>Culture-Analyzer</title>
-    
-</head>
-
-<body>
-<header class="site-header">
-    <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
-        <div class="container">
-            <a class="navbar-brand mr-4" href="/">Culture Analyzer</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
-                    aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarToggle">
-                <div class="navbar-nav mr-auto">
-                    <a class="nav-item nav-link" href="/">Home</a>
-                    <a class="nav-item nav-link" href="/about">About</a>
-                </div>
-                <!-- Navbar Right Side -->
-                <div class="navbar-nav">
+        <ul class="list-unstyled components">
+            <li>
+                <div class="row" style="margin: 0 auto">
+                    <p class="circle_text" style="color: #6d7fcc;">{{ user.first_username_letter }}</p>
                     {% if user.is_authenticated %}
-
-                    <a class="nav-item nav-link" href="#">Profile</a>
-                    <a class="nav-item nav-link" href="#">Logout</a>
+                        <p>{{ user.username }}</p>
                     {% else %}
-                    <a class="nav-item nav-link" href="#">Login</a>
-                    <a class="nav-item nav-link" href="#">Register</a>
+                        <p>Anonymous user</p>
                     {% endif %}
                 </div>
+            </li>
+
+            <li>
+                <a href="#">Home</a>
+            </li>
+
+            {% if user.is_authenticated %}
+                {% block menu_items %}
+                {% endblock menu_items %}
+            {% endif %}
+
+            <li>
+                <a href="#">About</a>
+            </li>
+        </ul>
+
+        <ul class="list-unstyled CTAs">
+            {% if user.is_authenticated %}
+                <li>
+                    <a href="#" class="feedback">Send feedback</a>
+                </li>
+            {% endif %}
+            <li>
+                <a href="#" class="contact_us">Contact us</a>
+            </li>
+        </ul>
+    </nav>
+{% endblock sidebar %}
+
+
+{% block navbar %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+
+            <button type="button" id="sidebarCollapse" class="navbar-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <div class="row">
+                <ul class="nav ml-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="#">
+                            {{ user.username }}({{ user.role }})
+                        </a></li>
+                        <li class="nav-item"><a class="nav-link" href="#"> <span> Sign out</span> </a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="#"> <span>Sign in</span> </a></li>
+                        <li class="nav-item"><a class="nav-link" href="#"> <span>Sign up</span> </a></li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </nav>
-</header>
+{% endblock navbar %}
 
-<main role="main" class="container">
-    <div class="row">
-        <div class="col-md-8">
-            {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">
-                {{ message }}
-            </div>
-            {% endfor %}
-            {% endif %}
-            {% block content %}{% endblock %}
-        </div>
-        <div class="col-md-4">
-            <div class="content-section">
-                <h3>Our Sidebar</h3>
-                <p class='text-muted'>Menu
-                <ul class="list-group">
-                    {% if user.is_authenticated %}
-                    <li class="list-group-item list-group-item-light"><a class="nav-item nav-link" href="#">Something...</a></li>
-                    <li class="list-group-item list-group-item-light"><a class="nav-item nav-link" href="#">Something...</a></li></li>
-                    <li class="list-group-item list-group-item-light"><a class="nav-item nav-link" href="#">Something...</a></li></li>
-                    <li class="list-group-item list-group-item-light"><a class="nav-item nav-link" href="#">Something...</a></li></li>
-                    {% endif %}
-                </ul>
-                </p>
-            </div>
-        </div>
-    </div>
-</main>
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
-</body>
-
-</html>
+{% block content %}
+    <h1>Content</h1>
+{% endblock content %}
