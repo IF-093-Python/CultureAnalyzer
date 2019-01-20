@@ -13,5 +13,6 @@ class UserRegisterView(CreateView):
     form_class = UserRegisterForm
     success_url = '/'
 
+
 def profile(request):
     return render(request, 'users/profile.html')
