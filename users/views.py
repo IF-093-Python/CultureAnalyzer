@@ -11,7 +11,7 @@ def index(request):
 class UserRegisterView(CreateView):
     template_name = 'users/registration.html'
     form_class = UserRegisterForm
-    success_url = '/'
+    success_url = '/login'
 
 def profile(request):
     return render(request, 'users/profile.html')
