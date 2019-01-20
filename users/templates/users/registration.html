@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
-{% if user.is_anonymous %}
+{% block content %}
     <div class="content-section">
         <form method="POST">
             {% csrf_token %}
@@ -15,10 +15,10 @@
         </form>
         <div class="border-top pt-3">
             <small class="text-muted">
-                Already have an account? <a href="{% url 'login' %}"
+                Already have an account? <a href="#"
                                             class="ml-2">Login</a>
             </small>
         </div>
         </form>
     </div>
-{% endif %}
+{% endblock content%}
