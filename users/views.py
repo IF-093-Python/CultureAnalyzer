@@ -1,9 +1,9 @@
 from django.shortcuts import render
+from .uimodels import *
 
 
 def index(request):
-    return render(request, 'users/index.html', context={
-        'is_user_authenticated': True,
-        'username': 'Vasya',
-        'user_role': 'admin'
-    })
+    anon = UiAnonymousUser()
+    petya = UiAuthenticatedUser('Petya', 'Trainee')
+    vasya = UiAuthenticatedUser('Vasya', 'Admin')
+    return render(request, 'users/index.html', context={'user': petya})
