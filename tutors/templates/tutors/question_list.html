@@ -1,22 +1,28 @@
 {% extends 'base.html' %}
-{% block title %}All questions{% endblock %}
-{% block all_questions %}
-    <div class="container-fluid bg-1 main col-md-10">
-        <a class="btn-danger" href="{% url 'create_question' %}">Add
-            new questions</a>
-        {% if questions %}
-            {% for question in questions %}
-                <li class="list-group-item">
-                    <a href="">{{ category.category }} :</a>
-                    <span class="badge-secondary">{{ question.answer_id.count }}</span>
-                    <a class="btn-outline-info"
-                       href="{% url 'upload_question' pk=question.id %}">&#9998;</a>
-                    <a class="btn-outline-info"
-                       href="{% url 'delete_question' pk=question.id %}">&#10006;</a>
-                </li>
-            {% endfor %}
-        {% else %}
-            <p>You have not created any question yet.</p>
-        {% endif %}
+{% load crispy_forms_tags %}
+{% block title %}Question list{% endblock %}
+{% block content %}
+<div class="container-fluid col-md-10">
+    <div class="form-group mt-2">
+    <a class="btn btn-danger" href="{% url 'create_question' %}">Add
+        new questions</a>
     </div>
+    {% if questions %}
+    <div class="list-group list-group-flush">
+        {% for question in questions %}
+        <li class="list-group-item ">
+            <a href="{% url 'detail_question' pk=question.id %}">
+               {{question.question_text}}:</a>
+            <span class="badge badge-pill">{{question.answer_id.count}}</span>
+            <a class="btn btn-secondary"
+               href="{% url 'update_question' pk=question.id %}">&#9998;</a>
+            <a class="btn btn btn-secondary"
+               href="{% url 'delete_question' pk=question.id %}">&#10006;</a>
+        </li>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>You have not created any question yet.</p>
+    {% endif %}
+</div>
 {% endblock %}
