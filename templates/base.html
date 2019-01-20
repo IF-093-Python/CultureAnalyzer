@@ -1,0 +1,77 @@
+{% extends 'abstract.html' %}
+{% block sidebar %}
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3>Culture Analyzer</h3>
+        </div>
+
+        <ul class="list-unstyled components">
+            <li>
+                <div class="row" style="margin: 0 auto">
+                    <p class="circle_text" style="color: #6d7fcc;">{{ user.first_username_letter }}</p>
+                    {% if user.is_authenticated %}
+                        <p>{{ user.username }}</p>
+                    {% else %}
+                        <p>Anonymous user</p>
+                    {% endif %}
+                </div>
+            </li>
+
+            <li>
+                <a href="#">Home</a>
+            </li>
+
+            {% if user.is_authenticated %}
+                {% block menu_items %}
+                {% endblock menu_items %}
+            {% endif %}
+
+            <li>
+                <a href="#">About</a>
+            </li>
+        </ul>
+
+        <ul class="list-unstyled CTAs">
+            {% if user.is_authenticated %}
+                <li>
+                    <a href="#" class="feedback">Send feedback</a>
+                </li>
+            {% endif %}
+            <li>
+                <a href="#" class="contact_us">Contact us</a>
+            </li>
+        </ul>
+    </nav>
+{% endblock sidebar %}
+
+
+{% block navbar %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+
+            <button type="button" id="sidebarCollapse" class="navbar-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <div class="row">
+                <ul class="nav ml-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="#">
+                            {{ user.username }}({{ user.role }})
+                        </a></li>
+                        <li class="nav-item"><a class="nav-link" href="#"> <span> Sign out</span> </a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="#"> <span>Sign in</span> </a></li>
+                        <li class="nav-item"><a class="nav-link" href="#"> <span>Sign up</span> </a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock navbar %}
+
+{% block content %}
+    <h1>Content</h1>
+{% endblock content %}
