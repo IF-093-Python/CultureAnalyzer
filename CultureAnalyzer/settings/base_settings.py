@@ -40,11 +40,11 @@ INSTALLED_APPS = [
     'crispy_forms',
 
 
-
     'users.apps.UsersConfig',
     'groups.apps.GroupsConfig',
     'tutors.apps.TutorsConfig',
     'quiz.apps.QuizConfig',
+
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -132,4 +132,6 @@ STATICFILES_DIRS = [
 ]
 
 
-STATIC_URL = '/static/'
+
+LOGIN_REDIRECT_URL = 'home'
+LOGIN_URL = 'login'
