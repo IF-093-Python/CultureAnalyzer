@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator
 
 
 MAX_FIELD_REPRESENTATION = 20
@@ -8,15 +9,15 @@ MAX_FIELD_REPRESENTATION = 20
 class CountryIndicator(models.Model):
     iso_code = models.CharField(max_length=3, primary_key=True)
     name = models.CharField(max_length=50)
-    PDI = models.SmallIntegerField()
-    IND = models.SmallIntegerField()
-    MAS = models.SmallIntegerField()
-    UAI = models.SmallIntegerField()
-    LTO = models.SmallIntegerField()
-    IVR = models.SmallIntegerField()
+    PDI = models.PositiveIntegerField(validators=[MaxValueValidator(100)])
+    IND = models.PositiveIntegerField(validators=[MaxValueValidator(100)])
+    MAS = models.PositiveIntegerField(validators=[MaxValueValidator(100)])
+    UAI = models.PositiveIntegerField(validators=[MaxValueValidator(100)])
+    LTO = models.PositiveIntegerField(validators=[MaxValueValidator(100)])
+    IVR = models.PositiveIntegerField(validators=[MaxValueValidator(100)])
 
     class Meta:
-        db_table = 'CountriesIndicators'
+        db_table = 'countries_indicators'
 
     def clean(self):
         """Validate iso_code on case sensitive value.
@@ -33,12 +34,3 @@ class CountryIndicator(models.Model):
     def __str__(self):
         return f'{self.name[:MAX_FIELD_REPRESENTATION]} - {self.iso_code}'
 
-
-class Feedback(models.Model):
-    feedback = models.TextField()
-
-    class Meta:
-        db_table = 'Feedbacks'
-
-    def __str__(self):
-        return f'Feedback - {self.feedback[:MAX_FIELD_REPRESENTATION]}'
