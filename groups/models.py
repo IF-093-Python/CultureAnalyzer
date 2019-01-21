@@ -5,6 +5,9 @@ from users.models import Role
 
 
 class Group(models.Model):
+    """
+        Model for representing Group entity
+    """
     name = models.CharField(max_length=30)
     user = models.ManyToManyField(User)
 
