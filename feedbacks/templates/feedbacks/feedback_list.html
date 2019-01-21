@@ -14,7 +14,7 @@
                 <td style="vertical-align: middle">{{ feedback.feedback }}</td>
                 <td>
                     <a style="font-size: 20px" class="btn btn-sm btn-default" href="#"><i class="far fa-edit text-primary"></i></a>
-                    <a style="font-size: 20px" class="btn btn-sm btn-default" href="#"><i class="far fa-trash-alt text-danger"></i></a>
+                    <a style="font-size: 20px" class="btn btn-sm btn-default" href="{% url 'feedback-delete' feedback.id %}"><i class="far fa-trash-alt text-danger"></i></a>
                 </td>
             </tr>
             {% empty %}
