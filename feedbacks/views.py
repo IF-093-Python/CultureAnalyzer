@@ -1,3 +1,7 @@
-from django.shortcuts import render
+from django.views.generic.list import ListView
+from feedbacks.models import Feedback
 
-# Create your views here.
+
+class FeedbackListView(ListView):
+    model = Feedback
+    paginate_by = 10

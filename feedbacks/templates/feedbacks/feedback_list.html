@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <ul>
+    {% for feedback in object_list %}
+        <li>{{ feedback.feedback }}</li>
+    {% empty %}
+        <li>No feedbacks yet.</li>
+    {% endfor %}
+    </ul>
+{% endblock content %}
