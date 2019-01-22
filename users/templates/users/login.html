@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-{% if user.is_anonymous %}
     <div class="content-section">
         <form method="POST">
             {% csrf_token %}
@@ -22,5 +21,4 @@
         </div>
         </form>
     </div>
-{% endif %}
 {% endblock content %}

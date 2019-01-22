@@ -59,15 +59,11 @@
                 <ul class="nav ml-auto">
                     {% if user.is_authenticated %}
                         <li class="nav-item"><a class="nav-link" href="#">
-                            {{ user.username }}( {{user.user_id.role_id.name}}
-                            5455)</a></li>
-                        <li class="nav-item"><a class="nav-link"
-                                                href="{% url 'logout' %}">
-                            <span> Sign out</span> </a></li>
+                            {{ user.username }}({{ user.role }})
+                        </a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"> <span> Sign out</span> </a></li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link"
-                                                href="{% url 'login' %}">
-                            <span>Sign in</span> </a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"> <span>Sign in</span> </a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'register' %}"> <span>Sign up</span> </a></li>
                     {% endif %}
                 </ul>
