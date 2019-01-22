@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .forms import UserRegisterForm
-from django.views.generic import CreateView
 from django.contrib.auth import views as auth_views
+from django.shortcuts import render, redirect
+from django.views.generic import CreateView
+
+from .forms import UserRegisterForm
 
 
 def index(request):
@@ -10,6 +10,10 @@ def index(request):
 
 
 class LoginView(auth_views.LoginView):
+
+    def __init__(self, *args, **kwargs):
+        super(LoginView, self).__init__(*args, **kwargs)
+
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect('home')

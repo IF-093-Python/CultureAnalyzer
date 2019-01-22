@@ -204,3 +204,37 @@ a.contact_us, a.contact_us:hover {
     -ms-user-select: none;
     user-select: none;
 }
+
+/* -------------------------------------
+    Login Page
+ */
+
+.input_attr {
+    background: #f3f2f3;
+    border: none;
+    border-bottom: 1px solid black;
+    margin-top: 20px;
+    height: 50px;
+}
+
+.login_form {
+    background: #f3f2f3;
+    width: 400px;
+    text-align: center;
+    margin-top: 30px;
+    box-shadow: 7px 4px 6px 1px rgba(0,0,0,0.75);
+}
+
+.button_attr {
+    margin: 20px 0px 20px;
+    background: #7b84e0;
+    border-radius: 5px;
+    padding: 5px;
+    border: none;
+    width: 200px;
+}
+
+.img_attr {
+    margin-top: 30px;
+    box-shadow: 7px 4px 6px 1px rgba(0,0,0,0.75);
+}

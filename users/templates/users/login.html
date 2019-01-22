@@ -1,24 +1,31 @@
-{% extends 'base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
-{% block content %}
-    <div class="content-section">
-        <form method="POST">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Log In</legend>
-                {{ form|crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Login
-                </button>
-            </div>
-        </form>
-        <div class="border-top pt-3">
-            <small class="text-muted">
-                Need An Account? <a href="{% url 'register' %}" class="ml-2">Sign
-                Up Now</a>
-            </small>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+          integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <title>Culture Analyzer</title>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="offset-4 col-md-4">
+            <img src="{% static 'users/img/facebook_profile_image.png' %}" alt="logo" width="400" height="400" class="img_attr">
+            <form method="POST" class="login_form">
+                {% csrf_token %}
+                {{ form }} <br>
+
+                <button type="submit" class="button_attr">Submit</button>
+            </form>
         </div>
-        </form>
     </div>
-{% endblock content %}
+</div>
+</body>
+</html>
