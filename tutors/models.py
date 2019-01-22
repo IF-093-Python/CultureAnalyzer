@@ -1,12 +1,27 @@
 from django.db import models
-
-
 # from quizzes.models import Quiz
 
 
+class CategoryQuestion(models.Model):
+    name = models.CharField(max_length=100, null=False)
+    parent_category = models.ForeignKey('self', on_delete=models.SET_NULL,
+                                        null=True, blank=True,
+                                        db_column='parent_id')
+
+    def _str_(self):
+        return f'{self.name[:20]}'
+
+    class Meta:
+        db_table = "Categories_questions"
+
+
 class Question(models.Model):
-    # quiz = models.ManyToManyField(Quiz, on_delete=models.CASCADE, db_column='quiz_id')
+    # quiz = models.ManyToManyField(Quiz)
     question_text = models.CharField(max_length=100, null=False)
+    category_question = models.ForeignKey(CategoryQuestion,
+                                          on_delete=models.CASCADE,
+                                          null=True, blank=True,
+                                          db_column='category_id')
 
     def _str_(self):
         return f'{self.question_text[:20]}'

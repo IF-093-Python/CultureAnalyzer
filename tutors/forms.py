@@ -1,7 +1,35 @@
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Button, Fieldset, Layout, Field
-from tutors.models import Question, Answer
+from tutors.models import CategoryQuestion, Question, Answer
+
+
+class CategoryCreateForm(forms.ModelForm):
+    name = forms.CharField(max_length=100, required=True)
+    parent_category = forms.ModelChoiceField(
+        queryset=CategoryQuestion.objects.all(), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(CategoryCreateForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_method = 'POST'
+        self.helper.add_input(Submit('save', 'Save', css_class='btn-dark '
+                                                               'mt-5'))
+        self.helper.add_input(Button('cancel', 'Cancel',
+                                     css_class='btn-light mt-5',
+                              onclick="javascript:location.href = "
+                                      "'/category_question';"))
+        self.helper.form_class = 'form-horizontal'
+        self.helper.layout = Layout(
+            Fieldset('Create category ', css_class='border-top border-bottom mt-5'),
+            Fieldset('',
+                     Field('parent_category', css_class='ml-5'),
+                     Field('name', css_class='ml-5'), css_class='border-bottom mt-5')
+            )
+
+    class Meta:
+        model = CategoryQuestion
+        fields = ['name', 'parent_category', ]
 
 
 class QuestionCreateForm(forms.ModelForm):
@@ -16,7 +44,8 @@ class QuestionCreateForm(forms.ModelForm):
                                                                'mt-3'))
         self.helper.add_input(Button('cancel', 'Cancel',
                                      css_class='btn-outline-success mt-3',
-                                     onclick="javascript:location.href = '/question';"))
+                                     onclick="javascript:location.href = "
+                                              "'/question';"))
         self.helper.layout = Layout(
             Fieldset(
                 'Create/Update question', css_class='display-4'),
@@ -42,10 +71,10 @@ class AnswerCreateForm(forms.ModelForm):
         # onclick="javascript:location.href = '/answer-list';"))
         self.helper.form_class = 'form-horizontal'
         self.helper.layout = Layout(
-            Fieldset('Create answer',
+            Fieldset('Create answer ',
                      Field('answer_text', css_class='border-top'))
             )
 
     class Meta:
         model = Answer
-        fields = ['question', 'answer_text', ]
+        fields = ['answer_text', ]
