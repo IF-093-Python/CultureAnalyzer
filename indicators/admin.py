@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import CountryIndicator
 
-# Register your models here.
+
+@admin.register(CountryIndicator)
+class CountryIndicatorAdmin(admin.ModelAdmin):
+    fields = ['__all__']
