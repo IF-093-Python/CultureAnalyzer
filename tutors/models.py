@@ -1,5 +1,5 @@
 from django.db import models
-# from quizzes.models import Quiz
+# from quiz.models import Quizzes
 
 
 class CategoryQuestion(models.Model):
@@ -16,7 +16,7 @@ class CategoryQuestion(models.Model):
 
 
 class Question(models.Model):
-    # quiz = models.ManyToManyField(Quiz)
+    # quiz = models.ManyToManyField(Quizzes)
     question_text = models.CharField(max_length=100, null=False)
     category_question = models.ForeignKey(CategoryQuestion,
                                           on_delete=models.CASCADE,

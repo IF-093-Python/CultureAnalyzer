@@ -4,31 +4,32 @@
 {% block content %}
 <div class="container-fluid col-md-10">
     <div class="form-group mt-2">
-    <a class="btn btn-danger"
-       href="">Add new question</a>
+    <a class="btn btn-danger" href="{% url 'create_category' %}">Add
+        new category</a>
     </div>
-    <h2>Table with question in this category:</h2>
-    {% if questions %}
+    <h2>Table with categories:</h2>
+    {% if categories %}
     <table class="table table-striped">
         <thead>
         <tr>
-            <th scope="col">Question</th>
             <th scope="col">Category</th>
+            <th scope="col">Parent category</th>
             <th scope="col">Management</th>
         </tr>
         </thead>
         <tbody>
-        {%for question in questions %}
+        {%for category in categories%}
         <tr>
-            <td>{{question.question_text}}</td>
-            <td>{{question.category_question.name}}</td>
+            <td>{{category.name}}</td>
+            <td>{{category.parent_category.name}}</td>
             <td>
                 <a class="btn btn-link btn-outline-info"
-                   href="{% url 'update_question' pk=question.id %}">&#9998;
-                </a>
+                   href="{%url 'create_question' category.id %}">
+                    &#10010;</a>
+                <a class="btn btn-link btn-outline-info" href="#">&#9998;</a>
                 <!-- Button trigger modal -->
                 <a class="btn btn-link btn-outline-info"
-                   href="{% url 'delete_question' pk=question.id %}">
+                   href="{% url 'delete_category' pk=category.id %}">
                     &#10006;</a>
             </td>
         </tr>
@@ -36,7 +37,7 @@
         </tbody>
     </table>
     {% else %}
-    <p>You have not created any question from this category yet.</p>
+    <p>You have not created any category yet.</p>
     {% endif %}
 </div>
 {% endblock %}

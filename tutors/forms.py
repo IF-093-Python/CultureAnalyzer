@@ -45,7 +45,7 @@ class QuestionCreateForm(forms.ModelForm):
         self.helper.add_input(Button('cancel', 'Cancel',
                                      css_class='btn-outline-success mt-3',
                                      onclick="javascript:location.href = "
-                                              "'/question';"))
+                                              "'/category_question';"))
         self.helper.layout = Layout(
             Fieldset(
                 'Create/Update question', css_class='display-4'),
