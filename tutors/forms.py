@@ -29,7 +29,7 @@ class CategoryCreateForm(forms.ModelForm):
 
     class Meta:
         model = CategoryQuestion
-        fields = ['name', 'parent_category', ]
+        fields = '__all__'
 
 
 class QuestionCreateForm(forms.ModelForm):
@@ -40,12 +40,9 @@ class QuestionCreateForm(forms.ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_id = 'id-question'
         self.helper.form_method = 'POST'
-        self.helper.add_input(Submit('save', 'Save', css_class='btn-success '
-                                                               'mt-3'))
+        self.helper.add_input(Submit('save', 'Save', css_class='btn-success mt-3'))
         self.helper.add_input(Button('cancel', 'Cancel',
-                                     css_class='btn-outline-success mt-3',
-                                     onclick="javascript:location.href = "
-                                              "'/category_question';"))
+                                     css_class='btn-outline-success mt-3',))
         self.helper.layout = Layout(
             Fieldset(
                 'Create/Update question', css_class='display-4'),
@@ -54,7 +51,7 @@ class QuestionCreateForm(forms.ModelForm):
 
     class Meta:
         model = Question
-        fields = ['question_text', ]
+        fields = '__all__'
 
 
 class AnswerCreateForm(forms.ModelForm):
@@ -63,18 +60,18 @@ class AnswerCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(AnswerCreateForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
-        self.helper.form_id = 'id-answer-create'
+        self.helper.form_id = 'id-answer'
         self.helper.form_method = 'POST'
-        self.helper.add_input(Submit('save', 'Save', css_class='btn-dark'))
+        self.helper.add_input(Submit('save', 'Save', css_class='btn-success mt-3'))
         self.helper.add_input(Button('cancel', 'Cancel',
-                                     css_class='btn-light'))
-        # onclick="javascript:location.href = '/answer-list';"))
-        self.helper.form_class = 'form-horizontal'
+                                     css_class='btn-outline-success mt-3'))
         self.helper.layout = Layout(
-            Fieldset('Create answer ',
-                     Field('answer_text', css_class='border-top'))
+            Fieldset(
+                'Create/Update answer', css_class='display-4'),
+            Fieldset('', Field('answer_text'), css_class='border-top '
+                                                     'border-bottom')
             )
 
     class Meta:
         model = Answer
-        fields = ['answer_text', ]
+        fields = '__all__'
