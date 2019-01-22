@@ -42,15 +42,10 @@ class QuestionListView(LoginRequiredMixin, ListView):
         return Question.objects.filter(category_question=get_object_or_404(
                     CategoryQuestion, pk=self.kwargs['category_id']))
 
-
-class DetailQuestionView(LoginRequiredMixin, DetailView):
-    model = Question
-    context_object_name = 'object'
-    template_name = 'tutors/question_detail.html'
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['answers'] = Answer.objects.filter(question=self.object.id)
+        context['category'] = get_object_or_404(
+                            CategoryQuestion, pk=self.kwargs['category_id'])
         return context
 
 
@@ -60,8 +55,7 @@ class CreateQuestionView(LoginRequiredMixin, CreateView):
     template_name = 'tutors/question_create.html'
 
     def get_success_url(self):
-        return reverse_lazy('questions_list', kwargs={'category_id':
-                                                          self.object.category_question.id})
+        return reverse_lazy('questions_list', kwargs={'category_id': self.object.category_question.id})
 
     def form_valid(self, form):
         obj = form.save(commit=False)
@@ -77,8 +71,7 @@ class UpdateQuestionView(LoginRequiredMixin, UpdateView):
     template_name = 'tutors/question_create.html'
 
     def get_success_url(self):
-        return reverse_lazy('questions_list', kwargs={'category_id':
-                                                          self.object.category_question.id})
+        return reverse_lazy('questions_list', kwargs={'category_id': self.object.category_question.id})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -101,7 +94,13 @@ class AnswerListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Answer.objects.filter(question=get_object_or_404(
-                    Question, pk=self.kwargs['question_id']))
+                    Question, pk=self.kwargs['answer_id']))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['question'] = get_object_or_404(
+                            Question, pk=self.kwargs['answer_id'])
+        return context
 
 
 class CreateAnswerView(LoginRequiredMixin, CreateView):
@@ -120,3 +119,25 @@ class CreateAnswerView(LoginRequiredMixin, CreateView):
         obj.save()
         return super().form_valid(form)
 
+
+class UpdateAnswerView(LoginRequiredMixin, UpdateView):
+    model = Answer
+    form_class = AnswerCreateForm
+    template_name = 'tutors/answer_create.html'
+
+    def get_success_url(self):
+        return reverse_lazy('answers_list', kwargs={'answer_id':
+                                             self.object.question.id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class DeleteAnswerView(LoginRequiredMixin, DeleteView):
+    model = Answer
+    template_name = 'tutors/answer_delete.html'
+
+    def get_success_url(self):
+        return reverse_lazy('answers_list', kwargs={'answer_id':
+                                                    self.object.question.id})

@@ -5,7 +5,8 @@
 <div class="container-fluid col-md-10">
     <div class="form-group mt-2">
     <a class="btn btn-danger"
-       href="">Add new question</a>
+       href="{% url 'create_question' category.id %}">Add
+        new question</a>
     </div>
     <h2>Table with question {{questions.category_question.name}}:</h2>
     {% if questions %}
@@ -20,7 +21,8 @@
         <tbody>
         {%for question in questions %}
         <tr>
-            <td><a href="{%url 'detail_question' pk=question.id %}"> {{question.question_text}}</a></td>
+            <td><a href="{% url 'answers_list' question.id %}">
+                {{question.question_text}}</a></td>
             <td>{{question.category_question.name}}</td>
             <td>
                 <a class="btn btn-link btn-outline-info"

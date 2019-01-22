@@ -7,7 +7,7 @@ from tutors.models import CategoryQuestion, Question, Answer
 class CategoryCreateForm(forms.ModelForm):
     name = forms.CharField(max_length=100, required=True)
     parent_category = forms.ModelChoiceField(
-        queryset=CategoryQuestion.objects.all(), required=False)
+        queryset=CategoryQuestion.objects.all().values_list('name', flat=True), required=False)
 
     def __init__(self, *args, **kwargs):
         super(CategoryCreateForm, self).__init__(*args, **kwargs)
@@ -69,7 +69,7 @@ class AnswerCreateForm(forms.ModelForm):
             Fieldset(
                 'Create/Update answer', css_class='display-4'),
             Fieldset('', Field('answer_text'), css_class='border-top '
-                                                     'border-bottom')
+                                                         'border-bottom')
             )
 
     class Meta:
