@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% if user.is_anonymous %}
+    <h2>
+        You have been logged out. <a href="{% url 'login' %}">Login again</a>
+    </h2>
+{% endif %}
+{% endblock content %}

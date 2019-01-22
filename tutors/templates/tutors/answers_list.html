@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Answer list{% endblock %}
+{% block content %}
+<div class="container-fluid col-md-10">
+    <div class="form-group mt-2">
+    <a class="btn btn-danger"
+       href="">Add new question</a>
+    </div>
+    <h2>Table with question {{answer.question.question_text}}:</h2>
+    {% if answers %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Question</th>
+            <th scope="col">Management</th>
+        </tr>
+        </thead>
+        <tbody>
+        {%for question in questions %}
+        <tr>
+            <td><a href=""> {{answer.answer_text}}</a></td>
+            <td>
+                <a class="btn btn-link btn-outline-info"
+                   href="">
+                    &#10010;</a>
+                <a class="btn btn-link btn-outline-info"
+                   href="">&#9998;
+                </a>
+                <!-- Button trigger modal -->
+                <a class="btn btn-link btn-outline-info"
+                   href="">
+                    &#10006;</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>You have not created any question from this category yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
