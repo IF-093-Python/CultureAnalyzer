@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CategoryListView, CreateCategoryView, DeleteCategoryView,\
+from .views import CategoryListView, CreateCategoryView, DeleteCategoryView, \
     QuestionListView, CreateQuestionView, DeleteQuestionView, \
     UpdateQuestionView, AnswerListView, CreateAnswerView, UpdateAnswerView, \
     DeleteAnswerView
@@ -15,7 +15,8 @@ urlpatterns = [
          name='questions_list'),
     path('<int:category_id>/create_question/', CreateQuestionView.as_view(),
          name='create_question'),
-    path('<int:pk>/update_question/', UpdateQuestionView.as_view(),
+    path('<int:category_id>/update_question/<int:pk>/',
+         UpdateQuestionView.as_view(),
          name='update_question'),
     path('<int:pk>/delete_question/', DeleteQuestionView.as_view(),
          name='delete_question'),

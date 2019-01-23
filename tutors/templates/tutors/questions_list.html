@@ -29,7 +29,7 @@
                    href="{%url 'create_answer' question.id %}">
                     &#10010;</a>
                 <a class="btn btn-link btn-outline-info"
-                   href="{% url 'update_question' pk=question.id %}">&#9998;
+                   href="{% url 'update_question' category_id=question.category_question.id pk=question.id %}">&#9998;
                 </a>
                 <!-- Button trigger modal -->
                 <a class="btn btn-link btn-outline-info"
