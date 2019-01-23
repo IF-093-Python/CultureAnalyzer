@@ -1,9 +1,8 @@
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.db import models
+# from django.db import models
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, CreateView, DeleteView, \
-    UpdateView, DetailView
+from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from .models import CategoryQuestion, Question, Answer
 from .forms import CategoryCreateForm, QuestionCreateForm, AnswerCreateForm
 # from quiz.models import  Quizzes
@@ -71,7 +70,8 @@ class UpdateQuestionView(LoginRequiredMixin, UpdateView):
     template_name = 'tutors/question_create.html'
 
     def get_success_url(self):
-        return reverse_lazy('questions_list', kwargs={'category_id': self.object.category_question.id})
+        return reverse_lazy('questions_list', kwargs={
+            'category_id': self.object.category_question.id})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -114,7 +114,7 @@ class CreateAnswerView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         obj = form.save(commit=False)
-        form.instance.question = get_object_or_404(Question,
+        form.instance.question_answer = get_object_or_404(Question,
                                                    pk=self.kwargs['answer_id'])
         obj.save()
         return super().form_valid(form)

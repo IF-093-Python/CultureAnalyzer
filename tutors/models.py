@@ -8,8 +8,8 @@ class CategoryQuestion(models.Model):
                                         null=True, blank=True,
                                         db_column='parent_id')
 
-    def _str_(self):
-        return f'{self.name[:20]}'
+    def __str__(self):
+        return f'{self.name}'
 
     class Meta:
         db_table = "Categories_questions"
@@ -23,8 +23,8 @@ class Question(models.Model):
                                           null=True, blank=True,
                                           db_column='category_id')
 
-    def _str_(self):
-        return f'{self.question_text[:20]}'
+    def __str__(self):
+        return f'{self.question_text}'
 
     class Meta:
         db_table = "Questions"
@@ -35,8 +35,8 @@ class Answer(models.Model):
                                  db_column='answer_id')
     answer_text = models.CharField(max_length=100, null=False)
 
-    def _str_(self):
-        return f'{self.question.question_text[:10]}: {self.answer_text[:20]}'
+    def __str__(self):
+        return f'{self.question.question_text}: {self.answer_text}'
 
     class Meta:
         db_table = "Answers"
