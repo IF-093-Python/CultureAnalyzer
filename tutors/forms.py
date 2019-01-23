@@ -7,7 +7,8 @@ from tutors.models import CategoryQuestion, Question, Answer
 class CategoryCreateForm(forms.ModelForm):
     name = forms.CharField(max_length=100, required=True)
     parent_category = forms.ModelChoiceField(
-        queryset=CategoryQuestion.objects.all(), required=False)
+        queryset=CategoryQuestion.objects.all().values_list('name', flat=True),
+        required=False)
 
     def __init__(self, *args, **kwargs):
         super(CategoryCreateForm, self).__init__(*args, **kwargs)
@@ -17,15 +18,17 @@ class CategoryCreateForm(forms.ModelForm):
                                                                'mt-5'))
         self.helper.add_input(Button('cancel', 'Cancel',
                                      css_class='btn-light mt-5',
-                              onclick="javascript:location.href = "
-                                      "'/category_question';"))
+                                     onclick="javascript:location.href = "
+                                             "'/category_question';"))
         self.helper.form_class = 'form-horizontal'
         self.helper.layout = Layout(
-            Fieldset('Create category ', css_class='border-top border-bottom mt-5'),
+            Fieldset('Create category ',
+                     css_class='border-top border-bottom mt-5'),
             Fieldset('',
                      Field('parent_category', css_class='ml-5'),
-                     Field('name', css_class='ml-5'), css_class='border-bottom mt-5')
-            )
+                     Field('name', css_class='ml-5'),
+                     css_class='border-bottom mt-5')
+        )
 
     class Meta:
         model = CategoryQuestion
@@ -40,14 +43,16 @@ class QuestionCreateForm(forms.ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_id = 'id-question'
         self.helper.form_method = 'POST'
-        self.helper.add_input(Submit('save', 'Save', css_class='btn-success mt-3'))
+        self.helper.add_input(
+            Submit('save', 'Save', css_class='btn-success mt-3'))
         self.helper.add_input(Button('cancel', 'Cancel',
-                                     css_class='btn-outline-success mt-3',))
+                                     css_class='btn-outline-success mt-3', ))
         self.helper.layout = Layout(
             Fieldset(
                 'Create/Update question', css_class='display-4'),
-            Fieldset('', Field('question_text'), css_class='border-top border-bottom')
-            )
+            Fieldset('', Field('question_text'),
+                     css_class='border-top border-bottom')
+        )
 
     class Meta:
         model = Question
@@ -62,6 +67,7 @@ class AnswerCreateForm(forms.ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_id = 'id-answer'
         self.helper.form_method = 'POST'
+
         self.helper.add_input(Submit('save', 'Save',
                                      css_class='btn-success mt-3'))
         self.helper.add_input(Button('cancel', 'Cancel',
@@ -71,7 +77,7 @@ class AnswerCreateForm(forms.ModelForm):
                 'Create/Update answer', css_class='display-4'),
             Fieldset('', Field('answer_text'), css_class='border-top '
                                                          'border-bottom')
-            )
+        )
 
     class Meta:
         model = Answer
