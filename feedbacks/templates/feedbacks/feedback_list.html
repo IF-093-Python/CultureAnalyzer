@@ -13,9 +13,9 @@
             {% for feedback in object_list %}
             <tr>
                 <td style="vertical-align: middle">{{ feedback.feedback }}</td>
-                <td>
-                    <a style="font-size: 20px" class="btn btn-sm btn-default" href="{% url 'feedback-update' feedback.id %}"><i class="far fa-edit text-primary"></i></a>
-                    <a style="font-size: 20px" class="btn btn-sm btn-default" href="{% url 'feedback-delete' feedback.id %}"><i class="far fa-trash-alt text-danger"></i></a>
+                <td style="width: 15%">
+                    <a class="btn btn-primary" href="{% url 'feedback-update' feedback.id %}"><i class="far fa-edit"></i></a>
+                    <a class="btn btn-danger" href="{% url 'feedback-delete' feedback.id %}"><i class="far fa-trash-alt"></i></a>
                 </td>
             </tr>
             {% empty %}
@@ -26,4 +26,19 @@
             </tr>
         </tbody>
     </table>
+    {% if is_paginated %}
+        <div class="pagination">
+            <span class="page-links">
+                {% if page_obj.has_previous %}
+                    <a href="/feedbacks?page={{ page_obj.previous_page_number }}"><i class="fas fa-angle-double-left"></i></a>
+                {% endif %}
+                <span class="page-current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+                {% if page_obj.has_next %}
+                    <a href="/feedbacks?page={{ page_obj.next_page_number }}"><i class="fas fa-angle-double-right"></i></a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
 {% endblock content %}
