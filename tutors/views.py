@@ -86,17 +86,9 @@ class UpdateQuestionView(LoginRequiredMixin, UpdateView):
     form_class = QuestionCreateForm
     template_name = 'tutors/question_create.html'
 
-    def form_valid(self, form):
-        obj = form.save(commit=False)
-        form.instance.category_question = get_object_or_404(
-            CategoryQuestion, pk=self.kwargs['category_id'])
-        obj.save()
-        return super().form_valid(form)
-
     def get_success_url(self):
         return reverse_lazy('tutors:questions_list', kwargs={
-            'category_id': self.kwargs['category_id']
-        })
+            'category_id': self.kwargs['category_id']})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

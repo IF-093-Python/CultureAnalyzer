@@ -58,7 +58,7 @@ class QuestionCreateForm(forms.ModelForm):
 
     class Meta:
         model = Question
-        fields = '__all__'
+        fields = ['question_text', ]
 
 
 class AnswerCreateForm(forms.ModelForm):
