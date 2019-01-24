@@ -28,6 +28,20 @@ class CreateCategoryView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
+class UpdateCategoryView(LoginRequiredMixin, UpdateView):
+    model = CategoryQuestion
+    form_class = CategoryCreateForm
+    template_name = 'tutors/category_create.html'
+    success_url = reverse_lazy('tutors:categories_list')
+
+    def get_success_url(self):
+        return reverse_lazy('tutors:categories_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
 class DeleteCategoryView(LoginRequiredMixin, DeleteView):
     model = CategoryQuestion
     template_name = 'tutors/category_delete.html'
