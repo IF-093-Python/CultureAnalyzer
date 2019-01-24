@@ -22,11 +22,11 @@
             <td><a href=""> {{answer.answer_text}}</a></td>
             <td>
                 <a class="btn btn-link btn-outline-info"
-                   href="{% url 'update_answer' pk=answer.id %}">&#9998;
+                   href="{% url 'tutors:update_answer' pk=answer.id %}">&#9998;
                 </a>
                 <!-- Button trigger modal -->
                 <a class="btn btn-link btn-outline-info"
-                   href="{% url 'delete_answer' pk=answer.id %}">
+                   href="{% url 'tutors:delete_answer' pk=answer.id %}">
                     &#10006;</a>
             </td>
         </tr>

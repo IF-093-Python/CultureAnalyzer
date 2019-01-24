@@ -4,6 +4,8 @@ from .views import CategoryListView, CreateCategoryView, DeleteCategoryView, \
     UpdateQuestionView, AnswerListView, CreateAnswerView, UpdateAnswerView, \
     DeleteAnswerView
 
+app_name = 'tutors'
+
 urlpatterns = [
     path('', CategoryListView.as_view(), name='categories_list'),
     path('create_category/', CreateCategoryView.as_view(),
