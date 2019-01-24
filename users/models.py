@@ -18,22 +18,22 @@ class Profile(models.Model):
                                 db_column='user_id')
     role = models.ForeignKey(Role, on_delete=models.PROTECT,
                              db_column='role_id')
-    image = models.ImageField(default='default.png', upload_to='profile_pics')
+    image = models.ImageField(upload_to='profile_pics',
+                              blank=True, null=True)
 
     def save(self, **kwargs):
         """
         if img is too big we decrease img
         because the less image is the less memory it takes
         """
-        super().save()
-
-        img = Image.open(self.image.path)
-
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.save(self.image.path)
-
+        super(Profile, self).save(**kwargs)
+        # todo: Raise exception when image = null
+        # img = Image.open(self.image.path)
+        #
+        # if img.height > 300 or img.width > 300:
+        #     output_size = (300, 300)
+        #     img.thumbnail(output_size)
+        #     img.save(self.image.path)
 
     def __str__(self):
         return f'{self.user.username} => {self.role.name}'
