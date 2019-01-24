@@ -1,13 +1,15 @@
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Button, Fieldset, Layout, Field
+from django.shortcuts import get_object_or_404
+
 from tutors.models import CategoryQuestion, Question, Answer
 
 
 class CategoryCreateForm(forms.ModelForm):
     name = forms.CharField(max_length=100, required=True)
     parent_category = forms.ModelChoiceField(
-        queryset=CategoryQuestion.objects.all().values_list('name', flat=True),
+        queryset=CategoryQuestion.objects.all(),
         required=False)
 
     def __init__(self, *args, **kwargs):
@@ -67,7 +69,6 @@ class AnswerCreateForm(forms.ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_id = 'id-answer'
         self.helper.form_method = 'POST'
-
         self.helper.add_input(Submit('save', 'Save',
                                      css_class='btn-success mt-3'))
         self.helper.add_input(Button('cancel', 'Cancel',
@@ -81,4 +82,4 @@ class AnswerCreateForm(forms.ModelForm):
 
     class Meta:
         model = Answer
-        fields = '__all__'
+        fields = ['answer_text', ]

@@ -22,12 +22,12 @@
         {%for question in questions %}
         <tr>
             <td><a
-                    href="{% url 'tutors:answers_list' question_id=question.id %}">
+                    href="{% url 'tutors:answers_list' question.id %}">
                 {{question.question_text}}</a></td>
             <td>{{question.category_question.name}}</td>
             <td>
                 <a class="btn btn-link btn-outline-info"
-                   href="{%url 'tutors:create_answer' question_id=question.id %}">
+                   href="{%url 'tutors:create_answer' question.id %}">
                     &#10010;</a>
                 <a class="btn btn-link btn-outline-info"
                    href="{% url 'tutors:update_question' category_id=question.category_question.id pk=question.id %}">&#9998;

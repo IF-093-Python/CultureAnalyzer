@@ -95,8 +95,7 @@ class DeleteQuestionView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('tutors:questions_list', kwargs={'category_id':
-                                                          self.object.category_question.id
-                                                      })
+                                                                 self.object.category_question.id})
 
 
 class AnswerListView(LoginRequiredMixin, ListView):
@@ -121,12 +120,13 @@ class CreateAnswerView(LoginRequiredMixin, CreateView):
     template_name = 'tutors/answer_create.html'
 
     def get_success_url(self):
-        return reverse_lazy('tutors:answers_list', kwargs={'question_id': self.object.question.id})
+        return reverse_lazy('tutors:answers_list', kwargs={
+            'question_id': self.kwargs['question_id']})
 
     def form_valid(self, form):
         obj = form.save(commit=False)
-        form.instance.question = get_object_or_404(Question, pk=self.kwargs[
-            'question_id'])
+        form.instance.question = get_object_or_404(
+                        Question, pk=self.kwargs['question_id'])
         obj.save()
         return super().form_valid(form)
 
@@ -138,8 +138,7 @@ class UpdateAnswerView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('tutors:answers_list', kwargs={
-            'question_id': self.kwargs['question_id']
-        })
+            'question_id': self.kwargs['question_id']})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -152,5 +151,4 @@ class DeleteAnswerView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('tutors:answers_list', kwargs={'question_id':
-                                                        self.object.question.id
-                                                    })
+                                                               self.object.question.id})

@@ -27,7 +27,9 @@
                 <a class="btn btn-link btn-outline-info"
                    href="{%url 'tutors:create_question' category.id %}">
                     &#10010;</a>
-                <a class="btn btn-link btn-outline-info" href="#">&#9998;</a>
+                <a class="btn btn-link btn-outline-info"
+                   href="{% url 'tutors:update_category' pk=category.id %}">
+                    &#9998;</a>
                 <!-- Button trigger modal -->
                 <a class="btn btn-link btn-outline-info"
                    href="{% url 'tutors:delete_category' pk=category.id %}">

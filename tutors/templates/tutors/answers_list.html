@@ -5,7 +5,8 @@
 <div class="container-fluid col-md-10">
     <div class="form-group mt-2">
     <a class="btn btn-danger"
-       href="">Add new answer</a>
+       href="{% url 'tutors:create_answer' question_id=question.id %}">Add new
+        answer</a>
     </div>
     <h2>Table with answer {{answers.question.question_text}}:</h2>
     {% if answers %}
