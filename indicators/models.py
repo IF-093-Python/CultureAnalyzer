@@ -20,6 +20,7 @@ class CountryIndicator(models.Model):
     class Meta:
         db_table = 'countries_indicators'
         ordering = ['iso_code', 'name']
+        verbose_name_plural = 'countries\' indicators'
 
     def clean(self):
         """Validate iso_code on case sensitive value.
