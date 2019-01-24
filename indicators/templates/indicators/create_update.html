@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+{% block title %}Create or update{% endblock %}
+
+
+{% block content %}
+
+     <div class="container">
+
+         <div class="row">
+          <div class="col-6">
+             <form action="." method="post">
+                 {% csrf_token %}
+                 {{ form|crispy }}
+
+                 <div class="form-group row">
+                    <div class="col-sm-6">
+                        <button type="submit" class="btn btn-primary">{% if update %}Update{% else %}Create{% endif %}</button>
+                    </div>
+                    <div class="col-sm-1">
+                        <a href="{% url 'country_indicator:country_indicator_list' %}" class="btn btn-primary">Cancel</a>
+                    </div>
+                </div>
+             </form>
+         </div>
+        </div>
+    </div>
+
+{% endblock %}
