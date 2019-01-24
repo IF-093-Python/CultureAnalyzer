@@ -106,12 +106,12 @@ class AnswerListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Answer.objects.filter(question=get_object_or_404(
-            Question, pk=self.kwargs['answer_id']))
+            Question, pk=self.kwargs['question_id']))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['question'] = get_object_or_404(
-            Question, pk=self.kwargs['answer_id'])
+            Question, pk=self.kwargs['question_id'])
         return context
 
 
@@ -121,14 +121,12 @@ class CreateAnswerView(LoginRequiredMixin, CreateView):
     template_name = 'tutors/answer_create.html'
 
     def get_success_url(self):
-        return reverse_lazy('tutors:answers_list', kwargs={'answer_id':
-                                                        self.object.question.id})
+        return reverse_lazy('tutors:answers_list', kwargs={'question_id': self.object.question.id})
 
     def form_valid(self, form):
         obj = form.save(commit=False)
-        form.instance.question_answer = get_object_or_404(Question,
-                                                          pk=self.kwargs[
-                                                              'answer_id'])
+        form.instance.question = get_object_or_404(Question, pk=self.kwargs[
+            'question_id'])
         obj.save()
         return super().form_valid(form)
 
@@ -139,9 +137,9 @@ class UpdateAnswerView(LoginRequiredMixin, UpdateView):
     template_name = 'tutors/answer_create.html'
 
     def get_success_url(self):
-        return reverse_lazy('tutors:answers_list', kwargs={'answer_id':
-                                                        self.object.question.id
-                                                    })
+        return reverse_lazy('tutors:answers_list', kwargs={
+            'question_id': self.kwargs['question_id']
+        })
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -153,6 +151,6 @@ class DeleteAnswerView(LoginRequiredMixin, DeleteView):
     template_name = 'tutors/answer_delete.html'
 
     def get_success_url(self):
-        return reverse_lazy('tutors:answers_list', kwargs={'answer_id':
+        return reverse_lazy('tutors:answers_list', kwargs={'question_id':
                                                         self.object.question.id
                                                     })

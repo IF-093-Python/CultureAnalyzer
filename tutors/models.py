@@ -32,7 +32,7 @@ class Question(models.Model):
 
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE,
-                                 db_column='answer_id')
+                                 db_column='question_id')
     answer_text = models.CharField(max_length=100, null=False)
 
     def __str__(self):
