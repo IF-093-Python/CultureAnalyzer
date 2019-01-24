@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 # from django.db import models
@@ -14,6 +15,14 @@ class CategoryListView(LoginRequiredMixin, ListView):
     model = CategoryQuestion
     template_name = 'tutors/categories_list.html'
     context_object_name = 'categories'
+
+    def get_queryset(self):
+        return CategoryQuestion.objects.all().annotate(
+            num_question=Count('question')).order_by('pk')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
 
 class CreateCategoryView(LoginRequiredMixin, CreateView):
@@ -55,12 +64,16 @@ class QuestionListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Question.objects.filter(category_question=get_object_or_404(
-            CategoryQuestion, pk=self.kwargs['category_id']))
+            CategoryQuestion, pk=self.kwargs['category_id'])).annotate(
+            num_answer=Count('answer')).order_by('pk')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['category'] = get_object_or_404(
             CategoryQuestion, pk=self.kwargs['category_id'])
+        context['children'] = CategoryQuestion.objects.filter(
+            parent_category=get_object_or_404(CategoryQuestion,
+                                              pk=self.kwargs['category_id']))
         return context
 
 
@@ -111,7 +124,7 @@ class AnswerListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Answer.objects.filter(question=get_object_or_404(
-            Question, pk=self.kwargs['question_id']))
+            Question, pk=self.kwargs['question_id'])).order_by('pk')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

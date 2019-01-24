@@ -3,8 +3,8 @@
 {% block content %}
 <form method="post" class="container-fluid col-md-5">
     {% csrf_token %}
-    <p class="border-bottom pb-2">Are you sure you want to delete "
-        {{object.name}} "?</p>
+    <p class="border-bottom pb-2">Are you sure you want to delete
+        "{{object.name}}"?</p>
     <div class="">
         <input type="submit" class="btn btn-info" value="Confirm">
         <a class="btn btn-outline-info"

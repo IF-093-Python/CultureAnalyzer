@@ -1,6 +1,6 @@
 from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Button, Fieldset, Layout, Field
+from crispy_forms.layout import Submit, Button, Fieldset, Layout, Field, HTML
 from django.shortcuts import get_object_or_404
 
 from tutors.models import CategoryQuestion, Question, Answer
@@ -47,13 +47,14 @@ class QuestionCreateForm(forms.ModelForm):
         self.helper.form_method = 'POST'
         self.helper.add_input(
             Submit('save', 'Save', css_class='btn-success mt-3'))
-        self.helper.add_input(Button('cancel', 'Cancel',
-                                     css_class='btn-outline-success mt-3', ))
+        self.helper.add_input(Submit('cancel', 'Cancel',
+                                     css_class='btn-outline-success mt-3'))
         self.helper.layout = Layout(
             Fieldset(
                 'Create/Update question', css_class='display-4'),
             Fieldset('', Field('question_text'),
-                     css_class='border-top border-bottom')
+                     css_class='border-top border-bottom'),
+
         )
 
     class Meta:

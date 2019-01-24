@@ -3,46 +3,62 @@
 {% block title %}Category list{% endblock %}
 {% block content %}
 <div class="container-fluid col-md-10">
-    <div class="form-group mt-2">
-    <a class="btn btn-danger"
-       href="{% url 'tutors:create_question' category.id %}">Add
-        new question</a>
+    <h1><a class="btn btn-light" href="{%url 'tutors:categories_list'%}">
+            <splan class="fas fa-chevron-left"></splan></a>
+        <b>Category:</b></h1>
+    <h2 class="border-bottom">{{category.name}}</h2>
+
+    <!-- Drop-down button in subcategory  -->
+    {% if children %}
+    <div class="btn-group dropleft my-3">
+        <button class="btn btn-light" data-toggle="dropdown">
+            <span class="fas fa-list-ul"></span> {{children.count}} Subcategory
+        </button>
+        <ul class="dropdown-menu">
+            {% for child in children %}
+            <li class="dropdown-item">
+                <a href="{% url 'tutors:questions_list' child.id%}">
+                    {{child.name}}}</a></li>
+            {% endfor %}
+        </ul>
     </div>
-    <h2>Table with question {{questions.category_question.name}}:</h2>
+    {% endif %}
+
+    <a class="btn btn-success float-right my-3"
+       href="{% url 'tutors:create_question' category.id %}">Add new question</a>
+
     {% if questions %}
-    <table class="table table-striped">
-        <thead>
+    <table class="table">
+        <thead class="thead-light">
         <tr>
             <th scope="col">Question</th>
-            <th scope="col">Category</th>
-            <th scope="col">Management</th>
+            <th class="w-25" scope="col">Number of answers</th>
+            <th class="w-25" scope="col">Management</th>
         </tr>
         </thead>
         <tbody>
         {%for question in questions %}
         <tr>
-            <td><a
-                    href="{% url 'tutors:answers_list' question.id %}">
+            <td><a href="{% url 'tutors:answers_list' question.id %}">
                 {{question.question_text}}</a></td>
-            <td>{{question.category_question.name}}</td>
+            <td>{{question.num_answer}}</td>
             <td>
-                <a class="btn btn-link btn-outline-info"
+                <a class="btn btn-primary"
                    href="{%url 'tutors:create_answer' question.id %}">
-                    &#10010;</a>
-                <a class="btn btn-link btn-outline-info"
-                   href="{% url 'tutors:update_question' category_id=question.category_question.id pk=question.id %}">&#9998;
-                </a>
-                <!-- Button trigger modal -->
-                <a class="btn btn-link btn-outline-info"
+                    <span class="fas fa-plus"></span></a>
+                <a class="btn btn-primary"
+                   href="{% url 'tutors:update_question' category_id=question.category_question.id pk=question.id %}">
+                    <span class="fas fa-edit"></span></a>
+                <a class="btn btn-danger"
                    href="{% url 'tutors:delete_question' pk=question.id %}">
-                    &#10006;</a>
+                    <span class="fas fa-trash-alt"></span></a>
             </td>
         </tr>
         {% endfor %}
         </tbody>
     </table>
     {% else %}
-    <p>You have not created any question from this category yet.</p>
+    <p class="mt-4">You have not created any question from this category yet.</p>
     {% endif %}
 </div>
 {% endblock %}
