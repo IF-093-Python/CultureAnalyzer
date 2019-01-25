@@ -11,6 +11,7 @@ class FeedbackListView(LoginRequiredMixin, ListView):
     model = Feedback
     paginate_by = ITEMS_ON_PAGE
     context_object_name = 'feedbacks'
+    ordering = ['id']
 
 
 class FeedbackDeleteView(LoginRequiredMixin, DeleteView):
