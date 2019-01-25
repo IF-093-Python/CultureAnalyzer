@@ -135,5 +135,5 @@ LOGIN_URL = 'login'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = '587'
-EMAIL_HOST_USER = 'EMAIL_HOST_USER_VAR'
-EMAIL_HOST_PASSWORD = 'EMAIL_HOST_PASSWORD_VAR'
+EMAIL_HOST_USER = 'cultureanalyzer@gmail.com'
+EMAIL_HOST_PASSWORD = 'smtp_Culture_analyzer_pass123'
