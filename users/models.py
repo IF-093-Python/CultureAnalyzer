@@ -34,7 +34,6 @@ class Profile(models.Model):
             img.thumbnail(output_size)
             img.save(self.image.path)
 
-
     def __str__(self):
         return f'{self.user.username} => {self.role.name}'
 
