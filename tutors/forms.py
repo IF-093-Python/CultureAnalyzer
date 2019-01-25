@@ -52,16 +52,17 @@ class QuestionCreateForm(forms.ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_id = 'id-question'
         self.helper.form_method = 'POST'
-        self.helper.add_input(
-            Submit('save', 'Save', css_class='btn-success mt-3'))
-        self.helper.add_input(Submit('cancel', 'Cancel',
-                                     css_class='btn-outline-success mt-3'))
         self.helper.layout = Layout(
             Fieldset(
                 'Create/Update question', css_class='display-4'),
             Fieldset('', Field('question_text'),
                      css_class='border-top border-bottom'),
-
+            Fieldset('',
+                     Submit('save', 'Save', css_class='btn-success mt-3'),
+                     HTML("""<a class='btn btn-outline-success mt-3' 
+                     href="{%url 'tutors:questions_list' category_id=c.id%}">
+                     Cancel</a>"""),
+                     )
         )
 
     class Meta:
@@ -77,15 +78,17 @@ class AnswerCreateForm(forms.ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_id = 'id-answer'
         self.helper.form_method = 'POST'
-        self.helper.add_input(Submit('save', 'Save',
-                                     css_class='btn-success mt-3'))
-        self.helper.add_input(Button('cancel', 'Cancel',
-                                     css_class='btn-outline-success mt-3'))
         self.helper.layout = Layout(
             Fieldset(
                 'Create/Update answer', css_class='display-4'),
             Fieldset('', Field('answer_text'), css_class='border-top '
-                                                         'border-bottom')
+                                                         'border-bottom'),
+            Fieldset('',
+                     Submit('save', 'Save', css_class='btn-success mt-3'),
+                     HTML("""<a class='btn btn-outline-success mt-3' 
+                 href="{%url 'tutors:answers_list' question_id=q.id%}">
+                 Cancel</a>"""),
+                     )
         )
 
     class Meta:

@@ -105,6 +105,12 @@ class CreateQuestionView(LoginRequiredMixin, CreateView):
         return reverse_lazy('tutors:questions_list', kwargs={
             'category_id': self.object.category_question.id})
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['c'] = get_object_or_404(CategoryQuestion,
+                                         pk=self.kwargs['category_id'])
+        return context
+
     def form_valid(self, form):
         obj = form.save(commit=False)
         form.instance.category_question = get_object_or_404(CategoryQuestion,
@@ -125,6 +131,8 @@ class UpdateQuestionView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['c'] = get_object_or_404(CategoryQuestion,
+                                         pk=self.kwargs['category_id'])
         return context
 
 
@@ -145,7 +153,7 @@ class AnswerListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         answers = Answer.objects.filter(question=get_object_or_404(
-                    Question, pk=self.kwargs['question_id'])).order_by('pk')
+            Question, pk=self.kwargs['question_id'])).order_by('pk')
         q = self.request.GET.get("answer_search")
         if q:
             return answers.filter(answer_text__icontains=q)
@@ -168,6 +176,12 @@ class CreateAnswerView(LoginRequiredMixin, CreateView):
         return reverse_lazy('tutors:answers_list',
                             kwargs={'question_id': self.kwargs['question_id']})
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['q'] = get_object_or_404(Question,
+                                         pk=self.kwargs['question_id'])
+        return context
+
     def form_valid(self, form):
         obj = form.save(commit=False)
         form.instance.question = get_object_or_404(Question, pk=self.kwargs[
@@ -187,6 +201,8 @@ class UpdateAnswerView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['q'] = get_object_or_404(Question,
+                                         pk=self.kwargs['question_id'])
         return context
 
 
