@@ -12,7 +12,7 @@
                 {% if user.profile.image %}
                     <img src="{{ user.profile.image.url }}" alt="">
                 {% else %}
-                    <img src="{% static 'User_Avatar_2.png' %}" alt="">
+                    <img src="{% static 'default.png' %}" alt="">
                 {% endif %}
                     <p class="circle_text" style="color: #6d7fcc;">{{ user.first_username_letter }}</p>
                     {% if user.is_authenticated %}
