@@ -3,6 +3,11 @@
 {% block content %}
     {% block all_quizzes %}
         <div class="container-fluid bg-1 main col-md-10">
+            <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'quiz:quizzes-list' %}">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
+                       name="data_search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
             <p>All quizzes:</p>
             {% if quizzes %}
                 {% for quiz in quizzes %}
