@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'users.apps.UsersConfig',
     'groups',
+    'indicators',
 ]
 
 MIDDLEWARE = [
