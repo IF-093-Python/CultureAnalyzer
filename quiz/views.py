@@ -17,10 +17,13 @@ class QuizzesList(LoginRequiredMixin, generic.ListView):
     template_name = 'quiz/quizzes_list.html'
 
     def get_queryset(self):
+        """"""
         result = super(QuizzesList, self).get_queryset()
         if self.request.GET.get('data_search'):
             result = result.filter(
                 title__contains=self.request.GET.get('data_search'))
+        elif self.request.GET.get('clear'):
+            return redirect('quiz:quizzes-list')
         return result
 
 
@@ -30,15 +33,14 @@ class CreateQuizView(LoginRequiredMixin, generic.CreateView):
     form_class = QuizCreateForm
     success_url = reverse_lazy('quiz:quizzes-list')
 
-    def user_gains_perms(request):
-        user_id =
-        user = get_object_or_404(User,)
-        # any permission check will cache the current set of permissions
-        if user.has_perm('quiz.create_quiz'):
-            return redirect('quiz:create-quiz')
-        else:
-            raise PermissionDenied
-
+    # def user_gains_perms(request):
+    #     user_id =
+    #     user = get_object_or_404(User,)
+    #     # any permission check will cache the current set of permissions
+    #     if user.has_perm('quiz.create_quiz'):
+    #         return redirect('quiz:create-quiz')
+    #     else:
+    #         raise PermissionDenied
 
 
 class DeleteQuizView(LoginRequiredMixin, generic.DeleteView):
