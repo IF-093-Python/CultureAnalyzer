@@ -15,22 +15,22 @@ class QuizzesList(generic.ListView):
     template_name = 'quiz/quizzes_list.html'
 
 
-class CreateQuizView( generic.CreateView):
+class CreateQuizView(generic.CreateView):
     model = Quizzes
     template_name = 'quiz/quiz_create.html'
     form_class = QuizCreateForm
-    success_url = reverse_lazy('quizzes-list')
+    success_url = reverse_lazy('quiz:quizzes-list')
 
 
-class DeleteQuizView( generic.DeleteView):
+class DeleteQuizView(generic.DeleteView):
     model = Quizzes
     context_object_name = 'quiz'
     template_name = 'quiz/quiz_delete.html'
-    success_url = reverse_lazy('quizzes-list')
+    success_url = reverse_lazy('quiz:quizzes-list')
 
 
-class UpdateQuizView( generic.UpdateView):
+class UpdateQuizView(generic.UpdateView):
     model = Quizzes
     form_class = QuizCreateForm
     template_name = 'quiz/quiz_update.html'
-    success_url = reverse_lazy('quizzes-list')
+    success_url = reverse_lazy('quiz:quizzes-list')
