@@ -10,7 +10,7 @@
 
     <!-- Drop-down button in subcategory  -->
     {% if children %}
-    <div class="btn-group dropleft my-3">
+    <div class="btn-group dropleft my-2">
         <button class="btn btn-light" data-toggle="dropdown">
             <span class="fas fa-list-ul"></span> {{children.count}} Subcategory
         </button>
@@ -24,7 +24,7 @@
     </div>
     {% endif %}
 
-    <a class="btn btn-success float-right my-3"
+    <a class="btn btn-success float-right my-2"
        href="{% url 'tutors:create_question' category.id %}">Add new question</a>
 
     {% if questions %}
@@ -57,6 +57,9 @@
         {% endfor %}
         </tbody>
     </table>
+    <!--include paginator-->
+    {% include "tutors/pagination.html" with page=page_obj %}
+
     {% else %}
     <p class="mt-4">You have not created any question from this category yet.</p>
     {% endif %}

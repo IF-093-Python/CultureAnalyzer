@@ -9,7 +9,7 @@
         <b>Question:</b></h1>
     <h2 class="border-bottom">{{question.question_text}}</h2>
 
-    <a class="btn btn-success float-right my-3"
+    <a class="btn btn-success float-right my-2"
        href="{% url 'tutors:create_answer' question_id=question.id %}"> Add
         new answer</a>
     {% if answers %}
@@ -36,6 +36,9 @@
         {% endfor %}
         </tbody>
     </table>
+    <!--include paginator-->
+    {% include "tutors/pagination.html" with page=page_obj %}
+
     {% else %}
     <p class="mt-4">You have not created any answer from this question yet.</p>
     {% endif %}

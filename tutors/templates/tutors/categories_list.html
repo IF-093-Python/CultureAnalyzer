@@ -10,7 +10,7 @@
         <!--search category-->
     </h2>
 
-    <a class="btn btn-success float-right my-3"
+    <a class="btn btn-success float-right my-2"
            href="{% url 'tutors:create_category' %}">Add new category</a>
 
     {% if categories %}
@@ -45,6 +45,8 @@
         {% endfor %}
         </tbody>
     </table>
+    <!--include paginator-->
+    {% include "tutors/pagination.html" with page=page_obj %}
     {% else %}
     <p>You have not created any category yet.</p>
     {% endif %}

@@ -15,6 +15,7 @@ class CategoryListView(LoginRequiredMixin, ListView):
     model = CategoryQuestion
     template_name = 'tutors/categories_list.html'
     context_object_name = 'categories'
+    paginate_by = 5
 
     def get_queryset(self):
         return CategoryQuestion.objects.all().annotate(
@@ -66,6 +67,7 @@ class QuestionListView(LoginRequiredMixin, ListView):
     model = Question
     template_name = 'tutors/questions_list.html'
     context_object_name = 'questions'
+    paginate_by = 5
 
     def get_queryset(self):
         return Question.objects.filter(category_question=get_object_or_404(
@@ -129,6 +131,7 @@ class AnswerListView(LoginRequiredMixin, ListView):
     model = Answer
     template_name = 'tutors/answers_list.html'
     context_object_name = 'answers'
+    paginate_by = 5
 
     def get_queryset(self):
         return Answer.objects.filter(question=get_object_or_404(
