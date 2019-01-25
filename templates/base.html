@@ -9,12 +9,12 @@
         <ul class="list-unstyled components">
             <li>
                 <div class="row" style="margin: 0 auto">
+                    <p>
                 {% if user.profile.image %}
-                    <img src="{{ user.profile.image.url }}" alt="">
+                    <img src="{{ user.profile.image.url }}" alt="" class="circle_text">
                 {% else %}
-                    <img src="{% static 'default.png' %}" alt="">
-                {% endif %}
-                    <p class="circle_text" style="color: #6d7fcc;">{{ user.first_username_letter }}</p>
+                    <img src="{% static 'default.png' %}" alt="" class="circle_text">
+                {% endif %}{{ user.first_username_letter }}</p>
                     {% if user.is_authenticated %}
                         <p>{{ user.username }}</p>
                     {% else %}
