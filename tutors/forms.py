@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import Q
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Button, Fieldset, Layout, Field, HTML
 from django.shortcuts import get_object_or_404
@@ -14,6 +15,12 @@ class CategoryCreateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CategoryCreateForm, self).__init__(*args, **kwargs)
+        # print(self.instance.childrens_pk_list)
+        # for i in self.instance.get_parents_pk:
+        #     print(i)
+        self.fields[
+            'parent_category'].queryset = CategoryQuestion.objects.filter(
+            ~Q(pk__in=(self.instance.id, *self.instance.childrens_pk_list)))
         self.helper = FormHelper(self)
         self.helper.form_method = 'POST'
         self.helper.add_input(Submit('save', 'Save', css_class='btn-dark '

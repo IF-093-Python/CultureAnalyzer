@@ -46,9 +46,14 @@ class UpdateCategoryView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('tutors:categories_list')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
+    def get_form_kwargs(self):  # defined in ModelFormMixin class
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = super(UpdateCategoryView, self).get_form_kwargs()
+        if hasattr(self, 'object'):
+            kwargs.update({'instance': self.object})
+        return kwargs
 
 
 class DeleteCategoryView(LoginRequiredMixin, DeleteView):
@@ -84,7 +89,8 @@ class CreateQuestionView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy('tutors:questions_list', kwargs={
-            'category_id': self.object.category_question.id})
+            'category_id': self.object.category_question.id
+        })
 
     def form_valid(self, form):
         obj = form.save(commit=False)
@@ -101,7 +107,8 @@ class UpdateQuestionView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('tutors:questions_list', kwargs={
-            'category_id': self.kwargs['category_id']})
+            'category_id': self.kwargs['category_id']
+        })
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -114,7 +121,8 @@ class DeleteQuestionView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('tutors:questions_list', kwargs={'category_id':
-                                                                 self.object.category_question.id})
+                                                                 self.object.category_question.id
+                                                             })
 
 
 class AnswerListView(LoginRequiredMixin, ListView):
@@ -140,12 +148,13 @@ class CreateAnswerView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy('tutors:answers_list', kwargs={
-            'question_id': self.kwargs['question_id']})
+            'question_id': self.kwargs['question_id']
+        })
 
     def form_valid(self, form):
         obj = form.save(commit=False)
         form.instance.question = get_object_or_404(
-                        Question, pk=self.kwargs['question_id'])
+            Question, pk=self.kwargs['question_id'])
         obj.save()
         return super().form_valid(form)
 
@@ -157,7 +166,8 @@ class UpdateAnswerView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('tutors:answers_list', kwargs={
-            'question_id': self.kwargs['question_id']})
+            'question_id': self.kwargs['question_id']
+        })
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -170,4 +180,5 @@ class DeleteAnswerView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('tutors:answers_list', kwargs={'question_id':
-                                                               self.object.question.id})
+                                                               self.object.question.id
+                                                           })
