@@ -15,12 +15,17 @@ class CategoryCreateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CategoryCreateForm, self).__init__(*args, **kwargs)
-        # print(self.instance.childrens_pk_list)
-        # for i in self.instance.get_parents_pk:
-        #     print(i)
+
+        if self.instance.id:
+            queryset = CategoryQuestion.objects.filter(
+                ~Q(pk__in=(
+                    self.instance.id, *self.instance.childrens_pk_list)))
+        else:
+            queryset = CategoryQuestion.objects.all()
+
         self.fields[
-            'parent_category'].queryset = CategoryQuestion.objects.filter(
-            ~Q(pk__in=(self.instance.id, *self.instance.childrens_pk_list)))
+            'parent_category'].queryset = queryset
+
         self.helper = FormHelper(self)
         self.helper.form_method = 'POST'
         self.helper.add_input(Submit('save', 'Save', css_class='btn-dark '
