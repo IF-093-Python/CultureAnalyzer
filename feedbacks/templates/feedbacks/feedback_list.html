@@ -14,10 +14,10 @@
         <tbody>
             {% for feedback in object_list %}
             <tr>
-                <td style="vertical-align: middle">{{ feedback.feedback }}</td>
+                <td style="vertical-align: middle">{{ feedback.feedback|truncatechars:300 }}</td>
                 <td class="d-flex justify-content-around">
-                    <a style="width: 40%" class="btn btn-primary" href="{% url 'feedback-update' feedback.id %}"><i class="far fa-edit"></i></a>
-                    <a style="width: 40%" class="btn btn-danger" href="{% url 'feedback-delete' feedback.id %}"><i class="far fa-trash-alt"></i></a>
+                    <a style="min-width: 40%" class="btn btn-primary" href="{% url 'feedback-update' feedback.id %}"><i class="far fa-edit"></i></a>
+                    <a style="min-width: 40%" class="btn btn-danger" href="{% url 'feedback-delete' feedback.id %}"><i class="far fa-trash-alt"></i></a>
                 </td>
             </tr>
             {% empty %}
