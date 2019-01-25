@@ -12,6 +12,15 @@
     <a class="btn btn-success float-right my-2"
        href="{% url 'tutors:create_answer' question_id=question.id %}"> Add
         new answer</a>
+
+    <!--Answer search function by name-->
+    <form class="form-inline" method="GET"
+          action="{% url 'tutors:answers_list' question_id=question.id%}">
+        <span class="fas fa-search"></span>
+        <input class="form-control mx-2" type="text" name="answer_search"
+               placeholder="Search" {% if q %} value="{{q}}" {% endif %}>
+    </form>
+
     {% if answers %}
     <table class="table">
         <thead class="thead-light">

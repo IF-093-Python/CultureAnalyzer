@@ -24,8 +24,16 @@
     </div>
     {% endif %}
 
-    <a class="btn btn-success float-right my-2"
+    <a class="btn btn-success float-right mt-5"
        href="{% url 'tutors:create_question' category.id %}">Add new question</a>
+
+    <!--Question search function by name-->
+    <form class="form-inline mb-2" method="GET"
+          action="{% url 'tutors:questions_list' category_id=category.id%}">
+        <span class="fas fa-search"></span>
+        <input class="form-control mx-2" type="text" name="question_search"
+               placeholder="Search" {% if q %} value="{{q}}" {% endif %}>
+    </form>
 
     {% if questions %}
     <table class="table">

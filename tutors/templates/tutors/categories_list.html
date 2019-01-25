@@ -3,15 +3,20 @@
 {% block title %}Category list{% endblock %}
 {% block content %}
 <div class="container-fluid col-md-10">
-    <h1><a class="btn btn-light" href="#">
+    <h1 class="border-bottom"><a class="btn btn-light" href="#">
                 <splan class="fas fa-chevron-left"></splan></a>
             <b>Table with categories</b>:</b></h1>
-    <h2 class="border-bottom">
-        <!--search category-->
-    </h2>
 
     <a class="btn btn-success float-right my-2"
-           href="{% url 'tutors:create_category' %}">Add new category</a>
+       href="{% url 'tutors:create_category' %}">Add new category</a>
+
+    <!--Category search function by name-->
+    <form class="form-inline" method="GET"
+          action="{% url 'tutors:categories_list' %}">
+        <span class="fas fa-search"></span>
+        <input class="form-control mx-2" type="text" name="category_search"
+               placeholder="Search" {% if q %} value="{{q}}" {% endif %}>
+    </form>
 
     {% if categories %}
     <table class="table">

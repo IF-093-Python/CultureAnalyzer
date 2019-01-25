@@ -18,11 +18,16 @@ class CategoryListView(LoginRequiredMixin, ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        return CategoryQuestion.objects.all().annotate(
+        categories = CategoryQuestion.objects.all().annotate(
             num_question=Count('question')).order_by('pk')
+        q = self.request.GET.get("category_search")
+        if q:
+            return categories.filter(name__icontains=q)
+        return categories
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['q'] = self.request.GET.get("category_search")
         return context
 
 
@@ -70,9 +75,15 @@ class QuestionListView(LoginRequiredMixin, ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        return Question.objects.filter(category_question=get_object_or_404(
-            CategoryQuestion, pk=self.kwargs['category_id'])).annotate(
+        questions = Question.objects.filter(
+            category_question=get_object_or_404(CategoryQuestion,
+                                                pk=self.kwargs[
+                                                    'category_id'])).annotate(
             num_answer=Count('answer')).order_by('pk')
+        q = self.request.GET.get("question_search")
+        if q:
+            return questions.filter(question_text__icontains=q)
+        return questions
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -81,6 +92,7 @@ class QuestionListView(LoginRequiredMixin, ListView):
         context['children'] = CategoryQuestion.objects.filter(
             parent_category=get_object_or_404(CategoryQuestion,
                                               pk=self.kwargs['category_id']))
+        context['q'] = self.request.GET.get("question_search")
         return context
 
 
@@ -91,13 +103,13 @@ class CreateQuestionView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy('tutors:questions_list', kwargs={
-            'category_id': self.object.category_question.id
-        })
+            'category_id': self.object.category_question.id})
 
     def form_valid(self, form):
         obj = form.save(commit=False)
-        form.instance.category_question = get_object_or_404(
-            CategoryQuestion, pk=self.kwargs['category_id'])
+        form.instance.category_question = get_object_or_404(CategoryQuestion,
+                                                            pk=self.kwargs[
+                                                                'category_id'])
         obj.save()
         return super().form_valid(form)
 
@@ -109,8 +121,7 @@ class UpdateQuestionView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('tutors:questions_list', kwargs={
-            'category_id': self.kwargs['category_id']
-        })
+            'category_id': self.kwargs['category_id']})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -122,9 +133,8 @@ class DeleteQuestionView(LoginRequiredMixin, DeleteView):
     template_name = 'tutors/question_delete.html'
 
     def get_success_url(self):
-        return reverse_lazy('tutors:questions_list', kwargs={'category_id':
-                                                                 self.object.category_question.id
-                                                             })
+        return reverse_lazy('tutors:questions_list', kwargs={
+            'category_id': self.object.category_question.id})
 
 
 class AnswerListView(LoginRequiredMixin, ListView):
@@ -134,13 +144,18 @@ class AnswerListView(LoginRequiredMixin, ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        return Answer.objects.filter(question=get_object_or_404(
-            Question, pk=self.kwargs['question_id'])).order_by('pk')
+        answers = Answer.objects.filter(question=get_object_or_404(
+                    Question, pk=self.kwargs['question_id'])).order_by('pk')
+        q = self.request.GET.get("answer_search")
+        if q:
+            return answers.filter(answer_text__icontains=q)
+        return answers
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['question'] = get_object_or_404(
             Question, pk=self.kwargs['question_id'])
+        context['q'] = self.request.GET.get("answer_search")
         return context
 
 
@@ -150,14 +165,13 @@ class CreateAnswerView(LoginRequiredMixin, CreateView):
     template_name = 'tutors/answer_create.html'
 
     def get_success_url(self):
-        return reverse_lazy('tutors:answers_list', kwargs={
-            'question_id': self.kwargs['question_id']
-        })
+        return reverse_lazy('tutors:answers_list',
+                            kwargs={'question_id': self.kwargs['question_id']})
 
     def form_valid(self, form):
         obj = form.save(commit=False)
-        form.instance.question = get_object_or_404(
-            Question, pk=self.kwargs['question_id'])
+        form.instance.question = get_object_or_404(Question, pk=self.kwargs[
+            'question_id'])
         obj.save()
         return super().form_valid(form)
 
@@ -168,9 +182,8 @@ class UpdateAnswerView(LoginRequiredMixin, UpdateView):
     template_name = 'tutors/answer_create.html'
 
     def get_success_url(self):
-        return reverse_lazy('tutors:answers_list', kwargs={
-            'question_id': self.kwargs['question_id']
-        })
+        return reverse_lazy('tutors:answers_list',
+                            kwargs={'question_id': self.kwargs['question_id']})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -182,6 +195,5 @@ class DeleteAnswerView(LoginRequiredMixin, DeleteView):
     template_name = 'tutors/answer_delete.html'
 
     def get_success_url(self):
-        return reverse_lazy('tutors:answers_list', kwargs={'question_id':
-                                                               self.object.question.id
-                                                           })
+        return reverse_lazy('tutors:answers_list',
+                            kwargs={'question_id': self.object.question.id})
