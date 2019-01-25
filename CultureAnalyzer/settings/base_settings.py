@@ -131,3 +131,9 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = '587'
+EMAIL_HOST_USER = 'cultureanalyzer@gmail.com'
+EMAIL_HOST_PASSWORD = 'smtp_Culture_analyzer_pass123'
