@@ -17,7 +17,6 @@ class QuizzesList(LoginRequiredMixin, generic.ListView):
     template_name = 'quiz/quizzes_list.html'
 
     def get_queryset(self):
-        """"""
         result = super(QuizzesList, self).get_queryset()
         if self.request.GET.get('data_search'):
             result = result.filter(
