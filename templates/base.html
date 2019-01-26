@@ -14,11 +14,11 @@
                     <img src="{{ user.profile.image.url }}" alt="" class="circle_text">
                 {% else %}
                     <img src="{% static 'default.png' %}" alt="" class="circle_text">
-                {% endif %}{{ user.first_username_letter }}</p>
+                {% endif %}</p>
                     {% if user.is_authenticated %}
-                        <p>{{ user.username }}</p>
+                        <p style="margin-top: 15px;">{{ user.username }}</p>
                     {% else %}
-                        <p>Anonymous user</p>
+                        <p style="margin-top: 15px;">Anonymous user</p>
                     {% endif %}
                 </div>
             </li>
@@ -64,7 +64,7 @@
             <div class="row">
                 <ul class="nav ml-auto">
                     {% if user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link" href="#">
+                        <li class="nav-item"><a class="nav-link" href="{% url 'profile' user.id %}">
                             {{ user.username }}({{ user.profile.role.name }})
                         </a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"> <span> Sign out</span> </a></li>
