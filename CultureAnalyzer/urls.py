@@ -20,5 +20,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('users.urls')),
     path('indicators/', include('indicators.urls',
-                                namespace='country_indicator'))
+                                namespace='country_indicator')),
+    path('quiz/', include('quiz.urls')),
 ]
