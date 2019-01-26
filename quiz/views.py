@@ -32,15 +32,6 @@ class CreateQuizView(LoginRequiredMixin, generic.CreateView):
     form_class = QuizCreateForm
     success_url = reverse_lazy('quiz:quizzes-list')
 
-    # def user_gains_perms(request):
-    #     user_id =
-    #     user = get_object_or_404(User,)
-    #     # any permission check will cache the current set of permissions
-    #     if user.has_perm('quiz.create_quiz'):
-    #         return redirect('quiz:create-quiz')
-    #     else:
-    #         raise PermissionDenied
-
 
 class DeleteQuizView(LoginRequiredMixin, generic.DeleteView):
     model = Quizzes
