@@ -91,7 +91,9 @@ class QuestionListView(LoginRequiredMixin, ListView):
             CategoryQuestion, pk=self.kwargs['category_id'])
         context['children'] = CategoryQuestion.objects.filter(
             parent_category=get_object_or_404(CategoryQuestion,
-                                              pk=self.kwargs['category_id']))
+                                              pk=self.kwargs[
+                                                  'category_id'])).annotate(
+            num_question=Count('question')).order_by('pk')
         context['q'] = self.request.GET.get("question_search")
         return context
 

@@ -18,7 +18,8 @@
             {% for child in children %}
             <li class="dropdown-item">
                 <a href="{% url 'tutors:questions_list' child.id%}">
-                    {{child.name}}}</a></li>
+                    {{child.name}} <span class="badge badge-info">
+                        {{child.num_question}}</span></a></li>
             {% endfor %}
         </ul>
     </div>
