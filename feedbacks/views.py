@@ -1,14 +1,27 @@
 from django.views.generic.list import ListView
 from django.views.generic.edit import DeleteView, UpdateView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import EmptyPage, Paginator
 from django.urls import reverse_lazy
 from feedbacks.models import Feedback
 
 ITEMS_ON_PAGE = 5
 
 
+class SafePaginator(Paginator):
+    def validate_number(self, number):
+        try:
+            return super(SafePaginator, self).validate_number(number)
+        except EmptyPage:
+            if number > 1:
+                return self.num_pages
+            else:
+                return 1
+
+
 class FeedbackListView(LoginRequiredMixin, ListView):
     model = Feedback
+    paginator_class = SafePaginator
     paginate_by = ITEMS_ON_PAGE
     context_object_name = 'feedbacks'
     ordering = ['id']
