@@ -1,5 +1,6 @@
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.forms.models import inlineformset_factory
 from django.shortcuts import render, redirect
@@ -38,11 +39,23 @@ class UserRegisterView(CreateView):
         return super(UserRegisterView, self).get(request, *args, **kwargs)
 
 
-class UserUpdateView(UpdateView):
+class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'users/profile.html'
     model = User
     form_class = UserUpdateForm
     success_url = '/'
+
+    def test_func(self):
+        """
+        this func check that the user which want
+        to delete the post should be author of this post
+        """
+        current_user = self.get_object()
+
+        if self.request.user == current_user:
+            return True
+        else:
+            return False
 
     def get_context_data(self, **kwargs):
         context = super(UserUpdateView, self).get_context_data(**kwargs)
