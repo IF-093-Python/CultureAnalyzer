@@ -10,7 +10,7 @@ urlpatterns = [
          name='country_indicator_list'),
     path('create/', CountryIndicatorCreate.as_view(),
          name='country_indicator_create'),
-    path('<str:pk>/update/', country_indicator_update,
+    path('<str:pk>/update/', CountryIndicatorUpdate.as_view(),
          name='country_indicator_update'),
     path('<str:pk>/delete/', CountryIndicatorDelete.as_view(),
          name='country_indicator_delete'),
