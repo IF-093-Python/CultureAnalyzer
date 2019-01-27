@@ -1,20 +1,42 @@
 {% extends 'base.html' %}
 {% block title %}All quizzes{% endblock %}
+{% block menu_items %}
+
+    <li>
+        <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Navigation</a>
+        <ul class="collapse list-unstyled" id="pageSubmenu">
+            <li>
+                <a href="{% url 'country_indicator:country_indicator_list' %}">Countries Indicators</a>
+            </li>
+            <li>
+                <a href="{% url 'quiz:quizzes-list' %}">Quizzes list</a>
+            </li>
+            <li>
+                <a href="#">Page 3</a>
+            </li>
+        </ul>
+    </li>
+
+{% endblock menu_items %}
+
 {% block content %}
+    <h1>Quizzes</h1>
     {% block all_quizzes %}
         <div class="container-fluid bg-1 main col-md-10">
+            <div class="float-right">
+                <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'quiz:quizzes-list' %}">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
+                           name="data_search">
+                    <div class="btn-toolbar">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        <button class="btn btn-outline-danger my-2 my-sm-0" name="clear" type="submit">Clear</button>
+                    </div>
+                    <br>
+                </form>
+            </div><br>
 
-            <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'quiz:quizzes-list' %}">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
-                       name="data_search">
-                <div class="btn-toolbar">
-
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-
-                    <button class="btn btn-outline-danger my-2 my-sm-0" name="clear" type="submit">Clear</button>
-                </div>
-            </form>
             <p>All quizzes:</p>
+            <a class="btn btn-primary" style="margin-bottom: 10px; background-color: cornflowerblue" href="{% url 'quiz:create-quiz' %}">Create quiz</a>
             {% if quizzes %}
                 {% for quiz in quizzes %}
                     <li class="list-group-item">
@@ -26,7 +48,6 @@
                     </li>
                 {% endfor %}
                 <br>
-                <a class="btn btn-danger" href="{% url 'quiz:create-quiz' %}">Create quiz</a>
             {% else %}
                 <p>You have not created any quizzes yet.</p>
             {% endif %}
