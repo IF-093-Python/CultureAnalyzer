@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'django_cool_paginator',
+
     'users',
     'groups',
     'tutors',
