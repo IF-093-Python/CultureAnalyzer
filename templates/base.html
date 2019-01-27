@@ -23,6 +23,9 @@
             </li>
 
             {% if user.is_authenticated %}
+                <li>
+                    <a href="{% url 'feedback-list' %}">Feedbacks</a>
+                </li>
                 {% block menu_items %}
                 {% endblock menu_items %}
             {% endif %}

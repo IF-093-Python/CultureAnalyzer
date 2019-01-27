@@ -36,11 +36,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'django_cool_paginator',
 
     'users.apps.UsersConfig',
     'groups',
     'indicators',
     'quiz',
+    'feedbacks',
 ]
 
 MIDDLEWARE = [
