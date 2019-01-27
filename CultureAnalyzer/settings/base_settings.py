@@ -35,11 +35,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
-    'users.apps.UsersConfig',
-    'groups.apps.GroupsConfig',
-    'tutors.apps.TutorsConfig',
-    'indicators.apps.IndicatorsConfig',
-    'quiz.apps.QuizConfig',
+    'users',
+    'groups',
+    'tutors',
+    'indicators',
+    'quiz',
 ]
 
 MIDDLEWARE = [
