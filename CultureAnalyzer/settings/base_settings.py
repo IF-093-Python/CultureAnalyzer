@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'django_cool_paginator',
 
 
 
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'tutors',
     'indicators',
     'quiz',
+    'feedbacks',
 ]
 
 MIDDLEWARE = [
