@@ -1,22 +1,7 @@
 from django.db import models
-from collections import Iterable
-
 
 from quiz.models import Quizzes
-
-def deep_flatten(field):
-    """
-    Get items from nested Iterable
-
-    :param Iterable field:
-    :return Generator:
-    """
-    for item in field:
-        if isinstance(item, Iterable):
-            for x in deep_flatten(item):
-                yield x
-        else:
-            yield item
+from tutors.utils import deep_flatten
 
 
 class CategoryQuestion(models.Model):
