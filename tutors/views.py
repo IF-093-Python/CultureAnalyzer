@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from .models import CategoryQuestion, Question, Answer
 from .forms import CategoryCreateForm, QuestionCreateForm, AnswerCreateForm
-# from quiz.models import  Quizzes
+from quiz.models import  Quizzes
 
 ITEMS_PER_PAGE = 5
 

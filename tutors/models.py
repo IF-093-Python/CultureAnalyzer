@@ -2,7 +2,7 @@ from django.db import models
 from collections import Iterable
 
 
-# from quiz.models import Quizzes
+from quiz.models import Quizzes
 
 def deep_flatten(field):
     """
@@ -51,7 +51,7 @@ class CategoryQuestion(models.Model):
 
 
 class Question(models.Model):
-    # quiz = models.ManyToManyField(Quizzes)
+    quiz = models.ManyToManyField(Quizzes)
     question_text = models.CharField(max_length=100, null=False)
     category_question = models.ForeignKey(CategoryQuestion,
                                           on_delete=models.CASCADE,
