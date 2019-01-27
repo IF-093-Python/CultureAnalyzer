@@ -22,7 +22,6 @@ class CategoryCreateForm(forms.ModelForm):
                     self.instance.id, *self.instance.childrens_pk_list)))
         else:
             queryset = CategoryQuestion.objects.all()
-
         self.fields['parent_category'].queryset = queryset
         self.helper = FormHelper(self)
         self.helper.form_method = 'POST'

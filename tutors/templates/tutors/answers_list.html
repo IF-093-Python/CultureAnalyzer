@@ -9,6 +9,9 @@
         <b>Question:</b></h1>
     <h2 class="border-bottom">{{question.question_text}}</h2>
 
+    <!--Success message about some action on the answer-->
+    {% include "tutors/success_message.html" %}
+
     <a class="btn btn-success float-right my-2"
        href="{% url 'tutors:create_answer' question_id=question.id %}"> Add
         new answer</a>

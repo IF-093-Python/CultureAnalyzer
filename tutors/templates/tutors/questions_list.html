@@ -8,6 +8,9 @@
         <b>Category:</b></h1>
     <h2 class="border-bottom">{{category.name}}</h2>
 
+    <!--Success message about some action on the question-->
+    {% include "tutors/success_message.html" %}
+
     <!-- Drop-down button in subcategory  -->
     {% if children %}
     <div class="btn-group dropleft my-2">

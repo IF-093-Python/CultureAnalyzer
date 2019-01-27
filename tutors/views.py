@@ -1,8 +1,10 @@
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-# from django.db import models
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
+# from django.db import models
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from .models import CategoryQuestion, Question, Answer
 from .forms import CategoryCreateForm, QuestionCreateForm, AnswerCreateForm
@@ -37,11 +39,12 @@ class CategoryListView(LoginRequiredMixin, ListView):
         return context
 
 
-class CreateCategoryView(LoginRequiredMixin, CreateView):
+class CreateCategoryView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = CategoryQuestion
     form_class = CategoryCreateForm
     template_name = 'tutors/category_create.html'
     success_url = reverse_lazy('tutors:categories_list')
+    success_message = 'Category: "%(name)s" was created successfully'
 
     def form_valid(self, form):
         obj = form.save(commit=False)
@@ -49,11 +52,12 @@ class CreateCategoryView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class UpdateCategoryView(LoginRequiredMixin, UpdateView):
+class UpdateCategoryView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = CategoryQuestion
     form_class = CategoryCreateForm
     template_name = 'tutors/category_create.html'
     success_url = reverse_lazy('tutors:categories_list')
+    success_message = 'Category: "%(name)s" was updated successfully'
 
     def get_success_url(self):
         return reverse_lazy('tutors:categories_list')
@@ -68,10 +72,19 @@ class UpdateCategoryView(LoginRequiredMixin, UpdateView):
         return kwargs
 
 
-class DeleteCategoryView(LoginRequiredMixin, DeleteView):
+class DeleteCategoryView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = CategoryQuestion
     template_name = 'tutors/category_delete.html'
     success_url = reverse_lazy('tutors:categories_list')
+    success_message = 'Category: "%(name)s" was deleted successfully'
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Returns context data about success deleted category in message.
+        """
+        obj = self.get_object()
+        messages.success(self.request, self.success_message % obj.__dict__)
+        return super().delete(request, *args, **kwargs)
 
 
 class QuestionListView(LoginRequiredMixin, ListView):
@@ -112,10 +125,11 @@ class QuestionListView(LoginRequiredMixin, ListView):
         return context
 
 
-class CreateQuestionView(LoginRequiredMixin, CreateView):
+class CreateQuestionView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Question
     form_class = QuestionCreateForm
     template_name = 'tutors/question_create.html'
+    success_message = 'Question: "%(question_text)s" was created successfully'
 
     def get_success_url(self):
         return reverse_lazy('tutors:questions_list', kwargs={
@@ -136,10 +150,11 @@ class CreateQuestionView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class UpdateQuestionView(LoginRequiredMixin, UpdateView):
+class UpdateQuestionView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Question
     form_class = QuestionCreateForm
     template_name = 'tutors/question_create.html'
+    success_message = 'Question: "%(question_text)s" was updated successfully'
 
     def get_success_url(self):
         return reverse_lazy('tutors:questions_list', kwargs={
@@ -152,9 +167,18 @@ class UpdateQuestionView(LoginRequiredMixin, UpdateView):
         return context
 
 
-class DeleteQuestionView(LoginRequiredMixin, DeleteView):
+class DeleteQuestionView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Question
     template_name = 'tutors/question_delete.html'
+    success_message = 'Question: "%(question_text)s" was deleted successfully'
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Returns context data about success deleted question in message.
+        """
+        obj = self.get_object()
+        messages.success(self.request, self.success_message % obj.__dict__)
+        return super().delete(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy('tutors:questions_list', kwargs={
@@ -183,10 +207,11 @@ class AnswerListView(LoginRequiredMixin, ListView):
         return context
 
 
-class CreateAnswerView(LoginRequiredMixin, CreateView):
+class CreateAnswerView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Answer
     form_class = AnswerCreateForm
     template_name = 'tutors/answer_create.html'
+    success_message = 'Answers: "%(answer_text)s" was created successfully'
 
     def get_success_url(self):
         return reverse_lazy('tutors:answers_list',
@@ -206,10 +231,11 @@ class CreateAnswerView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class UpdateAnswerView(LoginRequiredMixin, UpdateView):
+class UpdateAnswerView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Answer
     form_class = AnswerCreateForm
     template_name = 'tutors/answer_create.html'
+    success_message = 'Answers: "%(answer_text)s" was updated successfully'
 
     def get_success_url(self):
         return reverse_lazy('tutors:answers_list',
@@ -222,9 +248,18 @@ class UpdateAnswerView(LoginRequiredMixin, UpdateView):
         return context
 
 
-class DeleteAnswerView(LoginRequiredMixin, DeleteView):
+class DeleteAnswerView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Answer
     template_name = 'tutors/answer_delete.html'
+    success_message = 'Answers: "%(answer_text)s" was deleted successfully'
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Returns context data about success deleted answer in message.
+        """
+        obj = self.get_object()
+        messages.success(self.request, self.success_message % obj.__dict__)
+        return super().delete(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy('tutors:answers_list',
