@@ -19,7 +19,8 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('users.urls')),
-    path('indicators/', include('indicators.urls',
-                                namespace='country_indicator')),
-    path('quiz/', include('quiz.urls', namespace='quiz')),
+    path('indicators/',
+         include('indicators.urls', namespace='country_indicator')),
+    path('quiz/', include('quiz.urls')),
+    path('category_question/', include('tutors.urls', namespace='tutors')),
 ]
