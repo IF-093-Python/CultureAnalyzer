@@ -5,9 +5,9 @@
 <div class="content-section">
     <div class="media">
         {% if user.profile.image %}
-        <img src="{{ user.profile.image.url }}" alt="" class="circle_text">
+        <img src="{{ user.profile.image.url }}" alt="" class="circle_text" style="margin-left: -10px;">
         {% else %}
-        <img src="{% static 'default.png' %}" alt="" class="circle_text">
+        <img src="{% static 'default.png' %}" alt="" class="circle_text" style="margin-left: -10px;">
         {% endif %}
         <div class="media-body">
             <h2 class="account-heading">{{ user.username }}</h2>
