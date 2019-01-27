@@ -23,9 +23,7 @@ class CategoryCreateForm(forms.ModelForm):
         else:
             queryset = CategoryQuestion.objects.all()
 
-        self.fields[
-            'parent_category'].queryset = queryset
-
+        self.fields['parent_category'].queryset = queryset
         self.helper = FormHelper(self)
         self.helper.form_method = 'POST'
         self.helper.add_input(Submit('save', 'Save', css_class='btn-dark '

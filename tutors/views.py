@@ -6,18 +6,21 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from .models import CategoryQuestion, Question, Answer
 from .forms import CategoryCreateForm, QuestionCreateForm, AnswerCreateForm
-
-
 # from quiz.models import  Quizzes
+
+ITEMS_PER_PAGE = 5
 
 
 class CategoryListView(LoginRequiredMixin, ListView):
     model = CategoryQuestion
     template_name = 'tutors/categories_list.html'
     context_object_name = 'categories'
-    paginate_by = 5
+    paginate_by = ITEMS_PER_PAGE
 
     def get_queryset(self):
+        """
+        Returns the queryset of categories that you want to display.
+        """
         categories = CategoryQuestion.objects.all().annotate(
             num_question=Count('question')).order_by('pk')
         q = self.request.GET.get("category_search")
@@ -26,6 +29,9 @@ class CategoryListView(LoginRequiredMixin, ListView):
         return categories
 
     def get_context_data(self, **kwargs):
+        """
+        Returns context data for displaying the list of categories.
+        """
         context = super().get_context_data(**kwargs)
         context['q'] = self.request.GET.get("category_search")
         return context
@@ -72,9 +78,13 @@ class QuestionListView(LoginRequiredMixin, ListView):
     model = Question
     template_name = 'tutors/questions_list.html'
     context_object_name = 'questions'
-    paginate_by = 5
+    paginate_by = ITEMS_PER_PAGE
 
     def get_queryset(self):
+        """
+        Returns the queryset of question from some category that you want to
+        display.
+        """
         questions = Question.objects.filter(
             category_question=get_object_or_404(CategoryQuestion,
                                                 pk=self.kwargs[
@@ -86,6 +96,10 @@ class QuestionListView(LoginRequiredMixin, ListView):
         return questions
 
     def get_context_data(self, **kwargs):
+        """
+        Returns context data for displaying the list of questions and the
+        list of subcategories rom some category.
+        """
         context = super().get_context_data(**kwargs)
         context['category'] = get_object_or_404(
             CategoryQuestion, pk=self.kwargs['category_id'])
@@ -151,7 +165,7 @@ class AnswerListView(LoginRequiredMixin, ListView):
     model = Answer
     template_name = 'tutors/answers_list.html'
     context_object_name = 'answers'
-    paginate_by = 5
+    paginate_by = ITEMS_PER_PAGE
 
     def get_queryset(self):
         answers = Answer.objects.filter(question=get_object_or_404(
