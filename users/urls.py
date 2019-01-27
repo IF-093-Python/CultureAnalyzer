@@ -17,6 +17,9 @@ urlpatterns = [
 
     path('profile/<int:pk>', views.UserUpdateView.as_view(), name='profile'),
 
+    path('profile/<int:pk>/password_change', views.PasswordChangeView.as_view()
+         , name='password-change'),
+
 
     path('login/password-reset/', auth_views.PasswordResetView.as_view(
         template_name='users/password_reset_form.html'),

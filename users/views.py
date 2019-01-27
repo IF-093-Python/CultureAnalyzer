@@ -81,4 +81,19 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return self.render_to_response(self.get_context_data(form=form))
 
 
+class PasswordChangeView(UpdateView):
+    template_name = 'users/password_change.html'
+    form_class = PasswordChangeForm
+    success_url = '/'
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def get_form_kwargs(self):
+        kwargs = super(PasswordChangeView, self).get_form_kwargs()
+        kwargs['user'] = kwargs.pop('instance')
+        return kwargs
+
+
+
 
