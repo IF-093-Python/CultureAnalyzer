@@ -21,5 +21,5 @@ urlpatterns = [
     path('', include('users.urls')),
     path('indicators/', include('indicators.urls',
                                 namespace='country_indicator')),
-    path('quiz/', include('quiz.urls')),
+    path('quiz/', include('quiz.urls', namespace='quiz')),
 ]
