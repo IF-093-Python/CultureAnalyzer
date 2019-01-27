@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
-
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -37,8 +36,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
 
-    'users.apps.UsersConfig',
+
+
+    'users',
     'groups',
+    'tutors',
     'indicators',
     'quiz',
 ]

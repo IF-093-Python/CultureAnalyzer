@@ -1,15 +1,33 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% block menu_items %}
+
+    <li>
+        <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Navigation</a>
+        <ul class="collapse list-unstyled" id="pageSubmenu">
+            <li>
+                <a href="{% url 'country_indicator:country_indicator_list' %}">Countries Indicators</a>
+            </li>
+            <li>
+                <a href="{% url 'quiz:quizzes-list' %}">Quizzes list</a>
+            </li>
+            <li>
+                <a href="#">Page 3</a>
+            </li>
+        </ul>
+    </li>
+
+{% endblock menu_items %}
 {% block content %}
     <h1>Create quiz </h1>
     <div class="container">
         <form method="post">{% csrf_token %}
             {{ form|crispy }}
             <button type="submit" class="btn btn-primary; float-left"
-                    style="margin-right: 10px; background-color: cornflowerblue"
-                    >Create quiz</button>
+                    style="margin-right: 10px; background-color: cornflowerblue">Create quiz
+            </button>
         </form>
-            <a class="btn btn-secondary" href="{% url 'quiz:quizzes-list' %}">Cancel</a>
+        <a class="btn btn-secondary" title="Back to all quizzes" href="{% url 'quiz:quizzes-list' %}">Cancel</a>
 
     </div>
 {% endblock content %}
