@@ -23,4 +23,5 @@ urlpatterns = [
     path('indicators/', include('indicators.urls',
                                 namespace='country_indicator')),
     path('quiz/', include('quiz.urls')),
+    path('category_question/', include('tutors.urls', namespace='tutors')),
 ]
