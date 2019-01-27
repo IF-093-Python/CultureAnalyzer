@@ -22,6 +22,7 @@ urlpatterns = [
     path('indicators/',
          include('indicators.urls', namespace='country_indicator')),
     path('quiz/', include('quiz.urls', namespace='quiz')),
+
     path('category_question/', include('tutors.urls', namespace='tutors')),
     path('feedbacks/', include('feedbacks.urls')),
 

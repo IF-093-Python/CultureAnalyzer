@@ -37,8 +37,6 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_cool_paginator',
 
-
-
     'users',
     'groups',
     'tutors',
