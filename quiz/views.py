@@ -1,13 +1,11 @@
-from django.shortcuts import render, redirect, get_object_or_404
-
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
 # Create your views here.
 from django.urls import reverse_lazy
 from django.views import generic
-from quiz.models import *
-from users.models import Profile
-from django.contrib.auth.mixins import LoginRequiredMixin, \
-    PermissionRequiredMixin, PermissionDenied
+
 from quiz.forms import QuizCreateForm
+from quiz.models import *
 
 
 class QuizzesList(LoginRequiredMixin, generic.ListView):
