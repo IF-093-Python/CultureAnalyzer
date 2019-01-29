@@ -10,7 +10,7 @@
                            name="data_search">
                     <div class="btn-toolbar">
                         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                        <button class="btn btn-outline-danger my-2 my-sm-0" name="clear" type="submit">Clear</button>
+                        <button class="btn btn-outline-danger my-2 my-sm-0" name="clear" type="reset">Clear</button>
                     </div>
                     <br>
                 </form>
@@ -30,7 +30,11 @@
                 {% endfor %}
                 <br>
             {% else %}
-                <p>You have not created any quizzes yet.</p>
+                {% if search %}
+                    <p>There are no results that match your search.</p>
+                {% else %}
+                    <p>You have not created any quizzes yet.</p>
+                {% endif %}
             {% endif %}
         </div>
     {% endblock all_quizzes %}
