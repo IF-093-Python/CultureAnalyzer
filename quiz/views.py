@@ -29,7 +29,6 @@ class QuizzesList(LoginRequiredMixin, generic.ListView):
     def get_context_data(self, **kwargs):
         context = super(QuizzesList, self).get_context_data(**kwargs)
         context['search'] = self.search
-        #assert False
         return context
 
 
