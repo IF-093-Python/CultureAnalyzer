@@ -1,4 +1,5 @@
 {% extends 'abstract.html' %}
+{% load static %}
 {% block sidebar %}
     <nav id="sidebar">
         <div class="sidebar-header">
@@ -8,11 +9,16 @@
         <ul class="list-unstyled components">
             <li>
                 <div class="row" style="margin: 0 auto">
-                    <p class="circle_text" style="color: #6d7fcc;">{{ user.first_username_letter }}</p>
+                    <p>
+                {% if user.profile.image %}
+                    <img src="{{ user.profile.image.url }}" alt="" class="circle_text">
+                {% else %}
+                    <img src="{% static 'default.png' %}" alt="" class="circle_text">
+                {% endif %}</p>
                     {% if user.is_authenticated %}
-                        <p>{{ user.username }}</p>
+                        <p style="margin-top: 15px;">{{ user.username }}</p>
                     {% else %}
-                        <p>Anonymous user</p>
+                        <p style="margin-top: 15px;">Anonymous user</p>
                     {% endif %}
                 </div>
             </li>
@@ -28,6 +34,12 @@
                 </li>
                 <li>
                     <a href="{% url 'quiz:quizzes-list' %}">Quizzes</a>
+                </li>
+                <li>
+                    <a href="{% url 'tutors:categories_list' %}">Questions</a>
+                </li>
+                <li>
+                    <a href="{% url 'country_indicator:country_indicator_list' %}">Indicators</a>
                 </li>
                 {% block menu_items %}
                 {% endblock menu_items %}
@@ -65,7 +77,8 @@
             <div class="row">
                 <ul class="nav ml-auto">
                     {% if user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link" href="#">
+                        <li class="nav-item"><a  class="nav-link" href="{% url 'home' %}">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'profile' user.id %}">
                             {{ user.username }}({{ user.profile.role.name }})
                         </a></li>
 
