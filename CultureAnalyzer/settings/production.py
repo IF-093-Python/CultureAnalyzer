@@ -1,5 +1,7 @@
 from .base_settings import *
 
+ALLOWED_HOSTS = ['culture-analyzer.pp.ua']
+
 DEBUG = False
 
 STATIC_URL = '/static/'
