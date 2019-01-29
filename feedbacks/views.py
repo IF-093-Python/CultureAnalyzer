@@ -1,22 +1,11 @@
 from django.views.generic.list import ListView
 from django.views.generic.edit import DeleteView, UpdateView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.paginator import EmptyPage, Paginator
 from django.urls import reverse_lazy
+from CultureAnalyzer.settings.base_settings import ITEMS_ON_PAGE
+from CultureAnalyzer.paginator import SafePaginator
 from feedbacks.models import Feedback
-
-ITEMS_ON_PAGE = 5
-
-
-class SafePaginator(Paginator):
-    def validate_number(self, number):
-        try:
-            return super(SafePaginator, self).validate_number(number)
-        except EmptyPage:
-            if number > 1:
-                return self.num_pages
-            else:
-                return 1
+from .forms import FeedbackForm
 
 
 class FeedbackListView(LoginRequiredMixin, ListView):
@@ -34,10 +23,10 @@ class FeedbackDeleteView(LoginRequiredMixin, DeleteView):
 
 class FeedbackCreateView(LoginRequiredMixin, CreateView):
     model = Feedback
-    fields = ['feedback']
+    form_class = FeedbackForm
 
 
 class FeedbackUpdateView(LoginRequiredMixin, UpdateView):
     model = Feedback
-    fields = ['feedback']
+    form_class = FeedbackForm
     template_name_suffix = '_form'
