@@ -2,6 +2,13 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import Profile
+from .validators import ProfileValidator
+from .choices import GENDER_CHOICES, EDUCATION_CHOICES
+
+
+# this form we use to show normal calendar in template
+class DateInput(forms.DateInput):
+    input_type = 'date'
 
 
 class UserLoginForm(AuthenticationForm):
@@ -35,9 +42,17 @@ class UserRegisterForm(UserCreationForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
+    experience = forms.IntegerField(required=False)
+    age = forms.DateField(widget=DateInput(), required=False)
+    education = forms.ChoiceField(choices=EDUCATION_CHOICES, required=False)
+    gender = forms.ChoiceField(choices=GENDER_CHOICES, initial='')
+
     class Meta:
         model = Profile
-        fields = ['image']
+        fields = ['image', 'experience', 'age', 'education', 'gender']
+
+    def clean_experience(self):
+        return ProfileValidator.validate_experience(self.cleaned_data)
 
 
 class UserUpdateForm(forms.ModelForm):

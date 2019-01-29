@@ -1,6 +1,7 @@
 from PIL import Image
 from django.contrib.auth.models import User
 from django.db import models
+from .choices import GENDER_CHOICES, EDUCATION_CHOICES
 
 
 class Role(models.Model):
@@ -20,6 +21,15 @@ class Profile(models.Model):
                              db_column='role_id')
     image = models.ImageField(upload_to='profile_pics',
                               blank=True, null=True)
+
+    age = models.DateField(null=True)
+
+    experience = models.IntegerField(null=True)
+
+    gender = models.CharField(choices=GENDER_CHOICES, max_length=20, null=True)
+
+    education = models.CharField(choices=EDUCATION_CHOICES, max_length=50,
+                                 null=True)
 
     def save(self, **kwargs):
         """
