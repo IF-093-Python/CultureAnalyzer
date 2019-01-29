@@ -1,6 +1,6 @@
 from .base_settings import *
 
-ALLOWED_HOSTS = ['culture-analyzer.pp.ua']
+ALLOWED_HOSTS = ['*']
 
 DEBUG = False
 
