@@ -40,9 +40,13 @@
     <div id="content">
         {% block navbar %}
         {% endblock navbar %}
-
-        {% block content %}
-        {% endblock content %}
+        {% if user.is_authenticated %}
+            {% block content %}
+            {% endblock content %}
+        {% else %}
+            {% block anonymous_user %}
+            {% endblock anonymous_user %}
+        {% endif %}
     </div>
 </div>
 
