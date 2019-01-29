@@ -1,8 +1,8 @@
 from .base_settings import *
 
-ALLOWED_HOSTS = ['*']
 
 DEBUG = False
+ALLOWED_HOSTS = ['*']
 
 STATIC_URL = '/static/'
 
