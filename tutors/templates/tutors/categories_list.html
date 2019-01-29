@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Category list{% endblock %}
+{% block content %}
+<div class="container-fluid col-md-10">
+    <h1 class="border-bottom"><a class="btn btn-light" href="#">
+                <splan class="fas fa-chevron-left"></splan></a>
+            <b>Table with categories</b>:</b></h1>
+
+    <!--Success message about some action on the category-->
+    {% include "tutors/success_message.html" %}
+
+    <a class="btn btn-success float-right my-2"
+       href="{% url 'tutors:create_category' %}">Add new category</a>
+
+    <!--Category search function by name-->
+    <form class="form-inline" method="GET"
+          action="{% url 'tutors:categories_list' %}">
+        <span class="fas fa-search"></span>
+        <input class="form-control mx-2" type="text" name="category_search"
+               placeholder="Search" {% if q %} value="{{q}}" {% endif %}>
+    </form>
+
+    {% if categories %}
+    <table class="table">
+        <thead class="thead-light">
+        <tr>
+            <th scope="col">Category</th>
+            <th scope="col">Parent category</th>
+            <th class="w-25" scope="col">Questions count</th>
+            <th class="w-25" scope="col">Management</th>
+        </tr>
+        </thead>
+        <tbody>
+        {%for category in categories%}
+        <tr>
+            <td><a href="{% url 'tutors:questions_list' category.id %}">
+                {{category.name}}</a></td>
+            <td>{{category.parent_category.name}}</td>
+            <td>{{category.num_question}}</td>
+            <td>
+                <a class="btn btn-primary"
+                   href="{%url 'tutors:create_question' category.id %}">
+                    <span class="fas fa-plus"></span></a>
+                <a class="btn btn-primary"
+                   href="{% url 'tutors:update_category' pk=category.id %}">
+                    <span class="fas fa-edit"></span></a>
+                <a class="btn btn-danger"
+                   href="{% url 'tutors:delete_category' pk=category.id %}">
+                    <span class="fas fa-trash-alt"></span></a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <!--include paginator-->
+    {% include "tutors/pagination.html" with page=page_obj %}
+    {% else %}
+    <p>You have not created any category yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
