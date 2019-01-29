@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container-fluid col-md-10">
     <h1><a class="btn btn-light"
-           href="{%url 'tutors:questions_list' category_id=question.category_question.id %}">
+           href="{%url 'tutors:questions_list' %}">
         <splan class="fas fa-chevron-left"></splan></a>
         <b>Question:</b></h1>
     <h2 class="border-bottom">{{question.question_text}}</h2>

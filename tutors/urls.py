@@ -1,27 +1,16 @@
 from django.urls import path
-from .views import CategoryListView, CreateCategoryView, \
-    UpdateCategoryView, DeleteCategoryView, \
-    QuestionListView, CreateQuestionView, DeleteQuestionView, \
-    UpdateQuestionView, AnswerListView, CreateAnswerView, UpdateAnswerView, \
+from .views import QuestionListView, CreateQuestionView, \
+    UpdateQuestionView, DeleteQuestionView, \
+    AnswerListView, CreateAnswerView, UpdateAnswerView, \
     DeleteAnswerView
 
 app_name = 'tutors'
 
 urlpatterns = [
-    path('', CategoryListView.as_view(), name='categories_list'),
-    path('create_category/', CreateCategoryView.as_view(),
-         name='create_category'),
-    path('<int:pk>/update_category/', UpdateCategoryView.as_view(),
-             name='update_category'),
-    path('<int:pk>/delete_category/', DeleteCategoryView.as_view(),
-         name='delete_category'),
-
-    path('<int:category_id>/questions_list/', QuestionListView.as_view(),
-         name='questions_list'),
-    path('<int:category_id>/create_question/', CreateQuestionView.as_view(),
+    path('', QuestionListView.as_view(), name='questions_list'),
+    path('question_category/', CreateQuestionView.as_view(),
          name='create_question'),
-    path('<int:category_id>/update_question/<int:pk>/',
-         UpdateQuestionView.as_view(),
+    path('<int:pk>/update_question/', UpdateQuestionView.as_view(),
          name='update_question'),
     path('<int:pk>/delete_question/', DeleteQuestionView.as_view(),
          name='delete_question'),

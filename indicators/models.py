@@ -10,7 +10,7 @@ class CountryIndicator(models.Model):
     iso_code = models.CharField(max_length=3, primary_key=True,
                                 validators=[MinLengthValidator(3)])
     name = models.CharField(max_length=50, unique=True)
-    PDI = models.PositiveIntegerField()
+    PDI = models.PositiveIntegerField(validators=[MaxValueValidator(100)])
     IND = models.PositiveIntegerField(validators=[MaxValueValidator(100)])
     MAS = models.PositiveIntegerField(validators=[MaxValueValidator(100)])
     UAI = models.PositiveIntegerField(validators=[MaxValueValidator(100)])
