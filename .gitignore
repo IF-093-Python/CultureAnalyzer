@@ -27,8 +27,6 @@ Temporary Items
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
 
 # C extensions
 *.so
@@ -69,7 +67,6 @@ coverage.xml
 
 # Translations
 *.mo
-*.pot
 
 # Sphinx documentation
 docs/_build/
@@ -80,7 +77,13 @@ target/
 
 ### Django ###
 *.log
+<<<<<<< HEAD
 *.pyc
+=======
+*.pot
+__pycache__/
+local.py
+>>>>>>> dev
 
 db.sqlite3
 
@@ -99,3 +102,4 @@ ENV/
 
 # local settings
 local.py
+
