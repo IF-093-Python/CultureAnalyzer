@@ -44,13 +44,13 @@ class UserRegisterForm(UserCreationForm):
 
 class ProfileUpdateForm(forms.ModelForm):
     experience = forms.IntegerField()
-    age = forms.DateField(widget=DateInput())
+    date_of_birth = forms.DateField(widget=DateInput())
     education = forms.ChoiceField(choices=EDUCATION_CHOICES)
     gender = forms.ChoiceField(choices=GENDER_CHOICES, initial='')
 
     class Meta:
         model = Profile
-        fields = ['image', 'experience', 'age', 'education', 'gender']
+        fields = ['image', 'experience', 'date_of_birth', 'education', 'gender']
 
     def clean_experience(self):
         return ProfileValidator.validate_experience(self.cleaned_data)
