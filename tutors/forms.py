@@ -1,7 +1,7 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Fieldset, Layout, Field, HTML
 from quiz.models import Quizzes
-from tutors.validators import *
+from django import forms
 
 
 class QuestionCreateForm(forms.ModelForm):

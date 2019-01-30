@@ -162,7 +162,9 @@ class UpdateAnswerView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         try:
             super().post(self, request, *args, **kwargs)
             return HttpResponseRedirect(reverse_lazy('tutors:answers_list',
-                           kwargs={'question_id': self.kwargs['question_id']}))
+                                                     kwargs={'question_id':
+                                                                 self.kwargs[
+                                                                     'question_id']}))
         except IntegrityError:
             messages.add_message(request, messages.ERROR,
                                  'You have simple in this question.')
