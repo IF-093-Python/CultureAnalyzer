@@ -32,3 +32,7 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+admin.site.site_header = "Culture Analyzer Admin"
+admin.site.site_title = "Culture Analyzer Admin Portal"
+admin.site.index_title = "Welcome to Culture Analyzer Portal"
