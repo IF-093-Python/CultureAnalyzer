@@ -1,8 +1,7 @@
-from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Fieldset, Layout, Field, HTML
-from tutors.models import Questions, Answers
 from quiz.models import Quizzes
+from tutors.validators import *
 
 
 class QuestionCreateForm(forms.ModelForm):
@@ -48,8 +47,9 @@ class AnswerCreateForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 'Create/Update answer', css_class='display-4'),
-            Fieldset('', Field('answer_text'), css_class='border-top '
-                                                         'border-bottom'),
+            Fieldset('', Field('answer_text',),
+                     Field('question', ),
+                     css_class='border-top border-bottom'),
             Fieldset('',
                      Submit('save', 'Save', css_class='btn-success mt-3'),
                      HTML("""<a class='btn btn-outline-success mt-3' 
@@ -61,3 +61,4 @@ class AnswerCreateForm(forms.ModelForm):
     class Meta:
         model = Answers
         fields = ['answer_text', ]
+

@@ -1,14 +1,17 @@
+from django import forms
 from django.db.models import Count
-from django.shortcuts import get_object_or_404
-from django.urls import reverse_lazy
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
-# from django.db import models
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
+from django.db import IntegrityError
+
 from .models import Questions, Answers
 from .forms import QuestionCreateForm, AnswerCreateForm
-from quiz.models import  Quizzes
+from django.db.models import Q
 
 ITEMS_PER_PAGE = 5
 
@@ -27,7 +30,8 @@ class QuestionListView(LoginRequiredMixin, ListView):
             num_answer=Count('answers')).order_by('pk')
         q = self.request.GET.get("question_search")
         if q:
-            return questions.filter(question__icontains=q, title__icontains=q)
+            return questions.filter(Q(question_text__icontains=q) |
+                                    Q(title__icontains=q))
         return questions
 
     def get_context_data(self, **kwargs):
@@ -45,11 +49,6 @@ class CreateQuestionView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     template_name = 'tutors/question_create.html'
     success_url = reverse_lazy('tutors:questions_list')
     success_message = 'Question: "%(title)s" was created successfully'
-
-    def form_valid(self, form):
-        obj = form.save(commit=False)
-        obj.save()
-        return super().form_valid(form)
 
 
 class UpdateQuestionView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -125,11 +124,21 @@ class CreateAnswerView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
                                          pk=self.kwargs['question_id'])
         return context
 
+    def post(self, request, *args, **kwargs):
+        try:
+            super().post(self, request, *args, **kwargs)
+            return HttpResponseRedirect(
+                reverse_lazy('tutors:answers_list', kwargs={
+                    'question_id': self.kwargs['question_id']}))
+        except IntegrityError:
+            messages.add_message(request, messages.ERROR,
+                                 'You have simple in this question.')
+            return render(request, template_name=self.template_name,
+                          context=self.get_context_data())
+
     def form_valid(self, form):
-        obj = form.save(commit=False)
         form.instance.question = get_object_or_404(Questions, pk=self.kwargs[
             'question_id'])
-        obj.save()
         return super().form_valid(form)
 
 
@@ -148,6 +157,17 @@ class UpdateAnswerView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         context['q'] = get_object_or_404(Questions,
                                          pk=self.kwargs['question_id'])
         return context
+
+    def post(self, request, *args, **kwargs):
+        try:
+            super().post(self, request, *args, **kwargs)
+            return HttpResponseRedirect(reverse_lazy('tutors:answers_list',
+                           kwargs={'question_id': self.kwargs['question_id']}))
+        except IntegrityError:
+            messages.add_message(request, messages.ERROR,
+                                 'You have simple in this question.')
+            return render(request, template_name=self.template_name,
+                          context=self.get_context_data())
 
 
 class DeleteAnswerView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):

@@ -18,3 +18,6 @@ class Answers(models.Model):
 
     def __str__(self):
         return f'{self.question.title}: {self.answer_text}'
+
+    class Meta:
+        unique_together = (('question', 'answer_text'),)
