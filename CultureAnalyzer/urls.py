@@ -24,4 +24,5 @@ urlpatterns = [
     path('quiz/', include('quiz.urls', namespace='quiz')),
     path('category_question/', include('tutors.urls', namespace='tutors')),
     path('feedbacks/', include('feedbacks.urls')),
+]
 
