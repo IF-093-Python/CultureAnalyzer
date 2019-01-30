@@ -7,7 +7,8 @@ from quiz.choices import TYPE_OF_QUIZ
 class Quizzes(models.Model):
     title = models.CharField(max_length=100, null=False)
     description = models.CharField(max_length=100, null=False)
-    type_of_quiz = models.IntegerField(choices=TYPE_OF_QUIZ, default=1)
+    type_of_quiz = models.CharField(choices=TYPE_OF_QUIZ,
+                                    default='Business')
 
     def __str__(self):
         return self.title
