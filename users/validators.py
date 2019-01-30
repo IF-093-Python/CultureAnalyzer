@@ -9,8 +9,8 @@ class ProfileValidator(object):
     def validate_experience(rq_data):
         experience = rq_data.get('experience')
 
-        if experience and (experience > MAX_YEARS_OF_EXPERIENCE or
-                           experience < MIN_YEARS_OF_EXPERIENCE):
+        if experience > MAX_YEARS_OF_EXPERIENCE or \
+                experience < MIN_YEARS_OF_EXPERIENCE:
             raise forms.ValidationError('Enter correct data (from 0 to 100)')
 
         return experience

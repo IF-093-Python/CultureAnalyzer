@@ -1,9 +1,11 @@
 GENDER_CHOICES = (
+    ('', '--------------'),
     ('Male', 'Male'),
     ('Female', 'Female')
 )
 
 EDUCATION_CHOICES = (
+    ('', '--------------'),
     ('Higher', 'Higher Education'),
     ('Basic', 'Basic Higher Education'),
     ('Secondary', 'Secondary Education'),

@@ -42,9 +42,9 @@ class UserRegisterForm(UserCreationForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
-    experience = forms.IntegerField(required=False)
-    age = forms.DateField(widget=DateInput(), required=False)
-    education = forms.ChoiceField(choices=EDUCATION_CHOICES, required=False)
+    experience = forms.IntegerField()
+    age = forms.DateField(widget=DateInput())
+    education = forms.ChoiceField(choices=EDUCATION_CHOICES)
     gender = forms.ChoiceField(choices=GENDER_CHOICES, initial='')
 
     class Meta:
