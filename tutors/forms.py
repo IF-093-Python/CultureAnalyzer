@@ -63,3 +63,11 @@ class AnswerCreateForm(forms.ModelForm):
         model = Answers
         fields = ['answer_text', ]
 
+    def full_clean(self):
+        super(AnswerCreateForm, self).full_clean()
+        try:
+            self.instance.validate_unique()
+        except forms.ValidationError as e:
+            self._update_errors(e)
+
+

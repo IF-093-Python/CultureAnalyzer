@@ -61,15 +61,6 @@ class UpdateQuestionView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('tutors:questions_list')
 
-    def get_form_kwargs(self):  # defined in ModelFormMixin class
-        """
-        Returns the keyword arguments for instantiating the form.
-        """
-        kwargs = super(UpdateQuestionView, self).get_form_kwargs()
-        if hasattr(self, 'object'):
-            kwargs.update({'instance': self.object})
-        return kwargs
-
 
 class DeleteQuestionView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Questions
@@ -124,22 +115,11 @@ class CreateAnswerView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
                                          pk=self.kwargs['question_id'])
         return context
 
-    def post(self, request, *args, **kwargs):
-        try:
-            super().post(self, request, *args, **kwargs)
-            return HttpResponseRedirect(
-                reverse_lazy('tutors:answers_list', kwargs={
-                    'question_id': self.kwargs['question_id']}))
-        except IntegrityError:
-            messages.add_message(request, messages.ERROR,
-                                 'You have simple in this question.')
-            return render(request, template_name=self.template_name,
-                          context=self.get_context_data())
-
-    def form_valid(self, form):
-        form.instance.question = get_object_or_404(Questions, pk=self.kwargs[
-            'question_id'])
-        return super().form_valid(form)
+    def get_form_kwargs(self):
+        kwargs = super(CreateView, self).get_form_kwargs()
+        kwargs['instance'] = Answers(question=get_object_or_404(Questions,
+                            pk=self.kwargs['question_id']))
+        return kwargs
 
 
 class UpdateAnswerView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -157,19 +137,6 @@ class UpdateAnswerView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         context['q'] = get_object_or_404(Questions,
                                          pk=self.kwargs['question_id'])
         return context
-
-    def post(self, request, *args, **kwargs):
-        try:
-            super().post(self, request, *args, **kwargs)
-            return HttpResponseRedirect(reverse_lazy('tutors:answers_list',
-                                                     kwargs={'question_id':
-                                                                 self.kwargs[
-                                                                     'question_id']}))
-        except IntegrityError:
-            messages.add_message(request, messages.ERROR,
-                                 'You have simple in this question.')
-            return render(request, template_name=self.template_name,
-                          context=self.get_context_data())
 
 
 class DeleteAnswerView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
