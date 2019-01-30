@@ -7,6 +7,7 @@ from .choices import GENDER_CHOICES, EDUCATION_CHOICES
 
 
 # this form we use to show normal calendar in template
+# instead text field
 class DateInput(forms.DateInput):
     input_type = 'date'
 

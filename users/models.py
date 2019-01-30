@@ -22,7 +22,7 @@ class Profile(models.Model):
     image = models.ImageField(upload_to='profile_pics',
                               blank=True, null=True)
 
-    age = models.DateField(null=True)
+    date_of_birth = models.DateField(null=True)
 
     experience = models.IntegerField(null=True)
 
