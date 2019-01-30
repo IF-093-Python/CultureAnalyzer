@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<form method="post" class="container-fluid col-md-5">
+    {% csrf_token %}
+    <p class="border-bottom pb-2">Are you sure you want to delete
+        "{{object.answer_text}}" ?</p>
+    <div class="">
+        <input type="submit" class="btn btn-info" value="Confirm">
+        <a class="btn btn-outline-info"
+           href="{% url 'tutors:answers_list' object.question.id %}">
+            Cancel</a>
+    </div>
+</form>
+{% endblock %}
