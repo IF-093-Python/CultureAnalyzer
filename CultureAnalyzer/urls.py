@@ -1,5 +1,4 @@
 """CultureAnalyzer URL Configuration
-
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.1/topics/http/urls/
 Examples:
@@ -21,11 +20,13 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('users.urls')),
-    path('feedbacks/', include('feedbacks.urls')),
-    path('indicators/', include('indicators.urls',
-                                namespace='country_indicator')),
-    path('quiz/', include('quiz.urls')),
+    path('indicators/',
+         include('indicators.urls', namespace='country_indicator')),
+    path('quiz/', include('quiz.urls', namespace='quiz')),
+
     path('category_question/', include('tutors.urls', namespace='tutors')),
+    path('feedbacks/', include('feedbacks.urls')),
+
 ]
 
 if settings.DEBUG:
