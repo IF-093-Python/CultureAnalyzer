@@ -1,5 +1,4 @@
 {% extends 'abstract.html' %}
-{% load static %}
 {% block sidebar %}
     <nav id="sidebar">
         <div class="sidebar-header">
@@ -9,16 +8,11 @@
         <ul class="list-unstyled components">
             <li>
                 <div class="row" style="margin: 0 auto">
-                    <p>
-                {% if user.profile.image %}
-                    <img src="{{ user.profile.image.url }}" alt="" class="circle_text">
-                {% else %}
-                    <img src="{% static 'default.png' %}" alt="" class="circle_text">
-                {% endif %}</p>
+                    <p class="circle_text" style="color: #6d7fcc;">{{ user.first_username_letter }}</p>
                     {% if user.is_authenticated %}
-                        <p style="margin-top: 15px;">{{ user.username }}</p>
+                        <p>{{ user.username }}</p>
                     {% else %}
-                        <p style="margin-top: 15px;">Anonymous user</p>
+                        <p>Anonymous user</p>
                     {% endif %}
                 </div>
             </li>
@@ -29,12 +23,12 @@
             </li>
 
             {% if user.is_authenticated %}
-                <li>
-                    <a href="{% url 'feedback-list' %}">Feedbacks</a>
-                </li>
-                <li>
-                    <a href="{% url 'quiz:quizzes-list' %}">Quizzes</a>
-                </li>
+            <li>
+                <a href="{% url 'feedback-list' %}">Feedbacks</a>
+            </li>
+            <li>
+                <a href="{% url 'quiz:quizzes-list' %}">Quizzes</a>
+            </li>
                 {% block menu_items %}
                 {% endblock menu_items %}
             {% endif %}
@@ -71,8 +65,7 @@
             <div class="row">
                 <ul class="nav ml-auto">
                     {% if user.is_authenticated %}
-                        <li class="nav-item"><a  class="nav-link" href="{% url 'home' %}">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'profile' user.id %}">
+                        <li class="nav-item"><a class="nav-link" href="#">
                             {{ user.username }}({{ user.profile.role.name }})
                         </a></li>
 
