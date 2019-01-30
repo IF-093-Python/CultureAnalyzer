@@ -25,4 +25,12 @@ class Feedback(models.Model):
         return reverse('feedback-list')
 
     def __str__(self):
-        return f'Feedback - {self.feedback}'
+        return self.feedback[:30]
+
+
+class Recommendation(models.Model):
+    recommendation = models.TextField()
+    feedback = models.ForeignKey('Feedback', on_delete=models.PROTECT, related_name='feedback_has_recommendation')
+
+    def get_absolute_url(self):
+        return reverse('recommendation-list')
