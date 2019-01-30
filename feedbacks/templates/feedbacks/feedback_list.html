@@ -2,6 +2,8 @@
 
 {% load cool_paginate %}
 
+{% block title %}Feedbacks{% endblock %}
+
 {% block content %}
     <table class="table table-hover">
         <caption><a href="{% url 'feedback-create' %}" class="btn btn-primary">Add feedback</a></caption>
@@ -17,7 +19,7 @@
         <tbody>
             {% for feedback in object_list %}
             <tr>
-                <td style="vertical-align: middle">{{ feedback.feedback|truncatechars:250 }}</td>
+                <td style="vertical-align: middle"><a href="{% url 'feedback-detail' feedback.id %}">{{ feedback.feedback|truncatechars:250 }}</a></td>
                 <td>{{ feedback.min_value }}</td>
                 <td>{{ feedback.max_value }}</td>
                 <td>{{ feedback.indicator }}</td>
