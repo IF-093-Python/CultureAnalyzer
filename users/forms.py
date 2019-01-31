@@ -1,9 +1,10 @@
 from django import forms
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.models import User
+
+from .choices import GENDER_CHOICES, EDUCATION_CHOICES
 from .models import Profile
 from .validators import ProfileValidator
-from .choices import GENDER_CHOICES, EDUCATION_CHOICES
 
 
 # this form we use to show normal calendar in template
@@ -46,11 +47,12 @@ class ProfileUpdateForm(forms.ModelForm):
     experience = forms.IntegerField()
     date_of_birth = forms.DateField(widget=DateInput())
     education = forms.ChoiceField(choices=EDUCATION_CHOICES)
-    gender = forms.ChoiceField(choices=GENDER_CHOICES, initial='')
+    gender = forms.ChoiceField(choices=GENDER_CHOICES)
 
     class Meta:
         model = Profile
-        fields = ['image', 'experience', 'date_of_birth', 'education', 'gender']
+        fields = ['image', 'experience', 'date_of_birth', 'education',
+                  'gender']
 
     def clean_experience(self):
         return ProfileValidator.validate_experience(self.cleaned_data)
@@ -60,5 +62,3 @@ class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name']
-
-
