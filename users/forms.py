@@ -6,10 +6,14 @@ from .choices import GENDER_CHOICES, EDUCATION_CHOICES
 from .models import Profile
 from .validators import ProfileValidator
 
+EDUCATION_CHOICES_EMPTY_LABEL = (('', '--------------'),) + EDUCATION_CHOICES
+GENDER_CHOICES_EMPTY_LABEL = (('', '--------------'),) + GENDER_CHOICES
 
-# this form we use to show normal calendar in template
-# instead text field
+
 class DateInput(forms.DateInput):
+    """this form we use to show normal calendar in template
+    instead text field
+    """
     input_type = 'date'
 
 
@@ -46,8 +50,8 @@ class UserRegisterForm(UserCreationForm):
 class ProfileUpdateForm(forms.ModelForm):
     experience = forms.IntegerField()
     date_of_birth = forms.DateField(widget=DateInput())
-    education = forms.ChoiceField(choices=EDUCATION_CHOICES)
-    gender = forms.ChoiceField(choices=GENDER_CHOICES)
+    education = forms.ChoiceField(choices=EDUCATION_CHOICES_EMPTY_LABEL)
+    gender = forms.ChoiceField(choices=GENDER_CHOICES_EMPTY_LABEL)
 
     class Meta:
         model = Profile

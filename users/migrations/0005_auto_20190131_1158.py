@@ -17,14 +17,14 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='profile',
             name='education',
-            field=models.CharField(choices=[('', '--------------'),
-                                            ('Higher', 'Higher Education'), (
-                                            'Basic', 'Basic Higher Education'),
-                                            ('Secondary',
-                                             'Secondary Education'), (
-                                            'Special',
-                                            'Secondary Special Education')],
-                                   max_length=50, null=True),
+            field=models.CharField(choices=[
+                ('Higher', 'Higher Education'), (
+                    'Basic', 'Basic Higher Education'),
+                ('Secondary',
+                 'Secondary Education'), (
+                    'Special',
+                    'Secondary Special Education')],
+                max_length=50, null=True),
         ),
         migrations.AddField(
             model_name='profile',
@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
             model_name='profile',
             name='gender',
             field=models.CharField(
-                choices=[('', '--------------'), ('Male', 'Male'),
-                         ('Female', 'Female')], max_length=20, null=True),
+                choices=[('Male', 'Male'), ('Female', 'Female')],
+                max_length=20, null=True),
         ),
     ]
