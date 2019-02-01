@@ -1,12 +1,13 @@
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import DeleteView, UpdateView, CreateView, DeletionMixin
+from django.views.generic.edit import DeleteView, UpdateView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+
 from CultureAnalyzer.settings.base_settings import ITEMS_ON_PAGE
 from CultureAnalyzer.paginator import SafePaginator
 from feedbacks.models import Feedback, Recommendation
-from .forms import FeedbackForm
+from feedbacks.forms import FeedbackForm
 
 
 class FeedbackListView(LoginRequiredMixin, ListView):

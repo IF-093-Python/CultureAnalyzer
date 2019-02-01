@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('feedbacks', '0002_auto_20190129_2052'),
     ]
@@ -14,9 +13,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Recommendation',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True,
+                                        serialize=False, verbose_name='ID')),
                 ('recommendation', models.TextField()),
-                ('feedback', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='feedback_has_recommendation', to='feedbacks.Feedback')),
+                ('feedback',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
+                                   related_name='feedback_has_recommendation',
+                                   to='feedbacks.Feedback')),
             ],
         ),
     ]

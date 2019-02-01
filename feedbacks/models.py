@@ -14,15 +14,18 @@ class Feedback(models.Model):
     )
 
     feedback = models.TextField()
-    min_value = models.PositiveSmallIntegerField(validators=[MaxValueValidator(100)])
-    max_value = models.PositiveSmallIntegerField(validators=[MaxValueValidator(100)])
-    indicator = models.CharField(max_length=3, choices=INDICATORS, default='PDI')
+    min_value = models.PositiveSmallIntegerField(
+        validators=[MaxValueValidator(100)])
+    max_value = models.PositiveSmallIntegerField(
+        validators=[MaxValueValidator(100)])
+    indicator = models.CharField(max_length=3, choices=INDICATORS,
+                                 default='PDI')
 
     class Meta:
         db_table = 'Feedbacks'
 
     def get_absolute_url(self):
-        return reverse('feedback-list')
+        return reverse('feedback-detail', args=[self.pk])
 
     def __str__(self):
         return self.feedback[:30]
@@ -33,4 +36,4 @@ class Recommendation(models.Model):
     feedback = models.ForeignKey('Feedback', on_delete=models.PROTECT)
 
     def get_absolute_url(self):
-        return reverse('recommendation-list')
+        return reverse('feedback-detail', args=[self.feedback.pk])

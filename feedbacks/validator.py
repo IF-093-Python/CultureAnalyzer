@@ -1,7 +1,4 @@
-from django import forms
-
-
-class FeedbackValidator(object):
+class FeedbackValidator:
     @staticmethod
     def validate_min_value(rq_data):
         min_value = rq_data.cleaned_data.get('min_value')

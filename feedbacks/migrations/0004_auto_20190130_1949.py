@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('feedbacks', '0003_recommendation'),
     ]
@@ -14,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='recommendation',
             name='feedback',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='feedbacks.Feedback'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
+                                    to='feedbacks.Feedback'),
         ),
     ]
