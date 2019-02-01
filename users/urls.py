@@ -5,6 +5,8 @@ from . import views
 from .forms import UserLoginForm
 from .views import UserRegisterView
 
+__all__ = ['urlpatterns']
+
 urlpatterns = [
     path('', views.index, name='home'),
     path('register/', UserRegisterView.as_view(), name='register'),

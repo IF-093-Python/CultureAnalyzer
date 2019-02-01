@@ -5,6 +5,8 @@ from django.test import TestCase
 
 from .forms import ProfileUpdateForm
 
+__all__ = ['ProfileFormTest', 'UserTestCase']
+
 
 class ProfileFormTest(TestCase):
 

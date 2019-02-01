@@ -9,6 +9,14 @@ from django.views.generic import CreateView, UpdateView
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from .models import Profile
 
+__all__ = [
+    'LoginView',
+    'UserRegisterView',
+    'UserUpdateView',
+    'PasswordChangeView',
+    'index',
+]
+
 ProfileFormSet = inlineformset_factory(User, Profile, form=ProfileUpdateForm,
                                        can_delete=False)
 

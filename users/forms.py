@@ -6,6 +6,15 @@ from .choices import GENDER_CHOICES, EDUCATION_CHOICES
 from .models import Profile
 from .validators import ProfileValidator
 
+__all__ = [
+    'UserLoginForm',
+    'UserRegisterForm',
+    'ProfileUpdateForm',
+    'UserUpdateForm',
+    'EDUCATION_CHOICES_EMPTY_LABEL',
+    'GENDER_CHOICES_EMPTY_LABEL',
+]
+
 EDUCATION_CHOICES_EMPTY_LABEL = (('', '--------------'),) + EDUCATION_CHOICES
 GENDER_CHOICES_EMPTY_LABEL = (('', '--------------'),) + GENDER_CHOICES
 
@@ -59,7 +68,7 @@ class ProfileUpdateForm(forms.ModelForm):
                   'gender']
 
     def clean_experience(self):
-        return ProfileValidator.validate_experience(self.cleaned_data)
+        return ProfileValidator.validate(self.cleaned_data)
 
 
 class UserUpdateForm(forms.ModelForm):

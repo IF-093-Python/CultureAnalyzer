@@ -4,6 +4,8 @@ from django.db import models
 
 from .choices import GENDER_CHOICES, EDUCATION_CHOICES
 
+__all__ = ['Profile', 'Role']
+
 
 class Role(models.Model):
     name = models.CharField(max_length=20)

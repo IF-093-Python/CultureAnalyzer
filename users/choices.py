@@ -1,3 +1,5 @@
+__all__ = ['GENDER_CHOICES', 'EDUCATION_CHOICES']
+
 GENDER_CHOICES = (
     ('Male', 'Male'),
     ('Female', 'Female')
