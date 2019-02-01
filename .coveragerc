@@ -1,0 +1,10 @@
+[run]
+omit =
+    venv/**
+    CultureAnalyzer/settings/**
+    **/migrations/**
+    **/tests.py
+    **/__init__.py
+    **/wsgi.py
+    manage.py
+    **/apps.py

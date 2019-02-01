@@ -19,13 +19,17 @@ install:
   - pip install -r requirements.txt
   - pip install pylint
   - pip install pylint-django
-
+  - pip install coverage
 
 script:
-  - python manage.py test
+  - coverage erase
+  - coverage run --branch --source='.' manage.py test
+  - coverage xml -i
   - sonar-scanner
-
 
 notifications:
   email:
-  - $DEFAULT_EMAIL
+    recipients:
+      - $DEFAULT_EMAIL
+    on_success: always
+    on_failure: always
