@@ -17,17 +17,16 @@ class FeedbackForm(forms.ModelForm):
 
 
 class RecommendationForm(forms.ModelForm):
-    feedback = forms.ModelChoiceField(Feedback.objects.all())
+    feedback = forms.ModelChoiceField(Feedback.objects.none())
     recommendation = forms.Textarea()
 
     def __init__(self, feedback, *args, **kwargs):
         """
-        Set current feedback as selected element and disable select because
-        form field attr disable=True doesn't work
+        Set current feedback as selected element
         """
         super(RecommendationForm, self).__init__(*args, **kwargs)
+        self.fields['feedback'].queryset = Feedback.objects.filter(pk=feedback)
         self.initial['feedback'] = feedback
-        self.fields['feedback'].widget.attrs['readonly'] = True
 
     class Meta:
         model = Recommendation
