@@ -1,10 +1,10 @@
-from django.views.generic import CreateView, ListView, DeleteView
+from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+
 from .models import CountryIndicator
 from .forms import CountryIndicatorForm
-from .custom_update import CustomUpdateView
 
 
 ITEMS_PER_PAGE = 4
@@ -35,7 +35,7 @@ class CountryIndicatorDelete(LoginRequiredMixin, SuccessMessageMixin,
 
 
 class CountryIndicatorUpdate(LoginRequiredMixin, SuccessMessageMixin,
-                             CustomUpdateView):
+                             UpdateView):
     model = CountryIndicator
     form_class = CountryIndicatorForm
     template_name = 'indicators/create_update.html'
