@@ -29,7 +29,7 @@ def validate_whitespaces(data):
 
     Replace all whitespaces with visual symbol and pass it to validation
     error message.
-    :param data: string data
+    :param data: string data, len(data) > 0
     """
     visual_whitespace = "\u2423"
     data_striped = data.strip()
@@ -54,12 +54,12 @@ def validate_english_letters(data):
     """
     Validate if data contains only upper case latin letters
 
-    :param data: string data
+    :param data: string data, len(data) > 0
     """
     data_set = set(data)
     for i in data_set:
         if i not in LETTERS:
             raise forms.ValidationError('Iso code must contains only latin '
-                                        'letters and only letters')
+                                        'uppercase letters and only letters')
     return data
 
