@@ -1,12 +1,8 @@
 import datetime
 
-from django.contrib.auth.models import User
 from django.test import TestCase
 
-from .forms import ProfileUpdateForm
-
-__all__ = ['ProfileFormTest', 'UserTestCase']
-
+from users.forms import ProfileUpdateForm
 
 class ProfileFormTest(TestCase):
 
@@ -28,18 +24,11 @@ class ProfileFormTest(TestCase):
         })
         self.assertFalse(form.is_valid())
 
-
-class UserTestCase(TestCase):
-    fixtures = ('fixtures.json',)
-
-    def setUp(self):
-        User.objects.create(username="john")
-        User.objects.create(username="alex")
-
-    def test_user(self):
-        lion = User.objects.get(username="john")
-        self.assertEqual(lion.username, 'john')
-
-    def test_some(self):
-        lion = User.objects.get(username="alex")
-        self.assertEqual(lion.username, 'alex')
+    def test_invalid_form_with_invalid_choice(self):
+        form = ProfileUpdateForm(data={
+            'experience': 12,
+            'date_of_birth': datetime.date(2000, 11, 2),
+            'education': '',
+            'gender': '',
+        })
+        self.assertFalse(form.is_valid())
