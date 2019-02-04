@@ -1,19 +1,38 @@
-from django import forms
-from django.db.models import Count
-from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
-from django.urls import reverse_lazy, reverse
+from tutors.forms import QuestionCreateForm, AnswerCreateForm
+from tutors.models import Questions, Answers
+from CultureAnalyzer.settings.base_settings import ITEMS_PER_PAGE
+from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
-from django.db import IntegrityError
+from django.db.models import Count, Q
 
-from .models import Questions, Answers
-from .forms import QuestionCreateForm, AnswerCreateForm
-from django.db.models import Q
 
-ITEMS_PER_PAGE = 5
+def get_min_missing_value():
+    """
+    Function looks for the least missed value of the number to the question
+    in the test among the created questions.
+    :return: minimum missing value
+    """
+    list_of_number = get_numbers()
+    print(list_of_number)
+    if not list_of_number:
+        return 1
+    max_value = int(max(list_of_number))
+    for value in range(1, max_value + 1):
+        if value not in list_of_number:
+            return value
+    return max_value + 1
+
+
+def get_numbers():
+    """
+    :return: values from column 'title' as a tuple of values.
+    """
+    return list(zip(*Questions.objects.values_list(
+        'title').order_by('title')))[0]
 
 
 class QuestionListView(LoginRequiredMixin, ListView):
@@ -27,11 +46,12 @@ class QuestionListView(LoginRequiredMixin, ListView):
         Returns the queryset of categories that you want to display.
         """
         questions = Questions.objects.all().annotate(
-            num_answer=Count('answers')).order_by('pk')
-        q = self.request.GET.get("question_search")
-        if q:
-            return questions.filter(Q(question_text__icontains=q) |
-                                    Q(title__icontains=q))
+            num_answer=Count('answers')).order_by('title')
+        question_search = self.request.GET.get("question_search")
+        if question_search:
+            return questions.filter(
+                Q(question_text__icontains=question_search) | Q(
+                    title__icontains=question_search))
         return questions
 
     def get_context_data(self, **kwargs):
@@ -48,7 +68,16 @@ class CreateQuestionView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     form_class = QuestionCreateForm
     template_name = 'tutors/question_create.html'
     success_url = reverse_lazy('tutors:questions_list')
-    success_message = 'Question: "%(title)s" was created successfully'
+    success_message = 'Question "№%(title)d" was created successfully'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['instance'] = Questions(title=get_min_missing_value())
+        return kwargs
+
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(cleaned_data,
+                                           title=self.object.title)
 
 
 class UpdateQuestionView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -56,10 +85,11 @@ class UpdateQuestionView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     form_class = QuestionCreateForm
     template_name = 'tutors/question_create.html'
     success_url = reverse_lazy('tutors:questions_list')
-    success_message = 'Question: "%(title)s" was updated successfully'
+    success_message = 'Question "№%(title)d" was updated successfully'
 
-    def get_success_url(self):
-        return reverse_lazy('tutors:questions_list')
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(cleaned_data,
+                                           title=self.object.title)
 
 
 class DeleteQuestionView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
@@ -86,9 +116,9 @@ class AnswerListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         answers = Answers.objects.filter(question=get_object_or_404(
             Questions, pk=self.kwargs['question_id'])).order_by('pk')
-        q = self.request.GET.get("answer_search")
-        if q:
-            return answers.filter(answer_text__icontains=q)
+        answer_search = self.request.GET.get("answer_search")
+        if answer_search:
+            return answers.filter(answer_text__icontains=answer_search)
         return answers
 
     def get_context_data(self, **kwargs):
@@ -116,9 +146,13 @@ class CreateAnswerView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return context
 
     def get_form_kwargs(self):
-        kwargs = super(CreateView, self).get_form_kwargs()
+        """
+        Function initializes the value of the foreign key
+        """
+        kwargs = super().get_form_kwargs()
         kwargs['instance'] = Answers(question=get_object_or_404(Questions,
-                            pk=self.kwargs['question_id']))
+                                                                pk=self.kwargs[
+                                                                    'question_id']))
         return kwargs
 
 
@@ -126,7 +160,7 @@ class UpdateAnswerView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Answers
     form_class = AnswerCreateForm
     template_name = 'tutors/answer_create.html'
-    success_message = 'Answers: "%(answer_text)s" was updated successfully'
+    success_message = 'Answers: {{title}} was updated successfully'
 
     def get_success_url(self):
         return reverse_lazy('tutors:answers_list',

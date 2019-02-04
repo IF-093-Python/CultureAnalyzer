@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -15,7 +14,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Answer',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True,
+                                        serialize=False, verbose_name='ID')),
                 ('answer_text', models.CharField(max_length=100)),
             ],
             options={
@@ -25,7 +25,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Question',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True,
+                                        serialize=False, verbose_name='ID')),
                 ('question_text', models.CharField(max_length=100)),
             ],
             options={
@@ -35,6 +36,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='answer',
             name='question',
-            field=models.ForeignKey(db_column='answer_id', on_delete=django.db.models.deletion.CASCADE, to='tutors.Question'),
+            field=models.ForeignKey(db_column='answer_id',
+                                    on_delete=django.db.models.deletion.CASCADE,
+                                    to='tutors.Question'),
         ),
     ]

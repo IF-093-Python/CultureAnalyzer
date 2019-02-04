@@ -25,8 +25,7 @@
     <table class="table">
         <thead class="thead-light">
         <tr>
-            <th scope="col">#</th>
-            <th scope="col">Title</th>
+            <th scope="col">Number of quiz</th>
             <th scope="col">Question</th>
             <th class="w-25" scope="col">Number of answers</th>
             <th class="w-25" scope="col">Management</th>
@@ -35,7 +34,6 @@
         <tbody>
         {%for question in questions %}
         <tr>
-            <td>{{question.id}}</td>
             <td><a href="{% url 'tutors:answers_list' question.id %}">
                 {{question.title}}</a></td>
             <td><a href="{% url 'tutors:answers_list' question.id %}">
