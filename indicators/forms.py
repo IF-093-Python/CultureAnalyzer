@@ -1,7 +1,8 @@
 from django import forms
 
 from .models import CountryIndicator
-from .validators import *
+from .validators import validate_identity, validate_whitespaces, \
+    validate_english_letters
 
 
 class CountryIndicatorForm(forms.ModelForm):
