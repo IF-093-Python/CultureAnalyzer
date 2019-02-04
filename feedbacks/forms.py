@@ -17,17 +17,7 @@ class FeedbackForm(forms.ModelForm):
 
 
 class RecommendationForm(forms.ModelForm):
-    feedback = forms.ModelChoiceField(Feedback.objects.none())
-    recommendation = forms.Textarea()
-
-    def __init__(self, feedback, *args, **kwargs):
-        """
-        Set current feedback as selected element
-        """
-        super(RecommendationForm, self).__init__(*args, **kwargs)
-        self.fields['feedback'].queryset = Feedback.objects.filter(pk=feedback)
-        self.initial['feedback'] = feedback
 
     class Meta:
         model = Recommendation
-        fields = ('feedback', 'recommendation')
+        fields = ['recommendation', ]

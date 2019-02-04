@@ -49,34 +49,33 @@ class RecommendationDeleteView(LoginRequiredMixin, DeleteView):
 
 class RecommendationCreateView(LoginRequiredMixin, CreateView):
     model = Recommendation
-    fields = ('feedback', 'recommendation')
     form_class = RecommendationForm
-    feed = None
+    feed = Feedback.objects.none()
 
     def get(self, request, feedback, *args, **kwargs):
         """Get feedback id from url"""
-        self.feed = feedback
+        global feed
+        feed = Feedback.objects.get(pk=feedback)
         return super().get(request, *args, **kwargs)
 
-    def get_form(self, **kwargs):
-        """Give feedback id to form"""
-        return self.form_class(self.feed, **self.get_form_kwargs())
+    def form_valid(self, form):
+        form.instance.feedback = feed
+        return super().form_valid(form)
 
     def post(self, request, *args, **kwargs):
         """Redirect to linked feedback"""
-        back = self.get_form().data.get('feedback')
-        self.success_url = reverse_lazy('feedback-detail', kwargs={'pk': back})
+        self.success_url = reverse_lazy('feedback-detail',
+                                        kwargs={'pk': feed.pk})
         return super().post(self, request, *args, **kwargs)
 
 
 class RecommendationUpdateView(LoginRequiredMixin, UpdateView):
     model = Recommendation
-    fields = ('feedback', 'recommendation')
     template_name_suffix = '_form'
-    success_url = reverse_lazy('feedback-list')
+    form_class = RecommendationForm
 
-    def post(self, request, *args, **kwargs):
-        """Redirect to linked feedback"""
-        back = self.get_form().data.get('feedback')
-        self.success_url = reverse_lazy('feedback-detail', kwargs={'pk': back})
-        return super().post(self, request, *args, **kwargs)
+    def get(self, request, pk, *args, **kwargs):
+        """Set success_url to linked feedback"""
+        self.success_url = reverse_lazy('feedback-detail', kwargs={
+            'pk': Recommendation.objects.get(pk=pk).feedback.pk})
+        return super().get(request, *args, **kwargs)
