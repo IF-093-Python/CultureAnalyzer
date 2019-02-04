@@ -12,5 +12,4 @@ class SafePaginator(Paginator):
         except EmptyPage:
             if number > 1:
                 return self.page(self.num_pages)
-            else:
-                return self.page(1)
+            return self.page(1)
