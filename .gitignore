@@ -77,19 +77,10 @@ target/
 
 ### Django ###
 *.log
-<<<<<<< HEAD
-<<<<<<< HEAD
-*.pyc
-=======
 *.pot
 __pycache__/
 local.py
->>>>>>> dev
-=======
 *.pyc
-*.pot
-__pycache__/
->>>>>>> 24dd6add65b7bbdb488e00da9880db6a979fef23
 
 db.sqlite3
 
