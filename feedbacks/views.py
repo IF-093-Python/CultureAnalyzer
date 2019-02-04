@@ -59,6 +59,7 @@ class RecommendationCreateView(LoginRequiredMixin, CreateView):
         return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
+        """Set feedback field value"""
         form.instance.feedback = feed
         return super().form_valid(form)
 
@@ -74,8 +75,8 @@ class RecommendationUpdateView(LoginRequiredMixin, UpdateView):
     template_name_suffix = '_form'
     form_class = RecommendationForm
 
-    def get(self, request, pk, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         """Set success_url to linked feedback"""
         self.success_url = reverse_lazy('feedback-detail', kwargs={
-            'pk': Recommendation.objects.get(pk=pk).feedback.pk})
+            'pk': self.get_object().feedback.id})
         return super().get(request, *args, **kwargs)
