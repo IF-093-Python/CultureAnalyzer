@@ -237,13 +237,9 @@ a.contact_us, a.contact_us:hover {
 
 
 .content-section {
-    background: #ebd7ff;
     padding: 10px 20px;
     border: 1px solid #dddddd;
     border-radius: 3px;
     margin-bottom: 20px;
 }
 
-.content-section li {
-    background: #ebd7ff;
-}
