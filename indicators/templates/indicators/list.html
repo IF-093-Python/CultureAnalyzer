@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load cool_paginate %}
+
 {% block title %}Countries indicators list{% endblock %}
 
 {% block content %}
@@ -52,7 +54,7 @@
 
               <td>
                 <a class="btn btn-primary" href="{% url 'country_indicator:country_indicator_update' indicator.pk %}" role="button"><span class="fas fa-edit"></span> </a>
-                <a class="btn btn-primary" href="{% url 'country_indicator:country_indicator_delete' indicator.pk %}" role="button"><span class="fas fa-trash-alt"></span></a>
+                <a class="btn btn-danger" href="{% url 'country_indicator:country_indicator_delete' indicator.pk %}" role="button"><span class="fas fa-trash-alt"></span></a>
               </td>
             </tr>
           {% empty %}
@@ -61,7 +63,9 @@
           </tbody>
         </table>
 
-      {% include "indicators/pagination.html" with page=page_obj %}
+    {% if is_paginated %}
+        {% cool_paginate page_obj=page_obj %}
+    {% endif %}
 
 
 {% endblock %}

@@ -12,10 +12,10 @@ from indicators.utils import opposite_letter_case
 class EnglishLettersTest(TestCase):
 
     def test_all_uppercase_latin_letters_input(self):
-        self.assertEquals(validate_english_letters('ABF'), 'ABF')
-        self.assertEquals(validate_english_letters('HELLO'), 'HELLO')
-        self.assertEquals(validate_english_letters('HHHHH'), 'HHHHH')
-        self.assertEquals(validate_english_letters(string.ascii_uppercase),
+        self.assertEqual(validate_english_letters('ABF'), 'ABF')
+        self.assertEqual(validate_english_letters('HELLO'), 'HELLO')
+        self.assertEqual(validate_english_letters('HHHHH'), 'HHHHH')
+        self.assertEqual(validate_english_letters(string.ascii_uppercase),
                           string.ascii_uppercase)
 
     def test_with_different_characters_input(self):

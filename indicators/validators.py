@@ -35,12 +35,12 @@ def validate_whitespaces(data):
     data_striped = data.strip()
     if data != data_striped:
         visual_whitespaces_list = []
-        index2 = 0
-        for index, symbol in enumerate(data):
-            if symbol == data_striped[index2]:
+        index = 0
+        for symbol in data:
+            if symbol == data_striped[index]:
                 visual_whitespaces_list.append(symbol)
-                if index2 < len(data_striped) - 1:
-                    index2 += 1
+                if index < len(data_striped) - 1:
+                    index += 1
             else:
                 visual_whitespaces_list.append(visual_whitespace)
 

@@ -3,21 +3,20 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from CultureAnalyzer.settings.base_settings import ITEMS_ON_PAGE
 from .models import CountryIndicator
 from .forms import CountryIndicatorForm
-
-
-ITEMS_PER_PAGE = 4
 
 
 class CountryIndicatorListView(LoginRequiredMixin, ListView):
     model = CountryIndicator
     template_name = 'indicators/list.html'
     context_object_name = 'indicators'
-    paginate_by = ITEMS_PER_PAGE
+    paginate_by = ITEMS_ON_PAGE
 
 
-class CountryIndicatorCreate(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+class CountryIndicatorCreate(LoginRequiredMixin, SuccessMessageMixin,
+                             CreateView):
     model = CountryIndicator
     form_class = CountryIndicatorForm
     template_name = 'indicators/create_update.html'
