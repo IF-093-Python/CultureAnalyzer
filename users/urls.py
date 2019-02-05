@@ -1,5 +1,6 @@
 from django.contrib.auth import views as auth_views
 from django.urls import path, re_path
+from django.views.generic import TemplateView
 
 from . import views
 from .forms import UserLoginForm
@@ -8,8 +9,10 @@ from .views import UserRegisterView
 __all__ = ['urlpatterns']
 
 urlpatterns = [
-    path('', views.index, name='home'),
+    path('', TemplateView.as_view(template_name='users/index.html'),
+         name='home'),
     path('register/', UserRegisterView.as_view(), name='register'),
+    path('admin_page/', views.AdminListView.as_view(), name='admin'),
     path('login/', views.LoginView.as_view(
         template_name='users/login.html', authentication_form=UserLoginForm),
          name='login'),

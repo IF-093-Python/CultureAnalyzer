@@ -193,6 +193,7 @@ a.contact_us, a.contact_us:hover {
     line-height: 16px;
     text-align: center;
     margin-left: 22px;
+    margin-right: 20px;
 
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -241,5 +242,18 @@ a.contact_us, a.contact_us:hover {
     border: 1px solid #dddddd;
     border-radius: 3px;
     margin-bottom: 20px;
+}
+
+.user_list {
+    list-style-type: none;
+    margin-left: -40px;
+}
+
+.user_list li {
+    background: white;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 10px;
 }
 

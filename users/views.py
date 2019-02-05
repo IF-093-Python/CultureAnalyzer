@@ -3,8 +3,8 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.forms.models import inlineformset_factory
-from django.shortcuts import render, redirect
-from django.views.generic import CreateView, UpdateView
+from django.shortcuts import redirect
+from django.views.generic import CreateView, UpdateView, ListView
 
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from .models import Profile
@@ -14,15 +14,10 @@ __all__ = [
     'UserRegisterView',
     'UserUpdateView',
     'PasswordChangeView',
-    'index',
 ]
 
 ProfileFormSet = inlineformset_factory(User, Profile, form=ProfileUpdateForm,
                                        can_delete=False)
-
-
-def index(request):
-    return render(request, 'users/index.html')
 
 
 class LoginView(auth_views.LoginView):
@@ -103,3 +98,17 @@ class PasswordChangeView(UpdateView):
         kwargs = super(PasswordChangeView, self).get_form_kwargs()
         kwargs['user'] = kwargs.pop('instance')
         return kwargs
+
+
+class AdminListView(ListView):
+    model = User
+    template_name = 'users/admin_page.html'
+    context_object_name = 'users'
+
+    def get_queryset(self):
+        result = User.objects.exclude(profile__role__name='Admin')
+        if self.request.GET.get('data_search'):
+            result = result.filter(
+                username__contains=self.request.GET.get('data_search'))
+        return result
+
