@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
 from .choices import GENDER_CHOICES, EDUCATION_CHOICES
-from .models import Profile
+from .models import Profile, Role
 from .validators import ProfileValidator
 
 __all__ = [
@@ -11,8 +11,8 @@ __all__ = [
     'UserRegisterForm',
     'ProfileUpdateForm',
     'UserUpdateForm',
-    'EDUCATION_CHOICES_EMPTY_LABEL',
-    'GENDER_CHOICES_EMPTY_LABEL',
+    'BlockUserForm',
+    'ChangeRoleForm',
 ]
 
 EDUCATION_CHOICES_EMPTY_LABEL = (('', '--------------'),) + EDUCATION_CHOICES
@@ -75,3 +75,18 @@ class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name']
+
+
+class BlockUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['is_active']
+
+
+class ChangeRoleForm(forms.ModelForm):
+    role = forms.ModelChoiceField(queryset=Role.objects.all(),
+                                  empty_label=None)
+
+    class Meta:
+        model = Profile
+        fields = ['role']
