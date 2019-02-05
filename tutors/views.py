@@ -20,9 +20,9 @@ def get_min_missing_value():
     print(list_of_number)
     if not list_of_number:
         return 1
-    max_value = int(max(list_of_number))
+    max_value = int(max(list_of_number)[0])
     for value in range(1, max_value + 1):
-        if value not in list_of_number:
+        if value not in list_of_number[0]:
             return value
     return max_value + 1
 
@@ -31,8 +31,8 @@ def get_numbers():
     """
     :return: values from column 'title' as a tuple of values.
     """
-    return list(zip(*Questions.objects.values_list(
-        'title').order_by('title')))[0]
+    return list(zip(*Questions.objects.values_list('title').order_by(
+        'title')))
 
 
 class QuestionListView(LoginRequiredMixin, ListView):
