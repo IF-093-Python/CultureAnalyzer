@@ -5,15 +5,15 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('indicators', '0002_auto_20190126_0004'),
-    ]
+        ]
 
     operations = [
         migrations.AlterField(
             model_name='countryindicator',
             name='PDI',
-            field=models.PositiveIntegerField(validators=[django.core.validators.MaxValueValidator(100)]),
-        ),
-    ]
+            field=models.PositiveIntegerField(
+                validators=[django.core.validators.MaxValueValidator(100)]),
+            ),
+        ]
