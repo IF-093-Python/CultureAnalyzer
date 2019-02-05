@@ -1,27 +1,29 @@
+import datetime
+
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-# noinspection PyUnresolvedReferences
-from .signals import (
-    create_profile,
-    save_profile
-)
+from .forms import ProfileUpdateForm
+
+__all__ = ['ProfileFormTest', 'UserTestCase']
 
 
-class UserTestCase(TestCase):
-    fixtures = 'fixtures',
+class ProfileFormTest(TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        User.objects.create(username="john")
-        User.objects.create(username="alex")
-        User.objects.create(username="Admin")
+    def test_valid_form(self):
+        form = ProfileUpdateForm(data={
+            'experience': 10,
+            'date_of_birth': datetime.date(1999, 12, 1),
+            'education': 'Higher',
+            'gender': 'Male',
+        })
+        self.assertTrue(form.is_valid())
 
-    def test_john(self):
-        john = User.objects.get(username="john")
-        self.assertEqual(john.username, 'john')
-
-    def test_alex(self):
-        alex = User.objects.get(username="alex")
-        self.assertEqual(alex.username, 'alex')
+    def test_invalid_form(self):
+        form = ProfileUpdateForm(data={
+            'experience': -1,
+            'date_of_birth': datetime.date(1999, 12, 1),
+            'education': 'Higher',
+            'gender': 'Male',
+        })
+        self.assertFalse(form.is_valid())
