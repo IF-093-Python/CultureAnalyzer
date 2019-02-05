@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('users', '0001_initial'),
     ]
@@ -13,6 +12,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='profile',
             name='image',
-            field=models.ImageField(default='default.png', upload_to='profile_pics'),
+            field=models.ImageField(default='default.png',
+                                    upload_to='profile_pics'),
         ),
     ]
