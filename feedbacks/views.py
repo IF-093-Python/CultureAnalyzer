@@ -8,6 +8,17 @@ from CultureAnalyzer.view import SafePaginationListView
 from feedbacks.models import Feedback, Recommendation
 from feedbacks.forms import FeedbackForm, RecommendationForm
 
+__all__ = [
+    'FeedbackListView',
+    'FeedbackCreateView',
+    'FeedbackUpdateView',
+    'FeedbackDeleteView',
+    'FeedbackDetailView',
+    'RecommendationCreateView',
+    'RecommendationUpdateView',
+    'RecommendationDeleteView',
+]
+
 
 class FeedbackListView(LoginRequiredMixin, SafePaginationListView):
     model = Feedback

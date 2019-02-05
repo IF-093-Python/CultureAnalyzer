@@ -2,6 +2,11 @@ from django.core.validators import MaxValueValidator
 from django.db import models
 from django.urls import reverse
 
+__all__ = [
+    'Feedback',
+    'Recommendation',
+]
+
 
 class Feedback(models.Model):
     INDICATORS = (

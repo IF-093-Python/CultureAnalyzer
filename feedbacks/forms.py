@@ -5,6 +5,11 @@ from .models import (
 )
 from .validator import FeedbackValidator
 
+__all__ = [
+    'FeedbackForm',
+    'RecommendationForm'
+]
+
 
 class FeedbackForm(forms.ModelForm):
     def clean(self):
