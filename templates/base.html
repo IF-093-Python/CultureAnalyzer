@@ -62,7 +62,13 @@
             {% endfor %}
 
             {% endif %}
-            {% block content %}{% endblock %}
+            {% if user.is_authenticated %}
+                {% block content %}
+                {% endblock content %}
+            {% else %}
+                {% block anonymous_user %}
+                {% endblock anonymous_user %}
+            {% endif %}
         </div>
 
     </div>
