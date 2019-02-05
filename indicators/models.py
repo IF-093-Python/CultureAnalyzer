@@ -1,34 +1,27 @@
-from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator,\
-                                   MinLengthValidator, MaxLengthValidator
+import re
 
+from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import RegexValidator
 
 MAX_FIELD_REPRESENTATION = 20
+_RE_ISO_CODE = re.compile(r'^[a-z]{3}$', re.IGNORECASE)
+
+
+class IndicatorField(models.PositiveIntegerField):
+    default_validators = [MinValueValidator(0), MaxValueValidator(100)]
 
 
 class CountryIndicator(models.Model):
     iso_code = models.CharField(max_length=3, unique=True,
-                                validators=[MinLengthValidator(3),
-                                            MaxLengthValidator(3)])
+                                validators=[RegexValidator(_RE_ISO_CODE)])
     name = models.CharField(max_length=200, unique=True)
-    pdi = models.PositiveIntegerField(verbose_name='PDI',
-                                      validators=[MinValueValidator(0),
-                                                  MaxValueValidator(100)])
-    ind = models.PositiveIntegerField(verbose_name='IND',
-                                      validators=[MinValueValidator(0),
-                                                  MaxValueValidator(100)])
-    mas = models.PositiveIntegerField(verbose_name='MAS',
-                                      validators=[MinValueValidator(0),
-                                                  MaxValueValidator(100)])
-    uai = models.PositiveIntegerField(verbose_name='UAI',
-                                      validators=[MinValueValidator(0),
-                                                  MaxValueValidator(100)])
-    lto = models.PositiveIntegerField(verbose_name='LTO',
-                                      validators=[MinValueValidator(0),
-                                                  MaxValueValidator(100)])
-    ivr = models.PositiveIntegerField(verbose_name='IVR',
-                                      validators=[MinValueValidator(0),
-                                                  MaxValueValidator(100)])
+    pdi = IndicatorField(verbose_name='PDI')
+    ind = IndicatorField(verbose_name='IND')
+    mas = IndicatorField(verbose_name='MAS')
+    uai = IndicatorField(verbose_name='UAI')
+    lto = IndicatorField(verbose_name='LTO')
+    ivr = IndicatorField(verbose_name='IVR')
 
     class Meta:
         db_table = 'countries_indicators'
@@ -37,4 +30,3 @@ class CountryIndicator(models.Model):
 
     def __str__(self):
         return f'{self.name[:MAX_FIELD_REPRESENTATION]} - {self.iso_code}'
-

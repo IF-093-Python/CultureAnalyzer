@@ -1,15 +1,9 @@
 from django import forms
 
 from .models import CountryIndicator
-from .validators import validate_identity, validate_whitespaces, \
-    validate_english_letters
 
 
 class CountryIndicatorForm(forms.ModelForm):
-
-    def __init__(self, *args, **kwargs):
-        super(CountryIndicatorForm, self).__init__(*args, **kwargs)
-        self.fields['iso_code'].strip = False
 
     class Meta:
         model = CountryIndicator
@@ -22,8 +16,5 @@ class CountryIndicatorForm(forms.ModelForm):
 
     def clean_iso_code(self):
         iso_code = self.cleaned_data.get('iso_code')
-        iso_code = validate_whitespaces(iso_code)
         iso_code = iso_code.upper()
-        iso_code = validate_english_letters(iso_code)
-        iso_code = validate_identity(iso_code)
         return iso_code
