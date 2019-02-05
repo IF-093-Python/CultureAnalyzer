@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Groups{% endblock %}
+{% block content %}
+    <h1>Groups</h1>
+    {% block groups %}
+        <div class="container-fluid bg-1 main col-md-10">
+            <div class="float-right">
+                <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'groups:groups-list' %}">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
+                           name="data_search">
+                    <div class="btn-toolbar">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        <a class="btn btn-outline-danger my-2 my-sm-0" href ={% url 'groups:groups-list' %}>Clear</a>
+                    </div>
+                    <br>
+                </form>
+            </div><br>
+        <a class="btn btn-primary" style="margin-bottom: 10px; background-color: cornflowerblue" href="{% url 'groups:create-group' %}">Create group</a>
+        <br>
+        {% if search %}
+            <b>Search results:</b>
+        {% else %}
+            <b>Groups:</b>
+        {% endif %}
+
+            {% if groups %}
+                {% for group in groups %}
+                    <li class="list-group-item">
+                        <a href="">{{ group }} &nbsp;:</a>
+                        <a class="btn-outline-info"
+                           href="{% url 'groups:update-group' group.pk %}">&#9998;</a>
+                        <a class="btn-outline-info"
+                           href="{% url 'groups:delete-group' group.pk %}">&#10006;</a>
+                    </li>
+                {% endfor %}
+            {% else %}
+                {% if search %}
+                    <p>There are no results that match your search.</p>
+                {% else %}
+                    <p>You have not created any groups yet.</p>
+                {% endif %}
+            {% endif %}
+
+  {% if is_paginated %}
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a>&nbsp;&nbsp;</li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span>&nbsp;&nbsp;</li>
+    {% endif %}
+    {% for i in paginator.page_range %}
+      {% if page_obj.number == i %}
+        <li class="active" style="color: #cd0a0a"><span>{{ i }} <span class="sr-only">(current)</span>&nbsp;</span></li>
+      {% else %}
+        <li><a href="?page={{ i }}"> {{ i }} </a>&nbsp;</li>
+      {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+      <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+        </div>
+    {% endblock groups %}
+{% endblock content %}

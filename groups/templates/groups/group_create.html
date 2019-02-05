@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h1>Create group </h1>
+    <div class="container">
+        <form method="post">{% csrf_token %}
+            {{ form|crispy }}
+            <hr>
+            <button type="submit" class="btn btn-primary; float-left"
+                    style="margin-right: 10px; background-color:
+                    cornflowerblue">Create group</button>
+        </form>
+        <a class="btn btn-secondary" title="Back to all groups"
+           href="{% url 'groups:groups-list' %}">Cancel</a>
+
+    </div>
+{% endblock content %}

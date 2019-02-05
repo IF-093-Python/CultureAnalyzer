@@ -19,14 +19,17 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('admin_support/',include('admin_support.urls',
+                                  namespace='admin_support')),
     path('admin/', admin.site.urls),
     path('', include('users.urls')),
-    path('indicators/',
-         include('indicators.urls', namespace='country_indicator')),
+    path('indicators/',include('indicators.urls',
+                               namespace='country_indicator')),
     path('quiz/', include('quiz.urls', namespace='quiz')),
 
     path('category_question/', include('tutors.urls', namespace='tutors')),
     path('feedbacks/', include('feedbacks.urls')),
+    path('groups/',include('groups.urls',namespace='groups')),
 
 ]
 
