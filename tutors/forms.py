@@ -4,6 +4,11 @@ from crispy_forms.layout import Submit, Fieldset, Layout, Field, HTML
 from quiz.models import Quizzes
 from tutors.models import Questions, Answers
 
+__all__ = [
+    'QuestionCreateForm',
+    'AnswerCreateForm',
+]
+
 
 class QuestionCreateForm(forms.ModelForm):
     """
