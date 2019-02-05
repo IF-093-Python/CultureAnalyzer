@@ -3,6 +3,7 @@ from django.contrib.auth import views as auth_views
 from .views import UserRegisterView
 from .forms import UserLoginForm
 from . import views
+
 urlpatterns = [
     path('', views.index, name='home'),
 
