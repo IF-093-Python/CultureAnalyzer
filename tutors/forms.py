@@ -1,53 +1,21 @@
 from django import forms
-from django.db.models import Q
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Button, Fieldset, Layout, Field, HTML
-from django.shortcuts import get_object_or_404
+from crispy_forms.layout import Submit, Fieldset, Layout, Field, HTML
+from quiz.models import Quizzes
+from tutors.models import Questions, Answers
 
-from tutors.models import CategoryQuestion, Question, Answer
-
-
-class CategoryCreateForm(forms.ModelForm):
-    name = forms.CharField(max_length=100, required=True)
-    parent_category = forms.ModelChoiceField(
-        queryset=CategoryQuestion.objects.all(),
-        required=False)
-
-    def __init__(self, *args, **kwargs):
-        super(CategoryCreateForm, self).__init__(*args, **kwargs)
-
-        if self.instance.id:
-            queryset = CategoryQuestion.objects.filter(
-                ~Q(pk__in=(
-                    self.instance.id, *self.instance.childrens_pk_list)))
-        else:
-            queryset = CategoryQuestion.objects.all()
-        self.fields['parent_category'].queryset = queryset
-        self.helper = FormHelper(self)
-        self.helper.form_method = 'POST'
-        self.helper.add_input(Submit('save', 'Save', css_class='btn-dark '
-                                                               'mt-5'))
-        self.helper.add_input(Button('cancel', 'Cancel',
-                                     css_class='btn-light mt-5',
-                                     onclick="javascript:location.href = "
-                                             "'/category_question';"))
-        self.helper.form_class = 'form-horizontal'
-        self.helper.layout = Layout(
-            Fieldset('Create category ',
-                     css_class='border-top border-bottom mt-5'),
-            Fieldset('',
-                     Field('parent_category', css_class='ml-5'),
-                     Field('name', css_class='ml-5'),
-                     css_class='border-bottom mt-5')
-        )
-
-    class Meta:
-        model = CategoryQuestion
-        fields = '__all__'
+__all__ = [
+    'QuestionCreateForm',
+    'AnswerCreateForm',
+]
 
 
 class QuestionCreateForm(forms.ModelForm):
-    question_text = forms.CharField(max_length=100, required=True)
+    """
+    This Form is from creating/updating a question
+    """
+    quiz = forms.ModelChoiceField(queryset=Quizzes.objects.all())
+    question_text = forms.TextInput()
 
     def __init__(self, *args, **kwargs):
         super(QuestionCreateForm, self).__init__(*args, **kwargs)
@@ -57,23 +25,29 @@ class QuestionCreateForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 'Create/Update question', css_class='display-4'),
-            Fieldset('', Field('question_text'),
+            Fieldset('', Field('quiz'),
+                     css_class='border-top border-bottom'),
+            Fieldset('',
+                     Field('question_text'),
                      css_class='border-top border-bottom'),
             Fieldset('',
                      Submit('save', 'Save', css_class='btn-success mt-3'),
-                     HTML("""<a class='btn btn-outline-success mt-3' 
-                     href="{%url 'tutors:questions_list' category_id=c.id%}">
-                     Cancel</a>"""),
+                     HTML(
+                         """<a class='btn btn-outline-success mt-3' href="
+                         {%url 'tutors:questions_list'%}">Cancel</a>"""),
                      )
         )
 
     class Meta:
-        model = Question
-        fields = ['question_text', ]
+        model = Questions
+        fields = ['quiz', 'question_text', ]
 
 
 class AnswerCreateForm(forms.ModelForm):
-    answer_text = forms.CharField(max_length=100, required=True)
+    """
+    This Form is from creating/updating a answer
+    """
+    answer_text = forms.TextInput()
 
     def __init__(self, *args, **kwargs):
         super(AnswerCreateForm, self).__init__(*args, **kwargs)
@@ -83,16 +57,29 @@ class AnswerCreateForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 'Create/Update answer', css_class='display-4'),
-            Fieldset('', Field('answer_text'), css_class='border-top '
-                                                         'border-bottom'),
+            Fieldset('', Field('answer_text', ),
+                     Field('question', ),
+                     css_class='border-top border-bottom'),
             Fieldset('',
                      Submit('save', 'Save', css_class='btn-success mt-3'),
-                     HTML("""<a class='btn btn-outline-success mt-3' 
-                 href="{%url 'tutors:answers_list' question_id=q.id%}">
-                 Cancel</a>"""),
+                     HTML("""<a class='btn btn-outline-success mt-3' href="
+                     {%url 'tutors:answers_list' question_id=q.id%}">Cancel
+                     </a>"""),
                      )
         )
 
     class Meta:
-        model = Answer
+        model = Answers
         fields = ['answer_text', ]
+
+    def full_clean(self):
+        """
+        The function validation a unique_together error from values
+        'answer_text' and 'question'.
+        Returns an error message if values are not unique together.
+        """
+        super(AnswerCreateForm, self).full_clean()
+        try:
+            self.instance.validate_unique()
+        except forms.ValidationError as e:
+            self._update_errors(e)

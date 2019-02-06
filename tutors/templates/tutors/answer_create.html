@@ -3,6 +3,8 @@
 {% block title %}Creat/Update answer{% endblock %}
 {% block content %}
     <div class="container">
+        <!--Error message about some action on the question-->
+        {% include "tutors/error_message.html" %}
         {% crispy form %}
     </div>
 {% endblock %}
