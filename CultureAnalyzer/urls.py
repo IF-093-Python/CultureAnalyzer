@@ -26,6 +26,8 @@ urlpatterns = [
     path('category_question/', include('tutors.urls', namespace='tutors')),
     path('feedbacks/', include('feedbacks.urls')),
 
+    path('test_player/', include('test_player.urls')),
+
 ]
 
 if settings.DEBUG:
