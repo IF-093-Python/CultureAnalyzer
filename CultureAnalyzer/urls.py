@@ -27,6 +27,8 @@ urlpatterns = [
     path('feedbacks/', include('feedbacks.urls')),
     path('test_player/', include('test_player.urls')),
 
+    path('test_player/', include('test_player.urls')),
+
 ]
 
 if settings.DEBUG:
