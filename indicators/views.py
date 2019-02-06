@@ -7,6 +7,9 @@ from CultureAnalyzer.settings.base_settings import ITEMS_ON_PAGE
 from .models import CountryIndicator
 from .forms import CountryIndicatorForm
 
+__all__ = ['CountryIndicatorListView', 'CountryIndicatorCreate',
+           'CountryIndicatorDelete', 'CountryIndicatorUpdate']
+
 
 class CountryIndicatorListView(LoginRequiredMixin, ListView):
     model = CountryIndicator

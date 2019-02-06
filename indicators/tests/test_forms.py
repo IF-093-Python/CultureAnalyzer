@@ -3,11 +3,14 @@ from django.test import TestCase
 from indicators.models import CountryIndicator
 from indicators.forms import CountryIndicatorForm
 
+__all__ = ['CountryIndicatorFormTest']
+
 
 class CountryIndicatorFormTest(TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.indicator_ukr = CountryIndicator.objects.create(
             iso_code='ukr',
             name='Ukraine',
@@ -17,10 +20,6 @@ class CountryIndicatorFormTest(TestCase):
             uai=4,
             lto=50,
             ivr=6)
-
-    @classmethod
-    def tearDownClass(cls):
-        pass
 
     def test_correct_input(self):
         form = CountryIndicatorForm(data={

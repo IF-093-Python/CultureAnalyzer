@@ -4,6 +4,8 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.validators import RegexValidator
 
+__all__ = ['CountryIndicator', 'IndicatorField']
+
 MAX_FIELD_REPRESENTATION = 20
 _RE_ISO_CODE = re.compile(r'^[a-z]{3}$', re.IGNORECASE)
 

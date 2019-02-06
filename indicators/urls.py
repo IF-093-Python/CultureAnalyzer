@@ -17,4 +17,3 @@ urlpatterns = [
     path('<int:pk>/delete/', CountryIndicatorDelete.as_view(),
          name='country_indicator_delete'),
               ]
-

@@ -4,16 +4,6 @@ import django.core.validators
 from django.db import migrations, models
 
 
-def populate_ids_for_indicator(apps, schema_editor):
-    """
-    Populate primary keys values for migration in CountryIndicator model
-    """
-    model = apps.get_model('indicators', 'CountryIndicator')
-    for field_id, field in enumerate(model.objects.all()):
-        field.id = field_id + 1
-        field.save()
-
-
 class Migration(migrations.Migration):
     dependencies = [
         ('indicators', '0003_auto_20190126_1326'),
@@ -93,5 +83,4 @@ class Migration(migrations.Migration):
                                    serialize=False, verbose_name='ID'),
             preserve_default=False,
             ),
-        migrations.RunPython(populate_ids_for_indicator),
         ]

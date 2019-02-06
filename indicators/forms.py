@@ -2,6 +2,8 @@ from django import forms
 
 from .models import CountryIndicator
 
+__all__ = ['CountryIndicatorForm']
+
 
 class CountryIndicatorForm(forms.ModelForm):
 
@@ -15,6 +17,5 @@ class CountryIndicatorForm(forms.ModelForm):
             }
 
     def clean_iso_code(self):
-        iso_code = self.cleaned_data.get('iso_code')
-        iso_code = iso_code.upper()
-        return iso_code
+        return self.cleaned_data.get('iso_code').upper()
+
