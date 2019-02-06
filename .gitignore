@@ -80,6 +80,7 @@ target/
 *.pot
 __pycache__/
 local.py
+*.pyc
 
 db.sqlite3
 
