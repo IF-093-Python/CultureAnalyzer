@@ -18,4 +18,3 @@ class CountryIndicatorForm(forms.ModelForm):
 
     def clean_iso_code(self):
         return self.cleaned_data.get('iso_code').upper()
-
