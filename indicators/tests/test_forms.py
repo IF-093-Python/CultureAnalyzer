@@ -1,4 +1,5 @@
 from django.test import TestCase
+from ddt import ddt, data, unpack
 
 from indicators.models import CountryIndicator
 from indicators.forms import CountryIndicatorForm
@@ -6,6 +7,7 @@ from indicators.forms import CountryIndicatorForm
 __all__ = ['CountryIndicatorFormTest']
 
 
+@ddt
 class CountryIndicatorFormTest(TestCase):
 
     @classmethod
@@ -21,81 +23,44 @@ class CountryIndicatorFormTest(TestCase):
             lto=50,
             ivr=6)
 
-    def test_correct_input(self):
+    @unpack
+    @data({'iso_code': 'deu', 'name': 'Germany', 'pdi': 2,
+          'ind': 4, 'mas': 6, 'uai': 5, 'lto': 2, 'ivr': 3},
+          {'iso_code': 'CHN', 'name': 'Chine', 'pdi': 0,
+           'ind': 59, 'mas': 99, 'uai': 100, 'lto': 0, 'ivr': 98})
+    def test_correct_input(self, iso_code, name, pdi, ind, mas, uai, lto, ivr):
         form = CountryIndicatorForm(data={
-            'iso_code': 'deu',
-            'name': 'Germany',
-            'pdi': 2,
-            'ind': 1,
-            'mas': 3,
-            'uai': 1,
-            'lto': 1,
-            'ivr': 1,
-
-        })
+            'iso_code': iso_code,
+            'name': name,
+            'pdi': pdi,
+            'ind': ind,
+            'mas': mas,
+            'uai': uai,
+            'lto': lto,
+            'ivr': ivr})
         self.assertTrue(form.is_valid())
 
-    def test_existing_iso_code_input(self):
+    @unpack
+    @data({'iso_code': 'ukr', 'name': 'Ukraine', 'pdi': 2,
+          'ind': 4, 'mas': 6, 'uai': 5, 'lto': 2, 'ivr': 3},
+          {'iso_code': 'u  ', 'name': 'some country name', 'pdi': 1,
+           'ind': 2, 'mas': 3, 'uai': 4, 'lto': 5, 'ivr': 6},
+          {'iso_code': 'u3P', 'name': 'some country name', 'pdi': 1,
+           'ind': 2, 'mas': 3, 'uai': 4, 'lto': 5, 'ivr': 6},
+          {'iso_code': 'aaa', 'name': 'some country name', 'pdi': 1,
+           'ind': 2, 'mas': -3, 'uai': 4, 'lto': 5, 'ivr': 6},
+          {'iso_code': 'aaa', 'name': 'some country name', 'pdi': 1,
+           'ind': 2, 'mas': 3, 'uai': 101, 'lto': 5, 'ivr': 6
+           })
+    def test_incorrect_input(self, iso_code, name, pdi, ind, mas, uai, lto,
+                             ivr):
         form = CountryIndicatorForm(data={
-            'iso_code': 'ukr',
-            'name': 'Ukraine',
-            'pdi': 2,
-            'ind': 1,
-            'mas': 3,
-            'uai': 1,
-            'lto': 1,
-            'ivr': 1,
-        })
-        self.assertFalse(form.is_valid())
-
-    def test_whitespaces_iso_code(self):
-        form = CountryIndicatorForm(data={
-            'iso_code': 'u ',
-            'name': 'some country name',
-            'pdi': 2,
-            'ind': 1,
-            'mas': 3,
-            'uai': 1,
-            'lto': 1,
-            'ivr': 1,
-        })
-        self.assertFalse(form.is_valid())
-
-    def test_symbols_in_iso_code(self):
-        form = CountryIndicatorForm(data={
-            'iso_code': 'u3P',
-            'name': 'some country name',
-            'pdi': 2,
-            'ind': 1,
-            'mas': 3,
-            'uai': 1,
-            'lto': 1,
-            'ivr': 1,
-        })
-        self.assertFalse(form.is_valid())
-
-    def test_indicator_negative_input(self):
-        form = CountryIndicatorForm(data={
-            'iso_code': 'aaa',
-            'name': 'some country name',
-            'pdi': -2,
-            'ind': 1,
-            'mas': 3,
-            'uai': 1,
-            'lto': 1,
-            'ivr': 1,
-        })
-        self.assertFalse(form.is_valid())
-
-    def test_indicator_higher_bound(self):
-        form = CountryIndicatorForm(data={
-            'iso_code': 'aaa',
-            'name': 'some country name',
-            'pdi': 2,
-            'ind': 1,
-            'mas': 3,
-            'uai': 101,
-            'lto': 1,
-            'ivr': 1,
-        })
+            'iso_code': iso_code,
+            'name': name,
+            'pdi': pdi,
+            'ind': ind,
+            'mas': mas,
+            'uai': uai,
+            'lto': lto,
+            'ivr': ivr})
         self.assertFalse(form.is_valid())
