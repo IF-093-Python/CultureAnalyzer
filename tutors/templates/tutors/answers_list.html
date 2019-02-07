@@ -28,6 +28,7 @@
     <table class="table">
         <thead class="thead-light">
         <tr>
+            <th scope="col">Number of question</th>
             <th scope="col">Answer</th>
             <th class="w-25" scope="col">Management</th>
         </tr>
@@ -35,6 +36,7 @@
         <tbody>
         {%for answer in answers %}
         <tr>
+            <td><a>{{answer.answer_number}}</a></td>
             <td><a>{{answer.answer_text}}</a></td>
             <td>
                 <a class="btn btn-primary"

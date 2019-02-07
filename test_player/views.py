@@ -17,37 +17,36 @@ class TestPlayer(FormView):
     def get_success_url(self):
         return reverse_lazy('test_player:detail',
                             kwargs={'quiz_id': self.kwargs[
-                                'quiz_id'], 'question_title':
-                                self.request.POST.get('next')})
+                                'quiz_id'], 'question_number':
+                                        self.request.POST.get('next')})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['questions'] = Questions.objects.filter(
-            quiz_id=self.kwargs['quiz_id']).order_by('title')
+            quiz_id=self.kwargs['quiz_id']).order_by('question_number')
         context['current_question'] = get_object_or_404(Questions,
                                                         quiz_id=self.kwargs[
                                                             'quiz_id'],
-                                                        title=self.kwargs[
-                                                            'question_title'])
-
+                                                        question_number=
+                                                        self.kwargs[
+                                                            'question_number'])
         return context
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         current_questions = get_object_or_404(Questions,
                                               quiz_id=self.kwargs['quiz_id'],
-                                              title=self.kwargs[
-                                                  'question_title'])
+                                              question_number=self.kwargs[
+                                                  'question_number'])
         current_answers = current_questions.answers_set.all()
-        if self.kwargs['question_title'] in self.request.session.keys():
-            d_answer = self.request.session[self.kwargs['question_title']]
+        if self.kwargs['question_number'] in self.request.session.keys():
+            d_answer = self.request.session[self.kwargs['question_number']]
         else:
             d_answer = ''
         return dict(kwargs, answers=current_answers, default_choice=d_answer)
 
     def form_valid(self, form):
-        self.request.session[self.kwargs['question_title']] = \
-            form.cleaned_data.get('answers')
+        self.request.session[
+            self.kwargs['question_number']] = form.cleaned_data.get('answers')
         print(self.request.session.items())
         return super(TestPlayer, self).form_valid(form)
-

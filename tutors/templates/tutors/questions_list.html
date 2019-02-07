@@ -37,7 +37,7 @@
         <tr>
             <td><a href="">{{question.quiz.title}}</a></td>
             <td><a href="{% url 'tutors:answers_list' question.id %}">
-                {{question.title}}</a></td>
+                {{question.question_number}}</a></td>
             <td><a href="{% url 'tutors:answers_list' question.id %}">
                 {{question.question_text}}</a></td>
             <td>{{question.num_answer}}</td>
