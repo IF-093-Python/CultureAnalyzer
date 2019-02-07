@@ -11,15 +11,9 @@ from CultureAnalyzer.settings.base_settings import ITEMS_PER_PAGE
 from .forms import *
 from .models import Questions, Answers
 
-__all__ = [
-    'QuestionListView',
-    'CreateQuestionView',
-    'UpdateQuestionView',
-    'DeleteQuestionView',
-    'AnswerListView',
-    'CreateAnswerView',
-    'UpdateAnswerView',
-    'DeleteAnswerView',
+__all__ = ['QuestionListView', 'CreateQuestionView', 'UpdateQuestionView',
+           'DeleteQuestionView', 'AnswerListView', 'CreateAnswerView',
+           'UpdateAnswerView', 'DeleteAnswerView',
 ]
 
 
@@ -30,10 +24,9 @@ def get_min_missing_value():
     :return: minimum missing value
     """
     list_of_number = get_numbers()
-    print(list_of_number)
     if not list_of_number:
         return 1
-    max_value = int(max(list_of_number)[0])
+    max_value = int(max(list_of_number[0]))
     for value in range(1, max_value + 1):
         if value not in list_of_number[0]:
             return value
