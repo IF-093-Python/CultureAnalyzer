@@ -4,11 +4,11 @@ from quiz.models import Quizzes
 
 class Questions(models.Model):
     """
-    Model Question have the field 'title', that indicates the issue number
+    Model Question have the field 'question_number', that indicates the issue number
     in a particular quiz.
     """
     quiz = models.ForeignKey(Quizzes, on_delete=models.CASCADE, null=False)
-    title = models.IntegerField(null=False)
+    question_number = models.IntegerField(null=False)
     question_text = models.TextField(null=False)
 
     def __str__(self):
@@ -16,15 +16,20 @@ class Questions(models.Model):
 
     class Meta:
         """
-        The tuple of the fields 'quiz' and 'title', which should be
+        The tuple of the fields 'quiz' and 'question_number', which should be
         unique together.
         """
-        unique_together = (('quiz', 'title'),)
+        unique_together = (('quiz', 'question_number'),)
 
 
 class Answers(models.Model):
+    """
+     Model Answer have the field 'answer_number', that indicates the issue number
+     in a particular question and is responsible for scores.
+     """
     question = models.ForeignKey(Questions, on_delete=models.CASCADE,
                                  null=False)
+    answer_number = models.IntegerField(null=False)
     answer_text = models.TextField(null=False)
 
     def __str__(self):
