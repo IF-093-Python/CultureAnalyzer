@@ -5,7 +5,7 @@ app_name = 'tutors'
 
 urlpatterns = [
     path('', QuestionListView.as_view(), name='questions_list'),
-    path('question_category/', CreateQuestionView.as_view(),
+    path('create_question/', CreateQuestionView.as_view(),
          name='create_question'),
     path('<int:pk>/update_question/', UpdateQuestionView.as_view(),
          name='update_question'),
