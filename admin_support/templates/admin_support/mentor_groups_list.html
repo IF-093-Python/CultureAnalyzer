@@ -31,7 +31,7 @@
     {% if group_list %}
         {% for group in group_list %}
       <tr>
-        <td><a href="{% url 'admin_support:group_view' group.pk %}">{{ group }}</a></td>
+        <td><a href="{% url 'admin_support:mentor_group_update' group.pk %}">{{ group }}</a></td>
         <td>{{ group.total }}</td>
       </tr>
     {% endfor %}

@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.db import models
 from users.models import Profile
 
@@ -14,3 +13,16 @@ class Group(models.Model):
     def __str__(self):
         return f'{self.name}'
 
+
+class MyProfile(Profile):
+    '''
+    Proxy Model for changing __str__ attribute of
+    Profile model for proper representation
+    of the name of user
+    '''
+    class Meta:
+        proxy = True
+
+    def __str__(self):
+        return f'{self.user.last_name} {self.user.first_name} \
+                ({self.user.username})'

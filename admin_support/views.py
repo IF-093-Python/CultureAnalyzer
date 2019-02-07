@@ -3,11 +3,17 @@ from users.models import Profile,Role
 from groups.models import Group
 from django.contrib.auth.models import User
 from django.views.generic.list import ListView
-from django.views.generic import CreateView
+from django.views.generic import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
+from groups.forms import GroupUpdateForm
+from django.urls import reverse_lazy,reverse
+from django.http import HttpResponseRedirect
+from django.contrib.messages.views import SuccessMessageMixin
+
 
 PAGINATOR=20
+
 
 class MentorGroupsView(LoginRequiredMixin,ListView):
     model = Group
@@ -30,5 +36,12 @@ class MentorGroupsView(LoginRequiredMixin,ListView):
         return context
 
 
-class GroupView(LoginRequiredMixin,ListView):
-    pass
+class MentorGroupUpdate(SuccessMessageMixin,LoginRequiredMixin,UpdateView):
+    model = Group
+    form_class = GroupUpdateForm
+    template_name = 'admin_support/mentor_group_update.html'
+    success_message = "Group was updated successfully"
+
+    def get_success_url(self):
+        pk=self.kwargs['pk']
+        return reverse('admin_support:mentor_group_update',kwargs={'pk':pk})

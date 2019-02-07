@@ -1,21 +1,5 @@
 from django import forms
-from django.contrib.auth.models import User
-from users.models import Profile
-from groups.models import Group
-
-
-class MyProfile(Profile):
-    '''
-    Proxy Model for changing __str__ attribute of
-    Profile model for proper representation
-    of the name of user
-    '''
-    class Meta:
-        proxy = True
-
-    def __str__(self):
-        return f'{self.user.last_name} {self.user.first_name} \
-                ({self.user.username})'
+from groups.models import Group,MyProfile
 
 
 class GroupCreateForm(forms.ModelForm):
@@ -30,3 +14,34 @@ class GroupCreateForm(forms.ModelForm):
         model = Group
         fields = ['name', 'mentor']
 
+
+class GroupUpdateForm(forms.ModelForm):
+    all_users=forms.ModelMultipleChoiceField(label='Add users:',
+        queryset=None,required=False)
+    user=forms.ModelMultipleChoiceField(label='Users in group:',
+        queryset=None,required=False)
+
+    def __init__(self,*args,**kwargs):
+        group = kwargs['instance']
+        super (GroupUpdateForm,self ).__init__(*args,**kwargs)
+        self.fields['user'].queryset = MyProfile.objects.\
+            filter(user_in_group__name=group.name).\
+            filter(user__is_active=True).\
+            order_by('user__last_name')
+        self.fields['all_users'].queryset = MyProfile.objects.\
+            filter(role__name='Trainee'). \
+            filter(user__is_active=True). \
+            exclude(user_in_group__name=group.name).\
+            order_by('user__last_name')
+        self.fields['user'].widget = forms.CheckboxSelectMultiple()
+        self.fields['all_users'].widget = forms.CheckboxSelectMultiple()
+
+    def save(self, commit=True):
+        #Merging accepted users from two fields
+        self.cleaned_data['user']=\
+            self.cleaned_data['user']|self.cleaned_data['all_users']
+        return super(GroupUpdateForm, self).save(commit=commit)
+
+    class Meta:
+        model = Group
+        fields = ['user','all_users']
