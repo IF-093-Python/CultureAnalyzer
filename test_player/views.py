@@ -9,7 +9,7 @@ def index(request):
     return render(request, 'test_player/quizz.html')
 
 
-class TestPlayer(FormView):
+class TestPlayer():
     template_name = 'test_player/test_player.html'
     form_class = QuestionSaveForm
 
