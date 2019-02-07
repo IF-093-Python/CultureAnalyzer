@@ -1,14 +1,6 @@
 from django.urls import path
-from .views import (
-    FeedbackDetailView,
-    FeedbackUpdateView,
-    FeedbackCreateView,
-    FeedbackDeleteView,
-    FeedbackListView,
-    RecommendationCreateView,
-    RecommendationUpdateView,
-    RecommendationDeleteView,
-)
+
+from feedbacks.views import *
 
 urlpatterns = [
     path('', FeedbackListView.as_view(), name='feedback-list'),
