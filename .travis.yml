@@ -13,7 +13,7 @@ addons:
 
 
 before_install:
-  - export DJANGO_SETTINGS_MODULE=CultureAnalyzer.settings.test_settings
+  - export DJANGO_SETTINGS_MODULE=CultureAnalyzer.settings
 
 install:
   - pip install -r requirements.txt
