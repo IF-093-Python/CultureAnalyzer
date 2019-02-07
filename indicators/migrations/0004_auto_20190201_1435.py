@@ -3,6 +3,8 @@
 import django.core.validators
 from django.db import migrations, models
 
+from indicators.models import IndicatorField
+
 
 class Migration(migrations.Migration):
     dependencies = [
@@ -82,5 +84,40 @@ class Migration(migrations.Migration):
             field=models.AutoField(auto_created=True, primary_key=True,
                                    serialize=False, verbose_name='ID'),
             preserve_default=False,
+            ),
+        migrations.AlterField(
+            model_name='countryindicator',
+            name='ind',
+            field=IndicatorField(verbose_name='IND'),
+            ),
+        migrations.AlterField(
+            model_name='countryindicator',
+            name='iso_code',
+            field=models.CharField(max_length=3, unique=True),
+            ),
+        migrations.AlterField(
+            model_name='countryindicator',
+            name='ivr',
+            field=IndicatorField(verbose_name='IVR'),
+            ),
+        migrations.AlterField(
+            model_name='countryindicator',
+            name='lto',
+            field=IndicatorField(verbose_name='LTO'),
+            ),
+        migrations.AlterField(
+            model_name='countryindicator',
+            name='mas',
+            field=IndicatorField(verbose_name='MAS'),
+            ),
+        migrations.AlterField(
+            model_name='countryindicator',
+            name='pdi',
+            field=IndicatorField(verbose_name='PDI'),
+            ),
+        migrations.AlterField(
+            model_name='countryindicator',
+            name='uai',
+            field=IndicatorField(verbose_name='UAI'),
             ),
         ]
