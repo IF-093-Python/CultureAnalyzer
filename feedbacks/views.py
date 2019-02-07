@@ -1,3 +1,5 @@
+from django.db import transaction
+from django.http import HttpResponseRedirect, Http404, HttpResponseBadRequest
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, UpdateView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -8,16 +10,10 @@ from CultureAnalyzer.view import SafePaginationListView
 from feedbacks.models import Feedback, Recommendation
 from feedbacks.forms import FeedbackForm, RecommendationForm
 
-__all__ = [
-    'FeedbackListView',
-    'FeedbackCreateView',
-    'FeedbackUpdateView',
-    'FeedbackDeleteView',
-    'FeedbackDetailView',
-    'RecommendationCreateView',
-    'RecommendationUpdateView',
-    'RecommendationDeleteView',
-]
+__all__ = ['FeedbackListView', 'FeedbackCreateView', 'FeedbackUpdateView',
+           'FeedbackDeleteView', 'FeedbackDetailView',
+           'RecommendationCreateView', 'RecommendationUpdateView',
+           'RecommendationDeleteView', ]
 
 
 class FeedbackListView(LoginRequiredMixin, SafePaginationListView):
@@ -50,34 +46,39 @@ class FeedbackUpdateView(LoginRequiredMixin, UpdateView):
 class RecommendationDeleteView(LoginRequiredMixin, DeleteView):
     model = Recommendation
 
+    @transaction.atomic()
     def delete(self, request, *args, **kwargs):
         """Redirect to linked feedback"""
-        back = self.get_object().feedback.id
-        self.success_url = reverse_lazy('feedback-detail', kwargs={'pk': back})
-        print(back)
-        return super().delete(self, request, *args, **kwargs)
+        with transaction.atomic():
+            self.success_url = reverse_lazy('feedback-detail', kwargs={
+                'pk': self.get_object().feedback.id})
+            return super().delete(self, request, *args, **kwargs)
 
 
 class RecommendationCreateView(LoginRequiredMixin, CreateView):
     model = Recommendation
     form_class = RecommendationForm
-    feed = Feedback.objects.none()
 
-    def get(self, request, feedback, *args, **kwargs):
-        """Get feedback id from url"""
-        global feed
-        feed = Feedback.objects.get(pk=feedback)
-        return super().get(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        try:
+            Feedback.objects.get(pk=int(self.request.GET.get('feedback')))
+        except (ValueError, TypeError, Feedback.DoesNotExist):
+            return HttpResponseBadRequest('<h1>Invalid request parameters</h1>')
+        return super().get(request, *args, *kwargs)
 
+    @transaction.atomic
     def form_valid(self, form):
-        """Set feedback field value"""
-        form.instance.feedback = feed
-        return super().form_valid(form)
+        with transaction.atomic():
+            form.instance.feedback = Feedback.objects.get(
+                pk=self.request.GET.get('feedback'))
+            self.object = form.save()
+        return HttpResponseRedirect(self.get_success_url())
 
     def post(self, request, *args, **kwargs):
         """Redirect to linked feedback"""
         self.success_url = reverse_lazy('feedback-detail',
-                                        kwargs={'pk': feed.pk})
+                                        kwargs={
+                                            'pk': request.GET.get('feedback')})
         return super().post(self, request, *args, **kwargs)
 
 

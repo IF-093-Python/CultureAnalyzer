@@ -20,7 +20,7 @@ urlpatterns = [
          name='feedback-update'),
     path('recommendation/delete/<int:pk>', RecommendationDeleteView.as_view(),
          name='recommendation-delete'),
-    path('recommendation/create/<int:feedback>',
+    path('recommendation/create/',
          RecommendationCreateView.as_view(),
          name='recommendation-create'),
     path('recommendation/update/<int:pk>', RecommendationUpdateView.as_view(),

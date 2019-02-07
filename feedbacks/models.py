@@ -28,6 +28,7 @@ class Feedback(models.Model):
 
     class Meta:
         db_table = 'Feedbacks'
+        unique_together = ('min_value', 'max_value', 'indicator',)
 
     def get_absolute_url(self):
         return reverse('feedback-detail', args=[self.pk])

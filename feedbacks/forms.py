@@ -1,14 +1,9 @@
 from django import forms
-from .models import (
-    Feedback,
-    Recommendation
-)
-from .validator import FeedbackValidator
 
-__all__ = [
-    'FeedbackForm',
-    'RecommendationForm'
-]
+from feedbacks.models import Feedback, Recommendation
+from feedbacks.validator import FeedbackValidator
+
+__all__ = ['FeedbackForm', 'RecommendationForm']
 
 
 class FeedbackForm(forms.ModelForm):
