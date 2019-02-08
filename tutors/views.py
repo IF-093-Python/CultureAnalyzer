@@ -1,82 +1,116 @@
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
-# from django.db import models
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
-from .models import CategoryQuestion, Question, Answer
-from .forms import CategoryCreateForm, QuestionCreateForm, AnswerCreateForm
-from quiz.models import  Quizzes
 
-ITEMS_PER_PAGE = 5
+from CultureAnalyzer.settings.base_settings import ITEMS_PER_PAGE
+
+from .forms import *
+from .models import Questions, Answers
+
+__all__ = ['QuestionListView', 'CreateQuestionView', 'UpdateQuestionView',
+           'DeleteQuestionView', 'AnswerListView', 'CreateAnswerView',
+           'UpdateAnswerView', 'DeleteAnswerView', ]
 
 
-class CategoryListView(LoginRequiredMixin, ListView):
-    model = CategoryQuestion
-    template_name = 'tutors/categories_list.html'
-    context_object_name = 'categories'
+def get_min_missing_value(model, filter_id):
+    """
+    Function looks for the least missed value of the number to the question
+    in the test among the created questions.
+    :return: minimum missing value
+    """
+    list_of_number = get_numbers(model, filter_id)
+    if not list_of_number:
+        return 1
+    max_value = int(max(list_of_number[0]))
+    for value in range(1, max_value + 1):
+        if value not in list_of_number[0]:
+            return value
+    return max_value + 1
+
+
+def get_numbers(model, filter_id):
+    """
+    :return: values from column 'question_number'/ 'answer_number' as a
+    tuple of values.
+    """
+    if model == 'Question':
+        return list(zip(
+            *Questions.objects.filter(quiz=filter_id).values_list(
+                'question_number').order_by('question_number')))
+    else:
+        return list(zip(
+            *Answers.objects.filter(question=filter_id).values_list(
+                'answer_number').order_by(
+                'answer_number')))
+
+
+class QuestionListView(LoginRequiredMixin, ListView):
+    model = Questions
+    template_name = 'tutors/questions_list.html'
+    context_object_name = 'questions'
     paginate_by = ITEMS_PER_PAGE
 
     def get_queryset(self):
         """
         Returns the queryset of categories that you want to display.
         """
-        categories = CategoryQuestion.objects.all().annotate(
-            num_question=Count('question')).order_by('pk')
-        q = self.request.GET.get("category_search")
-        if q:
-            return categories.filter(name__icontains=q)
-        return categories
+        questions = Questions.objects.all().annotate(
+            num_answer=Count('answers')).order_by('quiz', 'question_number')
+        question_search = self.request.GET.get("question_search")
+        if question_search:
+            return questions.filter(
+                Q(question_text__icontains=question_search) | Q(
+                    question_number__icontains=question_search))
+        return questions
 
     def get_context_data(self, **kwargs):
         """
         Returns context data for displaying the list of categories.
         """
         context = super().get_context_data(**kwargs)
-        context['q'] = self.request.GET.get("category_search")
+        context['q'] = self.request.GET.get("question_search")
         return context
 
 
-class CreateCategoryView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
-    model = CategoryQuestion
-    form_class = CategoryCreateForm
-    template_name = 'tutors/category_create.html'
-    success_url = reverse_lazy('tutors:categories_list')
-    success_message = 'Category: "%(name)s" was created successfully'
+class CreateQuestionView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = Questions
+    form_class = QuestionCreateForm
+    template_name = 'tutors/question_create.html'
+    success_url = reverse_lazy('tutors:questions_list')
+    success_message = 'Question "№%(number)d" was created successfully!'
+
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(cleaned_data,
+                                           number=self.object.question_number)
 
     def form_valid(self, form):
-        obj = form.save(commit=False)
-        obj.save()
-        return super().form_valid(form)
+        form.instance.question_number = get_min_missing_value('Question',
+                                                          form.cleaned_data.get(
+                                                              'quiz'))
+        return super(CreateQuestionView, self).form_valid(form)
 
 
-class UpdateCategoryView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    model = CategoryQuestion
-    form_class = CategoryCreateForm
-    template_name = 'tutors/category_create.html'
-    success_url = reverse_lazy('tutors:categories_list')
-    success_message = 'Category: "%(name)s" was updated successfully'
+class UpdateQuestionView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Questions
+    form_class = QuestionCreateForm
+    template_name = 'tutors/question_create.html'
+    success_url = reverse_lazy('tutors:questions_list')
+    success_message = 'Question "№%(number)d" was updated successfully!'
 
-    def get_success_url(self):
-        return reverse_lazy('tutors:categories_list')
-
-    def get_form_kwargs(self):  # defined in ModelFormMixin class
-        """
-        Returns the keyword arguments for instantiating the form.
-        """
-        kwargs = super(UpdateCategoryView, self).get_form_kwargs()
-        if hasattr(self, 'object'):
-            kwargs.update({'instance': self.object})
-        return kwargs
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(cleaned_data,
+                                           number=self.object.question_number)
 
 
-class DeleteCategoryView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
-    model = CategoryQuestion
-    template_name = 'tutors/category_delete.html'
-    success_url = reverse_lazy('tutors:categories_list')
-    success_message = 'Category: "%(name)s" was deleted successfully'
+class DeleteQuestionView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = Questions
+    template_name = 'tutors/question_delete.html'
+    success_url = reverse_lazy('tutors:questions_list')
+    success_message = 'Question: "%(question_number)s" was deleted successfully!'
 
     def delete(self, request, *args, **kwargs):
         """
@@ -87,131 +121,34 @@ class DeleteCategoryView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
-class QuestionListView(LoginRequiredMixin, ListView):
-    model = Question
-    template_name = 'tutors/questions_list.html'
-    context_object_name = 'questions'
-    paginate_by = ITEMS_PER_PAGE
-
-    def get_queryset(self):
-        """
-        Returns the queryset of question from some category that you want to
-        display.
-        """
-        questions = Question.objects.filter(
-            category_question=get_object_or_404(CategoryQuestion,
-                                                pk=self.kwargs[
-                                                    'category_id'])).annotate(
-            num_answer=Count('answer')).order_by('pk')
-        q = self.request.GET.get("question_search")
-        if q:
-            return questions.filter(question_text__icontains=q)
-        return questions
-
-    def get_context_data(self, **kwargs):
-        """
-        Returns context data for displaying the list of questions and the
-        list of subcategories rom some category.
-        """
-        context = super().get_context_data(**kwargs)
-        context['category'] = get_object_or_404(
-            CategoryQuestion, pk=self.kwargs['category_id'])
-        context['children'] = CategoryQuestion.objects.filter(
-            parent_category=get_object_or_404(CategoryQuestion,
-                                              pk=self.kwargs[
-                                                  'category_id'])).annotate(
-            num_question=Count('question')).order_by('pk')
-        context['q'] = self.request.GET.get("question_search")
-        return context
-
-
-class CreateQuestionView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
-    model = Question
-    form_class = QuestionCreateForm
-    template_name = 'tutors/question_create.html'
-    success_message = 'Question: "%(question_text)s" was created successfully'
-
-    def get_success_url(self):
-        return reverse_lazy('tutors:questions_list', kwargs={
-            'category_id': self.object.category_question.id})
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['c'] = get_object_or_404(CategoryQuestion,
-                                         pk=self.kwargs['category_id'])
-        return context
-
-    def form_valid(self, form):
-        obj = form.save(commit=False)
-        form.instance.category_question = get_object_or_404(CategoryQuestion,
-                                                            pk=self.kwargs[
-                                                                'category_id'])
-        obj.save()
-        return super().form_valid(form)
-
-
-class UpdateQuestionView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    model = Question
-    form_class = QuestionCreateForm
-    template_name = 'tutors/question_create.html'
-    success_message = 'Question: "%(question_text)s" was updated successfully'
-
-    def get_success_url(self):
-        return reverse_lazy('tutors:questions_list', kwargs={
-            'category_id': self.kwargs['category_id']})
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['c'] = get_object_or_404(CategoryQuestion,
-                                         pk=self.kwargs['category_id'])
-        return context
-
-
-class DeleteQuestionView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
-    model = Question
-    template_name = 'tutors/question_delete.html'
-    success_message = 'Question: "%(question_text)s" was deleted successfully'
-
-    def delete(self, request, *args, **kwargs):
-        """
-        Returns context data about success deleted question in message.
-        """
-        obj = self.get_object()
-        messages.success(self.request, self.success_message % obj.__dict__)
-        return super().delete(request, *args, **kwargs)
-
-    def get_success_url(self):
-        return reverse_lazy('tutors:questions_list', kwargs={
-            'category_id': self.object.category_question.id})
-
-
 class AnswerListView(LoginRequiredMixin, ListView):
-    model = Answer
+    model = Answers
     template_name = 'tutors/answers_list.html'
     context_object_name = 'answers'
     paginate_by = ITEMS_PER_PAGE
 
     def get_queryset(self):
-        answers = Answer.objects.filter(question=get_object_or_404(
-            Question, pk=self.kwargs['question_id'])).order_by('pk')
-        q = self.request.GET.get("answer_search")
-        if q:
-            return answers.filter(answer_text__icontains=q)
+        answers = Answers.objects.filter(question=get_object_or_404(
+            Questions, pk=self.kwargs['question_id'])).order_by(
+            'answer_number')
+        answer_search = self.request.GET.get("answer_search")
+        if answer_search:
+            return answers.filter(answer_text__icontains=answer_search)
         return answers
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['question'] = get_object_or_404(
-            Question, pk=self.kwargs['question_id'])
+            Questions, pk=self.kwargs['question_id'])
         context['q'] = self.request.GET.get("answer_search")
         return context
 
 
 class CreateAnswerView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
-    model = Answer
+    model = Answers
     form_class = AnswerCreateForm
     template_name = 'tutors/answer_create.html'
-    success_message = 'Answers: "%(answer_text)s" was created successfully'
+    success_message = 'Answers: "%(answer_text)s" was created successfully!'
 
     def get_success_url(self):
         return reverse_lazy('tutors:answers_list',
@@ -219,23 +156,26 @@ class CreateAnswerView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['q'] = get_object_or_404(Question,
+        context['q'] = get_object_or_404(Questions,
                                          pk=self.kwargs['question_id'])
         return context
 
-    def form_valid(self, form):
-        obj = form.save(commit=False)
-        form.instance.question = get_object_or_404(Question, pk=self.kwargs[
-            'question_id'])
-        obj.save()
-        return super().form_valid(form)
+    def get_form_kwargs(self):
+        """
+        Function initializes the value of the foreign key
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs['instance'] = Answers(answer_number=get_min_missing_value(
+            'Answer', self.kwargs['question_id']), question=get_object_or_404(
+            Questions, pk=self.kwargs['question_id']))
+        return kwargs
 
 
 class UpdateAnswerView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    model = Answer
+    model = Answers
     form_class = AnswerCreateForm
     template_name = 'tutors/answer_create.html'
-    success_message = 'Answers: "%(answer_text)s" was updated successfully'
+    success_message = 'Answers: "%(answer_text)s" was updated successfully!'
 
     def get_success_url(self):
         return reverse_lazy('tutors:answers_list',
@@ -243,15 +183,15 @@ class UpdateAnswerView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['q'] = get_object_or_404(Question,
+        context['q'] = get_object_or_404(Questions,
                                          pk=self.kwargs['question_id'])
         return context
 
 
 class DeleteAnswerView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
-    model = Answer
+    model = Answers
     template_name = 'tutors/answer_delete.html'
-    success_message = 'Answers: "%(answer_text)s" was deleted successfully'
+    success_message = 'Answers: "%(answer_text)s" was deleted successfully!'
 
     def delete(self, request, *args, **kwargs):
         """

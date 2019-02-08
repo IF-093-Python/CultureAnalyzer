@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}TEXT{% endblock %}
+{% block content %}
+<form action="" method="post" id="test_player">
+    {% csrf_token %}
+    <div class="col-5">
+        <b>Question {{current_question.question_number}}:</b>
+        <p>{{current_question.question_text}}</p>
+        {{form|crispy}}
+    </div>
+    <!-- Navigate between questions-->
+    <div class="col-5 jumbotron">
+        <p>Quiz navigation</p>
+        {% if questions %}
+        {% for question in questions %}
+        <input type='Submit' class="btn btn-outline-info" name="next"
+               value="{{question.question_number}}">
+        {% endfor %}
+        <button type="button" class="btn btn-primary" data-toggle="modal"
+                data-target="#exampleModal">Finish quiz
+        </button>
+        {% endif %}
+    </div>
+</form>
+{% endblock %}

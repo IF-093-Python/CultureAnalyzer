@@ -45,7 +45,7 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{% url 'feedback-list' %}">Feedbacks</a>
                             <a class="dropdown-item" href="{% url 'quiz:quizzes-list' %}">Quizzes</a>
-                            <a class="dropdown-item" href="{% url 'tutors:categories_list' %}">Questions</a>
+                            <a class="dropdown-item" href="{% url 'tutors:questions_list' %}">Questions</a>
                             <a class="dropdown-item" href="{% url 'country_indicator:country_indicator_list' %}">Indicators</a>
                         </div>
                     </li>
@@ -70,7 +70,6 @@
                 {{ message }}
             </div>
             {% endfor %}
-
             {% endif %}
             {% if user.is_authenticated %}
                 {% block content %}
