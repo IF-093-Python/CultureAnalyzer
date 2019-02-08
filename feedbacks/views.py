@@ -46,7 +46,6 @@ class FeedbackUpdateView(LoginRequiredMixin, UpdateView):
 class RecommendationDeleteView(LoginRequiredMixin, DeleteView):
     model = Recommendation
 
-    @transaction.atomic()
     def delete(self, request, *args, **kwargs):
         """Redirect to linked feedback"""
         with transaction.atomic():
@@ -66,7 +65,6 @@ class RecommendationCreateView(LoginRequiredMixin, CreateView):
             return HttpResponseBadRequest('<h1>Invalid request parameters</h1>')
         return super().get(request, *args, *kwargs)
 
-    @transaction.atomic
     def form_valid(self, form):
         with transaction.atomic():
             form.instance.feedback = Feedback.objects.get(
