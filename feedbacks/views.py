@@ -5,7 +5,7 @@ from django.views.generic.edit import DeleteView, UpdateView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 
-from CultureAnalyzer.settings.base_settings import ITEMS_ON_PAGE
+from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
 from CultureAnalyzer.view import SafePaginationListView
 from feedbacks.models import Feedback, Recommendation
 from feedbacks.forms import FeedbackForm, RecommendationForm
