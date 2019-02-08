@@ -16,13 +16,13 @@ __all__ = ['QuestionListView', 'CreateQuestionView', 'UpdateQuestionView',
            'UpdateAnswerView', 'DeleteAnswerView', ]
 
 
-def get_min_missing_value(model):
+def get_min_missing_value(model, filter_id):
     """
-    Function looks for the least missed value of the number to the
-    question/answer in the test among the created questions/answers.
+    Function looks for the least missed value of the number to the question
+    in the test among the created questions.
     :return: minimum missing value
     """
-    list_of_number = get_numbers(model)
+    list_of_number = get_numbers(model, filter_id)
     if not list_of_number:
         return 1
     max_value = int(max(list_of_number[0]))
@@ -32,18 +32,18 @@ def get_min_missing_value(model):
     return max_value + 1
 
 
-def get_numbers(model):
+def get_numbers(model, filter_id):
     """
     :return: values from column 'question_number'/ 'answer_number' as a
     tuple of values.
     """
     if model == 'Question':
         return list(zip(
-            *Questions.objects.values_list('question_number').order_by(
-                'question_number')))
+            *Questions.objects.filter(quiz=filter_id).values_list(
+                'question_number').order_by('question_number')))
     else:
         return list(zip(
-            *Answers.objects.filter(question=model).values_list(
+            *Answers.objects.filter(question=filter_id).values_list(
                 'answer_number').order_by(
                 'answer_number')))
 
@@ -56,10 +56,12 @@ class QuestionListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         """
+        The search for questions is based on fields 'question_number' or
+        'question_text'.
         Returns the queryset of categories that you want to display.
         """
         questions = Questions.objects.all().annotate(
-            num_answer=Count('answers')).order_by('question_number')
+            num_answer=Count('answers')).order_by('quiz', 'question_number')
         question_search = self.request.GET.get("question_search")
         if question_search:
             return questions.filter(
@@ -83,15 +85,15 @@ class CreateQuestionView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     success_url = reverse_lazy('tutors:questions_list')
     success_message = 'Question "№%(number)d" was created successfully!'
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['instance'] = Questions(
-            question_number=get_min_missing_value('Question'))
-        return kwargs
-
     def get_success_message(self, cleaned_data):
         return self.success_message % dict(cleaned_data,
                                            number=self.object.question_number)
+
+    def form_valid(self, form):
+        form.instance.question_number = get_min_missing_value('Question',
+                                                          form.cleaned_data.get(
+                                                              'quiz'))
+        return super(CreateQuestionView, self).form_valid(form)
 
 
 class UpdateQuestionView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -166,8 +168,8 @@ class CreateAnswerView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         """
         kwargs = super().get_form_kwargs()
         kwargs['instance'] = Answers(answer_number=get_min_missing_value(
-            self.kwargs['question_id']), question=get_object_or_404(
-            Questions, pk=self.kwargs['question_id']),)
+            'Answer', self.kwargs['question_id']), question=get_object_or_404(
+            Questions, pk=self.kwargs['question_id']))
         return kwargs
 
 
