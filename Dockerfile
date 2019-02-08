@@ -1,9 +1,9 @@
 FROM python:3.6
 
-RUN mkdir -p /opt/services/CultureAnalyzer
-WORKDIR /opt/services/CultureAnalyzer
+RUN mkdir -p /var/www/CultureAnalyzer
+WORKDIR /var/www/CultureAnalyzer
 
-COPY . /opt/services/CultureAnalyzer
+COPY . /var/www/CultureAnalyzer
 
 #RUN pip install -r requirements.txt
 #RUN ls -l
