@@ -94,6 +94,39 @@ a, a:hover, a:focus {
     box-shadow: 7px 4px 6px 1px rgba(0,0,0,0.75);
 }
 
+@media screen and (max-width: 420px) {
+    .login_form {
+        width: 370px;
+    }
+
+    .input_attr {
+        width: 330px;
+    }
+
+    .img_attr {
+        width: 370px;
+        height: 370px;
+    }
+}
+
+
+@media screen and (max-width: 380px) {
+    .login_form {
+        width: 320px;
+    }
+
+    .input_attr {
+        width: 280px;
+    }
+
+    .img_attr {
+        width: 320px;
+        height: 320px;
+    }
+}
+
+
+
 
 .content-section {
     padding: 10px 20px;
