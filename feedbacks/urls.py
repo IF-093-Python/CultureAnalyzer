@@ -1,6 +1,7 @@
 from django.urls import path
 
 from feedbacks.views import *
+from feedbacks.api_views import *
 
 urlpatterns = [
     path('', FeedbackListView.as_view(), name='feedback-list'),
@@ -17,4 +18,6 @@ urlpatterns = [
          name='recommendation-create'),
     path('recommendation/update/<int:pk>', RecommendationUpdateView.as_view(),
          name='recommendation-update'),
+    path('api', FeedbackList.as_view()),
+    path('api/<int:pk>', FeedbackDetail.as_view()),
 ]
