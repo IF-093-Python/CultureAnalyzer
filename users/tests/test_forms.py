@@ -4,6 +4,7 @@ from django.test import TestCase
 
 from users.forms import ProfileUpdateForm
 
+
 class ProfileFormTest(TestCase):
 
     def test_valid_form(self):
