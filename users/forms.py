@@ -57,7 +57,7 @@ class UserRegisterForm(UserCreationForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
-    image = forms.ImageField(widget=forms.FileInput)
+    image = forms.ImageField(widget=forms.FileInput, required=False)
     experience = forms.IntegerField()
     date_of_birth = forms.DateField(widget=DateInput())
     education = forms.ChoiceField(choices=EDUCATION_CHOICES_EMPTY_LABEL)
