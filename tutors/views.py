@@ -37,15 +37,11 @@ def get_numbers(model, filter_id):
     :return: values from column 'question_number'/ 'answer_number' as a
     tuple of values.
     """
-    if model == 'Question':
-        return list(zip(
-            *Questions.objects.filter(quiz=filter_id).values_list(
-                'question_number').order_by('question_number')))
-    else:
-        return list(zip(
-            *Answers.objects.filter(question=filter_id).values_list(
-                'answer_number').order_by(
-                'answer_number')))
+    if model == 'Questions':
+        return list(zip(*Questions.objects.filter(quiz=filter_id).values_list(
+            'question_number').order_by('question_number')))
+    return list(zip(*Answers.objects.filter(question=filter_id).values_list(
+        'answer_number').order_by('answer_number')))
 
 
 class QuestionListView(LoginRequiredMixin, ListView):
@@ -69,7 +65,7 @@ class QuestionListView(LoginRequiredMixin, ListView):
                     question_number__icontains=question_search))
         return questions
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs):
         """
         Returns context data for displaying the list of categories.
         """
@@ -90,9 +86,9 @@ class CreateQuestionView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
                                            number=self.object.question_number)
 
     def form_valid(self, form):
-        form.instance.question_number = get_min_missing_value('Question',
-                                                          form.cleaned_data.get(
-                                                              'quiz'))
+        form.instance.question_number = get_min_missing_value('Questions',
+                                                              form.cleaned_data.get(
+                                                                  'quiz'))
         return super(CreateQuestionView, self).form_valid(form)
 
 
@@ -130,18 +126,20 @@ class AnswerListView(LoginRequiredMixin, ListView):
     paginate_by = ITEMS_PER_PAGE
 
     def get_queryset(self):
-        answers = Answers.objects.filter(question=get_object_or_404(
-            Questions, pk=self.kwargs['question_id'])).order_by(
+        answers = Answers.objects.filter(question=get_object_or_404(Questions,
+                                                                    pk=
+                                                                    self.kwargs[
+                                                                        'question_id'])).order_by(
             'answer_number')
         answer_search = self.request.GET.get("answer_search")
         if answer_search:
             return answers.filter(answer_text__icontains=answer_search)
         return answers
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['question'] = get_object_or_404(
-            Questions, pk=self.kwargs['question_id'])
+        context['question'] = get_object_or_404(Questions,
+                                                pk=self.kwargs['question_id'])
         context['q'] = self.request.GET.get("answer_search")
         return context
 
@@ -168,8 +166,9 @@ class CreateAnswerView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         """
         kwargs = super().get_form_kwargs()
         kwargs['instance'] = Answers(answer_number=get_min_missing_value(
-            'Answer', self.kwargs['question_id']), question=get_object_or_404(
-            Questions, pk=self.kwargs['question_id']))
+            'Answers', self.kwargs['question_id']),
+            question=get_object_or_404(Questions,
+                                       pk=self.kwargs['question_id']))
         return kwargs
 
 
