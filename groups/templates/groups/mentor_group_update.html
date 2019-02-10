@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-    {% if messages %}
+        {% if messages %}
     <ul class="messages">
         {% for message in messages %}
         <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
@@ -14,12 +14,11 @@
             <button type="submit" class="btn btn-primary; float-left"
                     style="margin-right: 10px; background-color:
                     cornflowerblue">Update group</button>
-            <a class="btn btn-danger" title="Back to all groups"
-               href="{% url 'groups:groups-list' %}">Back</a>
             {{ form|crispy }}
+            <a class="btn btn-danger" title="Back to all groups"
+               href="{% url 'groups:mentor_groups_view' %}">Back</a>
+            <input type="checkbox" name="user" value="5">
             <hr>
         </form>
-
-
     </div>
 {% endblock content %}

@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'indicators',
     'quiz',
     'feedbacks',
-    'admin_support'
 ]
 
 MIDDLEWARE = [

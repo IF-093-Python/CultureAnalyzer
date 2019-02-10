@@ -1,6 +1,5 @@
 from django.urls import path
-from groups.views import GroupsList, CreateGroupView, \
-    DeleteGroupView, UpdateGroupView
+from groups.views import *
 
 app_name = "groups"
 
@@ -11,5 +10,9 @@ urlpatterns = [
          name='delete-group'),
     path('update_group/<int:pk>', UpdateGroupView.as_view(),
          name='update-group'),
+    path('mentor_groups/', MentorGroupsView.as_view(),
+         name='mentor_groups_view'),
+    path('group/<int:pk>/', MentorGroupUpdate.as_view(),
+         name='mentor_group_update'),
 
 ]
