@@ -3,7 +3,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from CultureAnalyzer.settings.base_settings import ITEMS_ON_PAGE
+from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
 from .models import CountryIndicator
 from .forms import CountryIndicatorForm
 
