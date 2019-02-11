@@ -87,7 +87,8 @@ class CreateQuestionView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.question_number = get_min_missing_value('Questions',
-                                                              form.cleaned_data.get(
+                                                              form.
+                                                              cleaned_data.get(
                                                                   'quiz'))
         return super(CreateQuestionView, self).form_valid(form)
 
@@ -108,7 +109,8 @@ class DeleteQuestionView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Questions
     template_name = 'tutors/question_delete.html'
     success_url = reverse_lazy('tutors:questions_list')
-    success_message = 'Question: "%(question_number)s" was deleted successfully!'
+    success_message = 'Question: "%(question_number)s" was deleted ' \
+                      'successfully!'
 
     def delete(self, request, *args, **kwargs):
         """
@@ -126,10 +128,8 @@ class AnswerListView(LoginRequiredMixin, ListView):
     paginate_by = ITEMS_PER_PAGE
 
     def get_queryset(self):
-        answers = Answers.objects.filter(question=get_object_or_404(Questions,
-                                                                    pk=
-                                                                    self.kwargs[
-                                                                        'question_id'])).order_by(
+        answers = Answers.objects.filter(question=get_object_or_404(
+            Questions, pk=self.kwargs['question_id'])).order_by(
             'answer_number')
         answer_search = self.request.GET.get("answer_search")
         if answer_search:
@@ -166,9 +166,8 @@ class CreateAnswerView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         """
         kwargs = super().get_form_kwargs()
         kwargs['instance'] = Answers(answer_number=get_min_missing_value(
-            'Answers', self.kwargs['question_id']),
-            question=get_object_or_404(Questions,
-                                       pk=self.kwargs['question_id']))
+            'Answers', self.kwargs['question_id']), question=get_object_or_404(
+            Questions, pk=self.kwargs['question_id']))
         return kwargs
 
 
