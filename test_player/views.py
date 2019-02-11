@@ -1,12 +1,13 @@
-import json
+import datetime
 
+from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
-from django.contrib import messages
 from django.views.generic import FormView
 
-from .forms import QuestionSaveForm
+from quiz.models import Results, Quizzes
 from tutors.models import Questions
+from .forms import QuestionSaveForm
 
 
 def index(request):
@@ -45,7 +46,7 @@ class TestPlayer(FormView):
         current_answers = current_questions.answers_set.all()
         if self.kwargs['quiz_id'] in self.request.session and self.kwargs[
             'question_number'] in self.request.session[
-                self.kwargs['quiz_id']].keys():
+            self.kwargs['quiz_id']].keys():
             d_answer = self.request.session[self.kwargs['quiz_id']].get(
                 self.kwargs['question_number'])
         else:
@@ -67,16 +68,20 @@ class TestPlayer(FormView):
                     'answers')})
 
         self.request.session[self.kwargs['quiz_id']] = s
-        print(self.request.session.items())
 
         if 'finish' in self.request.POST:
             quiz_id = self.kwargs['quiz_id']
-            result = self.kwargs['quiz_id']
+            user = User.objects.get(pk=self.request.session['_auth_user_id'])
+            quiz = Quizzes.objects.get(pk=quiz_id)
+
             for key in self.request.session[quiz_id]:
                 if self.request.session[quiz_id].get(key) is None:
                     raise ValueError
-                result = json.dumps(result, ensure_ascii=False)
-            print(result)
+                result = {'a_num': int(self.request.session[quiz_id].get(key))}
+                Results.objects.create(user=user, quiz=quiz,
+                                       pass_date=datetime.datetime.now(),
+                                       result=result)
+
         return super(TestPlayer, self).form_valid(form)
 
     def _handle_previous_and_next_questions(self):
