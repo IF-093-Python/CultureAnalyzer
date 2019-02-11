@@ -32,9 +32,9 @@ class CountryIndicator(models.Model):
 
     def save(self, *args, **kwargs):
         self.iso_code = self.iso_code.upper()
-        self.full_clean()  # validate clean when save is called
+        # validate clean when save is called
+        self.full_clean()
         super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.name[:MAX_FIELD_REPRESENTATION]} - {self.iso_code}'
-

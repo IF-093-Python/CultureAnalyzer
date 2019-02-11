@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 
 from quiz.forms import QuizCreateForm
-from quiz.models import *
+from quiz.models import Quizzes, Results
 
 
 class QuizzesList(LoginRequiredMixin, generic.ListView):
@@ -26,7 +26,7 @@ class QuizzesList(LoginRequiredMixin, generic.ListView):
             return redirect('quiz:quizzes-list')
         return result
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs):
         context = super(QuizzesList, self).get_context_data(**kwargs)
         context['search'] = self.search
         return context

@@ -15,8 +15,7 @@ class SafePaginator(Paginator):
         except EmptyPage:
             if number > 1:
                 return self.num_pages
-            else:
-                return 1
+            return 1
 
 
 class FeedbackListView(LoginRequiredMixin, ListView):

@@ -27,9 +27,6 @@ def index(request):
 
 class LoginView(auth_views.LoginView):
 
-    def __init__(self, *args, **kwargs):
-        super(LoginView, self).__init__(*args, **kwargs)
-
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect('home')
@@ -60,10 +57,7 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         """
         current_user = self.get_object()
 
-        if self.request.user == current_user:
-            return True
-        else:
-            return False
+        return bool(self.request.user == current_user)
 
     def get_context_data(self, **kwargs):
         context = super(UserUpdateView, self).get_context_data(**kwargs)
@@ -87,8 +81,7 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             formset.save()
 
             return redirect('home')
-        else:
-            return self.render_to_response(self.get_context_data(form=form))
+        return self.render_to_response(self.get_context_data(form=form))
 
 
 class PasswordChangeView(UpdateView):

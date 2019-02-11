@@ -26,7 +26,7 @@ class CustomProcessFormView(ProcessFormView):
         else:
             if is_deleted_obj:
                 model_obj.save()
-            return self.form_invalid(form)
+        return self.form_invalid(form)
 
 
 class CustomBaseUpdateView(BaseUpdateView,

@@ -1,15 +1,17 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <h1>Create quiz </h1>
-    <div class="container">
-        <form method="post">{% csrf_token %}
-            {{ form|crispy }}
-            <button type="submit" class="btn btn-primary; float-left"
-                    style="margin-right: 10px; background-color: cornflowerblue">Create quiz
-            </button>
-        </form>
-        <a class="btn btn-secondary" title="Back to all quizzes" href="{% url 'quiz:quizzes-list' %}">Cancel</a>
+<h1>Create quiz </h1>
+<div class="container">
+    <form method="post">{% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary; float-left"
+                style="margin-right: 10px; background-color: cornflowerblue">
+            Create quiz
+        </button>
+    </form>
+    <a class="btn btn-secondary" title="Back to all quizzes"
+       href="{% url 'quiz:quizzes-list' %}">Cancel</a>
 
-    </div>
+</div>
 {% endblock content %}
