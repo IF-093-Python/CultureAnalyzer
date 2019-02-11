@@ -12,3 +12,13 @@ class FeedbackList(generics.ListCreateAPIView):
 class FeedbackDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
+
+
+class RecommendationList(generics.ListCreateAPIView):
+    queryset = Recommendation.objects.all()
+    serializer_class = RecommendationSerializer
+
+
+class RecommendationDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Recommendation.objects.all()
+    serializer_class = RecommendationSerializer
