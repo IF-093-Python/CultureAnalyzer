@@ -8,7 +8,7 @@ from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 
 from CultureAnalyzer.settings.default import ITEMS_PER_PAGE
 
-from .forms import *
+from .forms import QuestionCreateForm, AnswerCreateForm
 from .models import Questions, Answers
 
 __all__ = ['QuestionListView', 'CreateQuestionView', 'UpdateQuestionView',
@@ -130,7 +130,7 @@ class AnswerListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         answers = Answers.objects.filter(question=get_object_or_404(
             Questions, pk=self.kwargs['question_id'])).order_by(
-            'answer_number')
+                'answer_number')
         answer_search = self.request.GET.get("answer_search")
         if answer_search:
             return answers.filter(answer_text__icontains=answer_search)
@@ -167,7 +167,7 @@ class CreateAnswerView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         kwargs = super().get_form_kwargs()
         kwargs['instance'] = Answers(answer_number=get_min_missing_value(
             'Answers', self.kwargs['question_id']), question=get_object_or_404(
-            Questions, pk=self.kwargs['question_id']))
+                Questions, pk=self.kwargs['question_id']))
         return kwargs
 
 
