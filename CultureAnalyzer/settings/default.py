@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'crispy_forms',
     'django_cool_paginator',
-    'rest_framework',
 
     'users.apps.UsersConfig',
     'groups',
