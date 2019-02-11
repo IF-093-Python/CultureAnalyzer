@@ -9,8 +9,8 @@ https://docs.djangoproject.com/en/2.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
-
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'crispy_forms',
     'django_cool_paginator',
+    'rest_framework',
 
     'users.apps.UsersConfig',
     'groups',
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'indicators',
     'quiz',
     'feedbacks',
+    'api.apps.ApiConfig'
 ]
 
 MIDDLEWARE = [
@@ -125,3 +127,22 @@ LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
 
 ITEMS_ON_PAGE = 5
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'AUTH_HEADER_TYPES': ('JWT', 'Bearer'),
+}
+
+TEST_RUNNER = 'CultureAnalyzer.tests.CustomTestRunner'

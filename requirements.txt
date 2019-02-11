@@ -1,3 +1,4 @@
+ddt
 Django==2.1.5
 django-cool-pagination==0.3.0
 django-crispy-forms==1.7.2
@@ -5,3 +6,5 @@ Pillow==5.4.1
 psycopg2==2.7.6.1
 psycopg2-binary==2.7.6.1
 pytz==2018.9
+djangorestframework==3.9.1
+djangorestframework-simplejwt==3.3
