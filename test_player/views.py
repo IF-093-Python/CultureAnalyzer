@@ -18,6 +18,8 @@ class TestPlayer(FormView):
     form_class = QuestionSaveForm
 
     def get_success_url(self):
+        if 'next_to' in self.request.POST or 'prev' in self.request.POST:
+            return self._handle_previous_and_next_questions()
         if 'finish' in self.request.POST:
             return reverse_lazy('test_player:test_player')
         return reverse_lazy('test_player:detail',
@@ -32,6 +34,7 @@ class TestPlayer(FormView):
         context['current_question'] = get_object_or_404(
             Questions, quiz_id=self.kwargs['quiz_id'],
             question_number=self.kwargs['question_number'])
+        context['quiz_id'] = self.kwargs['quiz_id']
         return context
 
     def get_form_kwargs(self):
@@ -75,3 +78,29 @@ class TestPlayer(FormView):
                 result = json.dumps(result, ensure_ascii=False)
             print(result)
         return super(TestPlayer, self).form_valid(form)
+
+    def _handle_previous_and_next_questions(self):
+        question_count = Questions.objects.filter(
+            quiz_id=self.kwargs['quiz_id']).count()
+        next_question_number = int(self.kwargs['question_number']) + 1
+        prev_question_number = int(self.kwargs['question_number']) - 1
+
+        if 'next_to' in self.request.POST \
+                and next_question_number <= question_count:
+            return reverse_lazy('test_player:detail',
+                                kwargs={'quiz_id': self.kwargs[
+                                    'quiz_id'], 'question_number':
+                                            next_question_number
+                                        })
+        elif 'prev' in self.request.POST and prev_question_number > 0:
+            return reverse_lazy('test_player:detail',
+                                kwargs={'quiz_id': self.kwargs[
+                                    'quiz_id'], 'question_number':
+                                            prev_question_number
+                                        })
+        else:
+            return reverse_lazy('test_player:detail',
+                                kwargs={'quiz_id': self.kwargs[
+                                    'quiz_id'], 'question_number':
+                                            self.kwargs['question_number']
+                                        })
