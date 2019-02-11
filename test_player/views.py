@@ -1,9 +1,12 @@
+import json
+
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
+from django.contrib import messages
 from django.views.generic import FormView
+
 from .forms import QuestionSaveForm
-from quiz.models import Quizzes
-from tutors.models import Questions, Answers
+from tutors.models import Questions
 
 
 def index(request):
@@ -15,6 +18,8 @@ class TestPlayer(FormView):
     form_class = QuestionSaveForm
 
     def get_success_url(self):
+        if 'finish' in self.request.POST:
+            return reverse_lazy('test_player:test_player')
         return reverse_lazy('test_player:detail',
                             kwargs={'quiz_id': self.kwargs[
                                 'quiz_id'], 'question_number':
@@ -24,26 +29,22 @@ class TestPlayer(FormView):
         context = super().get_context_data(**kwargs)
         context['questions'] = Questions.objects.filter(
             quiz_id=self.kwargs['quiz_id']).order_by('question_number')
-        context['current_question'] = get_object_or_404(Questions,
-                                                        quiz_id=self.kwargs[
-                                                            'quiz_id'],
-                                                        question_number=
-                                                        self.kwargs[
-                                                            'question_number'])
+        context['current_question'] = get_object_or_404(
+            Questions, quiz_id=self.kwargs['quiz_id'],
+            question_number=self.kwargs['question_number'])
         return context
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        current_questions = get_object_or_404(Questions,
-                                              quiz_id=self.kwargs['quiz_id'],
-                                              question_number=self.kwargs[
-                                                  'question_number'])
+        current_questions = get_object_or_404(
+            Questions, quiz_id=self.kwargs['quiz_id'],
+            question_number=self.kwargs['question_number'])
         current_answers = current_questions.answers_set.all()
         if self.kwargs['quiz_id'] in self.request.session and self.kwargs[
-            'question_number'] in self.request.session[self.kwargs[
-            'quiz_id']].keys():
-            d_answer = self.request.session[self.kwargs['quiz_id']].get(self.kwargs[
-                        'question_number'])
+            'question_number'] in self.request.session[
+                self.kwargs['quiz_id']].keys():
+            d_answer = self.request.session[self.kwargs['quiz_id']].get(
+                self.kwargs['question_number'])
         else:
             d_answer = None
         return dict(kwargs, answers=current_answers, default_choice=d_answer)
@@ -56,9 +57,21 @@ class TestPlayer(FormView):
                 quiz=self.kwargs['quiz_id']).values_list(
                 'question_number').order_by('question_number')))[0], None)
             self.request.session[self.kwargs['quiz_id']] = s
-        s.update({
-            self.kwargs['question_number']: form.cleaned_data.get(
-                'answers')})
+
+        if form.cleaned_data.get('answers'):
+            s.update({
+                self.kwargs['question_number']: form.cleaned_data.get(
+                    'answers')})
+
         self.request.session[self.kwargs['quiz_id']] = s
         print(self.request.session.items())
+
+        if 'finish' in self.request.POST:
+            quiz_id = self.kwargs['quiz_id']
+            result = self.kwargs['quiz_id']
+            for key in self.request.session[quiz_id]:
+                if self.request.session[quiz_id].get(key) is None:
+                    raise ValueError
+                result = json.dumps(result, ensure_ascii=False)
+            print(result)
         return super(TestPlayer, self).form_valid(form)
