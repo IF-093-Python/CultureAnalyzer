@@ -1,5 +1,7 @@
 import datetime
+import json
 
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
@@ -73,39 +75,47 @@ class TestPlayer(FormView):
             quiz_id = self.kwargs['quiz_id']
             user = User.objects.get(pk=self.request.session['_auth_user_id'])
             quiz = Quizzes.objects.get(pk=quiz_id)
-
+            timezone.now()
+            date = datetime.datetime.now()
+            result = []
             for key in self.request.session[quiz_id]:
                 if self.request.session[quiz_id].get(key) is None:
                     raise ValueError
-                result = {'a_num': int(self.request.session[quiz_id].get(key))}
-                Results.objects.create(user=user, quiz=quiz,
-                                       pass_date=datetime.datetime.now(),
-                                       result=result)
+                result.append(
+                    {'a_num': int(self.request.session[quiz_id].get(key))})
+            result = json.dumps(result, ensure_ascii=False)
+            Results.objects.create(user=user, quiz=quiz,
+                                   pass_date=date,
+                                   result=result)
+
+        del self.request.session[self.kwargs[
+            'quiz_id']]  # clear session data about passed and saved test
 
         return super(TestPlayer, self).form_valid(form)
 
-    def _handle_previous_and_next_questions(self):
-        question_count = Questions.objects.filter(
-            quiz_id=self.kwargs['quiz_id']).count()
-        next_question_number = int(self.kwargs['question_number']) + 1
-        prev_question_number = int(self.kwargs['question_number']) - 1
 
-        if 'next_to' in self.request.POST \
-                and next_question_number <= question_count:
-            return reverse_lazy('test_player:detail',
-                                kwargs={'quiz_id': self.kwargs[
-                                    'quiz_id'], 'question_number':
-                                            next_question_number
-                                        })
-        elif 'prev' in self.request.POST and prev_question_number > 0:
-            return reverse_lazy('test_player:detail',
-                                kwargs={'quiz_id': self.kwargs[
-                                    'quiz_id'], 'question_number':
-                                            prev_question_number
-                                        })
-        else:
-            return reverse_lazy('test_player:detail',
-                                kwargs={'quiz_id': self.kwargs[
-                                    'quiz_id'], 'question_number':
-                                            self.kwargs['question_number']
-                                        })
+def _handle_previous_and_next_questions(self):
+    question_count = Questions.objects.filter(
+        quiz_id=self.kwargs['quiz_id']).count()
+    next_question_number = int(self.kwargs['question_number']) + 1
+    prev_question_number = int(self.kwargs['question_number']) - 1
+
+    if 'next_to' in self.request.POST \
+            and next_question_number <= question_count:
+        return reverse_lazy('test_player:detail',
+                            kwargs={'quiz_id': self.kwargs[
+                                'quiz_id'], 'question_number':
+                                        next_question_number
+                                    })
+    elif 'prev' in self.request.POST and prev_question_number > 0:
+        return reverse_lazy('test_player:detail',
+                            kwargs={'quiz_id': self.kwargs[
+                                'quiz_id'], 'question_number':
+                                        prev_question_number
+                                    })
+    else:
+        return reverse_lazy('test_player:detail',
+                            kwargs={'quiz_id': self.kwargs[
+                                'quiz_id'], 'question_number':
+                                        self.kwargs['question_number']
+                                    })
