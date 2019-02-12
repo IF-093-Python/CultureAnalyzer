@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import FormView
+from django.contrib import messages
 
 from quiz.models import Results, Quizzes
 from tutors.models import Questions
@@ -80,7 +81,9 @@ class TestPlayer(FormView):
             result = []
             for key in self.request.session[quiz_id]:
                 if self.request.session[quiz_id].get(key) is None:
-                    raise ValueError
+                    messages.info(self.request,
+                                  "You need to answer all the questions!!!")
+                    return super(TestPlayer, self).form_invalid(form)
                 result.append(
                     {'a_num': int(self.request.session[quiz_id].get(key))})
             result = json.dumps(result, ensure_ascii=False)
@@ -88,34 +91,33 @@ class TestPlayer(FormView):
                                    pass_date=date,
                                    result=result)
 
-        del self.request.session[self.kwargs[
-            'quiz_id']]  # clear session data about passed and saved test
+            del self.request.session[self.kwargs[
+                'quiz_id']]  # clear session data about passed and saved test
 
         return super(TestPlayer, self).form_valid(form)
 
+    def _handle_previous_and_next_questions(self):
+        question_count = Questions.objects.filter(
+            quiz_id=self.kwargs['quiz_id']).count()
+        next_question_number = int(self.kwargs['question_number']) + 1
+        prev_question_number = int(self.kwargs['question_number']) - 1
 
-def _handle_previous_and_next_questions(self):
-    question_count = Questions.objects.filter(
-        quiz_id=self.kwargs['quiz_id']).count()
-    next_question_number = int(self.kwargs['question_number']) + 1
-    prev_question_number = int(self.kwargs['question_number']) - 1
-
-    if 'next_to' in self.request.POST \
-            and next_question_number <= question_count:
-        return reverse_lazy('test_player:detail',
-                            kwargs={'quiz_id': self.kwargs[
-                                'quiz_id'], 'question_number':
-                                        next_question_number
-                                    })
-    elif 'prev' in self.request.POST and prev_question_number > 0:
-        return reverse_lazy('test_player:detail',
-                            kwargs={'quiz_id': self.kwargs[
-                                'quiz_id'], 'question_number':
-                                        prev_question_number
-                                    })
-    else:
-        return reverse_lazy('test_player:detail',
-                            kwargs={'quiz_id': self.kwargs[
-                                'quiz_id'], 'question_number':
-                                        self.kwargs['question_number']
-                                    })
+        if 'next_to' in self.request.POST \
+                and next_question_number <= question_count:
+            return reverse_lazy('test_player:detail',
+                                kwargs={'quiz_id': self.kwargs[
+                                    'quiz_id'], 'question_number':
+                                            next_question_number
+                                        })
+        elif 'prev' in self.request.POST and prev_question_number > 0:
+            return reverse_lazy('test_player:detail',
+                                kwargs={'quiz_id': self.kwargs[
+                                    'quiz_id'], 'question_number':
+                                            prev_question_number
+                                        })
+        else:
+            return reverse_lazy('test_player:detail',
+                                kwargs={'quiz_id': self.kwargs[
+                                    'quiz_id'], 'question_number':
+                                            self.kwargs['question_number']
+                                        })
