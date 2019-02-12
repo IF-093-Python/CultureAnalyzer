@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 from .choices import GENDER_CHOICES, EDUCATION_CHOICES
 from .models import Profile, Role
-from .validators import ProfileValidator
+from .validators import ProfileValidator, PValidationError
 
 __all__ = [
     'UserLoginForm',
@@ -69,7 +69,10 @@ class ProfileUpdateForm(forms.ModelForm):
                   'gender']
 
     def clean_experience(self):
-        return ProfileValidator.validate(self.cleaned_data)
+        try:
+            return ProfileValidator.validate(self.cleaned_data)
+        except PValidationError as err:
+            self.add_error('experience', str(err))
 
 
 class UserUpdateForm(forms.ModelForm):

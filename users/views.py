@@ -2,7 +2,6 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
-from django.forms.models import inlineformset_factory
 from django.shortcuts import redirect
 from django.views.generic import CreateView, UpdateView, ListView
 
@@ -13,18 +12,17 @@ from .forms import (
     ChangeRoleForm,
     BlockUserForm,
 )
-from .models import Profile
 
 __all__ = [
     'LoginView',
     'UserRegisterView',
     'UserUpdateView',
     'PasswordChangeView',
+    'AdminListView',
     'ProfileUpdateView',
 ]
 
-ProfileFormSet = inlineformset_factory(User, Profile, form=ProfileUpdateForm,
-                                       can_delete=False)
+SUPER_USER_ID = 1
 
 
 class LoginView(auth_views.LoginView):
@@ -113,7 +111,15 @@ class AdminListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     context_object_name = 'users'
 
     def get_queryset(self):
-        result = User.objects.exclude(profile__role__name='Admin')
+        """Only admin can change role and block another user
+        and only superadmin can change role and block another admins
+        except itself
+        """
+        if self.request.user.id == SUPER_USER_ID:
+            result = User.objects.exclude(pk=self.request.user.id)
+        else:
+            result = User.objects.exclude(profile__role__name='Admin')
+
         if self.request.GET.get('data_search'):
             result = result.filter(
                 username__contains=self.request.GET.get('data_search'))
@@ -126,10 +132,19 @@ class AdminListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
             return False
 
 
-class ProfileUpdateView(UpdateView):
+class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'users/user_detail.html'
     form_class = BlockUserForm
     model = User
+
+    def test_func(self):
+        """Superadmin can`t change own role or block  itself
+        """
+        if self.request.user.profile.role.name == 'Admin' and \
+                self.kwargs['pk'] != SUPER_USER_ID:
+            return True
+        else:
+            return False
 
     def get_context_data(self, **kwargs):
         """
