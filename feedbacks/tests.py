@@ -4,6 +4,8 @@ from ddt import ddt, idata
 from feedbacks.test_form_data import FEEDBACK_INVALID_DATA, FEEDBACK_VALID_DATA
 from feedbacks.forms import FeedbackForm
 
+__all__ = ['FeedbackFormTest', ]
+
 
 def data_generator(const):
     for x in const:

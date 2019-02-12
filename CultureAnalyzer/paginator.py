@@ -1,5 +1,7 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+__all__ = ['SafePaginator', ]
+
 DEFAULT_PAGE = 1
 
 

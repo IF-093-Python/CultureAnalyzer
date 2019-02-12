@@ -2,6 +2,8 @@ from django.views.generic import ListView
 
 from CultureAnalyzer.paginator import SafePaginator
 
+__all__ = ['SafePaginationListView', ]
+
 
 class SafePaginationListView(ListView):
     paginator_class = SafePaginator

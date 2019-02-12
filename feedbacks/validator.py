@@ -1,5 +1,7 @@
 from feedbacks.exceptions import FValidationError
 
+__all__ = ['FeedbackValidator', ]
+
 
 class FeedbackValidator:
     @staticmethod
