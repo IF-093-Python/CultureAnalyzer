@@ -1,11 +1,10 @@
-import django_filters
-
 from django.contrib.auth.models import User
+from django_filters import FilterSet
 
 from CultureAnalyzer.constants import SUPER_USER_ID
 
 
-class UserFilter(django_filters.FilterSet):
+class UserFilter(FilterSet):
     class Meta:
         model = User
         fields = ['username', 'is_active']
