@@ -1,6 +1,3 @@
-from .base_settings import *
-
-
 DEBUG = False
 ALLOWED_HOSTS = ['*']
 
@@ -11,3 +8,14 @@ STATIC_ROOT = "/var/www/CultureAnalyzer/static/"
 
 # do the same for media files, it must match /opt/services/djangoapp/media/
 MEDIA_ROOT = "/var/www/CultureAnalyzer/media/"
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'culture_analyzer',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
+    }
+}
