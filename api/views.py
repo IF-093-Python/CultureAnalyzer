@@ -4,6 +4,8 @@ from rest_framework import generics
 
 from feedbacks.models import Feedback, Recommendation
 from feedbacks.serializers import FeedbackSerializer, RecommendationSerializer
+from indicators.models import CountryIndicator
+from indicators.serializers import CountryIndicatorSerializer
 
 
 @api_view(['GET'])
@@ -29,3 +31,13 @@ class RecommendationList(generics.ListCreateAPIView):
 class RecommendationDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Recommendation.objects.all()
     serializer_class = RecommendationSerializer
+
+
+class CountryIndicatorList(generics.ListCreateAPIView):
+    queryset = CountryIndicator.objects.all()
+    serializer_class = CountryIndicatorSerializer
+
+
+class CountryIndicatorDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = CountryIndicator.objects.all()
+    serializer_class = CountryIndicatorSerializer

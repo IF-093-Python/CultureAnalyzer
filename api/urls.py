@@ -4,7 +4,8 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView
 )
 from api.views import (FeedbackList, FeedbackDetail, RecommendationList,
-                       RecommendationDetail)
+                       RecommendationDetail, CountryIndicatorDetail,
+                       CountryIndicatorList)
 
 from .views import protected_view
 
@@ -17,5 +18,7 @@ urlpatterns = [
     path('feedbacks/<int:pk>', FeedbackDetail.as_view()),
     path('recommendations', RecommendationList.as_view()),
     path('recommendations/<int:pk>', RecommendationDetail.as_view()),
-    path('protected/', protected_view)
+    path('indicators', CountryIndicatorList.as_view()),
+    path('indicators/<int:pk>', CountryIndicatorDetail),
+    path('protected/', protected_view),
 ]
