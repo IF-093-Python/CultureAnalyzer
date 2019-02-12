@@ -9,9 +9,12 @@ class SafePaginator(Paginator):
         page_number = DEFAULT_PAGE
         try:
             page_number = int(number)
+            self.validate_number(page_number)
         except (PageNotAnInteger, ValueError):
             pass
         except EmptyPage:
-            if number > 1:
+            if page_number > 1:
                 page_number = self.num_pages
+            else:
+                page_number = DEFAULT_PAGE
         return super(SafePaginator, self).page(page_number)
