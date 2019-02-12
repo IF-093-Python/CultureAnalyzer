@@ -10,7 +10,7 @@ addons:
     organization: "$ORGANIZATION"
     token:
       secure: "$SONAR_TOKEN"
-  ssh_known_hosts: "$DEPLOY_HOSTNAME":"$DEPLOY_PORT"
+  ssh_known_hosts: "$DEPLOY_HOSTNAME:$DEPLOY_PORT"
 
 before_install:
 - export DJANGO_SETTINGS_MODULE=CultureAnalyzer.settings
