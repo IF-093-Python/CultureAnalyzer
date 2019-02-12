@@ -20,6 +20,9 @@ install:
   - pip install pylint
   - pip install pylint-django
   - pip install coverage
+  - pip install fabric==2.3.1
+  - pip install cryptography==2.4.2
+
 
 script:
   - coverage erase
@@ -33,3 +36,9 @@ notifications:
       - test.mail.client008@gmail.com
     on_success: always
     on_failure: always
+
+deploy:
+  provider: script
+  script: fab deploy
+  on:
+    branch: auto_deploy
