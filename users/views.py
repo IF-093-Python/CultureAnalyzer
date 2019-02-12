@@ -12,6 +12,8 @@ from .forms import (
     ChangeRoleForm,
     BlockUserForm,
 )
+from .filters import admin_search
+from CultureAnalyzer.constants import SUPER_USER_ID
 
 __all__ = [
     'LoginView',
@@ -22,13 +24,8 @@ __all__ = [
     'ProfileUpdateView',
 ]
 
-SUPER_USER_ID = 1
-
 
 class LoginView(auth_views.LoginView):
-
-    def __init__(self, *args, **kwargs):
-        super(LoginView, self).__init__(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -111,19 +108,7 @@ class AdminListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     context_object_name = 'users'
 
     def get_queryset(self):
-        """Only admin can change role and block another user
-        and only superadmin can change role and block another admins
-        except itself
-        """
-        if self.request.user.id == SUPER_USER_ID:
-            result = User.objects.exclude(pk=self.request.user.id)
-        else:
-            result = User.objects.exclude(profile__role__name='Admin')
-
-        if self.request.GET.get('data_search'):
-            result = result.filter(
-                username__contains=self.request.GET.get('data_search'))
-        return result
+        return admin_search(self.request)
 
     def test_func(self):
         if self.request.user.profile.role.name == 'Admin':

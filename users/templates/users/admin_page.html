@@ -5,16 +5,15 @@
 <div class="container">
     <div class="row justify-content-md-center">
         <div class="col-md-6">
-            <form class="form-inline mb-5" method="get">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
-                       name="data_search">
+            <form method="get">
+                {{ users.form|crispy }}
                 <div class="btn-toolbar">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </div>
                 <br>
             </form>
             <ul class="user_list">
-                {% for user in users %}
+                {% for user in users.qs %}
                 <li><a href="{% url 'change-profile' user.id %}">
 
                     {% if user.profile.image %}
