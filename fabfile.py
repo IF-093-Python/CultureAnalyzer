@@ -1,6 +1,6 @@
 import os
 from fabric import task
-from paramiko import SSHClient
+from paramiko import SSHClient, AutoAddPolicy
 
 env = os.environ
 
@@ -10,6 +10,7 @@ def deploy(ctx):
     print('-> Run fab deploy <-')
     ssh_client = SSHClient()
     ssh_client.load_system_host_keys()
+    ssh_client.set_missing_host_key_policy(AutoAddPolicy())
     ssh_client.connect(username=env['DEPLOY_USERNAME'],
                        hostname=env['DEPLOY_HOSTNAME'],
                        port=env['DEPLOY_PORT'],
