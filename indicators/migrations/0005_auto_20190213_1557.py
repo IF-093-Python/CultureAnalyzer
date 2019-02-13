@@ -6,7 +6,6 @@ import re
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('indicators', '0004_auto_20190201_1435'),
     ]
@@ -15,6 +14,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='countryindicator',
             name='iso_code',
-            field=models.CharField(max_length=3, unique=True, validators=[django.core.validators.RegexValidator(re.compile('^[a-z]{3}$', 2))]),
+            field=models.CharField(max_length=3, unique=True, validators=[
+                django.core.validators.RegexValidator(
+                    re.compile('^[a-z]{3}$', 2))]),
         ),
     ]
