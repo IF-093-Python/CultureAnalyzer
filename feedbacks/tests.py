@@ -28,8 +28,6 @@ class FeedbackFormTest(TestCase):
 
 
 class FeedbackListViewTest(DjangoTestCase):
-    fixtures = ('users/fixtures/fixtures.json',)
-
     def setUp(self):
         User.objects.create_user('user', password='test').save()
 
