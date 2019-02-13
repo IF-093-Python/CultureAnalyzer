@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('quiz', '0001_initial'),
     ]
@@ -17,6 +16,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='quizzes',
             name='type_of_quiz',
-            field=models.IntegerField(choices=[(1, 'Business'), (2, 'General')], default=1),
+            field=models.IntegerField(
+                choices=[(1, 'Business'), (2, 'General')], default=1),
         ),
     ]

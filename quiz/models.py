@@ -8,8 +8,8 @@ TYPE_OF_QUIZ = ((1, 'Business'), (2, 'General'))
 
 class Quizzes(models.Model):
     title = models.CharField(max_length=100, null=False)
-    description = models.CharField(max_length=100, null=False)
-    type_of_quiz = models.IntegerField(choices=TYPE_OF_QUIZ, default=1)
+    description = models.TextField(null=False)
+    type_of_quiz = models.CharField(choices=TYPE_OF_QUIZ, max_length=20)
 
     def __str__(self):
         return self.title
