@@ -3,6 +3,8 @@ from django.test import TestCase
 from tutors.forms import QuestionCreateForm, AnswerCreateForm
 from quiz.models import Quizzes
 
+__all__ = ['QuestionFormTest', 'AnswerCreateForm', ]
+
 
 class QuestionFormTest(TestCase):
 

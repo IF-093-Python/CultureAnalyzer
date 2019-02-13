@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -111,6 +112,7 @@ class DeleteQuestionView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     success_message = 'Question: "%(question_number)s" was deleted ' \
                       'successfully!'
 
+    @transaction.atomic()
     def delete(self, request, *args, **kwargs):
         """
         Returns context data about success deleted question in message.
@@ -191,6 +193,7 @@ class DeleteAnswerView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     template_name = 'tutors/answer_delete.html'
     success_message = 'Answers: "%(answer_text)s" was deleted successfully!'
 
+    @transaction.atomic()
     def delete(self, request, *args, **kwargs):
         """
         Returns context data about success deleted answer in message.
