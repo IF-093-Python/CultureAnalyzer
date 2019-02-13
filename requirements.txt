@@ -1,4 +1,3 @@
-ddt
 Django==2.1.5
 django-cool-pagination==0.3.0
 django-crispy-forms==1.7.2
