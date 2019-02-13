@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import CASCADE
-from quiz.choices import TYPE_OF_QUIZ
+
+
+TYPE_OF_QUIZ = ((1, 'Business'), (2, 'General'))
 
 
 class Quizzes(models.Model):
