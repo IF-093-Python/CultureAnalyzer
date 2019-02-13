@@ -1,6 +1,6 @@
 {% block success_message %}
 {% if messages %}
-<ul class="alert alert-primary alert-dismissible fade show my-1"
+<ul class="alert alert-danger alert-dismissible fade show my-1"
     role="alert">
     {% for message in messages %}
     <a {% if message.tags %} class="{{message.tags}}" {% endif %}>
