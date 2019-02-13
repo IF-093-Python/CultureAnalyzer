@@ -104,6 +104,13 @@ class UpdateQuestionView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return self.success_message % dict(cleaned_data,
                                            number=self.object.question_number)
 
+    def form_valid(self, form):
+        form.instance.question_number = get_min_missing_value('Questions',
+                                                              form.
+                                                              cleaned_data.get(
+                                                                  'quiz'))
+        return super(UpdateQuestionView, self).form_valid(form)
+
 
 class DeleteQuestionView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Questions
