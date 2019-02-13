@@ -174,7 +174,7 @@ class CreateAnswerView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         kwargs = super().get_form_kwargs()
         kwargs['instance'] = Answers(answer_number=get_min_missing_value(
             'Answers', self.kwargs['question_id']), question=Questions(
-            self.kwargs['question_id']))
+                self.kwargs['question_id']))
         return kwargs
 
 
