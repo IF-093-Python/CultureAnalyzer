@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.views.generic import CreateView, UpdateView, ListView
 
+from CultureAnalyzer.constants import SUPER_USER_ID
+from .filters import admin_search
 from .forms import (
     UserRegisterForm,
     UserUpdateForm,
@@ -12,8 +14,6 @@ from .forms import (
     ChangeRoleForm,
     BlockUserForm,
 )
-from .filters import admin_search
-from CultureAnalyzer.constants import SUPER_USER_ID
 
 __all__ = [
     'LoginView',
@@ -123,13 +123,18 @@ class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = User
 
     def test_func(self):
-        """Superadmin can`t change own role or block  itself
+        """Admin can change role and block users except admins
+
+        Superuser can`t change own role and block itself
         """
-        if self.request.user.profile.role.name == 'Admin' and \
+        if self.request.user.id == SUPER_USER_ID and \
                 self.kwargs['pk'] != SUPER_USER_ID:
             return True
-        else:
-            return False
+        elif self.request.user.profile.role.name == 'Admin' and User.objects.get(
+                pk=self.kwargs['pk']).profile.role.name != 'Admin':
+            return True
+
+        return False
 
     def get_context_data(self, **kwargs):
         """

@@ -3,6 +3,8 @@ from django_filters import FilterSet
 
 from CultureAnalyzer.constants import SUPER_USER_ID
 
+__all__ = ['admin_search']
+
 
 class UserFilter(FilterSet):
     class Meta:
@@ -11,15 +13,14 @@ class UserFilter(FilterSet):
 
 
 def admin_search(request):
-    """Only admin can change role and block another user
-    and only superadmin can change role and block another admins
-    except itself
+    """Admin can see all users except other admins
+    if admin is superuser he can see all users (even admins) except himself
     """
-    result = User.objects.exclude(profile__role__name='Admin')
+    users_in_view = User.objects.exclude(profile__role__name='Admin')
 
     if request.user.id == SUPER_USER_ID:
-        result = User.objects.exclude(pk=request.user.id)
+        users_in_view = User.objects.exclude(pk=request.user.id)
 
-    result_filter = UserFilter(request.GET, queryset=result)
+    filtered_users = UserFilter(request.GET, queryset=users_in_view)
 
-    return result_filter
+    return filtered_users
