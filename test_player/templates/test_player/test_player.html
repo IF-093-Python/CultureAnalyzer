@@ -4,6 +4,18 @@
 {% block title %}TEST{% endblock %}
 {% block content %}
 <div class="container">
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <div class="alert alert-danger" role="alert">
+            <li
+            {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        </div>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
     <form action="" method="post" id="test_player">
         <div class="row">
             {% csrf_token %}
@@ -34,8 +46,35 @@
                        value="{{question.question_number}}"
                        style="margin-top: 3px;">
                 {% endfor %}
-                <button type="Submit" class="btn btn-primary" name="finish" style="margin-top: 3px;">Finish quiz
+                <br>
+
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"
+                        style="margin-top: 3px;">
+                    Finish quiz
                 </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Finishing quiz</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Do you want to finish quiz?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
+                                <button type="Submit" name="finish" class="btn btn-primary">Submit finish</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {% endif %}
             </div>
         </div>
