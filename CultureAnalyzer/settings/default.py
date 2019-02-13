@@ -124,3 +124,5 @@ LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
 
 ITEMS_ON_PAGE = 5
+
+TEST_RUNNER = 'CultureAnalyzer.tests.CustomTestRunner'
