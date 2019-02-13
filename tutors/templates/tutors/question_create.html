@@ -2,7 +2,15 @@
 {% load crispy_forms_tags %}
 {% block title %}Creat/Update question{% endblock %}
 {% block content %}
-    <div class="container">
-        {% crispy form %}
-    </div>
+<div class="container">
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="Submit" class="btn btn-success mt-3 float-left">
+            Save
+        </button>
+    </form>
+    <a class="btn btn-outline-success mt-3 ml-1" title="Back to all questions"
+       href="{%url 'tutors:questions_list'%}">Cancel</a>
+</div>
 {% endblock %}

@@ -5,7 +5,6 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
-
 from CultureAnalyzer.settings.default import ITEMS_PER_PAGE
 
 from .forms import QuestionCreateForm, AnswerCreateForm
@@ -54,7 +53,7 @@ class QuestionListView(LoginRequiredMixin, ListView):
         """
         The search for questions is based on fields 'question_number' or
         'question_text'.
-        Returns the queryset of categories that you want to display.
+        Returns the queryset of questions that you want to display.
         """
         questions = Questions.objects.all().annotate(
             num_answer=Count('answers')).order_by('quiz', 'question_number')
@@ -67,7 +66,7 @@ class QuestionListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         """
-        Returns context data for displaying the list of categories.
+        Returns context data for displaying the list of questions.
         """
         context = super().get_context_data(**kwargs)
         context['q'] = self.request.GET.get("question_search")
@@ -114,7 +113,7 @@ class DeleteQuestionView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         """
-        Returns context data about success deleted category in message.
+        Returns context data about success deleted question in message.
         """
         obj = self.get_object()
         messages.success(self.request, self.success_message % obj.__dict__)
@@ -128,9 +127,8 @@ class AnswerListView(LoginRequiredMixin, ListView):
     paginate_by = ITEMS_PER_PAGE
 
     def get_queryset(self):
-        answers = Answers.objects.filter(question=get_object_or_404(
-            Questions, pk=self.kwargs['question_id'])).order_by(
-                'answer_number')
+        answers = Answers.objects.filter(
+            question=self.kwargs['question_id']).order_by('answer_number')
         answer_search = self.request.GET.get("answer_search")
         if answer_search:
             return answers.filter(answer_text__icontains=answer_search)
@@ -166,8 +164,8 @@ class CreateAnswerView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         """
         kwargs = super().get_form_kwargs()
         kwargs['instance'] = Answers(answer_number=get_min_missing_value(
-            'Answers', self.kwargs['question_id']), question=get_object_or_404(
-                Questions, pk=self.kwargs['question_id']))
+            'Answers', self.kwargs['question_id']), question=Questions(
+            self.kwargs['question_id']))
         return kwargs
 
 
