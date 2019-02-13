@@ -121,4 +121,5 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
 
-ITEMS_PER_PAGE = 5
+
+TEST_RUNNER = 'CultureAnalyzer.tests.CustomTestRunner'
