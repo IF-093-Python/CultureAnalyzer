@@ -28,7 +28,7 @@ urlpatterns = [
     path('groups/',include('groups.urls',namespace='groups')),
 
     path('test_player/', include('test_player.urls')),
-
+    path('api/', include('api.urls'))
 ]
 
 if settings.DEBUG:
