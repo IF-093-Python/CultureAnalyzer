@@ -16,7 +16,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
         try:
             FeedbackValidator.validate_min_value(data)
         except FValidationError as err:
-            raise serializers.ValidationError(str(err))
+            raise serializers.ValidationError({'min_value': str(err)})
         return data
 
 
