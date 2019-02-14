@@ -60,6 +60,15 @@
                             <a class="dropdown-item" href="{% url 'admin' %}">Admin page</a>
                         </div>
                     </li>
+                    {% elif user.profile.role.name == 'Trainee' %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-item nav-link dropdown-toggle ite" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
+                            Test
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'test_player:start_test' %}">Start Test</a>
+                        </div>
+                    </li>
                     {% endif %}
                     <a class="nav-item nav-link" href="{% url 'profile' request.user.id %}">{{ request.user.username }}</a>
                     <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
