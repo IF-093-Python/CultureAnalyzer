@@ -10,11 +10,11 @@
             <li>
                 <div class="row" style="margin: 0 auto">
                     <p>
-                {% if user.profile.image %}
-                    <img src="{{ user.profile.image.url }}" alt="" class="circle_text">
-                {% else %}
-                    <img src="{% static 'default.png' %}" alt="" class="circle_text">
-                {% endif %}</p>
+                        {% if user.profile.image %}
+                            <img src="{{ user.profile.image.url }}" alt="" class="circle_text">
+                        {% else %}
+                            <img src="{% static 'default.png' %}" alt="" class="circle_text">
+                        {% endif %}</p>
                     {% if user.is_authenticated %}
                         <p style="margin-top: 15px;">{{ user.username }}</p>
                     {% else %}
@@ -37,6 +37,9 @@
                 </li>
                 <li>
                     <a href="{% url 'tutors:questions_list' %}">Questions</a>
+                </li>
+                <li>
+                    <a href="{% url 'groups:groups-list' %}">Groups</a>
                 </li>
                 <li>
                     <a href="{% url 'country_indicator:country_indicator_list' %}">Indicators</a>
@@ -77,7 +80,7 @@
             <div class="row">
                 <ul class="nav ml-auto">
                     {% if user.is_authenticated %}
-                        <li class="nav-item"><a  class="nav-link" href="{% url 'home' %}">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'profile' user.id %}">
                             {{ user.username }}({{ user.profile.role.name }})
                         </a></li>
