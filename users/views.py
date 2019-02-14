@@ -14,7 +14,6 @@ from .forms import (
     ChangeRoleForm,
     BlockUserForm,
 )
-
 __all__ = [
     'LoginView',
     'UserRegisterView',
