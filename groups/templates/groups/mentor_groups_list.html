@@ -30,22 +30,15 @@
     </thead>
     <tbody>
     {% if group_list %}
-     <form method="post" name="q">
-     {% csrf_token %}
         {% for group in group_list %}
 
       <tr>
         <td>
-            <input type="checkbox" name="group" value="{{ group.pk }}">
             <a href="{% url 'groups:mentor_group_update' group.pk %}">{{ group }}</a>
         </td>
         <td>{{ group.total }}</td>
       </tr>
     {% endfor %}
-     <button type="submit" class="btn btn-primary; float-left"
-                    style="margin-right: 10px; background-color:
-                    cornflowerblue">Update list</button>
-      </form>
         <br>
     {% else %}
         {% if search %}

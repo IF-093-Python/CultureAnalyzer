@@ -10,16 +10,10 @@
           </ul>
         {% endif %}
     <h1>Update group "{{ group.name }}"</h1>
-
-
-
     {% block users %}
         <div class="container-fluid bg-1 main col-md-10">
-
         <a class="btn btn-danger" title="Back to all groups"
-               href="{% url 'groups:mentor_groups_view' %}">Back</a>
-        <a class="btn btn-success" title="Add user to group"
-               href="{% url 'groups:mentor_group_add' group.pk %}">&#10010; Add</a>
+               href="{% url 'groups:mentor_group_update' group.pk %}">Back</a>
      {% if users %}
 <table class="table table-hover table-striped table-bordered table-sm">
     <thead class="thead-light">
@@ -34,12 +28,17 @@
      {% csrf_token %}
     <button type="submit" class="btn btn-primary; float-left"
                     style="margin-right: 4px; background-color:
-                    cornflowerblue">Update group</button>
+                    cornflowerblue">Add users</button>
+
+        {% for user in added_users %}
+        <input type="checkbox" name="user" style="visibility: hidden"
+               value="{{ user.profile.pk }}" checked>
+        {% endfor %}
 
         {% for user in users %}
       <tr>
         <td>
-            <input type="checkbox" name="user" value="{{ user.profile.pk }}" checked>
+            <input type="checkbox" name="user" value="{{ user.profile.pk }}">
         </td>
       <td>{{ user.last_name }} {{ user.first_name }} ({{ user.username }})</td>
       <td>
@@ -60,34 +59,13 @@
         {% if search %}
             <p>There are no results that match your search.</p>
         {% else %}
-            <p>You have no students in this group yet.</p>
+            <p>There are no avialable students to add to this group yet.</p>
         {% endif %}
     {% endif %}
 
-
-        {% if is_paginated %}
-  <ul class="pagination">
-    {% if page_obj.has_previous %}
-      <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a>&nbsp;&nbsp;</li>
-    {% else %}
-      <li class="disabled"><span>&laquo;</span>&nbsp;&nbsp;</li>
-    {% endif %}
-    {% for i in paginator.page_range %}
-      {% if page_obj.number == i %}
-        <li class="active" style="color: #cd0a0a"><span>{{ i }} <span class="sr-only">(current)</span>&nbsp;</span></li>
-      {% else %}
-        <li><a href="?page={{ i }}"> {{ i }} </a>&nbsp;</li>
-      {% endif %}
-    {% endfor %}
-    {% if page_obj.has_next %}
-      <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-    {% else %}
-      <li class="disabled"><span>&raquo;</span></li>
-    {% endif %}
-  </ul>
-{% endif %}
-            </tbody>
+    </tbody>
 </table>
+
         </div>
     {% endblock users %}
 {% endblock content %}

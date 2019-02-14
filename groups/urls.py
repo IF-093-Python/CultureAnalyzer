@@ -14,5 +14,7 @@ urlpatterns = [
          name='mentor_groups_view'),
     path('group/<int:pk>/', MentorGroupUpdate.as_view(),
          name='mentor_group_update'),
+    path('group/add/<int:pk>/', MentorGroupAdd.as_view(),
+         name='mentor_group_add'),
 
 ]

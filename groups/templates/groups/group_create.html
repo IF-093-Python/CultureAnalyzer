@@ -1,18 +1,104 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load staticfiles %}
 {% block content %}
-    <h1>Create group </h1>
-    <div class="container">
-        <form method="post">{% csrf_token %}
-            <button type="submit" class="btn btn-primary; float-left"
-                    style="margin-right: 10px; background-color:
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <h1>Create group</h1>
+  <div class="container-fluid bg-1 main col-md-10">
+  <div class="float-right">
+    <form class="form-inline my-2 my-lg-0" method="get" action="">
+      <input class="form-control mr-sm-2" type="search"
+             placeholder="{{ search_label }}" aria-label="Search"
+             name="data_search">
+      <div class="btn-toolbar">
+        <button class="btn btn-outline-success my-2 my-sm-0"
+                style="margin-right: 10px;" type="submit">Search</button>
+        <a class="btn btn-outline-danger my-2 my-sm-0"
+           href ={% url 'groups:create-group'%}>Clear</a>
+      </div>
+      <br>
+    </form>
+  </div>
+  <br>
+  {% block users %}
+      {% if mentors %}
+        <table class="table table-hover table-striped table-bordered table-sm">
+          <thead class="thead-light">
+            <tr>
+              <th style="width: 1%"> </th>
+              <th>Name</th>
+              <th style="width: 1%">Photo</th>
+            </tr>
+          </thead>
+      {% endif %}
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary; float-left"
+            style="margin-right: 4px; background-color:
                     cornflowerblue">Create group</button>
-            <a class="btn btn-danger" title="Back to all groups"
-           href="{% url 'groups:groups-list' %}">Cancel</a>
-            {{ form|crispy }}
-            <hr>
-        </form>
-
-
-    </div>
+    <a class="btn btn-danger" title="Back to all groups"
+       href="{% url 'groups:groups-list' %}">Back</a>
+    {{ form.name|as_crispy_field }}
+    <hr>
+    {% if search %}
+        <b>Search results for "{{ search_label }}":</b>
+        {% else %}
+        <b>Mentors:</b>
+    {% endif %}
+    {% if not mentors %}
+      {% if search %}
+        <p>There are no results that match your search.</p>
+      {% else %}
+        <p>There are no available mentors for this group yet.</p>
+      {% endif %}
+    {% endif %}
+<tbody>
+    {% for user in mentors %}
+        <tr>
+          <td>
+            <input type="checkbox" name="mentor" value="{{ user.profile.pk }}">
+          </td>
+          <td>{{ user.last_name }} {{ user.first_name }}
+              ({{ user.username }})
+          </td>
+          <td>
+            {% if user.profile.image %}
+              <img src="{{ user.profile.image.url }}" alt=""
+                   class="circle_text" style="margin-left: -10px;">
+            {% else %}
+               <img src="{%static 'default.png'%}" alt="" class="circle_text" style="margin-left: -10px;">
+            {% endif %}
+    {% endfor %}
+  </form>
+</tbody>
+</table>
+{% if is_paginated %}
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a>&nbsp;&nbsp;</li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span>&nbsp;&nbsp;</li>
+    {% endif %}
+    {% for i in paginator.page_range %}
+      {% if page_obj.number == i %}
+        <li class="active" style="color: #cd0a0a"><span>{{ i }} <span class="sr-only">(current)</span>&nbsp;</span></li>
+      {% else %}
+        <li><a href="?page={{ i }}"> {{ i }} </a>&nbsp;</li>
+      {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+      <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+</div>
+{% endblock users %}
 {% endblock content %}
