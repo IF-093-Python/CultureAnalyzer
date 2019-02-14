@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load cool_paginate %}
+
 {% block title %}Countries indicators list{% endblock %}
 
 {% block content %}
@@ -43,16 +45,16 @@
               <th scope="row">{{ forloop.counter0|add:page_obj.start_index }}</th>
               <td>{{ indicator.iso_code }}</td>
               <td>{{ indicator.name }}</td>
-              <td>{{ indicator.PDI }}</td>
-              <td>{{ indicator.IND }}</td>
-              <td>{{ indicator.MAS }}</td>
-              <td>{{ indicator.UAI }}</td>
-              <td>{{ indicator.LTO }}</td>
-              <td>{{ indicator.IVR }}</td>
+              <td>{{ indicator.pdi }}</td>
+              <td>{{ indicator.ind }}</td>
+              <td>{{ indicator.mas }}</td>
+              <td>{{ indicator.uai }}</td>
+              <td>{{ indicator.lto }}</td>
+              <td>{{ indicator.ivr }}</td>
 
               <td>
                 <a class="btn btn-primary" href="{% url 'country_indicator:country_indicator_update' indicator.pk %}" role="button"><span class="fas fa-edit"></span> </a>
-                <a class="btn btn-primary" href="{% url 'country_indicator:country_indicator_delete' indicator.pk %}" role="button"><span class="fas fa-trash-alt"></span></a>
+                <a class="btn btn-danger" href="{% url 'country_indicator:country_indicator_delete' indicator.pk %}" role="button"><span class="fas fa-trash-alt"></span></a>
               </td>
             </tr>
           {% empty %}
@@ -61,7 +63,9 @@
           </tbody>
         </table>
 
-      {% include "indicators/pagination.html" with page=page_obj %}
+    {% if is_paginated %}
+        {% cool_paginate page_obj=page_obj %}
+    {% endif %}
 
 
 {% endblock %}

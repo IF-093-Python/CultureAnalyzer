@@ -1,64 +1,61 @@
-from django.test import TestCase
+from unittest import TestCase
+from ddt import ddt, idata, data
+from django.test import TestCase as DjangoTestCase
+from django.contrib.auth.models import User
 
-from feedbacks.models import Feedback, Recommendation
+from feedbacks.test_form_data import FEEDBACK_INVALID_DATA, FEEDBACK_VALID_DATA
+from feedbacks.models import Feedback
 from feedbacks.forms import FeedbackForm
 
-
-class FeedbackTestCase(TestCase):
-    def setUp(self):
-        Feedback.objects.create(feedback='Some useful feedback', min_value=5,
-                                max_value=10, indicator='PDI')
-        Feedback.objects.create(feedback='Some useless feedback', min_value=0,
-                                max_value=15, indicator='IND')
-
-    def test_values(self):
-        useful = Feedback.objects.get(feedback='Some useful feedback')
-        useless = Feedback.objects.get(feedback='Some useless feedback')
-        self.assertEqual(useful.indicator, 'PDI')
-        self.assertEqual(useless.max_value, 15)
+__all__ = ['FeedbackFormTest', ]
 
 
+def form_data_generator(data):
+    for x in data:
+        yield x
+
+
+@ddt
 class FeedbackFormTest(TestCase):
-    def test_valid_form(self):
-        form = FeedbackForm(data={
-            'feedback': 'Some valid feedback',
-            'min_value': 0,
-            'max_value': 10,
-            'indicator': 'PDI',
-        })
+    @idata(form_data_generator(FEEDBACK_VALID_DATA))
+    def test_valid_form(self, value):
+        form = FeedbackForm(data=value)
         self.assertTrue(form.is_valid())
 
-    def test_invalid_form(self):
-        form = FeedbackForm(data={
-            'feedback': 'Some invalid feedback',
-            'min_value': 0,
-            'max_value': 10,
-            'indicator': 'DSA',
-        })
-        self.assertFalse(form.is_valid())
-        form = FeedbackForm(data={
-            'feedback': 'Some invalid feedback',
-            'min_value': 20,
-            'max_value': 10,
-            'indicator': 'PDI',
-        })
+    @idata(form_data_generator(FEEDBACK_INVALID_DATA))
+    def test_invalid_form(self, value):
+        form = FeedbackForm(data=value)
         self.assertFalse(form.is_valid())
 
 
-class RecommendationTestCase(TestCase):
+@ddt
+class FeedbackListViewTest(DjangoTestCase):
     def setUp(self):
-        Feedback.objects.create(feedback='Some useful feedback', min_value=5,
-                                max_value=10, indicator='PDI')
-        Recommendation.objects.create(
-            recommendation='It is a good advice',
-            feedback=Feedback.objects.get(feedback='Some useful feedback'))
-        Recommendation.objects.create(
-            recommendation='It is a bad advice',
-            feedback=Feedback.objects.get(feedback='Some useful feedback'))
+        User.objects.create_user('user', password='test').save()
+        for i in range(10):
+            Feedback.objects.create(feedback='Some text', min_value=i + 1,
+                                    max_value=i + 5, indicator='PDI')
 
-    def test_values(self):
-        good = Recommendation.objects.get(recommendation='It is a good advice')
-        bad = Recommendation.objects.get(recommendation='It is a bad advice')
-        feedback = Feedback.objects.get(feedback='Some useful feedback')
-        self.assertEqual(good.recommendation, 'It is a good advice')
-        self.assertEqual(bad.feedback.feedback, feedback.feedback)
+    def test_call_view_denies_anonymous(self):
+        response = self.client.get('/feedbacks/', follow=True)
+        self.assertRedirects(response, '/login/?next=/feedbacks/')
+        response = self.client.post('/feedbacks/', follow=True)
+        self.assertRedirects(response, '/login/?next=/feedbacks/')
+
+    def test_call_view_loads(self):
+        self.client.login(username='user', password='test')
+        response = self.client.get('/feedbacks/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'feedbacks/feedback_list.html')
+
+    @idata(form_data_generator(list(range(-10, 10))))
+    def test_call_view_where_page_number_int(self, page):
+        self.client.login(username='user', password='test')
+        response = self.client.get(f'/feedbacks/?page={page}')
+        self.assertEqual(response.status_code, 200)
+
+    @data('test', 'number', 'one', 'apply', 'range')
+    def test_call_view_where_page_number_not_int(self, page):
+        self.client.login(username='user', password='test')
+        response = self.client.get(f'/feedbacks/?page={page}')
+        self.assertEqual(response.status_code, 200)

@@ -4,14 +4,15 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('indicators', '0001_initial'),
-    ]
+        ]
 
     operations = [
         migrations.AlterModelOptions(
             name='countryindicator',
-            options={'ordering': ['iso_code', 'name'], 'verbose_name_plural': "countries' indicators"},
-        ),
-    ]
+            options={'ordering': ['iso_code', 'name'],
+                     'verbose_name_plural': "countries' indicators"
+                     },
+            ),
+        ]
