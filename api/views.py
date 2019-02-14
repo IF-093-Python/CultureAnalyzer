@@ -16,6 +16,8 @@ def protected_view(request):
 class FeedbackList(generics.ListCreateAPIView):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
+    filter_fields = ('indicator', )
+    search_fields = ('feedback', )
 
 
 class FeedbackDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -26,6 +28,7 @@ class FeedbackDetail(generics.RetrieveUpdateDestroyAPIView):
 class RecommendationList(generics.ListCreateAPIView):
     queryset = Recommendation.objects.all()
     serializer_class = RecommendationSerializer
+    search_fields = ('recommendation', )
 
 
 class RecommendationDetail(generics.RetrieveUpdateDestroyAPIView):
