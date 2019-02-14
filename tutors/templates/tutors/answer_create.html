@@ -2,9 +2,15 @@
 {% load crispy_forms_tags %}
 {% block title %}Creat/Update answer{% endblock %}
 {% block content %}
-    <div class="container">
-        <!--Error message about some action on the question-->
-        {% include "tutors/error_message.html" %}
-        {% crispy form %}
-    </div>
+<div class="container">
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="Submit" class="btn btn-success mt-3 float-left">
+            Save
+        </button>
+    </form>
+    <a class="btn btn-outline-success mt-3 ml-1" title="Back to answers"
+       href="{%url 'tutors:answers_list' question_id=q.id%}">Cancel</a>
+</div>
 {% endblock %}
