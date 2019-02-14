@@ -3,9 +3,9 @@
 <ul class="alert alert-primary alert-dismissible fade show my-1"
     role="alert">
     {% for message in messages %}
-    <li {% if message.tags %} class="{{message.tags}}" {% endif %}>
+    <a {% if message.tags %} class="{{message.tags}}" {% endif %}>
         {{message}}
-    </li>
+    </a>
     <button type="button" class="close" data-dismiss="alert"
             aria-label="Close">
         <span aria-hidden="true">&times;</span>

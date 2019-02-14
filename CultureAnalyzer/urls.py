@@ -25,10 +25,9 @@ urlpatterns = [
     path('quiz/', include('quiz.urls', namespace='quiz')),
     path('questions/', include('tutors.urls', namespace='tutors')),
     path('feedbacks/', include('feedbacks.urls')),
-    path('groups/',include('groups.urls',namespace='groups')),
-
     path('test_player/', include('test_player.urls')),
-    path('api/', include('api.urls'))
+    path('api/', include('api.urls')),
+    path('groups/', include('groups.urls', namespace='groups')),
 ]
 
 if settings.DEBUG:

@@ -1,26 +1,87 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
-{% block title %}TEXT{% endblock %}
+{% load filters %}
+{% block title %}TEST{% endblock %}
 {% block content %}
-<form action="" method="post" id="test_player">
-    {% csrf_token %}
-    <div class="col-5">
-        <b>Question {{current_question.question_number}}:</b>
-        <p>{{current_question.question_text}}</p>
-        {{form|crispy}}
-    </div>
-    <!-- Navigate between questions-->
-    <div class="col-5 jumbotron">
-        <p>Quiz navigation</p>
-        {% if questions %}
-        {% for question in questions %}
-        <input type='Submit' class="btn btn-outline-info" name="next"
-               value="{{question.question_number}}">
-        {% endfor %}
-        <button type="button" class="btn btn-primary" data-toggle="modal"
-                data-target="#exampleModal">Finish quiz
-        </button>
-        {% endif %}
-    </div>
-</form>
+<div class="container">
+
+    {% include "tutors/error_message.html" %}
+
+    <form action="" method="post" id="test_player">
+        <div class="row">
+            {% csrf_token %}
+            <div class="col-md-7">
+                <div class="jumbotron">
+                    <b>Question {{current_question.question_number}}:</b>
+                    <p><b class="lead text-dark">{{current_question.question_text}}</b>
+                    </p>
+                    {{form|crispy}}
+
+                    <input type='Submit'
+                           class="btn btn-primary {% if current_question.question_number == 1 %}disabled{% endif %}"
+                           name="prev"
+                           value="Previous question">
+                    <input type='Submit'
+                           class="btn btn-primary {% if current_question.question_number == questions.count %}disabled{% endif %} "
+                           name="next_to"
+                           value="Next question">
+                </div>
+            </div>
+            <!-- Navigate between questions-->
+            <div class="col-md-5 jumbotron">
+                <p>Quiz navigation</p>
+                {% if questions %}
+                {% for question in questions %}
+                <input type='Submit'
+                       class="btn {% if current_question.question_number == question.question_number %}btn-primary{% elif request.session|lookup:quiz_id|lookup:question.question_number %}btn-info{% else %}btn-outline-info{% endif %}"
+                       name="next"
+                       value="{{question.question_number}}"
+                       style="margin-top: 3px;">
+                {% endfor %}
+                <br>
+
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary"
+                        data-toggle="modal" data-target="#exampleModalCenter"
+                        style="margin-top: 3px;">
+                    Finish quiz
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModalCenter" tabindex="-1"
+                     role="dialog"
+                     aria-labelledby="exampleModalCenterTitle"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered"
+                         role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title"
+                                    id="exampleModalLongTitle">Finishing
+                                    quiz</h5>
+                                <button type="button" class="close"
+                                        data-dismiss="modal"
+                                        aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Do you want to finish quiz?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                        data-dismiss="modal">Back
+                                </button>
+                                <button type="Submit" name="finish"
+                                        class="btn btn-primary">Submit finish
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </form>
+</div>
 {% endblock %}

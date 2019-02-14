@@ -6,7 +6,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 
-from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
+from CultureAnalyzer.settings.default import ITEMS_ON_PAGE\
 
 from .forms import *
 from .models import Questions, Answers

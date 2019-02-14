@@ -40,10 +40,12 @@ a, a:hover, a:focus {
     border-bottom: 1px dashed #ddd;
     margin: 40px 0;
 }
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
 
-
-
-
+}
 .circle_text {
     width: 70px;
     height: 70px;
