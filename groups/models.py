@@ -16,11 +16,11 @@ class Group(models.Model):
 
 
 class MyProfile(Profile):
-    '''
+    """
     Proxy Model for changing __str__ attribute of
     Profile model for proper representation
     of the name of user
-    '''
+    """
     class Meta:
         proxy = True
 
