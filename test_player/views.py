@@ -1,12 +1,12 @@
 import datetime
 import json
 
-from django.utils import timezone
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views.generic import FormView
-from django.contrib import messages
 
 from quiz.models import Results, Quizzes
 from tutors.models import Questions
