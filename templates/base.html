@@ -49,6 +49,7 @@
                             <a class="dropdown-item" href="{% url 'quiz:quizzes-list' %}">Quizzes</a>
                             <a class="dropdown-item" href="{% url 'tutors:questions_list' %}">Questions</a>
                             <a class="dropdown-item" href="{% url 'country_indicator:country_indicator_list' %}">Indicators</a>
+                            <a class="dropdown-item" href="{% url 'groups:mentor_groups_view' %}">Groups</a>
                         </div>
                     </li>
                     {% elif user.profile.role.name == 'Admin' %}
@@ -58,6 +59,7 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{% url 'admin' %}">Admin page</a>
+                            <a class="dropdown-item" href="{% url 'groups:groups-list' %}">Groups</a>
                         </div>
                     </li>
                     {% elif user.profile.role.name == 'Trainee' %}
