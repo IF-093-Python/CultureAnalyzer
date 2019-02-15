@@ -1,6 +1,7 @@
 from django.urls import include, re_path
 from quiz.views import QuizzesList, CreateQuizView, \
     DeleteQuizView, UpdateQuizView
+
 app_name = "quiz"
 
 urlpatterns = [
