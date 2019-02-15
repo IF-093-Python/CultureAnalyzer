@@ -62,7 +62,7 @@ class ResultsListView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'results'
 
     def get_queryset(self):
-        results = Results.objects.filter(user=self.kwargs['user_id'])
+        results = Results.objects.filter(user=self.request.user)
         return results
 
 
