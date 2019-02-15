@@ -25,6 +25,7 @@ urlpatterns = [
          auth_views.PasswordResetDoneView.as_view(
              template_name='users/password_reset_done.html'),
          name='password_reset_done'),
+    # fixme: line length
     re_path(
         'login/reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/',
         auth_views.PasswordResetConfirmView.as_view(
@@ -33,4 +34,4 @@ urlpatterns = [
     path('login/reset/done/', auth_views.PasswordResetCompleteView.as_view(
         template_name='users/password_reset_complete.html'),
          name='password_reset_complete')
-]
+    ]
