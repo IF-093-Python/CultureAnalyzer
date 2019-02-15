@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Your result{% endblock %}
+{% block content %}
+<form method="post" >
+    {% csrf_token %}
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+
+        <div class="form-group col-md-4 float-left">
+            <input type="submit" class="btn btn-primary" value="Result">
+            <select name='select_indicator' class="selectpicker"
+                    multiple="multiple" data-live-search="true">
+                {% for i in country_indicators%}
+                <option value="{{i.iso_code}}:{{i.pdi}} {{i.ind}} {{i.mas}} {{i.uai}} {{i.lto}} {{i.ivr}}"
+                {% if i.iso_code is countries_values.keys %}
+                        selected="selected"
+                        {% endif %}>
+                    {{i.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div id="container" class="form-group col-md-8 float-right"
+             style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<script>
+    //$('select').selectpicker();
+
+    Highcharts.chart('container', {
+        chart: {
+           type: 'column'
+        },
+        title: {
+            text: 'Culture Analyzer diagram'
+        },
+        xAxis: {
+            categories: [
+                'PDI',
+                'IND',
+                'MAS',
+                'UAI',
+                'LTO',
+                'IVR'
+            ],
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Value'
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span>' +
+                '<table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">' +
+                '{series.name}: </td>' +
+               '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.1,
+                borderWidth: 0
+            }},
+        series: [{
+            name: 'user',
+            data: {{result}}
+            },{%for k, ind in countries_values.items %}
+            {
+                name: '{{k}}',
+                data: {{ind}}
+            },
+            {% endfor %} ]
+    });
+</script>
+</form>
+{% endblock %}
