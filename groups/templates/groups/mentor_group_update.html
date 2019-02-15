@@ -5,22 +5,38 @@
         {% if messages %}
           <ul class="messages">
             {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            <a {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message }}</a>
             {% endfor %}
           </ul>
         {% endif %}
     <h1>Update group "{{ group.name }}"</h1>
 
-
-
-    {% block users %}
         <div class="container-fluid bg-1 main col-md-10">
-
+        <div class="float-right">
+    <form class="form-inline my-2 my-lg-0" method="get" action="">
+      <input class="form-control mr-sm-2" type="search"
+             placeholder="{{ search_label }}" aria-label="Search"
+             name="data_search">
+      <div class="btn-toolbar">
+        <button class="btn btn-outline-success my-2 my-sm-0"
+                style="margin-right: 10px;" type="submit">Search</button>
+        <a class="btn btn-outline-danger my-2 my-sm-0"
+           href ={% url 'groups:mentor_group_update' group.pk%}>Clear</a>
+      </div>
+      <br>
+    </form>
+  </div>
+        <br>
+        {% if not object_list %}
         <a class="btn btn-danger" title="Back to all groups"
-               href="{% url 'groups:mentor_groups_view' %}">Back</a>
+               href="{% url 'groups:mentor_groups_view' %}">&#8630; Back</a>
         <a class="btn btn-success" title="Add user to group"
                href="{% url 'groups:mentor_group_add' group.pk %}">&#10010; Add</a>
-     {% if users %}
+        {% endif %}
+            {% block users %}
+
+            {% if object_list %}
 <table class="table table-hover table-striped table-bordered table-sm">
     <thead class="thead-light">
       <tr>
@@ -32,11 +48,29 @@
     <tbody>
   <form method="post">
      {% csrf_token %}
-    <button type="submit" class="btn btn-primary; float-left"
-                    style="margin-right: 4px; background-color:
-                    cornflowerblue">Update group</button>
+    <a class="btn btn-danger" title="Back to all groups"
+               href="{% url 'groups:mentor_groups_view' %}">&#8630; Back</a>
+    <button type="submit" class="btn btn-primary"
+            style="margin-left: 4px;margin-right: 4px;
+            background-color: cornflowerblue">Update group</button>
+    <a class="btn btn-success" title="Add user to group"
+       href="{% url 'groups:mentor_group_add' group.pk %}">&#10010; Add</a>
+        <br>
+        <br>
+        {% if search %}
+        <b>Search results for "{{ search_label }}":</b>
+        {% else %}
+        <b>Users:</b>
+        {% endif %}
 
-        {% for user in users %}
+        {% for user in users_in_group %}
+        {% if user not in object_list %}
+            <input type="checkbox" style="visibility: hidden"
+               name="user" value="{{ user.profile.pk }}" checked>
+        {% endif %}
+        {% endfor %}
+
+        {% for user in object_list %}
       <tr>
         <td>
             <input type="checkbox" name="user" value="{{ user.profile.pk }}" checked>

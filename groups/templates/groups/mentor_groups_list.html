@@ -5,38 +5,47 @@
     {% block groups %}
         <div class="container-fluid bg-1 main col-md-10">
             <div class="float-right">
-                <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'groups:mentor_groups_view' %}">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
+                <form class="form-inline my-2 my-lg-0" method="get"
+                      action="{% url 'groups:mentor_groups_view' %}">
+                    <input class="form-control mr-sm-2" type="search"
+                           placeholder={{ search_label }} aria-label="Search"
                            name="data_search">
                     <div class="btn-toolbar">
                         <button class="btn btn-outline-success my-2 my-sm-0"
                                 style="margin-right: 10px;" type="submit">Search</button>
-                        <a class="btn btn-outline-danger my-2 my-sm-0" href ={% url 'groups:mentor_groups_view' %}>Clear</a>
+                        <a class="btn btn-outline-danger my-2 my-sm-0"
+                          href ={% url 'groups:mentor_groups_view' %}>Clear</a>
                     </div>
                     <br>
                 </form>
-            </div><br>
+            </div><br><br>
         {% if search %}
-            <b>Search results:</b>
+            <b>Search results for "{{ search_label }}":</b>
         {% else %}
             <b>Groups:</b>
         {% endif %}
+  {% if group_list %}
   <table class="table table-hover table-striped table-bordered table-sm">
     <thead class="thead-light">
       <tr>
         <th>Name</th>
-        <th>Number of members</th>
+        <th style="text-align: center; max-width: 20%">Number of members</th>
       </tr>
     </thead>
     <tbody>
-    {% if group_list %}
         {% for group in group_list %}
 
       <tr>
         <td>
-            <a href="{% url 'groups:mentor_group_update' group.pk %}">{{ group }}</a>
+            <a href="{% url 'groups:mentor_group_update' group.pk %}">
+               {{ group }}</a>
+            <div class="float-right">
+                <a class="btn-outline-info"
+                   href="{% url 'groups:mentor_group_update' group.pk %}">
+                   &#9998;</a>
+            </div>
         </td>
-        <td>{{ group.total }}</td>
+        <td style="text-align: center">{{ group.total }}</td>
       </tr>
     {% endfor %}
         <br>
@@ -46,9 +55,9 @@
         {% else %}
             <p>You have no groups of students yet.</p>
         {% endif %}
-    {% endif %}
     </tbody>
   </table>
+{% endif %}
 
         {% if is_paginated %}
   <ul class="pagination">

@@ -5,7 +5,8 @@
   {% if messages %}
     <ul class="messages">
       {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        <a{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}</a>
       {% endfor %}
     </ul>
   {% endif %}
@@ -27,7 +28,7 @@
   </div>
   <br>
   {% block users %}
-      {% if mentors %}
+      {% if object_list %}
         <table class="table table-hover table-striped table-bordered table-sm">
           <thead class="thead-light">
             <tr>
@@ -39,11 +40,11 @@
       {% endif %}
   <form method="post">
     {% csrf_token %}
-    <button type="submit" class="btn btn-primary; float-left"
-            style="margin-right: 4px; background-color:
-                    cornflowerblue">Update group</button>
-    <a class="btn btn-danger" title="Back to all groups"
-       href="{% url 'groups:groups-list' %}">Back</a>
+    <a class="btn btn-danger" style="margin-right: 4px"
+       title="Back to all groups"
+       href="{% url 'groups:groups-list' %}">&#8630; Back</a>
+    <button type="submit" class="btn btn-primary"
+            style="background-color:cornflowerblue">Update group</button>
     {{ form.name|as_crispy_field }}
     <hr>
 
@@ -52,7 +53,7 @@
         {% else %}
         <b>Mentors:</b>
         {% endif %}
-    {% if not mentors %}
+    {% if not object_list %}
       {% if search %}
         <p>There are no results that match your search.</p>
       {% else %}
@@ -61,7 +62,7 @@
     {% endif %}
 
     {% for user in checked_mentors %}
-      {% if user in mentors %}
+      {% if user in object_list %}
         <tbody>
         <tr>
           <td>
@@ -87,7 +88,7 @@
       {% endif %}
     {% endfor %}
 
-    {% for user in mentors %}
+    {% for user in object_list %}
       {% if user not in checked_mentors %}
         <tr>
           <td>
@@ -108,6 +109,7 @@
   </form>
 </tbody>
 </table>
+
 {% if is_paginated %}
   <ul class="pagination">
     {% if page_obj.has_previous %}
