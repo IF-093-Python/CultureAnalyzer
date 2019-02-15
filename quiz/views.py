@@ -13,22 +13,22 @@ class QuizzesList(LoginRequiredMixin, generic.ListView):
     context_object_name = 'quizzes'
     ordering = ('title')
     template_name = 'quiz/quizzes_list.html'
-    search=False
+    __search = False
 
     def get_queryset(self):
         result = super(QuizzesList, self).get_queryset()
         if self.request.GET.get('data_search'):
             result = result.filter(
                 title__contains=self.request.GET.get('data_search'))
-            self.search=True
+            self.__search = True
         elif self.request.GET.get('clear'):
-            self.search=False
+            self.__search = False
             return redirect('quiz:quizzes-list')
         return result
 
     def get_context_data(self, **kwargs):
         context = super(QuizzesList, self).get_context_data(**kwargs)
-        context['search'] = self.search
+        context['search'] = self.__search
         return context
 
 

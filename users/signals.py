@@ -19,7 +19,7 @@ def create_profile(sender, instance, created, **kwargs):
     """
     if created:
         Profile.objects.create(user=instance,
-                               role=Role.objects.get(name="Trainee"))
+                               role=get_role(instance))
 
 
 @receiver(post_save, sender=User)
@@ -28,3 +28,9 @@ def save_profile(sender, instance, **kwargs):
     When user is saved then we save his profile
     """
     instance.profile.save()
+
+
+def get_role(instance):
+    if instance.is_superuser:
+        return Role.objects.get(name='Admin')
+    return Role.objects.get(name='Trainee')
