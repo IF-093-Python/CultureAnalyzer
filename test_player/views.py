@@ -6,14 +6,13 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.views.generic import FormView, ListView, DetailView
+from django.views.generic import FormView, ListView
 
 from quiz.models import Results, Quizzes
-from quiz.service import get_final_result
 from tutors.models import Questions
 from .forms import QuestionSaveForm
 
-__all__ = ['TestPlayer', 'TestStart', 'ResultsListView', 'ResultDetailView']
+__all__ = ['TestPlayer', 'TestStart']
 
 
 class TestStart(ListView):
@@ -25,37 +24,6 @@ class TestStart(ListView):
         return quizzes
 
 
-class ResultsListView(ListView):
-    model = Results
-    template_name = 'test_player/results_list.html'
-    context_object_name = 'results'
-
-    def get_queryset(self):
-        results = Results.objects.filter(user=self.request.user)
-        return results
-
-
-class ResultDetailView(DetailView):
-    model = Results
-    template_name = 'test_player/result_detail.html'
-
-    def get_object(self, queryset=None, **kwargs):
-        score = Results.objects.get(pk=self.kwargs['pk'])
-        score_id = score.id
-        user = self.request.user.profile
-        result = get_final_result(user, score_id)
-        indices = result.values()
-        # print(indices)
-
-        return indices
-
-    def get_context_data(self, **kwargs):
-        context = super(ResultDetailView, self).get_context_data(**kwargs)
-        context['result'] = Results.objects.get(pk=self.kwargs['pk'])
-        context['indices'] = self.get_object()
-        return context
-
-
 class TestPlayer(FormView):
     template_name = 'test_player/test_player.html'
     form_class = QuestionSaveForm
@@ -64,11 +32,9 @@ class TestPlayer(FormView):
         if 'next_to' in self.request.POST or 'prev' in self.request.POST:
             return self._handle_previous_and_next_questions()
         if 'finish' in self.request.POST:
-            return reverse_lazy('test_player:results-list')
-        return reverse_lazy('test_player:test_player',
-                            kwargs={'quiz_id': self.kwargs[
-                                'quiz_id'], 'question_number':
-                                        self.request.POST.get('next')})
+            return reverse_lazy('quiz:result-list',
+                                kwargs={'user_id': self.request.session[
+                                    '_auth_user_id']})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
