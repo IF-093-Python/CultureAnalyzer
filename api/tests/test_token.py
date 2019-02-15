@@ -1,5 +1,6 @@
 import base64
 import json
+import unittest
 from ddt import ddt, data, unpack
 from django.contrib.auth.models import User
 from rest_framework.exceptions import ErrorDetail
@@ -111,12 +112,8 @@ class RefreshTokenTest(BaseRestTestCase):
                                 format='json')
 
 
-@ddt
 class TokenAccessTest(BaseRestTestCase):
-    @unpack
-    @data(('john', 'john_qwerty'),
-          ('alex', 'alex_qwerty'),
-          ('luke', 'luke_qwerty'))
+    @unittest.skip
     def test_user_has_access_using_token(self, login, password):
         access_token = self.obtain_access_token(login, password)
         response = self.get_protected_page(access_token)
