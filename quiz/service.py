@@ -129,6 +129,18 @@ def get_groups_results(data):
 
 
 def get_final_result(data, *args):
+    """
+    Return dictionary of indicators with correct values
+    If data is Profile objects then args should be id of result
+    If data is Group object then args is not required
+
+    If users in group have not results then return dictionary of indicators
+    with 0 values
+
+    :param Profile|Group data:
+    :param int args: id of result (only for profile)
+    :return dict: Dictionary of indicators
+    """
     if isinstance(data, Profile):
         group_answers = [json.loads(data.user.results_set.filter(pk=args[0]).first().result)]
     else:
