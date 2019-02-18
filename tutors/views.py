@@ -4,11 +4,10 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
-# from django.db import models
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
+
 from .models import CategoryQuestion, Question, Answer
 from .forms import CategoryCreateForm, QuestionCreateForm, AnswerCreateForm
-from quiz.models import  Quizzes
 
 ITEMS_PER_PAGE = 5
 
@@ -30,7 +29,7 @@ class CategoryListView(LoginRequiredMixin, ListView):
             return categories.filter(name__icontains=q)
         return categories
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs):
         """
         Returns context data for displaying the list of categories.
         """
@@ -62,7 +61,7 @@ class UpdateCategoryView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('tutors:categories_list')
 
-    def get_form_kwargs(self):  # defined in ModelFormMixin class
+    def get_form_kwargs(self):
         """
         Returns the keyword arguments for instantiating the form.
         """
@@ -98,6 +97,7 @@ class QuestionListView(LoginRequiredMixin, ListView):
         Returns the queryset of question from some category that you want to
         display.
         """
+        # fixme: make me readable
         questions = Question.objects.filter(
             category_question=get_object_or_404(CategoryQuestion,
                                                 pk=self.kwargs[
@@ -108,7 +108,7 @@ class QuestionListView(LoginRequiredMixin, ListView):
             return questions.filter(question_text__icontains=q)
         return questions
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs):
         """
         Returns context data for displaying the list of questions and the
         list of subcategories rom some category.
@@ -116,6 +116,8 @@ class QuestionListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['category'] = get_object_or_404(
             CategoryQuestion, pk=self.kwargs['category_id'])
+
+        # fixme: make me readable
         context['children'] = CategoryQuestion.objects.filter(
             parent_category=get_object_or_404(CategoryQuestion,
                                               pk=self.kwargs[
@@ -133,7 +135,8 @@ class CreateQuestionView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy('tutors:questions_list', kwargs={
-            'category_id': self.object.category_question.id})
+            'category_id': self.object.category_question.id
+        })
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -158,7 +161,8 @@ class UpdateQuestionView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('tutors:questions_list', kwargs={
-            'category_id': self.kwargs['category_id']})
+            'category_id': self.kwargs['category_id']
+        })
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -182,7 +186,8 @@ class DeleteQuestionView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('tutors:questions_list', kwargs={
-            'category_id': self.object.category_question.id})
+            'category_id': self.object.category_question.id
+        })
 
 
 class AnswerListView(LoginRequiredMixin, ListView):
@@ -199,7 +204,7 @@ class AnswerListView(LoginRequiredMixin, ListView):
             return answers.filter(answer_text__icontains=q)
         return answers
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['question'] = get_object_or_404(
             Question, pk=self.kwargs['question_id'])

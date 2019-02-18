@@ -38,12 +38,13 @@ class Profile(models.Model):
     education = models.CharField(choices=EDUCATION_CHOICES, max_length=50,
                                  null=True)
 
-    def save(self, **kwargs):
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
         """
         if img is too big we decrease img
         because the less image is the less memory it takes
         """
-        super(Profile, self).save(**kwargs)
+        super(Profile, self).save()
         if self.image:
             img = Image.open(self.image.path)
 
