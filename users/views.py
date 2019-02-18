@@ -79,6 +79,9 @@ class AdminListView(LoginRequiredMixin, ListView):
     template_name = 'users/admin_page.html'
     context_object_name = 'users'
 
+    def get_queryset(self):
+        return admin_search(self.request)
+
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'users/user_detail.html'
