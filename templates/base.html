@@ -67,7 +67,7 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{% url 'test_player:start_test' %}">Start Test</a>
-                            <a class="dropdown-item" href="{% url 'test_player:results-list' %}">See results</a>
+                            <a class="dropdown-item" href="{% url 'quiz:result-list' request.user.id %}">See results</a>
                         </div>
                     </li>
                     {% endif %}

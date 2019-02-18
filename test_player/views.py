@@ -35,6 +35,10 @@ class TestPlayer(FormView):
             return reverse_lazy('quiz:result-list',
                                 kwargs={'user_id': self.request.session[
                                     '_auth_user_id']})
+        return reverse_lazy('test_player:test_player',
+                            kwargs={'quiz_id': self.kwargs[
+                                'quiz_id'], 'question_number':
+                                        self.request.POST.get('next')})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
