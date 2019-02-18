@@ -6,7 +6,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 
-from CultureAnalyzer.settings.base_settings import ITEMS_PER_PAGE
+from CultureAnalyzer.settings.default import ITEMS_ON_PAGE\
 
 from .forms import *
 from .models import Questions, Answers
@@ -52,7 +52,7 @@ class QuestionListView(LoginRequiredMixin, ListView):
     model = Questions
     template_name = 'tutors/questions_list.html'
     context_object_name = 'questions'
-    paginate_by = ITEMS_PER_PAGE
+    paginate_by = ITEMS_ON_PAGE
 
     def get_queryset(self):
         """
@@ -125,7 +125,7 @@ class AnswerListView(LoginRequiredMixin, ListView):
     model = Answers
     template_name = 'tutors/answers_list.html'
     context_object_name = 'answers'
-    paginate_by = ITEMS_PER_PAGE
+    paginate_by = ITEMS_ON_PAGE
 
     def get_queryset(self):
         answers = Answers.objects.filter(question=get_object_or_404(

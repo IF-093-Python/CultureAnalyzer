@@ -13,19 +13,23 @@ addons:
 
 
 before_install:
-  - export DJANGO_SETTINGS_MODULE=CultureAnalyzer.settings.test_settings
+  - export DJANGO_SETTINGS_MODULE=CultureAnalyzer.settings
 
 install:
   - pip install -r requirements.txt
   - pip install pylint
   - pip install pylint-django
-
+  - pip install coverage
 
 script:
-  - python manage.py test
+  - coverage erase
+  - coverage run --branch --source='.' manage.py test
+  - coverage xml -i
   - sonar-scanner
-
 
 notifications:
   email:
-  - $DEFAULT_EMAIL
+    recipients:
+      - test.mail.client008@gmail.com
+    on_success: always
+    on_failure: always

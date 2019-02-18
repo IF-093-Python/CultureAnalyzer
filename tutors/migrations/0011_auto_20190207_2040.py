@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('quiz', '0002_auto_20190130_2333'),
         ('tutors', '0010_auto_20190204_2155'),

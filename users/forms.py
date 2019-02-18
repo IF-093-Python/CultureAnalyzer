@@ -3,16 +3,16 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
 from .choices import GENDER_CHOICES, EDUCATION_CHOICES
-from .models import Profile
-from .validators import ProfileValidator
+from .models import Profile, Role
+from .validators import ProfileValidator, PValidationError
 
 __all__ = [
     'UserLoginForm',
     'UserRegisterForm',
     'ProfileUpdateForm',
     'UserUpdateForm',
-    'EDUCATION_CHOICES_EMPTY_LABEL',
-    'GENDER_CHOICES_EMPTY_LABEL',
+    'BlockUserForm',
+    'ChangeRoleForm',
 ]
 
 EDUCATION_CHOICES_EMPTY_LABEL = (('', '--------------'),) + EDUCATION_CHOICES
@@ -57,6 +57,7 @@ class UserRegisterForm(UserCreationForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
+    image = forms.ImageField(widget=forms.FileInput, required=False)
     experience = forms.IntegerField()
     date_of_birth = forms.DateField(widget=DateInput())
     education = forms.ChoiceField(choices=EDUCATION_CHOICES_EMPTY_LABEL)
@@ -68,10 +69,28 @@ class ProfileUpdateForm(forms.ModelForm):
                   'gender']
 
     def clean_experience(self):
-        return ProfileValidator.validate(self.cleaned_data)
+        try:
+            return ProfileValidator.validate(self.cleaned_data)
+        except PValidationError as err:
+            self.add_error('experience', str(err))
 
 
 class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name']
+
+
+class BlockUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['is_active']
+
+
+class ChangeRoleForm(forms.ModelForm):
+    role = forms.ModelChoiceField(queryset=Role.objects.all(),
+                                  empty_label=None)
+
+    class Meta:
+        model = Profile
+        fields = ['role']
