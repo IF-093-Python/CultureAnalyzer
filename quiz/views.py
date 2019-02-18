@@ -68,7 +68,8 @@ class ResultsListView(LoginRequiredMixin, generic.ListView):
 
 @login_required()
 def get_result_from(request, pk):
-    result = list(get_final_result(request.user.profile, pk).values())
+    dict_result = get_final_result(request.user.profile, pk)
+    result = list(dict_result.values())
     country_indicators = CountryIndicator.objects.all()
     countries_values = {}
     if request.method == 'POST' and request.POST.getlist('select_indicator'):
@@ -80,11 +81,17 @@ def get_result_from(request, pk):
             'result': result,
             'country_indicators': country_indicators,
             'countries_values': countries_values,
+            'dict_result': dict_result,
         }
     else:
         context = {
             'result': result,
             'country_indicators': country_indicators,
             'countries_values': countries_values,
+            'dict_result': dict_result,
             }
     return render(request, 'quiz/column_chart_from_result.html', context)
+
+
+def get_feedback(country):
+    pass

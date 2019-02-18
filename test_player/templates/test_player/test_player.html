@@ -11,10 +11,10 @@
         {% csrf_token %}
         <div class="col-md-10">
             <div class="jumbotron">
-                <b>Question {{current_question.question_number}}:</b>
-                <p class="lead  text-justify text-dark">{{current_question.question_text}}</p>
-                <div class="lead  text-justify text-dark">
-                    {{form|crispy}}
+                <h5 class="text-dark font-weight-bold"><b>Question {{current_question.question_number}}:</b></h5>
+                <h4 class="text-justify text-dark">{{current_question.question_text}}</h4>
+                <div class="lead  text-justify text-dark ">
+                    {{form}}
                 </div>
                 <input type='Submit'
                        class="btn btn-primary {% if current_question.question_number == 1 %}disabled{% endif %}"

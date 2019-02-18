@@ -168,5 +168,7 @@ a, a:hover, a:focus {
 }
 
 .btn-navigation {
-margin-top: 3px; max-width: 35px; min-width: 35px;
+    margin-top: 3px;
+    max-width: 35px;
+    min-width: 35px;
 }
