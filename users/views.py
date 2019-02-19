@@ -87,4 +87,3 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'users/user_detail.html'
     form_class = BlockUserForm
     model = CustomUser
-    success_url = '/admin_page'
