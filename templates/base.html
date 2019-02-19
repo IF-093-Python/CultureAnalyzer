@@ -39,7 +39,6 @@
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
                     {% if user.is_authenticated %}
-                    {% if user.profile.role.name == 'Mentor' %}
                     <li class="nav-item dropdown">
                         <a class="nav-item nav-link dropdown-toggle ite" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
                             Mentor
@@ -52,7 +51,7 @@
                             <a class="dropdown-item" href="{% url 'groups:mentor_groups_view' %}">Groups</a>
                         </div>
                     </li>
-                    {% elif user.profile.role.name == 'Admin' %}
+                    {% if user.profile.role.name == 'Admin' %}
                     <li class="nav-item dropdown">
                         <a class="nav-item nav-link dropdown-toggle ite" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
                             Admin

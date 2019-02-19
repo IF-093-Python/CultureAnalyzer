@@ -75,4 +75,4 @@ class UserUpdateForm(forms.ModelForm):
 class BlockUserForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['is_active']
+        fields = ['is_active', 'is_staff', 'is_superuser']
