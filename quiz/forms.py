@@ -1,7 +1,6 @@
 from django import forms
 
-from quiz.models import Quizzes
-from quiz.choices import TYPE_OF_QUIZ
+from quiz.models import Quizzes, TYPE_OF_QUIZ
 
 
 class QuizCreateForm(forms.ModelForm):

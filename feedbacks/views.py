@@ -3,6 +3,7 @@ from django.views.generic.edit import DeleteView, UpdateView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import EmptyPage, Paginator
 from django.urls import reverse_lazy
+
 from feedbacks.models import Feedback
 
 ITEMS_ON_PAGE = 5

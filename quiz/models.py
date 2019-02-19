@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models import CASCADE
 
 
-TYPE_OF_QUIZ = ((1, 'Business'), (2, 'General'))
+TYPE_OF_QUIZ = (('Business', 'Business'), ('General', 'General'))
 
 
 class Quizzes(models.Model):
