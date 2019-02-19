@@ -16,9 +16,9 @@
                 {% for user in users.qs %}
                 <li><a href="{% url 'change-profile' user.id %}">
 
-                    {% if user.profile.image %}
+                    {% if user.image %}
 
-                        <img src="{{ user.profile.image.url }}" alt="" class="circle_text" style="margin-left: -10px;">
+                        <img src="{{ user.image.url }}" alt="" class="circle_text" style="margin-left: -10px;">
                         {% else %}
                         <img src="{% static 'default.png' %}" alt="" class="circle_text" style="margin-left: -10px;">
                         {% endif %}
