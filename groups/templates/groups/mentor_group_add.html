@@ -57,11 +57,6 @@
         <b>Users:</b>
         {% endif %}
 
-        {% for user in added_users %}
-        <input type="checkbox" name="user" style="visibility: hidden"
-               value="{{ user.profile.pk }}" checked>
-        {% endfor %}
-
         {% for user in object_list %}
       <tr>
         <td>
