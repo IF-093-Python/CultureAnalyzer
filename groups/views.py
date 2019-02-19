@@ -56,8 +56,8 @@ class CreateGroupView(LoginRequiredMixin, generic.CreateView,generic.ListView):
         return context
 
     def get_queryset(self):
-        result = CustomUser.objects.all().filter(is_active=True).\
-            filter(profile__role__name='Mentor').\
+        result = CustomUser.objects.all().filter(is_active=True). \
+            filter(is_staff=True).\
             order_by('last_name')
         if self.request.GET.get('data_search'):
             result = result.filter(
@@ -99,7 +99,7 @@ class UpdateGroupView(SuccessMessageMixin,
         self.__checked_mentors=checked_mentors
         mentors = CustomUser.objects.filter(is_active=True).exclude(
             profile__mentor_in_group=self.kwargs['pk']). \
-            filter(profile__role__name='Mentor').order_by('last_name')
+            filter(is_staff=True).order_by('last_name')
         if self.request.GET.get('data_search'):
             mentors = mentors.filter(
                 last_name__contains=self.request.GET.get('data_search'))
@@ -211,8 +211,8 @@ class MentorGroupAdd(SuccessMessageMixin,LoginRequiredMixin,
 
     def get_queryset(self):
         '''Gets all Trainee users that are not in groups and
-        makes search in their last_name if needed'''
-        result = CustomUser.objects.filter(profile__role__name='Trainee').\
+        makes search in their last_name if needed '''
+        result = CustomUser.objects.filter(is_staff=False).\
             exclude(profile__user_in_group=self.kwargs['pk']).\
             filter(is_active=True).\
             order_by('last_name')
@@ -236,4 +236,3 @@ class MentorGroupAdd(SuccessMessageMixin,LoginRequiredMixin,
         form.cleaned_data['user']=\
             chain(form.cleaned_data['user'], users_in_group)
         return super(MentorGroupAdd,self).form_valid(form)
-

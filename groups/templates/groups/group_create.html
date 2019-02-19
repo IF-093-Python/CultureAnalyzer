@@ -8,7 +8,6 @@
     {% breadcrumb "Home" "/" %}
     {% breadcrumb "Groups" "groups:groups-list" %}
     {% breadcrumb "Create group" "groups:groups-list" %}
-
     <div style="color: blue">
     {% render_breadcrumbs %}
     </div>
@@ -46,7 +45,7 @@
             <tr>
               <th style="width: 1%"> </th>
               <th>Name</th>
-              <th style="width: 1%">Photo</th>
+              <th style="text-align: center; width: 1%">Photo</th>
             </tr>
           </thead>
       {% endif %}
@@ -81,12 +80,14 @@
               ({{ user.username }})
           </td>
           <td>
-            {% if user.profile.image %}
-              <img src="{{ user.profile.image.url }}" alt=""
-                   class="circle_text" style="margin-left: -10px;">
+            {% if user.image %}
+              <img src="{{ user.image.url }}" alt=""
+                   class="circle_text" style="text-align: center">
             {% else %}
-               <img src="{%static 'default.png'%}" alt="" class="circle_text" style="margin-left: -10px;">
+               <img src="{%static 'default.png'%}" alt=""
+                    class="circle_text" style="text-align: center">
             {% endif %}
+          </td>
     {% endfor %}
   </form>
 </tbody>

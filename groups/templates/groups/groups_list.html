@@ -7,14 +7,15 @@
 
 
 {% block content %}
+
   {% block breadcrumbs %}
     {% breadcrumb "Home" "/" %}
     {% breadcrumb "Groups" "groups:groups-list" %}
-
     <div style="color: blue">
-    {% render_breadcrumbs%}
+    {% render_breadcrumbs %}
     </div>
   {% endblock %}
+
     <h1>Groups</h1>
     {% block groups %}
         <div class="container-fluid bg-1 main col-md-10">
@@ -54,12 +55,15 @@
                 {% for group in group_list %}
                   <tr>
                     <td>
-                        {{ group }}
+                        <a href="{% url 'groups:update-group' group.pk %}">
+                            {{ group }}</a>
                         <div class="float-right">
                         <a class="btn-outline-info"
-                           href="{% url 'groups:update-group' group.pk %}">&#9998;</a>
+                           href="{% url 'groups:update-group' group.pk %}">
+                            &#9998;</a>
                         <a class="btn-outline-info"
-                           href="{% url 'groups:delete-group' group.pk %}">&#10006;</a>
+                           href="{% url 'groups:delete-group' group.pk %}">
+                            &#10006;</a>
                         </div>
                     </td>
                     <td style="text-align: center">{{ group.total }}</td>

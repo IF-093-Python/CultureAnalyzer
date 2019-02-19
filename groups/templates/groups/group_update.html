@@ -1,7 +1,18 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+
 {% block content %}
+  {% block breadcrumbs %}
+    {% breadcrumb "Home" "/" %}
+    {% breadcrumb "Groups" "groups:groups-list" %}
+    {% breadcrumb group.name "groups:group-update" group.pk %}
+    <div style="color: blue">
+    {% render_breadcrumbs %}
+    </div>
+  {% endblock %}
+
   {% if messages %}
     <ul class="messages">
       {% for message in messages %}
@@ -34,7 +45,7 @@
             <tr>
               <th style="width: 1%"> </th>
               <th>Name</th>
-              <th style="width: 1%">Photo</th>
+              <th style="text-align: center; width: 1%">Photo</th>
             </tr>
           </thead>
       {% endif %}
@@ -73,12 +84,12 @@
               ({{ user.username }})
           </td>
           <td>
-            {% if user.profile.image %}
-              <img src="{{ user.profile.image.url }}" alt=""
-                   class="circle_text" style="margin-left: -10px;">
+            {% if user.image %}
+              <img src="{{ user.image.url }}" alt=""
+                   class="circle_text" style="text-align: center">
             {% else %}
-              <img src="{%static 'default.png'%}" alt=""
-                   class="circle_text" style="margin-left: -10px;">
+               <img src="{%static 'default.png'%}" alt=""
+                    class="circle_text" style="text-align: center">
             {% endif %}
           </td>
         </tr>
@@ -98,12 +109,14 @@
               ({{ user.username }})
           </td>
           <td>
-            {% if user.profile.image %}
-              <img src="{{ user.profile.image.url }}" alt=""
-                   class="circle_text" style="margin-left: -10px;">
+            {% if user.image %}
+              <img src="{{ user.image.url }}" alt=""
+                   class="circle_text" style="text-align: center">
             {% else %}
-               <img src="{%static 'default.png'%}" alt="" class="circle_text" style="margin-left: -10px;">
+               <img src="{%static 'default.png'%}" alt=""
+                    class="circle_text" style="text-align: center">
             {% endif %}
+          </td>
       {% endif %}
     {% endfor %}
   </form>

@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
+{% load django_bootstrap_breadcrumbs %}
+
 {% block title %}Groups of {{ user.username }}{% endblock %}
 {% block content %}
+  {% block breadcrumbs %}
+    {% breadcrumb "Home" "/" %}
+    {% breadcrumb "Groups" "groups:mentor_groups_view" %}
+    <div style="color: blue">
+    {% render_breadcrumbs %}
+    </div>
+  {% endblock %}
+
     <h1>Groups of {{ user.username }}</h1>
     {% block groups %}
         <div class="container-fluid bg-1 main col-md-10">
