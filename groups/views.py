@@ -5,7 +5,7 @@ from django.db.models import Count
 from groups.forms import GroupCreateForm,GroupUpdateForm
 from groups.models import Group
 from django.contrib.messages.views import SuccessMessageMixin
-from users.models import User,Profile
+from users.models import CustomUser,Profile
 from django.shortcuts import get_object_or_404
 from itertools import chain
 
@@ -56,7 +56,7 @@ class CreateGroupView(LoginRequiredMixin, generic.CreateView,generic.ListView):
         return context
 
     def get_queryset(self):
-        result = User.objects.all().filter(is_active=True).\
+        result = CustomUser.objects.all().filter(is_active=True).\
             filter(profile__role__name='Mentor').\
             order_by('last_name')
         if self.request.GET.get('data_search'):
@@ -93,11 +93,11 @@ class UpdateGroupView(SuccessMessageMixin,
         """Remembers all checked_mentors of group and then
         concatenates them with unchecked metors, so that
         checked mentors are always first in list"""
-        checked_mentors=User.objects.filter(
+        checked_mentors=CustomUser.objects.filter(
             profile__mentor_in_group=self.kwargs['pk']).\
             filter(is_active=True).order_by('last_name')
         self.__checked_mentors=checked_mentors
-        mentors = User.objects.filter(is_active=True).exclude(
+        mentors = CustomUser.objects.filter(is_active=True).exclude(
             profile__mentor_in_group=self.kwargs['pk']). \
             filter(profile__role__name='Mentor').order_by('last_name')
         if self.request.GET.get('data_search'):
@@ -172,7 +172,7 @@ class MentorGroupUpdate(SuccessMessageMixin,
         return context
 
     def get_queryset(self):
-        result = User.objects.filter(is_active=True). \
+        result = CustomUser.objects.filter(is_active=True). \
             filter(profile__user_in_group=self.kwargs['pk']). \
             order_by('last_name')
         self.__users_in_group=result
@@ -212,7 +212,7 @@ class MentorGroupAdd(SuccessMessageMixin,LoginRequiredMixin,
     def get_queryset(self):
         '''Gets all Trainee users that are not in groups and
         makes search in their last_name if needed'''
-        result = User.objects.filter(profile__role__name='Trainee').\
+        result = CustomUser.objects.filter(profile__role__name='Trainee').\
             exclude(profile__user_in_group=self.kwargs['pk']).\
             filter(is_active=True).\
             order_by('last_name')
