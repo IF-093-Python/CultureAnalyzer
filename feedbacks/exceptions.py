@@ -1,3 +1,6 @@
+__all__ = ['FValidationError', ]
+
+
 class CAError(Exception):
     pass
 
