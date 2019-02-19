@@ -2,7 +2,7 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: #fafafa;
+    background: #1abc9c;
 }
 
 p {
@@ -237,7 +237,6 @@ a.contact_us, a.contact_us:hover {
 
 
 .content-section {
-    background: #ebd7ff;
     padding: 10px 20px;
     border: 1px solid #dddddd;
     border-radius: 3px;
@@ -246,4 +245,28 @@ a.contact_us, a.contact_us:hover {
 
 .content-section li {
     background: #ebd7ff;
+}
+/* ---------------------------------------------------
+    CONTENT STYLE
+----------------------------------------------------- */
+.bg-body-dark{
+    background-color: rgba(248,249,250, .2);
+}
+
+.block {
+    background-color: #fff;
+    margin-bottom: 1.75rem;
+    box-shadow: 0 2px 6px rgba(231,234,243,.4);
+}
+
+.block.block-rounded {
+    border-radius: .25rem;
+}
+
+.block-content {
+    transition: opacity .25s ease-out;
+    width: 100%;
+    margin: 0 auto;
+    padding: 1.25rem 1.25rem 1px;
+    overflow-x: visible;
 }

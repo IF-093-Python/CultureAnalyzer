@@ -1,26 +1,68 @@
 {% extends 'base.html' %}
-{% block menu_items %}
-
-    <li>
-        <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Navigation</a>
-        <ul class="collapse list-unstyled" id="pageSubmenu">
-            <li>
-                <a href="{% url 'country_indicator:country_indicator_list' %}">Countries Indicators</a>
-            </li>
-            <li>
-                <a href="{% url 'quiz:quizzes-list' %}">Quizzes list</a>
-            </li>
-            <li>
-                <a href="{% url 'tutors:categories_list' %}">Questions list</a>
-            </li>
-            <li>
-                <a href="#">some</a>
-            </li>
-        </ul>
-    </li>
-
-{% endblock menu_items %}
 
 {% block content %}
-    <h1>Content...</h1>
+<div class="pt-4 px-4 bg-body-dark">
+    <div class="row row-deck">
+        <div class="col-6 col-md-4 col-xl-2">
+            <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="javascript:void(0)">
+                <div class="block-content">
+                    <p class="mb-2 d-none d-sm-block">
+                        <i class="fa fa-pencil-alt text-gray fa-2x"></i>
+                    </p>
+                    <p class="font-w600 font-size-sm text-uppercase">Profile</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2">
+            <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="javascript:void(0)">
+                <div class="block-content">
+                    <p class="mb-2 d-none d-sm-block">
+                        <i class="fas fa-user text-gray fa-2x"></i>
+                    </p>
+                    <p class="font-w600 font-size-sm text-uppercase">Users</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2">
+            <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="javascript:void(0)">
+                <div class="block-content">
+                    <p class="mb-2 d-none d-sm-block">
+                        <i class="fas fa-users text-gray fa-2x"></i>
+                    </p>
+                    <p class="font-w600 font-size-sm text-uppercase">Groups</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2">
+            <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="javascript:void(0)">
+                <div class="block-content">
+                    <p class="mb-2 d-none d-sm-block">
+                        <i class="fab fa-algolia text-gray fa-2x"></i>
+                    </p>
+                    <p class="font-w600 font-size-sm text-uppercase">Quizzes</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2">
+            <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="javascript:void(0)">
+                <div class="block-content">
+                    <p class="mb-2 d-none d-sm-block">
+                        <i class="far fa-comments text-gray fa-2x"></i>
+                    </p>
+                    <p class="font-w600 font-size-sm text-uppercase">Feedbacks</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2">
+            <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="javascript:void(0)">
+                <div class="block-content">
+                    <p class="mb-2 d-none d-sm-block">
+                        <i class="fab fa-font-awesome-flag text-gray fa-2x"></i>
+                    </p>
+                    <p class="font-w600 font-size-sm text-uppercase">Indicators</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
 {% endblock content %}
