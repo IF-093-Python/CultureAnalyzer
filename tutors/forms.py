@@ -1,6 +1,5 @@
 from django import forms
 
-from quiz.models import Quizzes
 from tutors.models import Questions, Answers
 
 __all__ = ['QuestionCreateForm', 'AnswerCreateForm', ]
@@ -10,12 +9,14 @@ class QuestionCreateForm(forms.ModelForm):
     """
     This Form is from creating/updating a question
     """
-    quiz = forms.ModelChoiceField(queryset=Quizzes.objects.all())
     question_text = forms.TextInput()
 
     class Meta:
         model = Questions
-        fields = ['quiz', 'question_text', ]
+        fields = ['question_text', ]
+        widgets = {'question_text': forms.Textarea(
+            attrs={'rows': 3, }
+        )}
 
 
 class AnswerCreateForm(forms.ModelForm):
@@ -27,6 +28,9 @@ class AnswerCreateForm(forms.ModelForm):
     class Meta:
         model = Answers
         fields = ['answer_text', ]
+        widgets = {'answer_text': forms.Textarea(
+            attrs={'rows': 3, }
+        )}
 
     def full_clean(self):
         """

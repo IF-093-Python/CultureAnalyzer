@@ -2,6 +2,10 @@ import json
 
 from users.models import Profile
 
+__all__ = ['get_constant', 'check_group_indicators', 'get_list_of_results',
+           'get_average_results', 'get_indicators_values',
+           'get_groups_results', 'get_final_result', ]
+
 
 def get_constant(indicator_value):
     """
