@@ -156,9 +156,9 @@ class MentorGroupsView(LoginRequiredMixin, SafePaginationListView):
 
 
 
-class MentorGroupUpdate(SuccessMessageMixin, LoginRequiredMixin,
-                        UserPassesTestMixin, SafePaginationListView,
-                        generic.UpdateView):
+class MentorGroupUpdate(generic.UpdateView, SuccessMessageMixin,
+                        LoginRequiredMixin, UserPassesTestMixin,
+                        SafePaginationListView):
     model = Group
     form_class = GroupUpdateForm
     template_name = 'groups/mentor_group_update.html'
@@ -203,9 +203,9 @@ class MentorGroupUpdate(SuccessMessageMixin, LoginRequiredMixin,
 
 
 
-class MentorGroupAdd(SuccessMessageMixin, LoginRequiredMixin,
-                     UserPassesTestMixin, SafePaginationListView,
-                     generic.UpdateView):
+class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
+                     LoginRequiredMixin, UserPassesTestMixin,
+                     SafePaginationListView):
     model = Group
     form_class = GroupUpdateForm
     template_name = 'groups/mentor_group_add.html'
