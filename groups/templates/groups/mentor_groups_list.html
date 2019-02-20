@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load django_bootstrap_breadcrumbs %}
+{% load cool_paginate %}
 
 {% block title %}Groups of {{ user.username }}{% endblock %}
 {% block content %}
@@ -69,27 +70,10 @@
   </table>
 {% endif %}
 
-        {% if is_paginated %}
-  <ul class="pagination">
-    {% if page_obj.has_previous %}
-      <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a>&nbsp;&nbsp;</li>
-    {% else %}
-      <li class="disabled"><span>&laquo;</span>&nbsp;&nbsp;</li>
+    {% if is_paginated %}
+        {% cool_paginate page_obj=page_obj %}
     {% endif %}
-    {% for i in paginator.page_range %}
-      {% if page_obj.number == i %}
-        <li class="active" style="color: #cd0a0a"><span>{{ i }} <span class="sr-only">(current)</span>&nbsp;</span></li>
-      {% else %}
-        <li><a href="?page={{ i }}"> {{ i }} </a>&nbsp;</li>
-      {% endif %}
-    {% endfor %}
-    {% if page_obj.has_next %}
-      <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-    {% else %}
-      <li class="disabled"><span>&raquo;</span></li>
-    {% endif %}
-  </ul>
-{% endif %}
+
         </div>
     {% endblock groups %}
 {% endblock content %}

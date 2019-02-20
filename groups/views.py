@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
+from django.http import Http404
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.db.models import Count
@@ -11,7 +12,8 @@ from groups.models import Group
 from users.models import CustomUser, Profile
 from CultureAnalyzer.view import SafePaginationListView
 
-PAGINATOR = 50
+PAGINATOR = 2
+
 
 
 class GroupsList(LoginRequiredMixin, SafePaginationListView):
@@ -145,7 +147,7 @@ class MentorGroupsView(LoginRequiredMixin, SafePaginationListView):
         return context
 
     def get_queryset(self):
-        result = Group.objects.filter(mentor= self.request.user.pk).\
+        result = Group.objects.filter(mentor__user_id= self.request.user.pk).\
             annotate(total= Count('user')).order_by('name')
         if self.request.GET.get('data_search'):
             result = result.filter(
@@ -178,7 +180,14 @@ class MentorGroupUpdate(SuccessMessageMixin, LoginRequiredMixin,
         context['search'] = self.__search
         return context
 
+    def is_member(self):
+        '''Checks if user is mentor of current group'''
+        return Group.objects.filter(pk= self.kwargs['pk']).\
+            filter(mentor__user_id= self.request.user.pk).exists()
+
     def get_queryset(self):
+        if not self.is_member():
+            raise Http404
         result = CustomUser.objects.filter(is_active= True). \
             filter(profile__user_in_group= self.kwargs['pk']). \
             order_by('last_name')
@@ -217,9 +226,16 @@ class MentorGroupAdd(SuccessMessageMixin, LoginRequiredMixin,
         context['search'] = self.__search
         return context
 
+    def is_member(self):
+        '''Checks if user is mentor of current group'''
+        return Group.objects.filter(pk= self.kwargs['pk']).\
+            filter(mentor__user_id= self.request.user.pk).exists()
+
     def get_queryset(self):
         '''Gets all Trainee users that are not in groups and
         makes search in their last_name if needed '''
+        if not self.is_member():
+            raise Http404
         result = CustomUser.objects.filter(is_staff= False).\
             exclude(profile__user_in_group= self.kwargs['pk']).\
             filter(is_active= True).\
