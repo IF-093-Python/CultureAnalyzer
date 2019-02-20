@@ -1,3 +1,6 @@
+import ast
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
@@ -5,6 +8,7 @@ from django.db.models import Q
 # Create your views here.
 from django.urls import reverse_lazy
 from django.views import generic
+from django.views.generic import TemplateView
 
 from quiz.forms import QuizCreateForm
 from quiz.models import Quizzes, Results
@@ -64,7 +68,7 @@ class ResultsListView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'results'
 
     def get_queryset(self):
-        results = Results.objects.filter(user=self.kwargs['user_id'])
+        results = Results.objects.filter(user=self.request.user)
         return results
 
 

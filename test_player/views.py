@@ -12,7 +12,7 @@ from quiz.models import Results, Quizzes
 from tutors.models import Questions
 from .forms import QuestionSaveForm
 
-__all__ = ['TestPlayer', 'TestStart']
+__all__ = ['TestPlayer', 'TestStart', ]
 
 
 class TestStart(ListView):
@@ -93,8 +93,8 @@ class TestPlayer(FormView):
                     messages.info(self.request,
                                   "You need to answer all the questions!!!")
                     return super(TestPlayer, self).form_invalid(form)
-                result.append(
-                    {'a_num': int(self.request.session[quiz_id].get(key))})
+
+                result.append(int(self.request.session[quiz_id].get(key)))
             result = json.dumps(result, ensure_ascii=False)
             Results.objects.create(user=user, quiz=quiz,
                                    pass_date=date,
