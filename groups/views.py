@@ -8,13 +8,15 @@ from django.contrib.messages.views import SuccessMessageMixin
 from users.models import CustomUser,Profile
 from django.shortcuts import get_object_or_404
 from itertools import chain
+from django.shortcuts import redirect
+from CultureAnalyzer.view import SafePaginationListView
 
-PAGINATOR=50
+PAGINATOR=2
 
 
-class GroupsList(LoginRequiredMixin, generic.ListView):
+class GroupsList(LoginRequiredMixin, SafePaginationListView):
     '''
-    Makes list of all groups and number of mentors in them
+    Makes list of all groups with number of mentors in each group
     '''
     model = Group
     ordering = ('name')
@@ -40,7 +42,9 @@ class GroupsList(LoginRequiredMixin, generic.ListView):
         return result
 
 
-class CreateGroupView(LoginRequiredMixin, generic.CreateView,generic.ListView):
+
+class CreateGroupView(LoginRequiredMixin,
+                      generic.CreateView,SafePaginationListView):
     model = Group
     form_class = GroupCreateForm
     template_name = 'groups/group_create.html'
@@ -68,8 +72,9 @@ class CreateGroupView(LoginRequiredMixin, generic.CreateView,generic.ListView):
         return result
 
 
-class UpdateGroupView(SuccessMessageMixin,
-                      LoginRequiredMixin, generic.UpdateView,generic.ListView):
+
+class UpdateGroupView(SuccessMessageMixin,LoginRequiredMixin,
+                      generic.UpdateView,SafePaginationListView):
     form_class = GroupCreateForm
     template_name = 'groups/group_update.html'
     success_message = "Group was updated successfully"
@@ -112,8 +117,10 @@ class UpdateGroupView(SuccessMessageMixin,
         return result
 
     def get_object(self,context=None):
+        '''Returns Group that we are working with'''
         context = get_object_or_404(Group, pk=self.kwargs['pk'])
         return context
+
 
 
 class DeleteGroupView(LoginRequiredMixin, generic.DeleteView):
@@ -123,7 +130,8 @@ class DeleteGroupView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy('groups:groups-list')
 
 
-class MentorGroupsView(LoginRequiredMixin,generic.ListView):
+
+class MentorGroupsView(LoginRequiredMixin,SafePaginationListView):
     model = Group
     template_name = 'groups/mentor_groups_list.html'
     __search=False
@@ -149,15 +157,14 @@ class MentorGroupsView(LoginRequiredMixin,generic.ListView):
 
 
 
-class MentorGroupUpdate(SuccessMessageMixin,
-                    LoginRequiredMixin,generic.UpdateView,generic.ListView):
+class MentorGroupUpdate(SuccessMessageMixin,LoginRequiredMixin,
+                        generic.UpdateView,SafePaginationListView):
     model = Group
     form_class = GroupUpdateForm
     template_name = 'groups/mentor_group_update.html'
     success_message = "Group was updated successfully"
     __search = False
     __search_label = 'Search'
-    __users_in_group=None
     paginate_by = PAGINATOR
 
     def get_success_url(self):
@@ -189,8 +196,9 @@ class MentorGroupUpdate(SuccessMessageMixin,
         return context
 
 
+
 class MentorGroupAdd(SuccessMessageMixin,LoginRequiredMixin,
-                     generic.UpdateView,generic.ListView):
+                     generic.UpdateView,SafePaginationListView):
     model = Group
     form_class = GroupUpdateForm
     template_name = 'groups/mentor_group_add.html'
@@ -233,6 +241,8 @@ class MentorGroupAdd(SuccessMessageMixin,LoginRequiredMixin,
         that where checked in form for adding to group'''
         users_in_group = Profile.objects.filter(user__is_active=True).\
             filter(user_in_group=self.kwargs['pk'])
+        if len(form.cleaned_data['user'])==0:
+            return redirect('groups:mentor_group_update', pk=self.kwargs['pk'])
         form.cleaned_data['user']=\
             chain(form.cleaned_data['user'], users_in_group)
         return super(MentorGroupAdd,self).form_valid(form)
