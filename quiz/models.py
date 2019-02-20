@@ -1,12 +1,10 @@
-import json
-
-from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import CASCADE
-from  users.models import CustomUser
 
 TYPE_OF_QUIZ = (('Business', 'Business'), ('General', 'General'))
+
+from users.models import CustomUser
 
 
 class Quizzes(models.Model):

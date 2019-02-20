@@ -2,7 +2,6 @@ import datetime
 import json
 
 from django.contrib import messages
-from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -11,6 +10,9 @@ from django.views.generic import FormView, ListView
 from quiz.models import Results, Quizzes
 from tutors.models import Questions
 from .forms import QuestionSaveForm
+from users.models import CustomUser
+
+__all__ = ['TestPlayer', 'TestStart', ]
 
 
 class TestStart(ListView):
@@ -30,7 +32,9 @@ class TestPlayer(FormView):
         if 'next_to' in self.request.POST or 'prev' in self.request.POST:
             return self._handle_previous_and_next_questions()
         if 'finish' in self.request.POST:
-            return reverse_lazy('test_player:start_test')
+            return reverse_lazy('quiz:result-list',
+                                kwargs={'user_id': self.request.session[
+                                    '_auth_user_id']})
         return reverse_lazy('test_player:test_player',
                             kwargs={'quiz_id': self.kwargs[
                                 'quiz_id'], 'question_number':
@@ -79,7 +83,7 @@ class TestPlayer(FormView):
 
         if 'finish' in self.request.POST:
             quiz_id = self.kwargs['quiz_id']
-            user = User.objects.get(pk=self.request.session['_auth_user_id'])
+            user = CustomUser.objects.get(pk=self.request.session['_auth_user_id'])
             quiz = Quizzes.objects.get(pk=quiz_id)
             timezone.now()
             date = datetime.datetime.now()
@@ -89,8 +93,8 @@ class TestPlayer(FormView):
                     messages.info(self.request,
                                   "You need to answer all the questions!!!")
                     return super(TestPlayer, self).form_invalid(form)
-                result.append(
-                    {'a_num': int(self.request.session[quiz_id].get(key))})
+
+                result.append(int(self.request.session[quiz_id].get(key)))
             result = json.dumps(result, ensure_ascii=False)
             Results.objects.create(user=user, quiz=quiz,
                                    pass_date=date,

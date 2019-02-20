@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Profile, Role, CustomUser
+from .models import Profile, Role
 
 admin.site.register(Role)
 admin.site.register(Profile)
@@ -31,4 +31,3 @@ class CustomUserAdmin(UserAdmin):
         return super(CustomUserAdmin, self).get_inline_instances(request, obj)
 
     role.admin_order_field = 'groups'
-
