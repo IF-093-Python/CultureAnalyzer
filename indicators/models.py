@@ -19,7 +19,7 @@ class CountryIndicator(models.Model):
                                 validators=[RegexValidator(_RE_ISO_CODE)])
     name = models.CharField(max_length=200, unique=True)
     pdi = IndicatorField(verbose_name='PDI')
-    ind = IndicatorField(verbose_name='IND')
+    idv = IndicatorField(verbose_name='IDV')
     mas = IndicatorField(verbose_name='MAS')
     uai = IndicatorField(verbose_name='UAI')
     lto = IndicatorField(verbose_name='LTO')
