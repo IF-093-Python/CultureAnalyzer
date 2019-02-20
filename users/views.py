@@ -2,8 +2,10 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect
-from django.views.generic import CreateView, UpdateView, ListView
+from django.views.generic import CreateView, UpdateView
 
+from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
+from CultureAnalyzer.view import SafePaginationListView
 from .filters import admin_search
 from .forms import (
     UserRegisterForm,
@@ -74,16 +76,23 @@ class PasswordChangeView(UpdateView):
         return kwargs
 
 
-class AdminListView(LoginRequiredMixin, ListView):
+class AdminListView(LoginRequiredMixin, SafePaginationListView):
     model = CustomUser
     template_name = 'users/admin_page.html'
     context_object_name = 'users'
+    paginate_by = ITEMS_ON_PAGE
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AdminListView, self).get_context_data(**kwargs)
+        context['form'] = admin_search(self.request).form
+        return context
 
     def get_queryset(self):
-        return admin_search(self.request)
+        return admin_search(self.request).qs
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'users/user_detail.html'
     form_class = BlockUserForm
     model = CustomUser
+    success_url = '/admin_page'
