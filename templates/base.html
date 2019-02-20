@@ -3,6 +3,7 @@
 <html>
 <head>
 
+
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -11,6 +12,9 @@
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
           integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <!-- Bootstrap select lib for select-button -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/css/bootstrap-select.min.css">
+
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <!-- Font Awesome JS -->
@@ -20,6 +24,15 @@
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
             integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
             crossorigin="anonymous"></script>
+
+
+
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+
+
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
     <title>Culture Analyzer</title>
 </head>
@@ -45,11 +58,9 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{% url 'feedback-list' %}">Feedbacks</a>
                             <a class="dropdown-item" href="{% url 'quiz:quizzes-list' %}">Quizzes</a>
-                            <a class="dropdown-item" href="{% url 'tutors:questions_list' %}">Questions</a>
                             <a class="dropdown-item" href="{% url 'country_indicator:country_indicator_list' %}">Indicators</a>
                         </div>
                     </li>
-                    {% if user.profile.role.name == 'Admin' %}
                     <li class="nav-item dropdown">
                         <a class="nav-item nav-link dropdown-toggle ite" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
                             Admin
@@ -58,7 +69,15 @@
                             <a class="dropdown-item" href="{% url 'admin' %}">Admin page</a>
                         </div>
                     </li>
-                    {% endif %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-item nav-link dropdown-toggle ite" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
+                            Test
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'test_player:start_test' %}">Start Test</a>
+                            <a class="dropdown-item" href="{% url 'quiz:result-list' request.user.id %}">See results</a>
+                        </div>
+                    </li>
                     <a class="nav-item nav-link" href="{% url 'profile' request.user.id %}">{{ request.user.username }}</a>
                     <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
                     {% else %}
@@ -90,5 +109,10 @@
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<!-- JavaScript for bootstrap-select button-->
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/js/bootstrap-select.min.js"></script>
+
 </body>
 </html>

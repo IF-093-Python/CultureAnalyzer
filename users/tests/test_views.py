@@ -10,7 +10,6 @@ from users.models import Profile, Role
 class TestViews(TestCase):
 
     def setUp(self):
-        Role.objects.create(name='Trainee')
         self.user = User.objects.create_user(username='Test',
                                              password='testview123')
         self.response = self.client.login(username='Test',

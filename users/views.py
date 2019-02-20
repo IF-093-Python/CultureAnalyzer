@@ -56,10 +56,7 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         """
         current_user = self.get_object()
 
-        if self.request.user == current_user:
-            return True
-        else:
-            return False
+        return bool(self.request.user == current_user)
 
 
 class PasswordChangeView(UpdateView):
