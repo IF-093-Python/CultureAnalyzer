@@ -1,9 +1,8 @@
 from itertools import chain
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
-from django.http import Http404
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.db.models import Count
@@ -12,14 +11,12 @@ from groups.models import Group
 from users.models import CustomUser, Profile
 from CultureAnalyzer.view import SafePaginationListView
 
-PAGINATOR = 2
+PAGINATOR = 50
 
 
 
 class GroupsList(LoginRequiredMixin, SafePaginationListView):
-    '''
-    Makes list of all groups with number of mentors in each group
-    '''
+    '''Makes list of all groups with number of mentors in each group'''
     model = Group
     ordering = ('name')
     template_name = 'groups/groups_list.html'
@@ -160,7 +157,8 @@ class MentorGroupsView(LoginRequiredMixin, SafePaginationListView):
 
 
 class MentorGroupUpdate(SuccessMessageMixin, LoginRequiredMixin,
-                        generic.UpdateView, SafePaginationListView):
+                        UserPassesTestMixin, SafePaginationListView,
+                        generic.UpdateView):
     model = Group
     form_class = GroupUpdateForm
     template_name = 'groups/mentor_group_update.html'
@@ -168,6 +166,7 @@ class MentorGroupUpdate(SuccessMessageMixin, LoginRequiredMixin,
     __search = False
     __search_label = 'Search'
     paginate_by = PAGINATOR
+    raise_exception = True
 
     def get_success_url(self):
         pk = self.kwargs['pk']
@@ -180,14 +179,12 @@ class MentorGroupUpdate(SuccessMessageMixin, LoginRequiredMixin,
         context['search'] = self.__search
         return context
 
-    def is_member(self):
-        '''Checks if user is mentor of current group'''
+    def test_func(self):
+        '''If user in not mentor of this group rises 403 exception'''
         return Group.objects.filter(pk= self.kwargs['pk']).\
             filter(mentor__user_id= self.request.user.pk).exists()
 
     def get_queryset(self):
-        if not self.is_member():
-            raise Http404
         result = CustomUser.objects.filter(is_active= True). \
             filter(profile__user_in_group= self.kwargs['pk']). \
             order_by('last_name')
@@ -207,7 +204,8 @@ class MentorGroupUpdate(SuccessMessageMixin, LoginRequiredMixin,
 
 
 class MentorGroupAdd(SuccessMessageMixin, LoginRequiredMixin,
-                     generic.UpdateView, SafePaginationListView):
+                     UserPassesTestMixin, SafePaginationListView,
+                     generic.UpdateView):
     model = Group
     form_class = GroupUpdateForm
     template_name = 'groups/mentor_group_add.html'
@@ -215,6 +213,7 @@ class MentorGroupAdd(SuccessMessageMixin, LoginRequiredMixin,
     __search = False
     __search_label = 'Search'
     paginate_by = PAGINATOR
+    raise_exception = True
 
     def get_success_url(self):
         pk = self.kwargs['pk']
@@ -226,16 +225,14 @@ class MentorGroupAdd(SuccessMessageMixin, LoginRequiredMixin,
         context['search'] = self.__search
         return context
 
-    def is_member(self):
-        '''Checks if user is mentor of current group'''
+    def test_func(self):
+        '''If user in not mentor of this group rises 403 exception'''
         return Group.objects.filter(pk= self.kwargs['pk']).\
             filter(mentor__user_id= self.request.user.pk).exists()
 
     def get_queryset(self):
         '''Gets all Trainee users that are not in groups and
         makes search in their last_name if needed '''
-        if not self.is_member():
-            raise Http404
         result = CustomUser.objects.filter(is_staff= False).\
             exclude(profile__user_in_group= self.kwargs['pk']).\
             filter(is_active= True).\
