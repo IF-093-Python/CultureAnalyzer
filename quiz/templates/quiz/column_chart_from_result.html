@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
+{% load filters %}
 {% block title %}Your result{% endblock %}
 {% block content %}
 <form method="post">
@@ -38,7 +38,7 @@
             {% endfor %}
             </tbody>
         </table>
-
+        <!--End table-->
     </div>
 
 
@@ -48,12 +48,14 @@
                 <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
                    aria-selected="true">Chart</a>
             </li>
-            {% if countries_values %}
-            {% for k, ind in countries_values.items %}
+            {% if countries_names %}
+            {% for country_name in countries_names %}
             <li class="nav-item">
-                <a class="nav-link" id="{{ k }}-tab" data-toggle="tab" href="#{{ k }}" role="tab"
-                   aria-controls="{{ k }}"
-                   aria-selected="false">{{ k }}</a>
+                <a class="nav-link" id="{{ country_name }}-tab" data-toggle="tab" href="#{{ country_name }}" role="tab"
+                   aria-controls="{{ country_name }}"
+                   aria-selected="false">
+                    {{ country_name|truncatechars:12 }}
+                </a>
             </li>
             {% endfor %}
             {% endif %}
@@ -64,10 +66,33 @@
                      style="min-width: 310px; height: 400px; margin: 0 auto;"></div>
             </div>
             {% if countries_values %}
-            {% for k, ind in countries_values.items %}
-            <div class="tab-pane fade" id="{{ k }}" role="tabpanel" aria-labelledby="{{ k }}-tab"
+            {% for country_name in countries_names %}
+            <div class="tab-pane fade" id="{{ country_name }}" role="tabpanel" aria-labelledby="{{ country_name }}-tab"
                  style="background-color: #fff;">
-                feedbacks Waw!!!
+                <!--Creating views of feedbacks and recommendations-->
+                <div class="container">
+                {% with feedbacks_by_ind=countries_feedbacks|lookup:country_name %}
+                   {% for indicator, feedbacks in feedbacks_by_ind.items %}
+                        {% if feedbacks %}
+                            <h5>Feedbacks for {{ indicator }}:</h5>
+                            {% for feedback_obj in feedbacks %}
+                                - {{ feedback_obj.feedback }}<br>
+
+                                    {% if feedback_obj.recommendation_set.all %}
+                                        <br>Recommendations:
+                                    {% endif %}
+                                    <ul>
+                                    {% for r in feedback_obj.recommendation_set.all %}
+                                       <li> {{ r.recommendation }}</li>
+                                    {% endfor %}
+                                    </ul>
+
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                {% endwith %}
+                </div>
+                <!--End of feedbacks, recommendations-->
             </div>
             {% endfor %}
             {% endif %}
