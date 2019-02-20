@@ -11,7 +11,7 @@
             <select name='select_indicator' class="selectpicker"
                     multiple="multiple" data-live-search="true" data-max-options="5">
                 {% for i in country_indicators %}
-                    <option value="{{ i.iso_code }}:{{ i.pdi }} {{ i.ind }} {{ i.mas }} {{ i.uai }} {{ i.lto }} {{ i.ivr }}"
+                    <option value="{{ i.iso_code }}:{{ i.pdi }} {{ i.idv }} {{ i.mas }} {{ i.uai }} {{ i.lto }} {{ i.ivr }}"
                             {% if i.iso_code is countries_values.keys %}
                             selected="selected"
                             {% endif %}>
@@ -116,7 +116,7 @@
                 xAxis: {
                     categories: [
                         'PDI',
-                        'IND',
+                        'IDV',
                         'MAS',
                         'UAI',
                         'LTO',
