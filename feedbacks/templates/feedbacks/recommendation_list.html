@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% load cool_paginate %}
+
+{% block title %}Recommendations{% endblock %}
+
+{% block content %}
+    <table class="table table-hover">
+        <caption><a href="{% url 'recommendation-create' %}" class="btn btn-primary">Add recommendation</a></caption>
+        <thead>
+            <tr>
+                <th scope="col">Text</th>
+                <th>Feedback</th>
+                <th style="width: 15%">Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for recommendation in object_list %}
+            <tr>
+                <td style="vertical-align: middle">{{ recommendation.recommendation|truncatechars:250 }}</td>
+                <td>{{ recommendation.feedback|truncatechars:50 }}</td>
+                <td class="d-flex justify-content-around">
+                    <a style="min-width: 40%" class="btn btn-primary" href="{% url 'recommendation-update' recommendation.id %}"><i class="far fa-edit"></i></a>
+                    <a style="min-width: 40%" class="btn btn-danger" href="{% url 'recommendation-delete' recommendation.id %}"><i class="far fa-trash-alt"></i></a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td>No recommendations yet.</td>
+            </tr>
+            {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+    {% if is_paginated %}
+        {% cool_paginate page_obj=page_obj %}
+    {% endif %}
+{% endblock content %}

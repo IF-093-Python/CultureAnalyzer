@@ -1,7 +1,26 @@
 from django import forms
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import Profile
+
+from .choices import GENDER_CHOICES, EDUCATION_CHOICES
+from .models import CustomUser
+from .validators import ProfileValidator, PValidationError
+
+__all__ = [
+    'UserLoginForm',
+    'UserRegisterForm',
+    'UserUpdateForm',
+    'BlockUserForm',
+]
+
+EDUCATION_CHOICES_EMPTY_LABEL = (('', '--------------'),) + EDUCATION_CHOICES
+GENDER_CHOICES_EMPTY_LABEL = (('', '--------------'),) + GENDER_CHOICES
+
+
+class DateInput(forms.DateInput):
+    """this form we use to show normal calendar in template
+    instead text field
+    """
+    input_type = 'date'
 
 
 class UserLoginForm(AuthenticationForm):
@@ -19,7 +38,7 @@ class UserLoginForm(AuthenticationForm):
     ), label='')
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['username', 'password']
 
 
@@ -29,20 +48,31 @@ class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['username', 'email', 'first_name',
                   'last_name', 'password1', 'password2']
 
 
-class ProfileUpdateForm(forms.ModelForm):
-    class Meta:
-        model = Profile
-        fields = ['image']
-
-
 class UserUpdateForm(forms.ModelForm):
+    image = forms.ImageField(widget=forms.FileInput, required=False)
+    experience = forms.IntegerField()
+    date_of_birth = forms.DateField(widget=DateInput())
+    education = forms.ChoiceField(choices=EDUCATION_CHOICES_EMPTY_LABEL)
+    gender = forms.ChoiceField(choices=GENDER_CHOICES_EMPTY_LABEL)
+
     class Meta:
-        model = User
-        fields = ['first_name', 'last_name']
+        model = CustomUser
+        fields = ['first_name', 'last_name', 'image', 'experience',
+                  'date_of_birth', 'education', 'gender']
+
+    def clean_experience(self):
+        try:
+            return ProfileValidator.validate(self.cleaned_data)
+        except PValidationError as err:
+            self.add_error('experience', str(err))
 
 
+class BlockUserForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['is_active', 'is_staff', 'is_superuser']

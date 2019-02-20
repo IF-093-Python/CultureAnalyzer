@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('tutors', '0002_categoryquestion'),
     ]
@@ -14,6 +13,9 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='question',
             name='category_question',
-            field=models.ForeignKey(blank=True, db_column='category_id', null=True, on_delete=django.db.models.deletion.CASCADE, to='tutors.CategoryQuestion'),
+            field=models.ForeignKey(blank=True, db_column='category_id',
+                                    null=True,
+                                    on_delete=django.db.models.deletion.CASCADE,
+                                    to='tutors.CategoryQuestion'),
         ),
     ]
