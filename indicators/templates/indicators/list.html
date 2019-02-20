@@ -24,6 +24,7 @@
     </div>
     <hr>
     <br>
+    <div class="table-responsive">
         <table class="table table-hover block-rounded">
           <thead class="thead-light">
             <tr>
@@ -64,6 +65,7 @@
           {% endfor %}
           </tbody>
         </table>
+    </div>
     <div class="d-flex justify-content-center">
     {% if is_paginated %}
         {% cool_paginate page_obj=page_obj %}
