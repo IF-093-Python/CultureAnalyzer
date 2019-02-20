@@ -15,7 +15,7 @@ class UserViewSet(viewsets.ModelViewSet):
         user = self.request.user
         permissions = (IsSuperAdmin, IsAdmin, IsMentor, IsTrainee)
         self.permission_classes = [get_by_role(user=user,
-                                               return_conditions=permissions,
+                                               return_values=permissions,
                                                default=IsAuthenticated)]
         return super(UserViewSet, self).get_permissions()
 
@@ -28,11 +28,11 @@ class UserViewSet(viewsets.ModelViewSet):
         user_serializers = (SuperuserSerializer, AdminUserSerializer,
                             MentorUserSerializer, TraineeUserSerializer)
         return get_by_role(user=self.request.user,
-                           return_conditions=user_serializers)
+                           return_values=user_serializers)
 
 
-def get_by_role(user: CustomUser, return_conditions, default=None):
+def get_by_role(user: CustomUser, return_values, default=None):
     return first_hit_value(conditions=(is_superadmin(user), is_admin(user),
                                        is_mentor(user), is_trainee(user)),
-                           return_conditions=return_conditions,
+                           return_values=return_values,
                            default=default)
