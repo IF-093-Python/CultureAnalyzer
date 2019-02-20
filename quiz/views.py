@@ -1,14 +1,17 @@
-from django.contrib.auth.decorators import login_required
+import ast
+import json
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 # Create your views here.
 from django.urls import reverse_lazy
 from django.views import generic
+from django.views.generic import TemplateView
 
+from indicators.models import CountryIndicator
 from quiz.forms import QuizCreateForm
 from quiz.models import Quizzes, Results
 from quiz.service import get_final_result
-from indicators.models import CountryIndicator
 
 
 class QuizzesList(LoginRequiredMixin, generic.ListView):
@@ -61,21 +64,52 @@ class ResultsListView(LoginRequiredMixin, generic.ListView):
     template_name = 'quiz/result_list.html'
     context_object_name = 'results'
 
-    def get_queryset(self):
+    def get_queryset(self, **kwargs):
         results = Results.objects.filter(user=self.request.user)
+        print(self.request.user)
         return results
 
 
-@login_required()
+class ResultsView(TemplateView):
+
+    def get_context_data(self, **kwargs):
+        result = list(get_final_result(self.request.user.profile,
+                                       self.kwargs['pk']).values())
+        country_indicators = CountryIndicator.objects.all()
+        countries_values = []
+
+        # context = super(ResultsView, self).get_context_data(**kwargs)
+        context = {
+            'result': result,
+            'country_indicators': country_indicators,
+            'countries_values': countries_values,
+        }
+        return context
+
+    def post(self):
+        if self.request.method == 'POST' and self.request.POST.getlist(
+                'select_indicator'):
+            options = self.request.POST.getlist('select_indicator')
+            countries_values = json.loads(options)
+            print(countries_values)
+            context = {
+                'result': result,
+                'country_indicators': country_indicators,
+                'countries_values': countries_values,
+            }
+
+
 def get_result_from(request, pk):
     result = list(get_final_result(request.user.profile, pk).values())
+    print(result)
     country_indicators = CountryIndicator.objects.all()
-    countries_values = {}
+
+    countries_values = []
     if request.method == 'POST' and request.POST.getlist('select_indicator'):
         options = request.POST.getlist('select_indicator')
-        for o in options:
-            o = o.split(':')
-            countries_values[o[0]] = list(map(int, o[1].split()))
+        # print(type(options))
+        countries_values = ast.literal_eval(options[0])
+        print(countries_values)
         context = {
             'result': result,
             'country_indicators': country_indicators,
@@ -86,5 +120,5 @@ def get_result_from(request, pk):
             'result': result,
             'country_indicators': country_indicators,
             'countries_values': countries_values,
-            }
+        }
     return render(request, 'quiz/column_chart_from_result.html', context)
