@@ -7,7 +7,7 @@ from django.views import generic
 
 from groups.forms import GroupCreateForm, GroupUpdateForm
 from groups.models import Group
-from users.models import User
+from users.models import CustomUser
 
 PAGINATOR = 3
 
@@ -57,7 +57,7 @@ class CreateGroupView(LoginRequiredMixin, generic.CreateView,
         return context
 
     def get_queryset(self):
-        result = User.objects.all().filter(is_active=True).order_by(
+        result = CustomUser.objects.all().filter(is_active=True).order_by(
             'last_name')
         if self.request.GET.get('data_search'):
             result = result.filter(
@@ -86,7 +86,7 @@ class UpdateGroupView(SuccessMessageMixin,
         context = super(UpdateGroupView, self).get_context_data(**kwargs)
         if len(self.search_label) > 0:
             context['search_label'] = self.search_label
-        context['checked_mentors'] = User.objects. \
+        context['checked_mentors'] = CustomUser.objects. \
             filter(profile__mentor_in_group=context['group']). \
             filter(is_active=True). \
             order_by('last_name')
@@ -96,7 +96,7 @@ class UpdateGroupView(SuccessMessageMixin,
         return context
 
     def get_queryset(self):
-        result = User.objects.all().filter(is_active=True).order_by(
+        result = CustomUser.objects.all().filter(is_active=True).order_by(
             'last_name')
         if self.request.GET.get('data_search'):
             result = result.filter(
@@ -156,7 +156,7 @@ class MentorGroupUpdate(SuccessMessageMixin,
 
     def get_context_data(self, **kwargs):
         context = super(MentorGroupUpdate, self).get_context_data(**kwargs)
-        context['users'] = User.objects. \
+        context['users'] = CustomUser.objects. \
             filter(profile__user_in_group=context['group']). \
             filter(is_active=True). \
             order_by('last_name')
@@ -180,10 +180,10 @@ class MentorGroupAdd(SuccessMessageMixin, LoginRequiredMixin,
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['users'] = User.objects. \
+        context['users'] = CustomUser.objects. \
             exclude(profile__user_in_group=context['group']). \
             filter(is_active=True). \
             order_by('last_name')
-        context['added_users'] = User.objects. \
+        context['added_users'] = CustomUser.objects. \
             filter(profile__user_in_group=context['group'])
         return context

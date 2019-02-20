@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -13,6 +12,7 @@ from feedbacks.models import Feedback, Recommendation
 from feedbacks.serializers import FeedbackSerializer, RecommendationSerializer
 from indicators.models import CountryIndicator
 from indicators.serializers import CountryIndicatorSerializer
+from users.models import CustomUser
 
 
 @api_view(['GET'])
@@ -22,7 +22,7 @@ def protected_view(request):
 
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes = (IsSuperAdmin | IsAdmin | IsMentor,)
-    queryset = User.objects.none()
+    queryset = CustomUser.objects.none()
     serializer_class = UserSerializer
 
     def get_queryset(self):

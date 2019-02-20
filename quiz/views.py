@@ -99,7 +99,7 @@ class ResultsListView(LoginRequiredMixin, generic.ListView):
 
 @login_required()
 def get_result_from(request, pk):
-    dict_result = get_final_result(request.user.profile, pk)
+    dict_result = get_final_result(request.user, pk)
     result = list(dict_result.values())
     country_indicators = CountryIndicator.objects.all()
     countries_values = {}

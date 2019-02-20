@@ -2,7 +2,6 @@ import datetime
 import json
 
 from django.contrib import messages
-from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -11,6 +10,7 @@ from django.views.generic import FormView, ListView
 from quiz.models import Results, Quizzes
 from tutors.models import Questions
 from .forms import QuestionSaveForm
+from users.models import CustomUser
 
 __all__ = ['TestPlayer', 'TestStart', ]
 
@@ -83,7 +83,7 @@ class TestPlayer(FormView):
 
         if 'finish' in self.request.POST:
             quiz_id = self.kwargs['quiz_id']
-            user = User.objects.get(pk=self.request.session['_auth_user_id'])
+            user = CustomUser.objects.get(pk=self.request.session['_auth_user_id'])
             quiz = Quizzes.objects.get(pk=quiz_id)
             timezone.now()
             date = datetime.datetime.now()

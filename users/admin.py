@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import Profile, Role
-from django.contrib.auth.models import User
 
 admin.site.register(Role)
 admin.site.register(Profile)
@@ -34,5 +33,3 @@ class CustomUserAdmin(UserAdmin):
     role.admin_order_field = 'groups'
 
 
-admin.site.unregister(User)
-admin.site.register(User, CustomUserAdmin)
