@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block navbar %}
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg block-rounded navbar-custom">
         <div class="container-fluid">
             <a class="navbar-brand mr-4" href="{% url 'home' %}">Culture Analyzer</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,21 +22,35 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{% url 'feedback-list' %}">Feedbacks</a>
                             <a class="dropdown-item" href="{% url 'quiz:quizzes-list' %}">Quizzes</a>
-                            <a class="dropdown-item" href="{% url 'tutors:questions_list' %}">Questions</a>
                             <a class="dropdown-item" href="{% url 'country_indicator:country_indicator_list' %}">Indicators</a>
                         </div>
                     </li>
-                    <a class="nav-item nav-link" href="{% url 'profile' request.user.id %}">{{ request.user.username }}</a>
-                    <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-item nav-link dropdown-toggle ite" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
+                            {{ request.user.username }}
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'profile' request.user.id %}">Profile</a>
+                            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                        </div>
+                    </li>
                     {% else %}
-                    <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-                    <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+                    <a class="nav-item nav-link" href="{% url 'login' %}">Sign in</a>
+                    <a class="nav-item nav-link" href="{% url 'register' %}">Sign up</a>
                     {% endif %}
                 </div>
             </div>
         </div>
     </nav>
 {% endblock navbar %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb" class="mb-5">
+    <ol class="breadcrumb navbar-custom">
+        <li class="breadcrumb-item active" aria-current="page">Home</li>
+    </ol>
+</nav>
+{% endblock breadcrumb %}
 
 {% block content %}
     <h1>Content</h1>

@@ -35,6 +35,8 @@
     <div id="content">
         {% block navbar %}
         {% endblock navbar %}
+        {% block breadcrumb %}
+        {% endblock breadcrumb %}
         {% if user.is_authenticated %}
             {% block content %}
             {% endblock content %}
