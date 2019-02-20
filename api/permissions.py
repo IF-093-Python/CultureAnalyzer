@@ -1,52 +1,49 @@
-from django.contrib.auth.models import User, AnonymousUser
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 
-SUPER_ADMIN_STR = 'Superadmin'
-ADMIN_STR = 'Admin'
-MENTOR_STR = 'Mentor'
-TRAINEE_STR = 'Trainee'
-ANON_STR = 'Anonymous'
+from users.models import CustomUser
 
-
-class IsSuperAdmin(BasePermission):
-    def has_permission(self, request, view):
-        return is_superadmin(request.user)
+__all__ = ['IsSuperAdmin', 'IsAdmin', 'IsMentor', 'IsTrainee',
+           'is_superadmin', 'is_admin', 'is_mentor', 'is_trainee']
 
 
 class IsAdmin(BasePermission):
     def has_permission(self, request, view):
-        return is_admin(request.user)
+        return True
+
+    def has_object_permission(self, request, view, obj):
+        return True
+
+
+class IsSuperAdmin(IsAdmin):
+    pass
 
 
 class IsMentor(BasePermission):
-    def has_permission(self, request, view):
-        return is_mentor(request.user)
+    def has_object_permission(self, request, view, obj):
+        is_owner = obj.id == request.user.id
+        if request.method in SAFE_METHODS or is_owner:
+            return True
+        return False
 
 
 class IsTrainee(BasePermission):
-    def has_permission(self, request, view):
-        return is_trainee(request.user)
+    def has_object_permission(self, request, view, obj):
+        is_owner = obj.id == request.user.id
+        return is_owner
 
 
-def is_superadmin(user: User) -> bool:
-    return user_role(user) == SUPER_ADMIN_STR
+def is_superadmin(user: CustomUser) -> bool:
+    superadmin_id = 1
+    return user.id == superadmin_id
 
 
-def is_admin(user: User) -> bool:
-    return user_role(user) == ADMIN_STR
+def is_admin(user: CustomUser) -> bool:
+    return user.is_superuser
 
 
-def is_mentor(user: User) -> bool:
-    return user_role(user) == MENTOR_STR
+def is_mentor(user: CustomUser) -> bool:
+    return user.is_staff and not user.is_superuser
 
 
-def is_trainee(user: User) -> bool:
-    return user_role(user) == TRAINEE_STR
-
-
-def is_anonymous(user: User) -> bool:
-    return isinstance(user, AnonymousUser)
-
-
-def user_role(user: User) -> str:
-    return ANON_STR if is_anonymous(user) else user.profile.role.name
+def is_trainee(user: CustomUser) -> bool:
+    return not user.is_staff

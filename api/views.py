@@ -1,34 +1,38 @@
-from django.contrib.auth.models import User
 from rest_framework import viewsets
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
-from api.permissions import IsAdmin, IsMentor, IsSuperAdmin
-from api.permissions import is_mentor, is_admin, is_superadmin
-from api.service import get_superadmin_users, get_mentor_users, get_admin_users
-from .serializers import UserSerializer
-
-
-@api_view(['GET'])
-def protected_view(request):
-    return Response({'username': f'{request.user.username}'})
+from api.permissions import *
+from api.serializers.users import *
+from api.service import *
+from api.utils import first_hit_value
+from users.models.custom_user import CustomUser
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsSuperAdmin | IsAdmin | IsMentor,)
-    queryset = User.objects.none()
-    serializer_class = UserSerializer
+    queryset = CustomUser.objects.none()
+
+    def get_permissions(self):
+        user = self.request.user
+        permissions = (IsSuperAdmin, IsAdmin, IsMentor, IsTrainee)
+        self.permission_classes = [get_by_role(user=user,
+                                               return_conditions=permissions,
+                                               default=IsAuthenticated)]
+        return super(UserViewSet, self).get_permissions()
 
     def get_queryset(self):
         user = self.request.user
-        return self.query_by_role(user)
+        service = UserService(user)
+        return service.get_queryset_by_role()
 
-    def query_by_role(self, user):
-        queryset = super(UserViewSet, self).get_queryset()
-        if is_superadmin(user):
-            queryset = get_superadmin_users()
-        elif is_admin(user):
-            queryset = get_admin_users()
-        elif is_mentor(user):
-            queryset = get_mentor_users()
-        return queryset
+    def get_serializer_class(self):
+        user_serializers = (SuperuserSerializer, AdminUserSerializer,
+                            MentorUserSerializer, TraineeUserSerializer)
+        return get_by_role(user=self.request.user,
+                           return_conditions=user_serializers)
+
+
+def get_by_role(user: CustomUser, return_conditions, default=None):
+    return first_hit_value(conditions=(is_superadmin(user), is_admin(user),
+                                       is_mentor(user), is_trainee(user)),
+                           return_conditions=return_conditions,
+                           default=default)

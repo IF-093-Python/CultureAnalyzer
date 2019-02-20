@@ -17,6 +17,4 @@ urlpatterns = [
         path('obtain/', TokenObtainPairView.as_view()),
         path('refresh/', TokenRefreshView.as_view()),
     ])),
-
-    path('protected/', views.protected_view)
 ]
