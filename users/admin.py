@@ -31,5 +31,3 @@ class CustomUserAdmin(UserAdmin):
         return super(CustomUserAdmin, self).get_inline_instances(request, obj)
 
     role.admin_order_field = 'groups'
-
-

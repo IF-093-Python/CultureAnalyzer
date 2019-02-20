@@ -1,42 +1,88 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+{% load cool_paginate %}
+
 {% block content %}
+  {% block breadcrumbs %}
+    {% breadcrumb "Home" "/" %}
+    {% breadcrumb "Groups" "groups:mentor_groups_view" %}
+    {% breadcrumb group.name "groups:mentor_group_update" group.pk %}
+    <div style="color: blue">
+    {% render_breadcrumbs %}
+    </div>
+  {% endblock %}
+
         {% if messages %}
           <ul class="messages">
             {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            <a {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message }}</a>
             {% endfor %}
           </ul>
         {% endif %}
     <h1>Update group "{{ group.name }}"</h1>
 
-
-
-    {% block users %}
         <div class="container-fluid bg-1 main col-md-10">
-
+        <div class="float-right">
+    <form class="form-inline my-2 my-lg-0" method="get" action="">
+      <input class="form-control mr-sm-2" type="search"
+             placeholder="{{ search_label }}" aria-label="Search"
+             name="data_search">
+      <div class="btn-toolbar">
+        <button class="btn btn-outline-success my-2 my-sm-0"
+                style="margin-right: 10px;" type="submit">Search</button>
+        <a class="btn btn-outline-danger my-2 my-sm-0"
+           href ={% url 'groups:mentor_group_update' group.pk%}>Clear</a>
+      </div>
+      <br>
+    </form>
+  </div>
+        <br>
+        {% if not object_list %}
         <a class="btn btn-danger" title="Back to all groups"
-               href="{% url 'groups:mentor_groups_view' %}">Back</a>
+               href="{% url 'groups:mentor_groups_view' %}">&#8630; Back</a>
         <a class="btn btn-success" title="Add user to group"
                href="{% url 'groups:mentor_group_add' group.pk %}">&#10010; Add</a>
-     {% if users %}
+        {% endif %}
+            {% block users %}
+
+            {% if object_list %}
 <table class="table table-hover table-striped table-bordered table-sm">
     <thead class="thead-light">
       <tr>
           <th style="width: 1%"> </th>
           <th>Name</th>
-          <th style="width: 1%">Photo</th>
+          <th style="text-align: center; width: 1%">Photo</th>
       </tr>
     </thead>
     <tbody>
   <form method="post">
      {% csrf_token %}
-    <button type="submit" class="btn btn-primary; float-left"
-                    style="margin-right: 4px; background-color:
-                    cornflowerblue">Update group</button>
+    <a class="btn btn-danger" title="Back to all groups"
+               href="{% url 'groups:mentor_groups_view' %}">&#8630; Back</a>
+    <button type="submit" class="btn btn-primary"
+            style="margin-left: 4px;margin-right: 4px;
+            background-color: cornflowerblue">Update group</button>
+    <a class="btn btn-success" title="Add user to group"
+       href="{% url 'groups:mentor_group_add' group.pk %}">&#10010; Add</a>
+        <br>
+        <br>
+        {% if search %}
+        <b>Search results for "{{ search_label }}":</b>
+        {% else %}
+        <b>Users:</b>
+        {% endif %}
 
-        {% for user in users %}
+        {% for user in users_in_group %}
+        {% if user not in object_list %}
+            <input type="checkbox" style="visibility: hidden"
+               name="user" value="{{ user.profile.pk }}" checked>
+        {% endif %}
+        {% endfor %}
+
+        {% for user in object_list %}
       <tr>
         <td>
             <input type="checkbox" name="user" value="{{ user.profile.pk }}" checked>
@@ -44,11 +90,13 @@
       <td>{{ user.last_name }} {{ user.first_name }} ({{ user.username }})</td>
       <td>
 
-        {% if user.profile.image %}
-          <img src="{{ user.profile.image.url }}" alt="" class="circle_text" style="margin-left: -10px;">
-        {% else %}
-          <img src="{%static 'default.png'%}" alt="" class="circle_text" style="margin-left: -10px;">
-        {% endif %}
+        {% if user.image %}
+              <img src="{{ user.image.url }}" alt=""
+                   class="circle_text" style="text-align: center">
+            {% else %}
+               <img src="{%static 'default.png'%}" alt=""
+                    class="circle_text" style="text-align: center">
+            {% endif %}
 
       </td>
       </tr>
@@ -65,27 +113,9 @@
     {% endif %}
 
 
-        {% if is_paginated %}
-  <ul class="pagination">
-    {% if page_obj.has_previous %}
-      <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a>&nbsp;&nbsp;</li>
-    {% else %}
-      <li class="disabled"><span>&laquo;</span>&nbsp;&nbsp;</li>
+    {% if is_paginated %}
+        {% cool_paginate page_obj=page_obj %}
     {% endif %}
-    {% for i in paginator.page_range %}
-      {% if page_obj.number == i %}
-        <li class="active" style="color: #cd0a0a"><span>{{ i }} <span class="sr-only">(current)</span>&nbsp;</span></li>
-      {% else %}
-        <li><a href="?page={{ i }}"> {{ i }} </a>&nbsp;</li>
-      {% endif %}
-    {% endfor %}
-    {% if page_obj.has_next %}
-      <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-    {% else %}
-      <li class="disabled"><span>&raquo;</span></li>
-    {% endif %}
-  </ul>
-{% endif %}
             </tbody>
 </table>
         </div>

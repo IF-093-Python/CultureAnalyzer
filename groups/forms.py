@@ -1,5 +1,5 @@
 from django import forms
-from groups.models import Group,MyProfile,Profile
+from groups.models import Group,Profile
 
 
 class GroupCreateForm(forms.ModelForm):

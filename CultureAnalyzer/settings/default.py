@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_cool_paginator',
     'django_filters',
+    'django_bootstrap_breadcrumbs',
 
     'users.apps.UsersConfig',
     'groups',
@@ -150,3 +151,5 @@ SIMPLE_JWT = {
 }
 
 TEST_RUNNER = 'CultureAnalyzer.tests.CustomTestRunner'
+
+BREADCRUMBS_TEMPLATE = "django_bootstrap_breadcrumbs/bootstrap4.html"
