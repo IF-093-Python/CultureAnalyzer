@@ -16,7 +16,7 @@ PAGINATOR = 50
 
 
 class GroupsList(LoginRequiredMixin, SafePaginationListView):
-    '''Makes list of all groups with number of mentors in each group'''
+    """Makes list of all groups with number of mentors in each group"""
     model = Group
     ordering = ('name')
     template_name = 'groups/groups_list.html'
@@ -95,7 +95,7 @@ class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
 
     def get_queryset(self):
         """Remembers all checked_mentors of group and then
-        concatenates them with unchecked metors, so that
+        concatenates them with unchecked mentors, so that
         checked mentors are always first in list"""
         checked_mentors = CustomUser.objects.filter(
             mentor_in_group=self.kwargs['pk']).\
@@ -116,7 +116,7 @@ class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
         return result
 
     def get_object(self, context=None):
-        '''Returns Group that we are working with'''
+        """Returns Group that we are working with"""
         context = get_object_or_404(Group, pk=self.kwargs['pk'])
         return context
 
@@ -180,7 +180,7 @@ class MentorGroupUpdate(generic.UpdateView, SuccessMessageMixin,
         return context
 
     def test_func(self):
-        '''If user in not mentor of this group rises 403 exception'''
+        """If user in not mentor of this group rises 403 exception"""
         return Group.objects.filter(pk=self.kwargs['pk']).\
             filter(mentor__id=self.request.user.pk).exists()
 
@@ -226,13 +226,13 @@ class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
         return context
 
     def test_func(self):
-        '''If user in not mentor of this group rises 403 exception'''
+        """If user in not mentor of this group rises 403 exception"""
         return Group.objects.filter(pk=self.kwargs['pk']).\
             filter(mentor__id=self.request.user.pk).exists()
 
     def get_queryset(self):
-        '''Gets all Trainee users that are not in groups and
-        makes search in their last_name if needed '''
+        """Gets all Trainee users that are not in groups and
+        makes search in their last_name if needed"""
         result = CustomUser.objects.filter(is_staff=False).\
             exclude(user_in_group=self.kwargs['pk']).\
             filter(is_active=True).\
@@ -250,8 +250,8 @@ class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
         return context
 
     def form_valid(self, form):
-        '''Gets users that are already in group and adds to users
-        that where checked in form for adding to group'''
+        """Gets users that are already in group and adds to users
+        that where checked in form for adding to group"""
         users_in_group = CustomUser.objects.filter(is_active=True).\
             filter(user_in_group=self.kwargs['pk'])
         if not form.cleaned_data['user']:
