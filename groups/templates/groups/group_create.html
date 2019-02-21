@@ -60,9 +60,9 @@
       {{ form.name|as_crispy_field }}
     <hr>
     {% if search %}
-        <b>Search results for "{{ search_label }}":</b>
+        <strong>Search results for "{{ search_label }}":</strong>
         {% else %}
-        <b>Add Mentors:</b>
+        <strong>Add Mentors:</strong>
     {% endif %}
     {% if not object_list %}
       {% if search %}
