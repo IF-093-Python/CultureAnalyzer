@@ -9,3 +9,4 @@ django-filter==2.1.0
 ddt==1.2.0
 djangorestframework==3.9.1
 djangorestframework-simplejwt==3.3
+django-bootstrap-breadcrumbs==0.9.1

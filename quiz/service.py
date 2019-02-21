@@ -1,6 +1,10 @@
 import json
 
-from users.models import Profile
+from users.models import CustomUser
+
+__all__ = ['get_constant', 'check_group_indicators',
+           'get_average_results', 'get_indicators_values',
+           'get_groups_results', 'get_final_result', ]
 
 
 def get_constant(indicator_value):
@@ -40,20 +44,6 @@ def check_group_indicators(group_indicator):
     return group_indicator
 
 
-def get_list_of_results(group_result):
-    """
-    Return list with lists of users answers
-    each element of this list is list of user answer for each question
-    :param list group_result: List with dictionaries of users in group results
-    :return: list List with lists of users answers
-    like [[first_user_fist_answer, first_user_second_answer, ...], ...]
-    """
-    list_of_answer = []
-    for i in range(len(group_result)):
-        list_of_answer.append([result['a_num'] for result in group_result[i]])
-    return list_of_answer
-
-
 def get_average_results(list_of_answer):
     """
     Return list of average for each answer
@@ -75,7 +65,7 @@ def get_indicators_values(answers_list):
     :return: dict dictionary with value for each indicator
     """
     group = {'pdi': round(35 * (answers_list[6] - answers_list[1]) + 25 * (
-            answers_list[19] - answers_list[22]), 2),
+                    answers_list[19] - answers_list[22]), 2),
              'idv': round(35 * (answers_list[3] - answers_list[0]) + 35 * (
                      answers_list[8] - answers_list[5]), 2),
              'mas': round(35 * (answers_list[4] - answers_list[2]) + 35 * (
@@ -92,10 +82,7 @@ def get_indicators_values(answers_list):
 def get_groups_results(data):
     """
     Return list with list of results
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
     :param list data: List with users profile
     :return: List with lists of results
     """
@@ -120,11 +107,11 @@ def get_final_result(data, *args):
     :param int args: id of result (only for profile)
     :return dict: Dictionary of indicators
     """
-    if isinstance(data, Profile):
+    if isinstance(data, CustomUser):
         group_answers = [json.loads(
-            data.user.results_set.filter(pk=args[0]).first().result)]
+            data.results_set.filter(pk=args[0]).first().result)]
     else:
-        users_results = data.user.exclude(user__results=None)
+        users_results = data.user.exclude(results=None)
         if not users_results:
             return {
                 'pdi': 0,
@@ -135,8 +122,7 @@ def get_final_result(data, *args):
                 'ivr': 0,
             }
         group_answers = get_groups_results(users_results)
-    results_list = get_list_of_results(group_answers)
-    average_result = get_average_results(results_list)
+    average_result = get_average_results(group_answers)
     indicator_list = get_indicators_values(average_result)
     data = check_group_indicators(indicator_list)
 

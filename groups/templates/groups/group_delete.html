@@ -1,11 +1,21 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load django_bootstrap_breadcrumbs %}
+
 {% block content %}
+  {% block breadcrumbs %}
+    {% breadcrumb "Home" "/" %}
+    {% breadcrumb "Groups" "groups:groups-list" %}
+    {% breadcrumb group.name "groups:group-delete" group.pk %}
+    <div style="color: blue">
+    {% render_breadcrumbs %}
+    </div>
+  {% endblock %}
     <div class="container mt-5">
         <form class="form text-center" action="" method="post">{% csrf_token %}
                     <h1>Are you sure you want to delete "{{ group.name }}"?</h1>
             <input class="btn btn-danger" type="submit" value="Yes"/>
-            <a class="btn btn-primary" href="{% url 'groups:groups-list' %}">No</a>
+            <a class="btn btn-primary" href="{% url 'groups:groups-list' %}">&nbsp;No&nbsp;</a>
         </form>
     </div>
 {% endblock content %}

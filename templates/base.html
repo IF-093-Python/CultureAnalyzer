@@ -51,7 +51,6 @@
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
                     {% if user.is_authenticated %}
-                    {% if user.profile.role.name == 'Mentor' %}
                     <li class="nav-item dropdown">
                         <a class="nav-item nav-link dropdown-toggle ite" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
                             Mentor
@@ -59,20 +58,19 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{% url 'feedback-list' %}">Feedbacks</a>
                             <a class="dropdown-item" href="{% url 'quiz:quizzes-list' %}">Quizzes</a>
-                            <a class="dropdown-item" href="{% url 'tutors:questions_list' %}">Questions</a>
                             <a class="dropdown-item" href="{% url 'country_indicator:country_indicator_list' %}">Indicators</a>
+                            <a class="dropdown-item" href="{% url 'groups:mentor_groups_view' %}">Groups</a>
                         </div>
                     </li>
-                    {% elif user.profile.role.name == 'Admin' %}
                     <li class="nav-item dropdown">
                         <a class="nav-item nav-link dropdown-toggle ite" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
                             Admin
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{% url 'admin' %}">Admin page</a>
+                            <a class="dropdown-item" href="{% url 'groups:groups-list' %}">Groups</a>
                         </div>
                     </li>
-                    {% elif user.profile.role.name == 'Trainee' %}
                     <li class="nav-item dropdown">
                         <a class="nav-item nav-link dropdown-toggle ite" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
                             Test
@@ -82,7 +80,6 @@
                             <a class="dropdown-item" href="{% url 'quiz:result-list' request.user.id %}">See results</a>
                         </div>
                     </li>
-                    {% endif %}
                     <a class="nav-item nav-link" href="{% url 'profile' request.user.id %}">{{ request.user.username }}</a>
                     <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
                     {% else %}
