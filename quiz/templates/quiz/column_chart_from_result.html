@@ -78,14 +78,18 @@
                             {% for feedback_obj in feedbacks %}
                                 - {{ feedback_obj.feedback }}<br>
 
-                                    {% if feedback_obj.recommendation_set.all %}
-                                        <br>Recommendations:
-                                    {% endif %}
-                                    <ul>
-                                    {% for r in feedback_obj.recommendation_set.all %}
-                                       <li> {{ r.recommendation }}</li>
-                                    {% endfor %}
-                                    </ul>
+                                    {% with recommendations=feedback_obj.recommendation_set.all %}
+                                        {% if recommendations %}
+                                            <br>Recommendations:
+                                        {% endif %}
+
+                                        <ul>
+                                        {% for r in recommendations %}
+                                           <li> {{ r.recommendation }}</li>
+                                        {% endfor %}
+                                        </ul>
+
+                                    {% endwith %}
 
                             {% endfor %}
                         {% endif %}

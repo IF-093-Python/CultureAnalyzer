@@ -104,6 +104,13 @@ def get_result_from(request, pk):
 
 
 def get_feedback(indicator_obj, dict_result):
+    """
+    Retrive for each indicator feedbacks based on country and result difference
+
+    :param indicator_obj:
+    :param dict_result: users results by each indicators
+    :return: dict with feedback for each indicator
+    """
     indicators_feedbacks = {}
     for ind, val in dict_result.items():
         indicators_difference = abs(getattr(indicator_obj, ind) - val)
