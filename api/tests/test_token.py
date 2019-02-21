@@ -2,10 +2,10 @@ import base64
 import json
 import unittest
 from ddt import ddt, data, unpack
-from django.contrib.auth.models import User
 from rest_framework.exceptions import ErrorDetail
 
 from .core import BaseRestTestCase
+from users.models import CustomUser
 
 
 def field_error(field_name: str):
@@ -140,7 +140,7 @@ def is_jwt_valid(response, login) -> bool:
          JWT should looks like xxxx.yyyy.zzzz
          and contains correct user_id in payload after decode
      """
-    expected_user_id = User.objects.get(username=login).id
+    expected_user_id = CustomUser.objects.get(username=login).id
     expected_jwt_parts_number = 3
 
     access_token, refresh_token = (response.data['access'],
