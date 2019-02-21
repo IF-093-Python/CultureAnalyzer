@@ -40,9 +40,9 @@
            href="{% url 'groups:create-group' %}">Create group</a>
         <br>
         {% if search %}
-            <b>Search results for "{{ search_label }}":</b>
+            <strong>Search results for "{{ search_label }}":</strong>
         {% else %}
-            <b>Groups:</b>
+            <strong>Groups:</strong>
         {% endif %}
         {% if group_list %}
         <table class="table table-hover table-striped table-bordered table-sm">
@@ -85,9 +85,12 @@
 
     {% endblock groups %}
 </div>
+
         <div>
     {% if is_paginated %}
         {% cool_paginate page_obj=page_obj %}
     {% endif %}
         </div>
+
 {% endblock content %}
+<p>jhjhgjhgkjgjkhgkjhgjgkjhg</p>
