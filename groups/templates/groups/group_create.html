@@ -75,7 +75,7 @@
     {% for user in object_list %}
         <tr>
           <td>
-            <input type="checkbox" name="mentor" value="{{ user.profile.pk }}">
+            <input type="checkbox" name="mentor" value="{{ user.pk }}">
           </td>
           <td>{{ user.last_name }} {{ user.first_name }}
               ({{ user.username }})

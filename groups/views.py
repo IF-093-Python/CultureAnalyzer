@@ -8,7 +8,7 @@ from django.views import generic
 from django.db.models import Count
 from groups.forms import GroupCreateForm, GroupUpdateForm
 from groups.models import Group
-from users.models import CustomUser, Profile
+from users.models import CustomUser
 from CultureAnalyzer.view import SafePaginationListView
 
 PAGINATOR = 50
@@ -42,8 +42,8 @@ class GroupsList(LoginRequiredMixin, SafePaginationListView):
 
 
 
-class CreateGroupView(LoginRequiredMixin,
-                      generic.CreateView, SafePaginationListView):
+class CreateGroupView(generic.CreateView, LoginRequiredMixin,
+                       SafePaginationListView):
     model = Group
     form_class = GroupCreateForm
     template_name = 'groups/group_create.html'
@@ -72,8 +72,8 @@ class CreateGroupView(LoginRequiredMixin,
 
 
 
-class UpdateGroupView(SuccessMessageMixin, LoginRequiredMixin,
-                      generic.UpdateView, SafePaginationListView):
+class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
+                      LoginRequiredMixin, SafePaginationListView):
     form_class = GroupCreateForm
     template_name = 'groups/group_update.html'
     success_message = "Group was updated successfully"
@@ -98,11 +98,11 @@ class UpdateGroupView(SuccessMessageMixin, LoginRequiredMixin,
         concatenates them with unchecked metors, so that
         checked mentors are always first in list"""
         checked_mentors = CustomUser.objects.filter(
-            profile__mentor_in_group=self.kwargs['pk']).\
+            mentor_in_group=self.kwargs['pk']).\
             filter(is_active=True).order_by('last_name')
         self.__checked_mentors = checked_mentors
         mentors = CustomUser.objects.filter(is_active=True).exclude(
-            profile__mentor_in_group=self.kwargs['pk']). \
+            mentor_in_group=self.kwargs['pk']). \
             filter(is_staff=True).order_by('last_name')
         if self.request.GET.get('data_search'):
             mentors = mentors.filter(
@@ -144,7 +144,7 @@ class MentorGroupsView(LoginRequiredMixin, SafePaginationListView):
         return context
 
     def get_queryset(self):
-        result = Group.objects.filter(mentor__user_id=self.request.user.pk).\
+        result = Group.objects.filter(mentor__id=self.request.user.pk).\
             annotate(total=Count('user')).order_by('name')
         if self.request.GET.get('data_search'):
             result = result.filter(
@@ -182,11 +182,11 @@ class MentorGroupUpdate(generic.UpdateView, SuccessMessageMixin,
     def test_func(self):
         '''If user in not mentor of this group rises 403 exception'''
         return Group.objects.filter(pk=self.kwargs['pk']).\
-            filter(mentor__user_id=self.request.user.pk).exists()
+            filter(mentor__id=self.request.user.pk).exists()
 
     def get_queryset(self):
         result = CustomUser.objects.filter(is_active=True). \
-            filter(profile__user_in_group=self.kwargs['pk']). \
+            filter(user_in_group=self.kwargs['pk']). \
             order_by('last_name')
         self.__users_in_group = result
         if self.request.GET.get('data_search'):
@@ -228,13 +228,13 @@ class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
     def test_func(self):
         '''If user in not mentor of this group rises 403 exception'''
         return Group.objects.filter(pk=self.kwargs['pk']).\
-            filter(mentor__user_id=self.request.user.pk).exists()
+            filter(mentor__id=self.request.user.pk).exists()
 
     def get_queryset(self):
         '''Gets all Trainee users that are not in groups and
         makes search in their last_name if needed '''
         result = CustomUser.objects.filter(is_staff=False).\
-            exclude(profile__user_in_group=self.kwargs['pk']).\
+            exclude(user_in_group=self.kwargs['pk']).\
             filter(is_active=True).\
             order_by('last_name')
         if self.request.GET.get('data_search'):
@@ -252,7 +252,7 @@ class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
     def form_valid(self, form):
         '''Gets users that are already in group and adds to users
         that where checked in form for adding to group'''
-        users_in_group = Profile.objects.filter(user__is_active=True).\
+        users_in_group = CustomUser.objects.filter(is_active=True).\
             filter(user_in_group=self.kwargs['pk'])
         if not form.cleaned_data['user']:
             return redirect('groups:mentor_group_update',
