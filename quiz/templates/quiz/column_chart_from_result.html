@@ -11,7 +11,7 @@
         <select name='select_indicator' class="selectpicker"
                 multiple="multiple" data-live-search="true" data-max-options="5">
             {% for i in country_indicators%}
-            <option value="{{i.iso_code}}:{{i.pdi}} {{i.ind}} {{i.mas}} {{i.uai}} {{i.lto}} {{i.ivr}}"
+            <option value="{{i.get_indicators}}"
                     {% if i.iso_code is countries_values.keys %}
                     selected="selected"
                     {% endif %}>
@@ -30,10 +30,10 @@
             </tr>
             </thead>
             <tbody>
-            {% for ind, val in dict_result.items %}
+            {% for val in result %}
             <tr>
-                <td>{{ ind }}</td>
-                <td>{{ val }}</td>
+                <td>{{indicators}}</td>
+                <td>{{val}}</td>
             </tr>
             {% endfor %}
             </tbody>

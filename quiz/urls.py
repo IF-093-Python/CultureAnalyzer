@@ -1,8 +1,7 @@
 from django.urls import path, re_path
 
 from quiz.views import QuizzesList, CreateQuizView, \
-    DeleteQuizView, UpdateQuizView, ResultsListView
-from . import views
+    DeleteQuizView, UpdateQuizView, ResultsListView, CurrentResultView
 
 app_name = "quiz"
 
@@ -15,6 +14,6 @@ urlpatterns = [
             name='update-quiz'),
     re_path('^result_list/(?P<user_id>\\d+)$', ResultsListView.as_view(),
             name='result-list'),
-    path('column_chart/<int:pk>/', views.get_result_from,
-         name='result-chart'),
+    path('column_chart_two/<int:pk>/', CurrentResultView.as_view(),
+         name='result-chart-2'),
 ]
