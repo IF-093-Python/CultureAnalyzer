@@ -78,14 +78,14 @@
         {% for user in users_in_group %}
         {% if user not in object_list %}
             <input type="checkbox" style="visibility: hidden"
-               name="user" value="{{ user.profile.pk }}" checked>
+               name="user" value="{{ user.pk }}" checked>
         {% endif %}
         {% endfor %}
 
         {% for user in object_list %}
       <tr>
         <td>
-            <input type="checkbox" name="user" value="{{ user.profile.pk }}" checked>
+            <input type="checkbox" name="user" value="{{ user.pk }}" checked>
         </td>
       <td>{{ user.last_name }} {{ user.first_name }} ({{ user.username }})</td>
       <td>

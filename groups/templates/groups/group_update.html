@@ -61,9 +61,9 @@
     <hr>
 
         {% if search %}
-        <b>Search results for "{{ search_label }}":</b>
+        <strong>Search results for "{{ search_label }}":</strong>
         {% else %}
-        <b>Mentors:</b>
+        <strong>Mentors:</strong>
         {% endif %}
     {% if not object_list %}
       {% if search %}
@@ -79,7 +79,7 @@
         <tr>
           <td>
             <input type="checkbox" name="mentor"
-                   value="{{ user.profile.pk }}" checked>
+                   value="{{ user.pk }}" checked>
           </td>
           <td>{{ user.last_name }} {{ user.first_name }}
               ({{ user.username }})
@@ -96,7 +96,7 @@
         </tr>
       {% else %}
         <input type="checkbox" style="visibility: hidden"
-               name="mentor" value="{{ user.profile.pk }}" checked>
+               name="mentor" value="{{ user.pk }}" checked>
       {% endif %}
     {% endfor %}
 
@@ -104,7 +104,7 @@
       {% if user not in checked_mentors %}
         <tr>
           <td>
-            <input type="checkbox" name="mentor" value="{{ user.profile.pk }}">
+            <input type="checkbox" name="mentor" value="{{ user.pk }}">
           </td>
           <td>{{ user.last_name }} {{ user.first_name }}
               ({{ user.username }})

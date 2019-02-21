@@ -4,20 +4,17 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
-# Create your views here.
 from django.shortcuts import get_object_or_404
 from django.db.models import Count, Q
 from django.urls import reverse_lazy
 from django.views import generic
-
-from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
-
 from quiz.forms import QuizCreateForm
 from quiz.models import Quizzes, Results
-from tutors.models import Questions
 from quiz.service import get_final_result
+from tutors.models import Questions
 from indicators.models import CountryIndicator
 from feedbacks.models import Feedback, Recommendation
+from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
 
 
 class QuizzesList(LoginRequiredMixin, generic.ListView):
@@ -144,8 +141,8 @@ def get_feedback(indicator_obj, dict_result):
     for ind, val in dict_result.items():
         indicators_difference = abs(getattr(indicator_obj, ind) - val)
         indicator_feedback = Feedback.objects.filter(
-                            Q(min_value__lte=indicators_difference) &
-                            Q(max_value__gte=indicators_difference),
-                            indicator__iexact=ind)
+            Q(min_value__lte=indicators_difference) &
+            Q(max_value__gte=indicators_difference),
+            indicator__iexact=ind)
         indicators_feedbacks[ind] = indicator_feedback
     return indicators_feedbacks
