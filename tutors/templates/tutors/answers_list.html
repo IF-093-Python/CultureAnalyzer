@@ -3,34 +3,45 @@
 {% block title %}Answer list{% endblock %}
 {% block content %}
 <div class="container-fluid col-md-10">
-    <h1><a class="btn btn-light"
-           href="{%url 'tutors:questions_list' %}">
-        <splan class="fas fa-chevron-left"></splan></a>
-        <b>Question:</b></h1>
-    <h2 class="border-bottom">{{question.question_text}}</h2>
+    <div class="border-bottom my-3 pb-1">
+        <h1>
+            <a class="btn btn-light"
+               href="{%url 'quiz:detail-quiz' question.quiz.id%}">
+                <splan class="fas fa-chevron-left"></splan></a>
+            Question #{{question.question_number}}:
+        </h1>
+        <b class="text-white-75 font-weight-light">{{question.question_text}}
+        </b>
+    </div>
 
     <!--Success message about some action on the answer-->
     {% include "tutors/success_message.html" %}
 
-    <a class="btn btn-success float-right my-2"
-       href="{% url 'tutors:create_answer' question_id=question.id %}"> Add
-        new answer</a>
-
-    <!--Answer search function by name-->
-    <form class="form-inline" method="GET"
-          action="{% url 'tutors:answers_list' question_id=question.id%}">
-        <span class="fas fa-search"></span>
-        <input class="form-control mx-2" type="text" name="answer_search"
-               placeholder="Search" {% if q %} value="{{q}}" {% endif %}>
-    </form>
+    <div class="my-2">
+        <a class="btn btn-outline-success float-right"
+           href="{% url 'tutors:create_answer' question.id %}">Add new answer
+        </a>
+        <!--Question search function by name-->
+        <form class="form-inline" method="GET"
+              action="{% url 'tutors:answers_list' question.id%}">
+            <input class="form-control col-5" type="text"
+                   name="answer_search"
+                   placeholder="Search"
+                   {% if search %} value="{{search}}" {% endif %}>
+            <span id="searchclear" class="glyphicon-remove-circle"></span>
+            <button class="btn btn-light" type="submit">
+                <splan class="fas fa-search"></splan>
+            </button>
+        </form>
+    </div>
 
     {% if answers %}
     <table class="table">
         <thead class="thead-light">
         <tr>
-            <th scope="col">Number of question</th>
-            <th scope="col">Answer</th>
-            <th class="w-25" scope="col">Management</th>
+            <th class='w-10' scope="col">№</th>
+            <th class='w-70' scope="col">Answer</th>
+            <th class="w-20" scope="col">Management</th>
         </tr>
         </thead>
         <tbody>
@@ -39,11 +50,11 @@
             <td><a>{{answer.answer_number}}</a></td>
             <td><a>{{answer.answer_text}}</a></td>
             <td>
-                <a class="btn btn-primary"
-                   href="{% url 'tutors:update_answer' question_id=answer.question.id pk=answer.id%}">
+                <a class="btn btn-light"
+                   href="{% url 'tutors:update_answer' question.id answer.id%}">
                     <span class="fas fa-edit"></span></a>
-                <a class="btn btn-danger"
-                   href="{% url 'tutors:delete_answer' pk=answer.id %}">
+                <a class="btn btn-light"
+                   href="{% url 'tutors:delete_answer' answer.id %}">
                     <span class="fas fa-trash-alt"></span></a>
             </td>
         </tr>

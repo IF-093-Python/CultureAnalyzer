@@ -1,9 +1,0 @@
-{% extends 'base.html' %}
-{% load crispy_forms_tags %}
-{% block title %}Question list{% endblock %}
-{% block content %}
-<div class="container-fluid col-md-10">
-    <a class="btn btn-success float-right my-2"
-       href="{% url 'test_player:detail' quiz_id=1 %}">Add new question</a>
-</div>
-{% endblock %}

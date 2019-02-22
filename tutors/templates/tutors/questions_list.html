@@ -5,10 +5,10 @@
 <div class="container-fluid col-md-10">
     <h1 class="border-bottom"><a class="btn btn-light" href="#">
                 <splan class="fas fa-chevron-left"></splan></a>
-            <b>Table with questions</b></h1>
+            <strong>Table with questions</strong></h1>
 
     <!--Success message about some action on the question-->
-    {% include "tutors/success_message.html" %}
+    {% include "quiz/success_message.html" %}
 
     <a class="btn btn-success float-right my-2"
        href="{% url 'tutors:create_question' %}">Add new question</a>
@@ -65,4 +65,3 @@
     {% endif %}
 </div>
 {% endblock %}
-

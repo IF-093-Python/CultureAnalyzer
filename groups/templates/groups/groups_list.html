@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load django_bootstrap_breadcrumbs %}
+{% load cool_paginate %}
+
+
+{% block title %}Groups{% endblock %}
+
+
+{% block content %}
+
+  {% block breadcrumbs %}
+    {% breadcrumb "Home" "/" %}
+    {% breadcrumb "Groups" "groups:groups-list" %}
+    <div style="color: blue">
+    {% render_breadcrumbs %}
+    </div>
+  {% endblock %}
+
+    <h1>Groups</h1>
+    <div>
+    {% block groups %}
+        <div class="container-fluid bg-1 main col-md-10">
+            <div class="float-right">
+                <form class="form-inline my-2 my-lg-0" method="get"
+                      action="{% url 'groups:groups-list' %}">
+                    <input class="form-control mr-sm-2" type="search"
+                           placeholder={{ search_label }} aria-label="Search"
+                           name="data_search">
+                    <div class="btn-toolbar">
+                        <button class="btn btn-outline-success my-2 my-sm-0"
+                                style="margin-right: 10px;" type="submit">Search</button>
+                        <a class="btn btn-outline-danger my-2 my-sm-0"
+                           href ={% url 'groups:groups-list' %}>Clear</a>
+                    </div>
+                    <br>
+                </form>
+            </div><br>
+        <a class="btn btn-primary" style="margin-bottom: 10px;
+           background-color: cornflowerblue"
+           href="{% url 'groups:create-group' %}">Create group</a>
+        <br>
+        {% if search %}
+            <strong>Search results for "{{ search_label }}":</strong>
+        {% else %}
+            <strong>Groups:</strong>
+        {% endif %}
+        {% if group_list %}
+        <table class="table table-hover table-striped table-bordered table-sm">
+        <thead class="thead-light">
+          <tr>
+            <th>Name</th>
+            <th style="text-align: center">Number of Mentors</th>
+          </tr>
+        </thead>
+        <tbody>
+                {% for group in group_list %}
+                  <tr>
+                    <td>
+                        <a href="{% url 'groups:update-group' group.pk %}">
+                            {{ group }}</a>
+                        <div class="float-right">
+                        <a class="btn-outline-info"
+                           href="{% url 'groups:update-group' group.pk %}">
+                            &#9998;</a>
+                        <a class="btn-outline-info"
+                           href="{% url 'groups:delete-group' group.pk %}">
+                            &#10006;</a>
+                        </div>
+                    </td>
+                    <td style="text-align: center">{{ group.total }}</td>
+                  </tr>
+                {% endfor %}
+            {% else %}
+                {% if search %}
+                    <p>There are no results that match your search.</p>
+                {% else %}
+                    <p>You have not created any groups yet.</p>
+                {% endif %}
+
+        </tbody>
+        </table>
+        {% endif %}
+
+</div>
+
+    {% endblock groups %}
+</div>
+
+        <div>
+    {% if is_paginated %}
+        {% cool_paginate page_obj=page_obj %}
+    {% endif %}
+        </div>
+
+{% endblock content %}
+<p>jhjhgjhgkjgjkhgkjhgjgkjhg</p>
