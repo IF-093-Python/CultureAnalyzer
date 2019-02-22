@@ -40,9 +40,10 @@ urlpatterns = [
     path('admin_page/update/<int:pk>', views.ProfileUpdateView.as_view(),
          name='change-profile'),
 
-    path('group_page/', ListGroups.as_view(), name='group-list'),
-    path('update_group/<int:pk>', UpdateGroups.as_view(), name='group-update'),
+    path('group_page/', ListGroups.as_view(), name='group_perm-list'),
+    path('update_group/<int:pk>', UpdateGroups.as_view(),
+         name='group_perm-update'),
     path('delete_group/<int:pk>', DeleteGroups.as_view(),
-         name='group-delete'),
-    path('create_group', CreateGroup.as_view(), name='group-create'),
+         name='group_perm-delete'),
+    path('create_group', CreateGroup.as_view(), name='group_perm-create'),
     ]
