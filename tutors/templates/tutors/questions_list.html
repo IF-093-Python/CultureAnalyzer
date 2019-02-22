@@ -1,67 +1,71 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load cool_paginate %}
 {% block title %}Question list{% endblock %}
 {% block content %}
-<div class="container-fluid col-md-10">
-    <h1 class="border-bottom"><a class="btn btn-light" href="#">
-                <splan class="fas fa-chevron-left"></splan></a>
+    <div class="container-fluid col-md-10">
+        <h1 class="border-bottom"><a class="btn btn-light" href="#">
+            <splan class="fas fa-chevron-left"></splan>
+        </a>
             <strong>Table with questions</strong></h1>
 
-    <!--Success message about some action on the question-->
-    {% include "tutors/success_message.html" %}
+        <!--Success message about some action on the question-->
+        {% include "quiz/success_message.html" %}
 
-    <a class="btn btn-success float-right my-2"
-       href="{% url 'tutors:create_question' %}">Add new question</a>
+        <a class="btn btn-success float-right my-2"
+           href="{% url 'tutors:create_question' %}">Add new question</a>
 
-    <!--Question search function by name-->
-    <form class="form-inline" method="GET"
-          action="{% url 'tutors:questions_list' %}">
-        <span class="fas fa-search"></span>
-        <input class="form-control mx-2" type="text" name="question_search"
-               placeholder="Search" {% if q %} value="{{q}}" {% endif %}>
-    </form>
+        <!--Question search function by name-->
+        <form class="form-inline" method="GET"
+              action="{% url 'tutors:questions_list' %}">
+            <span class="fas fa-search"></span>
+            <input class="form-control mx-2" type="text" name="question_search"
+                   placeholder="Search" {% if q %} value="{{ q }}" {% endif %}>
+        </form>
 
-    {% if questions %}
-    <table class="table">
-        <thead class="thead-light">
-        <tr>
-            <th scope="col">Quiz</th>
-            <th scope="col">Number of quiz</th>
-            <th scope="col">Question</th>
-            <th class="w-25" scope="col">Number of answers</th>
-            <th class="w-25" scope="col">Management</th>
-        </tr>
-        </thead>
-        <tbody>
-        {%for question in questions %}
-        <tr>
-            <td><a href="">{{question.quiz.title}}</a></td>
-            <td><a href="{% url 'tutors:answers_list' question.id %}">
-                {{question.question_number}}</a></td>
-            <td><a href="{% url 'tutors:answers_list' question.id %}">
-                {{question.question_text}}</a></td>
-            <td>{{question.num_answer}}</td>
-            <td>
-                <a class="btn btn-primary"
-                   href="{%url 'tutors:create_answer' question.id %}">
-                    <span class="fas fa-plus"></span></a>
-                <a class="btn btn-primary"
-                   href="{% url 'tutors:update_question' pk=question.id %}">
-                    <span class="fas fa-edit"></span></a>
-                <a class="btn btn-danger"
-                   href="{% url 'tutors:delete_question' pk=question.id %}">
-                    <span class="fas fa-trash-alt"></span></a>
-            </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        {% if questions %}
+            <table class="table">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">Quiz</th>
+                    <th scope="col">Number of quiz</th>
+                    <th scope="col">Question</th>
+                    <th class="w-25" scope="col">Number of answers</th>
+                    <th class="w-25" scope="col">Management</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for question in questions %}
+                    <tr>
+                        <td><a href="">{{ question.quiz.title }}</a></td>
+                        <td><a href="{% url 'tutors:answers_list' question.id %}">
+                            {{ question.question_number }}</a></td>
+                        <td><a href="{% url 'tutors:answers_list' question.id %}">
+                            {{ question.question_text }}</a></td>
+                        <td>{{ question.num_answer }}</td>
+                        <td>
+                            <a class="btn btn-primary"
+                               href="{% url 'tutors:create_answer' question.id %}">
+                                <span class="fas fa-plus"></span></a>
+                            <a class="btn btn-primary"
+                               href="{% url 'tutors:update_question' pk=question.id %}">
+                                <span class="fas fa-edit"></span></a>
+                            <a class="btn btn-danger"
+                               href="{% url 'tutors:delete_question' pk=question.id %}">
+                                <span class="fas fa-trash-alt"></span></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
 
-    <!--Include paginator-->
-    {% include "tutors/pagination.html" with page=page_obj %}
+            <!--Include paginator-->
+            {% if is_paginated %}
+                {% cool_paginate page_obj=page_obj %}
+            {% endif %}
 
-    {% else %}
-    <p class="mt-4">You have not created any question yet.</p>
-    {% endif %}
-</div>
+        {% else %}
+            <p class="mt-4">You have not created any question yet.</p>
+        {% endif %}
+    </div>
 {% endblock %}

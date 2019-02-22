@@ -5,11 +5,10 @@
     {% csrf_token %}
     <p class="border-bottom pb-2">Are you sure you want to delete
         "{{object.question_text}}" ?</p>
-    <div class="">
+    <div>
         <input type="submit" class="btn btn-info" value="Confirm">
         <a class="btn btn-outline-info"
-           href="{% url 'tutors:questions_list' %}">
-            Cancel</a>
+           href="{%url 'quiz:detail-quiz' object.quiz.id%}">Cancel</a>
     </div>
 </form>
 {% endblock %}

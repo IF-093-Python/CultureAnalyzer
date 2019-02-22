@@ -1,3 +1,5 @@
+__all__ = ['FEEDBACK_VALID_DATA', 'FEEDBACK_INVALID_DATA', ]
+
 FEEDBACK_VALID_DATA = [{'feedback': 'Some feedback', 'min_value': 0,
                         'max_value': 10, 'indicator': 'PDI', },
                        {'feedback': 'Some valid feedback', 'min_value': 5,

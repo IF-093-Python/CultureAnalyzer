@@ -2,7 +2,15 @@
 {% load crispy_forms_tags %}
 {% block title %}Creat/Update answer{% endblock %}
 {% block content %}
-<div class="container">
+<div class="container-fluid col-md-8">
+    <div class="border-bottom my-3 pb-1">
+        <h1>
+            <a class="btn btn-light"
+               href="{%url 'tutors:answers_list' question.id%}">
+                <splan class="fas fa-chevron-left"></splan></a>
+            {{question.question_text}}
+        </h1>
+    </div>
     <form method="post">
         {% csrf_token %}
         {{ form|crispy }}
@@ -11,6 +19,6 @@
         </button>
     </form>
     <a class="btn btn-outline-success mt-3 ml-1" title="Back to answers"
-       href="{%url 'tutors:answers_list' question_id=q.id%}">Cancel</a>
+       href="{%url 'tutors:answers_list' question.id%}">Cancel</a>
 </div>
 {% endblock %}
