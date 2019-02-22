@@ -3,7 +3,7 @@ from rest_framework import serializers
 from api.validators import validate_sign_up
 from users.models import CustomUser
 
-__all__ = ['SignUpSerializer']
+__all__ = ['SignUpSerializer', 'ProfileSerializer']
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -29,3 +29,10 @@ class SignUpSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         validate_sign_up(attrs)
         return super().validate(attrs)
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('first_name', 'last_name', 'date_of_birth', 'experience',
+                  'gender', 'education')

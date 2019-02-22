@@ -73,14 +73,12 @@ class UserService(AbstractQuerysetFactory):
 def all_without_admins(user: CustomUser) -> Q:
     without_superadmin = ~Q(id=1)
     without_admins = ~Q(is_superuser=True)
-    self_user = this_user(user)
-    return (without_superadmin & without_admins) | self_user
+    return without_superadmin & without_admins
 
 
 def all_trainees(user: CustomUser) -> Q:
     trainees = Q(is_staff=False)
-    self_user = this_user(user)
-    return trainees | self_user
+    return trainees
 
 
 def this_user(user: CustomUser) -> Q:

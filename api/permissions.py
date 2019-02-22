@@ -1,29 +1,18 @@
-from rest_framework.permissions import BasePermission, SAFE_METHODS
+from rest_framework.permissions import BasePermission
 
 from users.models import CustomUser
 
-__all__ = ['IsSuperAdmin', 'IsAdmin', 'IsMentor', 'IsTrainee',
-           'is_superadmin', 'is_admin', 'is_mentor', 'is_trainee']
+__all__ = ['UserPermission', 'is_superadmin', 'is_admin', 'is_mentor',
+           'is_trainee']
 
 
-class IsAdmin(BasePermission):
+class UserPermission(BasePermission):
     def has_permission(self, request, view):
-        return True
+        user = request.user
+        return is_superadmin(user) or is_admin(user) or is_mentor(user)
 
     def has_object_permission(self, request, view, obj):
-        return True
-
-
-class IsSuperAdmin(IsAdmin):
-    pass
-
-
-class IsMentor(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        is_owner = obj.id == request.user.id
-        if request.method in SAFE_METHODS or is_owner:
-            return True
-        return False
+        return is_superadmin(request.user) or is_admin(request.user)
 
 
 class IsTrainee(BasePermission):
