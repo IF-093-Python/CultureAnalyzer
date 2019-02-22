@@ -2,14 +2,17 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect
-from django.views.generic import CreateView, UpdateView, ListView
+from django.views.generic import CreateView, UpdateView, ListView, DeleteView
+from django.contrib.auth.models import Group, Permission
+from django.urls import reverse_lazy
 
 from .filters import admin_search
 from .forms import (
     UserRegisterForm,
     UserUpdateForm,
     BlockUserForm,
-)
+    GroupForm,
+    )
 from .models import CustomUser
 
 __all__ = [
@@ -19,7 +22,8 @@ __all__ = [
     'PasswordChangeView',
     'AdminListView',
     'ProfileUpdateView',
-]
+    'ListGroups',
+    ]
 
 
 class LoginView(auth_views.LoginView):
@@ -80,6 +84,7 @@ class AdminListView(LoginRequiredMixin, ListView):
     context_object_name = 'users'
 
     def get_queryset(self):
+        print(Group.objects.first())
         return admin_search(self.request)
 
 
@@ -87,3 +92,40 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'users/user_detail.html'
     form_class = BlockUserForm
     model = CustomUser
+    success_url = reverse_lazy('admin')
+
+
+class ListGroups(LoginRequiredMixin, ListView):
+    model = Group
+    context_object_name = 'group'
+    template_name = 'users/group.html'
+    queryset = Group.objects.all()
+
+
+class UpdateGroups(LoginRequiredMixin, UpdateView):
+    template_name = 'users/group_permissions.html'
+    model = Group
+    form_class = GroupForm
+    success_url = reverse_lazy('group-list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['update'] = True
+        return context
+
+
+class DeleteGroups(LoginRequiredMixin, DeleteView):
+    template_name = 'users/delete_Group.html'
+    context_object_name = 'group'
+    model = Group
+    form_class = GroupForm
+    success_url = reverse_lazy('group-list')
+    success_message = 'Group: "%(name)s" was deleted successfully'
+
+
+class CreateGroup(LoginRequiredMixin, CreateView):
+    model = CustomUser
+    form_class = GroupForm
+    template_name = 'users/group_permissions.html'
+    success_url = reverse_lazy('group-list')
+    success_message = 'Country indicator: "%(name)s" was created successfully'
