@@ -34,7 +34,7 @@
         <button class="btn btn-outline-success my-2 my-sm-0"
                 style="margin-right: 10px;" type="submit">Search</button>
         <a class="btn btn-outline-danger my-2 my-sm-0"
-           href ={% url 'groups:mentor_group_update' group.pk%}>Clear</a>
+           href ="{% url 'groups:mentor_group_update' group.pk%}">Clear</a>
       </div>
       <br>
     </form>
@@ -87,8 +87,9 @@
         <td>
             <input type="checkbox" name="user" value="{{ user.pk }}" checked>
         </td>
-      <td>
+      <td><a href="{% url 'quiz:result-list' user.pk %}">
           {{ user.last_name }} {{ user.first_name }} ({{ user.username }})
+          </a>
       </td>
       <td>
 
