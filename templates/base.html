@@ -10,14 +10,16 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarToggle">
                 <div class="navbar-nav mr-auto">
-                    <a class="nav-item nav-link" href="{% url 'home' %}">Home</a>
+                    <div class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </div>
                 </div>
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
                     {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
-                        <a class="nav-item nav-link dropdown-toggle ite" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
-                            Mentor
+                        <a class="nav-link dropdown-toggle ite" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
+                            Menu
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{% url 'feedback-list' %}">Feedbacks</a>

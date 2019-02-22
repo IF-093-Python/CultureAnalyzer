@@ -6,9 +6,9 @@ Culture Analyzer
 <div class="pt-4 px-4 bg-body-dark block-rounded">
     <div class="row row-deck">
         <div class="col-6 col-md-4 col-xl-2">
-            <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="javascript:void(0)">
+            <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="{% url 'profile' request.user.id %}">
                 <div class="block-content">
-                    <p class="mb-2 d-none d-sm-block">
+                    <p class="mb-2 d-sm-block">
                         <i class="fa fa-pencil-alt text-gray fa-2x"></i>
                     </p>
                     <p class="font-w600 font-size-sm text-uppercase">Profile</p>
@@ -18,7 +18,7 @@ Culture Analyzer
         <div class="col-6 col-md-4 col-xl-2">
             <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="javascript:void(0)">
                 <div class="block-content">
-                    <p class="mb-2 d-none d-sm-block">
+                    <p class="mb-2 d-sm-block">
                         <i class="fas fa-user text-gray fa-2x"></i>
                     </p>
                     <p class="font-w600 font-size-sm text-uppercase">Users</p>
@@ -28,7 +28,7 @@ Culture Analyzer
         <div class="col-6 col-md-4 col-xl-2">
             <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="javascript:void(0)">
                 <div class="block-content">
-                    <p class="mb-2 d-none d-sm-block">
+                    <p class="mb-2 d-sm-block">
                         <i class="fas fa-users text-gray fa-2x"></i>
                     </p>
                     <p class="font-w600 font-size-sm text-uppercase">Groups</p>
@@ -38,7 +38,7 @@ Culture Analyzer
         <div class="col-6 col-md-4 col-xl-2">
             <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="javascript:void(0)">
                 <div class="block-content">
-                    <p class="mb-2 d-none d-sm-block">
+                    <p class="mb-2 d-sm-block">
                         <i class="fab fa-algolia text-gray fa-2x"></i>
                     </p>
                     <p class="font-w600 font-size-sm text-uppercase">Quizzes</p>
@@ -46,9 +46,9 @@ Culture Analyzer
             </a>
         </div>
         <div class="col-6 col-md-4 col-xl-2">
-            <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="javascript:void(0)">
+            <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="{% url 'feedback-list' %}">
                 <div class="block-content">
-                    <p class="mb-2 d-none d-sm-block">
+                    <p class="mb-2 d-sm-block">
                         <i class="far fa-comments text-gray fa-2x"></i>
                     </p>
                     <p class="font-w600 font-size-sm text-uppercase">Feedbacks</p>
@@ -56,9 +56,9 @@ Culture Analyzer
             </a>
         </div>
         <div class="col-6 col-md-4 col-xl-2">
-            <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="javascript:void(0)">
+            <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="{% url 'country_indicator:country_indicator_list' %}">
                 <div class="block-content">
-                    <p class="mb-2 d-none d-sm-block">
+                    <p class="mb-2 d-sm-block">
                         <i class="fab fa-font-awesome-flag text-gray fa-2x"></i>
                     </p>
                     <p class="font-w600 font-size-sm text-uppercase">Indicators</p>

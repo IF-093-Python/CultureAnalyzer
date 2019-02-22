@@ -2,7 +2,8 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: #E3DCFA;
+    background: #0E1621;
+    color: #F5F5F5;
 }
 
 p {
@@ -10,7 +11,6 @@ p {
     font-size: 1.1em;
     font-weight: 300;
     line-height: 1.7em;
-    color: #999;
 }
 
 a, a:hover, a:focus {
@@ -143,13 +143,18 @@ a.contact_us, a.contact_us:hover {
     HOME STYLE
 ----------------------------------------------------- */
 .bg-body-dark{
-    background-color: rgba(248,249,250, .2);
+    background-color: rgba(248,249,250, .1);
 }
 
 .block {
-    background-color: #fff;
+    background-color: #2B5278;
     margin-bottom: 1.75rem;
     box-shadow: 0 2px 6px rgba(231,234,243,.4);
+    color: #F5F5F5;
+}
+
+.block:hover {
+    color: #000000;
 }
 
 .block-rounded {
@@ -166,7 +171,7 @@ a.contact_us, a.contact_us:hover {
 }
 
 .navbar-custom {
-    background-color: rgba(248,249,250, .2);
+    background-color: rgba(248,249,250, .1);
     margin-bottom: 10px;
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
 }
@@ -180,8 +185,8 @@ table.table-hover > tbody > tr > *  {
 }
 
 .page-item.active > a{
-    background-color: #6c757d !important;
-    border-color: #6c757d !important;
+    background-color: #2B5278 !important;
+    border-color: #2B5278 !important;
 }
 
 .page-link{
@@ -190,4 +195,18 @@ table.table-hover > tbody > tr > *  {
 
 .page-link:hover{
     color: #555;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(36,36,36, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+}
+
+.btn-blue {
+    color: #F5F5F5;
+    background-color: #2B5278;
+    border-color: #2B5278;
+}
+
+.btn-blue:hover {
+    background-color: rgb(29, 60, 92);
 }
