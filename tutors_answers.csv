@@ -1,0 +1,121 @@
+"id","answer_text","question_id","answer_number"
+22,"of utmost importance",7,1
+23,"very important",7,2
+24,"of moderate importance",7,3
+25,"of little importance",7,4
+26,"of very little or no importance",7,5
+27,"of utmost importance",8,1
+28,"very important",8,2
+29,"of moderate importance",8,3
+30,"of little importance",8,4
+31,"of very little or no importance",8,5
+32,"of utmost importance",9,1
+33,"very important",9,2
+34,"of moderate importance",9,3
+35,"of little importance",9,4
+36,"of very little or no importance",9,5
+37,"of utmost importance",10,1
+38,"very important",10,2
+39,"of moderate importance",10,3
+40,"of little importance",10,4
+41,"of very little or no importance",10,5
+42,"of utmost importance",11,1
+43,"very important",11,2
+44,"of moderate importance",11,3
+45,"of little importance",11,4
+46,"of very little or no importance",11,5
+47,"of utmost importance",12,1
+48,"very important",12,2
+49,"of moderate importance",12,3
+50,"of little importance",12,4
+51,"of very little or no importance",12,5
+52,"of utmost importance",13,1
+53,"very important",13,2
+54,"of moderate importance",13,3
+55,"of little importance",13,4
+56,"of very little or no importance",13,5
+57,"of utmost importance",14,1
+58,"very important",14,2
+59,"of moderate importance",14,3
+60,"of little importance",14,4
+61,"of very little or no importance",14,5
+62,"of utmost importance",15,1
+63,"very important",15,2
+64,"of moderate importance",15,3
+65,"of little importance",15,4
+66,"of very little or no importance",15,5
+67,"of utmost importance",16,1
+68,"very important",16,2
+69,"of moderate importance",16,3
+70,"of little importance",16,4
+71,"of very little or no importance",16,5
+72,"of utmost importance",17,1
+73,"very important",17,2
+74,"of moderate importance",17,3
+75,"of little importance",17,4
+76,"of very little or no importance",17,5
+77,"of utmost importance",18,1
+78,"very important",18,2
+79,"of moderate importance",18,3
+80,"of little importance",18,4
+81,"of very little or no importance",18,5
+82,"of utmost importance",19,1
+83,"very important",19,2
+84,"of moderate importance",19,3
+85,"of little importance",19,4
+86,"of very little or no importance",19,5
+87,"of utmost importance",20,1
+88,"very important",20,2
+89,"of moderate importance",20,3
+90,"of little importance",20,4
+91,"of very little or no importance",20,5
+92,"always",21,1
+93,"usually",21,2
+94,"sometimes",21,3
+95,"seldom",21,4
+96,"never",21,5
+97,"always",22,1
+98,"usually",22,2
+99,"sometimes",22,3
+100,"seldom",22,4
+101,"never",22,5
+102,"yes, always",23,1
+103,"yes, usually",23,2
+104,"sometimes",23,3
+105,"no, seldom",23,4
+106,"no, never",23,5
+107,"very good",24,1
+108,"good",24,2
+109,"fair",24,3
+110,"poor",24,4
+111,"very poor",24,5
+112,"very proud",25,1
+113,"fairly proud",25,2
+114,"somewhat proud",25,3
+115,"not very proud",25,4
+116,"not proud at all",25,5
+117,"never",26,1
+118,"seldom",26,2
+119,"sometimes",26,3
+120,"usually",26,4
+121,"always",26,5
+122,"strongly agree",27,1
+123,"agree",27,2
+124,"undecided",27,3
+125,"disagree",27,4
+126,"strongly disagree",27,5
+127,"strongly agree",28,1
+128,"agree",28,2
+129,"undecided",28,3
+130,"disagree",28,4
+131,"strongly disagree",28,5
+132,"strongly agree",29,1
+133,"agree",29,2
+134,"undecided",29,3
+135,"disagree",29,4
+136,"strongly disagree",29,5
+137,"strongly agree",30,1
+138,"agree",30,2
+139,"undecided",30,3
+140,"disagree",30,4
+141,"strongly disagree",30,5
