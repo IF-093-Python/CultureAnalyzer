@@ -1,7 +1,7 @@
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
 from .models import CountryIndicator
@@ -11,11 +11,12 @@ __all__ = ['CountryIndicatorListView', 'CountryIndicatorCreate',
            'CountryIndicatorDelete', 'CountryIndicatorUpdate']
 
 
-class CountryIndicatorListView(LoginRequiredMixin, ListView):
+class CountryIndicatorListView(LoginRequiredMixin,PermissionRequiredMixin, ListView):
     model = CountryIndicator
     template_name = 'indicators/list.html'
     context_object_name = 'indicators'
     paginate_by = ITEMS_ON_PAGE
+    permission_required = ''
 
 
 class CountryIndicatorCreate(LoginRequiredMixin, SuccessMessageMixin,
