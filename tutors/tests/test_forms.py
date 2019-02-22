@@ -8,7 +8,7 @@ __all__ = ['QuestionFormTest', 'AnswerCreateForm', ]
 
 _fx_question_form_data_valid = (
     (
-        {'quiz': 1,
+        {
          'question_text': 'Some valid question'},
         True,
     ),
@@ -16,18 +16,8 @@ _fx_question_form_data_valid = (
 
 _fx_question_form_data_invalid = (
     (
-        {'quiz': 2,
-         'question_text': 'Some invalid question'},
-        False,
-    ),
-    (
-        {'quiz': 1,
+        {
          'question_text': ''},
-        False,
-    ),
-    (
-        {'quiz': '',
-         'question_text': 'Some invalid question'},
         False,
     ),
 )
@@ -49,16 +39,6 @@ _fx_answer_form_data_invalid = (
 
 @ddt
 class QuestionFormTest(TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.quiz_test = Quizzes.objects.create(
-            id=1,
-            title='Test quiz',
-            description='test description',
-            type_of_quiz=1,
-        )
 
     @unpack
     @data(*_fx_question_form_data_valid, *_fx_question_form_data_invalid)

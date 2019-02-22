@@ -87,7 +87,9 @@
         <td>
             <input type="checkbox" name="user" value="{{ user.pk }}" checked>
         </td>
-      <td>{{ user.last_name }} {{ user.first_name }} ({{ user.username }})</td>
+      <td>
+          {{ user.last_name }} {{ user.first_name }} ({{ user.username }})
+      </td>
       <td>
 
         {% if user.image %}

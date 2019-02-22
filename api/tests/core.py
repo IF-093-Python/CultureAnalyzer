@@ -1,15 +1,16 @@
 from functools import wraps
-from django.contrib.auth.models import User
 from django.test.testcases import TestCase
+
+from users.models import CustomUser
 
 
 class BaseRestTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        User.objects.create_user(username="john", password="john_qwerty")
-        User.objects.create_user(username="alex", password="alex_qwerty")
-        User.objects.create_user(username="luke", password="luke_qwerty")
+        CustomUser.objects.create_user(username="john", password="john_qwerty")
+        CustomUser.objects.create_user(username="alex", password="alex_qwerty")
+        CustomUser.objects.create_user(username="luke", password="luke_qwerty")
 
     def assert_request(self, response, expected_status_code,
                        expected_response_keys=None,
