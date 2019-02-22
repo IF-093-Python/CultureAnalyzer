@@ -53,7 +53,6 @@ class TestPlayer(FormView):
         if self.kwargs['quiz_id'] in session.keys():
             i = sum(1 for v in
                     self.request.session[self.kwargs['quiz_id']].values() if v)
-            print(i)
             if i == 23:
                 context['is_can_be_finished'] = True
 
@@ -67,7 +66,7 @@ class TestPlayer(FormView):
         current_answers = current_questions.answers_set.all()
         if self.kwargs['quiz_id'] in self.request.session and self.kwargs[
             'question_number'] in self.request.session[
-            self.kwargs['quiz_id']].keys():
+                self.kwargs['quiz_id']].keys():
             d_answer = self.request.session[self.kwargs['quiz_id']].get(
                 self.kwargs['question_number'])
         else:
@@ -89,8 +88,6 @@ class TestPlayer(FormView):
                     'answers')})
 
         self.request.session[self.kwargs['quiz_id']] = s
-
-        print(self.request.session.items())
 
         if 'finish' in self.request.POST:
             quiz_id = self.kwargs['quiz_id']

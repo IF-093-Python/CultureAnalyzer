@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load cool_paginate %}
 {% block title %}Quiz detail{% endblock %}
 {% block content %}
 <div class="container-fluid col-md-10">
@@ -69,7 +70,9 @@
     </table>
 
     <!--Include paginator-->
-    {% include "tutors/pagination.html" with page=page_obj %}
+    {% if is_paginated %}
+           {% cool_paginate page_obj=page_obj %}
+    {% endif %}
 
     {% else %}
     <p class="mt-4">You have not created any question yet.</p>

@@ -7,7 +7,7 @@ from feedbacks.models import Feedback
 
 __all__ = ['get_constant', 'check_group_indicators', 'get_average_results',
            'get_indicators_values', 'get_groups_results', 'get_final_result',
-           'get_feedback', 'zip_list', ]
+           'get_feedback', ]
 
 
 def get_constant(indicator_value):
@@ -149,7 +149,3 @@ def get_feedback(indicator_obj, dict_result, indicator_name):
         indicators_feedbacks[indicator_name[val]] = indicator_feedback
     return indicators_feedbacks
 
-
-@register.filter(name='zip')
-def zip_list(a, b):
-    return zip(a, b)

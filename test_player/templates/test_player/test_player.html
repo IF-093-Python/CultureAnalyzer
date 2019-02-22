@@ -3,7 +3,6 @@
 {% load filters %}
 {% block title %}TEST{% endblock %}
 {% block content %}
-
 {% include "tutors/error_message.html" %}
 
 <form action="" method="post" id="test_player">
@@ -11,27 +10,33 @@
         {% csrf_token %}
         <div class="col-md-10">
             <div class="jumbotron">
-                <h5 class="text-dark font-weight-bold"><b>Question {{ current_question.question_number }}:</b></h5>
-                <h4 class="text-justify text-dark">{{ current_question.question_text }}</h4>
+                <h5 class="text-dark font-weight-bold"><b>Question
+                    {{current_question.question_number }}:</b></h5>
+                <h4 class="text-justify text-dark">
+                    {{current_question.question_text }}</h4>
                 <div class="lead  text-justify text-dark ">
                     {{ form }}
                 </div>
                 <input type='Submit'
-                       class="btn btn-primary {% if current_question.question_number == 1 %}disabled{% endif %}"
+                       class="btn btn-primary
+                       {% if current_question.question_number == 1 %}
+                       disabled{% endif %}"
                        name="prev"
                        value="Previous question">
                 {% if questions %}
-                    {% if is_can_be_finished %}
-                        <button type="button" class="btn btn-primary"
-                                data-toggle="modal" data-target="#exampleModalCenter">
-                            Finish quiz
-                        </button>
-                    {% else %}
-                        <input type='Submit'
-                               class="btn btn-primary {% if current_question.question_number == questions.count %}d-none{% endif %} "
-                               name="next_to"
-                               value="Next question">
-                    {% endif %}
+                {% if is_can_be_finished %}
+                <button type="button" class="btn btn-primary"
+                        data-toggle="modal" data-target="#exampleModalCenter">
+                    Finish quiz
+                </button>
+                {% else %}
+                <input type='Submit'
+                       class="btn btn-primary
+                       {% if current_question.question_number == questions.count %}
+                       d-none{% endif %} "
+                       name="next_to"
+                       value="Next question">
+                {% endif %}
                 {% endif %}
             </div>
         </div>
@@ -40,51 +45,55 @@
 
             <p>Quiz navigation</p>
             {% if questions %}
-                {% for question in questions %}
+            {% for question in questions %}
 
-                    <input type='Submit'
-                           class="btn btn-navigation btn-sm {% if current_question.question_number == question.question_number %}btn-primary{% elif request.session|lookup:quiz_id|lookup:question.question_number %}btn-info{% else %}btn-outline-info{% endif %}"
-                           name="next"
-                           value="{{ question.question_number }}">
+            <input type='Submit'
+                   class="btn btn-navigation btn-sm
+                   {% if current_question.question_number == question.question_number %}
+                   btn-primary{% elif request.session|lookup:quiz_id|lookup:question.question_number %}
+                   btn-info{% else %}btn-outline-info{% endif %}"
+                   name="next"
+                   value="{{ question.question_number }}">
 
-                {% endfor %}
-                <br>
+            {% endfor %}
+            <br>
 
 
-                <!-- Modal -->
-                <div class="modal fade" id="exampleModalCenter" tabindex="-1"
-                     role="dialog"
-                     aria-labelledby="exampleModalCenterTitle"
-                     aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered"
-                         role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title"
-                                    id="exampleModalLongTitle">Finishing
-                                    quiz</h5>
-                                <button type="button" class="close"
-                                        data-dismiss="modal"
-                                        aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                Do you want to finish quiz?
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                        data-dismiss="modal">Back
-                                </button>
-                                <button type="Submit" name="finish"
-                                        class="btn btn-primary">Submit finish
-                                </button>
-                            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModalCenter" tabindex="-1"
+                 role="dialog"
+                 aria-labelledby="exampleModalCenterTitle"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered"
+                     role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"
+                                id="exampleModalLongTitle">Finishing
+                                quiz</h5>
+                            <button type="button" class="close"
+                                    data-dismiss="modal"
+                                    aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Do you want to finish quiz?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                    data-dismiss="modal">Back
+                            </button>
+                            <button type="Submit" name="finish"
+                                    class="btn btn-primary">Submit finish
+                            </button>
                         </div>
                     </div>
                 </div>
+            </div>
             {% endif %}
         </div>
     </div>
 </form>
 {% endblock content %}
+

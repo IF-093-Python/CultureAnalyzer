@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load cool_paginate %}
 {% block title %}All quizzes{% endblock %}
 {% block content %}
 <div class="container-fluid bg-1 main col-md-10">
@@ -44,7 +45,9 @@
     {% endfor %}
     </div>
     <!--Include paginator-->
-    {% include "tutors/pagination.html" with page=page_obj %}
+    {% if is_paginated %}
+        {% cool_paginate page_obj=page_obj %}
+    {% endif %}
 
     {% else %}
     {% if search %}
