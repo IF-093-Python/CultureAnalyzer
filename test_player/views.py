@@ -48,6 +48,15 @@ class TestPlayer(FormView):
             Questions, quiz_id=self.kwargs['quiz_id'],
             question_number=self.kwargs['question_number'])
         context['quiz_id'] = self.kwargs['quiz_id']
+
+        session = dict(self.request.session)
+        if self.kwargs['quiz_id'] in session.keys():
+            i = sum(1 for v in
+                    self.request.session[self.kwargs['quiz_id']].values() if v)
+            print(i)
+            if i == 23:
+                context['is_can_be_finished'] = True
+
         return context
 
     def get_form_kwargs(self):
@@ -81,9 +90,12 @@ class TestPlayer(FormView):
 
         self.request.session[self.kwargs['quiz_id']] = s
 
+        print(self.request.session.items())
+
         if 'finish' in self.request.POST:
             quiz_id = self.kwargs['quiz_id']
-            user = CustomUser.objects.get(pk=self.request.session['_auth_user_id'])
+            user = CustomUser.objects.get(
+                pk=self.request.session['_auth_user_id'])
             quiz = Quizzes.objects.get(pk=quiz_id)
             timezone.now()
             date = datetime.datetime.now()
@@ -104,6 +116,17 @@ class TestPlayer(FormView):
                 'quiz_id']]  # clear session data about passed and saved test
 
         return super(TestPlayer, self).form_valid(form)
+
+    def _handle_finish_test(self):
+        session = dict(self.request.session)
+        context = super(TestPlayer).get_context_data()
+        if self.kwargs['quiz_id'] in session.keys():
+            answered = sum(1 for v in
+                           self.request.session[
+                               self.kwargs['quiz_id']].values() if v)
+            print(answered)
+            if answered == 23:
+                context['is_can_be_finished'] = True
 
     def _handle_previous_and_next_questions(self):
         question_count = Questions.objects.filter(
