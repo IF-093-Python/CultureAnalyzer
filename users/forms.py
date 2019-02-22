@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.models import Group
 
 from .choices import GENDER_CHOICES, EDUCATION_CHOICES
 from .models import CustomUser
@@ -10,7 +11,7 @@ __all__ = [
     'UserRegisterForm',
     'UserUpdateForm',
     'BlockUserForm',
-]
+    ]
 
 EDUCATION_CHOICES_EMPTY_LABEL = (('', '--------------'),) + EDUCATION_CHOICES
 GENDER_CHOICES_EMPTY_LABEL = (('', '--------------'),) + GENDER_CHOICES
@@ -28,14 +29,14 @@ class UserLoginForm(AuthenticationForm):
         attrs={
             'class': 'input_attr',
             'placeholder': 'Username'
-        }
-    ))
+            }
+        ))
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={
             'class': 'input_attr',
             'placeholder': 'Password'
-        }
-    ), label='')
+            }
+        ), label='')
 
     class Meta:
         model = CustomUser
@@ -75,4 +76,10 @@ class UserUpdateForm(forms.ModelForm):
 class BlockUserForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['is_active', 'is_staff', 'is_superuser']
+        fields = ['is_active', 'is_staff', 'is_superuser', 'groups']
+
+
+class GroupForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ['name', 'permissions']
