@@ -24,7 +24,7 @@ class GroupsList(LoginRequiredMixin, PermissionRequiredMixin,
     __search = False
     __search_label = 'Search'
     paginate_by = PAGINATOR
-    permission_required = ''
+    permission_required = 'groups.view_group'
 
     def get_context_data(self, **kwargs):
         context = super(GroupsList, self).get_context_data(**kwargs)
@@ -43,6 +43,7 @@ class GroupsList(LoginRequiredMixin, PermissionRequiredMixin,
 
 
 class CreateGroupView(generic.CreateView, LoginRequiredMixin,
+                      PermissionRequiredMixin,
                       SafePaginationListView):
     model = Group
     form_class = GroupCreateForm
@@ -51,6 +52,7 @@ class CreateGroupView(generic.CreateView, LoginRequiredMixin,
     __search = False
     __search_label = 'Search'
     paginate_by = PAGINATOR
+    permission_required = 'groups.add_group'
 
     def get_context_data(self, **kwargs):
         context = super(CreateGroupView, self).get_context_data(**kwargs)
@@ -71,7 +73,8 @@ class CreateGroupView(generic.CreateView, LoginRequiredMixin,
 
 
 class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
-                      LoginRequiredMixin, SafePaginationListView):
+                      LoginRequiredMixin, PermissionRequiredMixin,
+                      SafePaginationListView):
     form_class = GroupCreateForm
     template_name = 'groups/group_update.html'
     success_message = "Group was updated successfully"
@@ -79,6 +82,7 @@ class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
     __search_label = 'Search'
     __checked_mentors = None
     paginate_by = PAGINATOR
+    permission_required = 'groups.change_group'
 
     def get_success_url(self):
         pk = self.kwargs['pk']
@@ -96,7 +100,7 @@ class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
         concatenates them with unchecked mentors, so that
         checked mentors are always first in list"""
         checked_mentors = CustomUser.objects.filter(
-            mentor_in_group=self.kwargs['pk']).\
+            mentor_in_group=self.kwargs['pk']). \
             filter(is_active=True).order_by('last_name')
         self.__checked_mentors = checked_mentors
         mentors = CustomUser.objects.filter(is_active=True).exclude(
@@ -118,11 +122,13 @@ class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
         return context
 
 
-class DeleteGroupView(LoginRequiredMixin, generic.DeleteView):
+class DeleteGroupView(LoginRequiredMixin, PermissionRequiredMixin,
+                      generic.DeleteView):
     model = Group
     context_object_name = 'group'
     template_name = 'groups/group_delete.html'
     success_url = reverse_lazy('groups:groups-list')
+    permission_required = 'groups.delete_group'
 
 
 class MentorGroupsView(LoginRequiredMixin, SafePaginationListView):
@@ -139,7 +145,7 @@ class MentorGroupsView(LoginRequiredMixin, SafePaginationListView):
         return context
 
     def get_queryset(self):
-        result = Group.objects.filter(mentor__id=self.request.user.pk).\
+        result = Group.objects.filter(mentor__id=self.request.user.pk). \
             annotate(total=Count('user')).order_by('name')
         if self.request.GET.get('data_search'):
             result = result.filter(
@@ -163,7 +169,7 @@ class MentorGroupUpdate(generic.UpdateView, SuccessMessageMixin,
 
     def get_success_url(self):
         pk = self.kwargs['pk']
-        return reverse('groups:mentor_group_update', kwargs={'pk':pk})
+        return reverse('groups:mentor_group_update', kwargs={'pk': pk})
 
     def get_context_data(self, **kwargs):
         context = super(MentorGroupUpdate, self).get_context_data(**kwargs)
@@ -174,7 +180,7 @@ class MentorGroupUpdate(generic.UpdateView, SuccessMessageMixin,
 
     def test_func(self):
         """If user in not mentor of this group rises 403 exception"""
-        return Group.objects.filter(pk=self.kwargs['pk']).\
+        return Group.objects.filter(pk=self.kwargs['pk']). \
             filter(mentor__id=self.request.user.pk).exists()
 
     def get_queryset(self):
@@ -208,7 +214,7 @@ class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
 
     def get_success_url(self):
         pk = self.kwargs['pk']
-        return reverse('groups:mentor_group_update', kwargs={'pk':pk})
+        return reverse('groups:mentor_group_update', kwargs={'pk': pk})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -218,15 +224,15 @@ class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
 
     def test_func(self):
         """If user in not mentor of this group rises 403 exception"""
-        return Group.objects.filter(pk=self.kwargs['pk']).\
+        return Group.objects.filter(pk=self.kwargs['pk']). \
             filter(mentor__id=self.request.user.pk).exists()
 
     def get_queryset(self):
         """Gets all Trainee users that are not in groups and
         makes search in their last_name if needed"""
-        result = CustomUser.objects.filter(is_staff=False).\
-            exclude(user_in_group=self.kwargs['pk']).\
-            filter(is_active=True).\
+        result = CustomUser.objects.filter(is_staff=False). \
+            exclude(user_in_group=self.kwargs['pk']). \
+            filter(is_active=True). \
             order_by('last_name')
         if self.request.GET.get('data_search'):
             result = result.filter(
@@ -242,7 +248,7 @@ class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
     def form_valid(self, form):
         """Gets users that are already in group and adds to users
         that where checked in form for adding to group"""
-        users_in_group = CustomUser.objects.filter(is_active=True).\
+        users_in_group = CustomUser.objects.filter(is_active=True). \
             filter(user_in_group=self.kwargs['pk'])
         if not form.cleaned_data['user']:
             return redirect('groups:mentor_group_update',

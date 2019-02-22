@@ -1,9 +1,10 @@
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, \
+    UserPassesTestMixin, PermissionRequiredMixin
 from django.shortcuts import redirect
 from django.views.generic import CreateView, UpdateView, ListView, DeleteView
-from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import Group
 from django.urls import reverse_lazy
 
 from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
@@ -100,18 +101,20 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     success_url = '/admin_page'
 
 
-class ListGroups(LoginRequiredMixin, ListView):
+class ListGroups(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Group
     context_object_name = 'group'
     template_name = 'users/group.html'
     queryset = Group.objects.all()
+    permission_required = 'users.add_group'
 
 
-class UpdateGroups(LoginRequiredMixin, UpdateView):
+class UpdateGroups(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'users/group_permissions.html'
     model = Group
     form_class = GroupForm
     success_url = reverse_lazy('group_perm-list')
+    permission_required = 'users.change_group'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -119,18 +122,20 @@ class UpdateGroups(LoginRequiredMixin, UpdateView):
         return context
 
 
-class DeleteGroups(LoginRequiredMixin, DeleteView):
+class DeleteGroups(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     template_name = 'users/delete_Group.html'
     context_object_name = 'group'
     model = Group
     form_class = GroupForm
     success_url = reverse_lazy('group_perm-list')
     success_message = 'Group: "%(name)s" was deleted successfully'
+    permission_required = 'users.delete_group'
 
 
-class CreateGroup(LoginRequiredMixin, CreateView):
+class CreateGroup(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = CustomUser
     form_class = GroupForm
     template_name = 'users/group_permissions.html'
     success_url = reverse_lazy('group_perm-list')
     success_message = 'Country indicator: "%(name)s" was created successfully'
+    permission_required = 'users.add_group'
