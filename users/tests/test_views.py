@@ -4,14 +4,13 @@ from django.test import TestCase
 from django.urls import reverse
 
 from users.models import CustomUser
-from django.contrib.auth.models import User
 
 
 class TestViews(TestCase):
 
     def setUp(self):
-        self.user = User.objects.create_user(username='Test',
-                                             password='testview123')
+        self.user = CustomUser.objects.create_user(username='Test',
+                                                   password='testview123')
         self.response = self.client.login(username='Test',
                                           password='testview123')
 

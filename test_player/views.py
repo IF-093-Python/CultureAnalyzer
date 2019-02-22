@@ -63,6 +63,8 @@ class TestPlayer(FormView):
                 self.kwargs['question_number'])
         else:
             d_answer = None
+        print(self.kwargs)
+        print(dict(kwargs, answers=current_answers, default_choice=d_answer))
         return dict(kwargs, answers=current_answers, default_choice=d_answer)
 
     def form_valid(self, form):
@@ -75,10 +77,10 @@ class TestPlayer(FormView):
             self.request.session[self.kwargs['quiz_id']] = s
 
         if form.cleaned_data.get('answers'):
+
             s.update({
                 self.kwargs['question_number']: form.cleaned_data.get(
                     'answers')})
-
         self.request.session[self.kwargs['quiz_id']] = s
 
         if 'finish' in self.request.POST:
@@ -99,7 +101,6 @@ class TestPlayer(FormView):
             Results.objects.create(user=user, quiz=quiz,
                                    pass_date=date,
                                    result=result)
-
             del self.request.session[self.kwargs[
                 'quiz_id']]  # clear session data about passed and saved test
 

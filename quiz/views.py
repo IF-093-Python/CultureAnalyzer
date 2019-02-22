@@ -1,20 +1,19 @@
 import ast
 import json
 
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.db.models import Count, Q
 from django.urls import reverse_lazy
 from django.views import generic
+
 from quiz.forms import QuizCreateForm
 from quiz.models import Quizzes, Results
-from quiz.service import get_final_result
+from quiz.service import get_final_result, get_feedback
 from tutors.models import Questions
 from indicators.models import CountryIndicator
-from feedbacks.models import Feedback, Recommendation
 from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
+from groups.models import Group
 
 
 class QuizzesList(LoginRequiredMixin, generic.ListView):
@@ -94,48 +93,41 @@ class ResultsListView(LoginRequiredMixin, generic.ListView):
         return results
 
 
-@login_required()
-def get_result_from(request, pk):
-    dict_result = get_final_result(request.user, pk)
-    result = list(dict_result.values())
-    country_indicators = CountryIndicator.objects.all()
-    countries_values = {}
-    countries_feedbacks = {}
-    if request.method == 'POST' and request.POST.getlist('select_indicator'):
-        options = request.POST.getlist('select_indicator')
+class CurrentResultView(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'quiz/column_chart_from_result.html'
+
+    def post(self, request, **kwargs):
+        context = self.get_context_data()
+        countries_values = {}
         countries_names = []
-        for o in options:
-            o = o.split(':')
-            countries_values[o[0]] = list(map(int, o[1].split()))
-            indicator_obj = country_indicators.get(iso_code=o[0])
-            countries_names.append(indicator_obj.name)
-            countries_feedbacks[indicator_obj.name] = get_feedback(
-                indicator_obj, dict_result)
-        context = {
-            'result': result,
-            'country_indicators': country_indicators,
-            'countries_values': countries_values,
-            'dict_result': dict_result,
-            'countries_names': countries_names,
-            'countries_feedbacks': countries_feedbacks,
-        }
-    else:
-        context = {
-            'result': result,
-            'country_indicators': country_indicators,
-            'countries_values': countries_values,
-            'dict_result': dict_result,
-            }
-    return render(request, 'quiz/column_chart_from_result.html', context)
+        countries_feedbacks = {}
+        if self.request.method == 'POST' and self.request.POST.getlist(
+                'select_indicator'):
+            options = self.request.POST.getlist('select_indicator')
+            for o in options:
+                countries_values.update(ast.literal_eval(o))
+                indicator_obj = context['country_indicators'].get(
+                    iso_code=list(ast.literal_eval(o))[0])
+                countries_names.append(indicator_obj.name)
+                countries_feedbacks[indicator_obj.name] = get_feedback(
+                    list(ast.literal_eval(o).values())[0], context[
+                        'result'], context['indicator_name'])
 
+        context['countries_values'] = countries_values
+        context['countries_names'] = countries_names
+        context['countries_feedbacks'] = countries_feedbacks
+        return super(CurrentResultView, self).render_to_response(context)
 
-def get_feedback(indicator_obj, dict_result):
-    indicators_feedbacks = {}
-    for ind, val in dict_result.items():
-        indicators_difference = abs(getattr(indicator_obj, ind) - val)
-        indicator_feedback = Feedback.objects.filter(
-            Q(min_value__lte=indicators_difference) &
-            Q(max_value__gte=indicators_difference),
-            indicator__iexact=ind)
-        indicators_feedbacks[ind] = indicator_feedback
-    return indicators_feedbacks
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.kwargs.get('group', False):
+            context['result'] = list(get_final_result(
+                get_object_or_404(Group, id=self.kwargs['pk'])).values())
+            context['name'] = self.kwargs['group']
+        else:
+            context['result'] = list(get_final_result(
+                self.request.user, self.kwargs['pk']).values())
+            context['name'] = self.request.user
+        context['country_indicators'] = CountryIndicator.objects.all()
+        context['indicator_name'] = ['pdi', 'idv', 'mas', 'uai', 'lto', 'ivr']
+        return context

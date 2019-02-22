@@ -153,3 +153,8 @@ SIMPLE_JWT = {
 TEST_RUNNER = 'CultureAnalyzer.tests.CustomTestRunner'
 
 BREADCRUMBS_TEMPLATE = "django_bootstrap_breadcrumbs/bootstrap4.html"
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'users.authentication.EmailAuthBackend',
+)

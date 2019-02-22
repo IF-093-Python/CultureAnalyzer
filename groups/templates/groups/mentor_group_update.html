@@ -84,12 +84,13 @@
 
         {% for user in object_list %}
       <tr>
-        <td>
+        <td class="align-middle">
             <input type="checkbox" name="user" value="{{ user.pk }}" checked>
         </td>
-      <td>{{ user.last_name }} {{ user.first_name }} ({{ user.username }})</td>
+      <td class="align-middle">
+          {{ user.last_name }} {{ user.first_name }} ({{ user.username }})
+      </td>
       <td>
-
         {% if user.image %}
               <img src="{{ user.image.url }}" alt=""
                    class="circle_text" style="text-align: center">

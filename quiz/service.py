@@ -1,10 +1,13 @@
 import json
+from django.db.models import Q
+from django.template.defaultfilters import register
 
 from users.models import CustomUser
+from feedbacks.models import Feedback
 
-__all__ = ['get_constant', 'check_group_indicators',
-           'get_average_results', 'get_indicators_values',
-           'get_groups_results', 'get_final_result', ]
+__all__ = ['get_constant', 'check_group_indicators', 'get_average_results',
+           'get_indicators_values', 'get_groups_results', 'get_final_result',
+           'get_feedback', 'zip_list', ]
 
 
 def get_constant(indicator_value):
@@ -89,7 +92,7 @@ def get_groups_results(data):
     list_of_results = []
     for result in data:
         list_of_results.append(
-            json.loads(result.user.results_set.last().result))
+            json.loads(result.results_set.last().result))
 
     return list_of_results
 
@@ -122,8 +125,34 @@ def get_final_result(data, *args):
                 'ivr': 0,
             }
         group_answers = get_groups_results(users_results)
+    print(group_answers)
     average_result = get_average_results(group_answers)
+    print(average_result)
     indicator_list = get_indicators_values(average_result)
     data = check_group_indicators(indicator_list)
+    print(data)
 
     return data
+
+
+def get_feedback(indicator_obj, dict_result, indicator_name):
+    """
+    Retrive for each indicator feedbacks based on country and result difference
+    :param indicator_obj:
+    :param dict_result: users results by each indicators
+    :return: dict with feedback for each indicator
+    """
+    indicators_feedbacks = {}
+    for val in range(6):
+        indicators_difference = abs(indicator_obj[val] - dict_result[val])
+        indicator_feedback = Feedback.objects.filter(
+                            Q(min_value__lte=indicators_difference) &
+                            Q(max_value__gte=indicators_difference),
+                            indicator__iexact=indicator_name[val])
+        indicators_feedbacks[indicator_name[val]] = indicator_feedback
+    return indicators_feedbacks
+
+
+@register.filter(name='zip')
+def zip_list(a, b):
+    return zip(a, b)

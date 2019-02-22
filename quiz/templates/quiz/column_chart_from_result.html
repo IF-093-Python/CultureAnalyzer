@@ -5,41 +5,41 @@
     <form method="post">
         {% csrf_token %}
 
-        <!--Result button generation with choosing countries-->
-        <div class="form-group col-md-4 float-left">
-            <input type="submit" class="btn btn-primary" value="Result">
-            <select name='select_indicator' class="selectpicker"
-                    multiple="multiple" data-live-search="true" data-max-options="5">
-                {% for i in country_indicators %}
-                    <option value="{{ i.iso_code }}:{{ i.pdi }} {{ i.idv }} {{ i.mas }} {{ i.uai }} {{ i.lto }} {{ i.ivr }}"
-                            {% if i.iso_code is countries_values.keys %}
-                            selected="selected"
-                            {% endif %}>
-                        {{ i.name }}
-                    </option>
-                {% endfor %}
-            </select>
-            <br>
-            <br>
-            <!--Table with indicators -->
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">Indicator</th>
-                    <th scope="col">Value</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for ind, val in dict_result.items %}
-                    <tr>
-                        <td>{{ ind }}</td>
-                        <td>{{ val }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            <!--End table-->
-        </div>
+    <!--Result button generation with choosing countries-->
+    <div class="form-group col-md-4 float-left">
+        <input type="submit" class="btn btn-primary" value="Result">
+        <select name='select_indicator' class="selectpicker"
+                multiple="multiple" data-live-search="true" data-max-options="5">
+            {% for i in country_indicators%}
+            <option value="{{i.get_indicators}}"
+                    {% if i.iso_code is countries_values.keys %}
+                    selected="selected"
+                    {% endif %}>
+                {{i.name}}
+            </option>
+            {% endfor %}
+        </select>
+        <br>
+        <br>
+        <!--Table with indicators -->
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Indicator</th>
+                <th scope="col">Value</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for val, indicator in result|zip:indicator_name %}
+            <tr>
+                <td>{{indicator}}</td>
+                <td>{{val}}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <!--End table-->
+    </div>
 
 
         <div class="form-group col-md-8 float-right">
@@ -81,14 +81,18 @@
                                             {% for feedback_obj in feedbacks %}
                                                 - {{ feedback_obj.feedback }}<br>
 
-                                                {% if feedback_obj.recommendation_set.all %}
-                                                    <br>Recommendations:
-                                                {% endif %}
-                                                <ul>
-                                                    {% for r in feedback_obj.recommendation_set.all %}
-                                                        <li> {{ r.recommendation }}</li>
+                                                {% with recommendations=feedback_obj.recommendation_set.all %}
+                                                    {% if recommendations %}
+                                                        <br>Recommendations:
+                                                    {% endif %}
+
+                                                    <ul>
+                                                    {% for r in recommendations %}
+                                                       <li> {{ r.recommendation }}</li>
                                                     {% endfor %}
-                                                </ul>
+                                                    </ul>
+
+                                                {% endwith %}
 
                                             {% endfor %}
                                         {% endif %}
@@ -147,8 +151,8 @@
                     }
                 },
                 series: [{
-                    name: 'user',
-                    data: {{result}}
+                    name: '{{name}}',
+                    data: {{result}},
                 },{%for k, ind in countries_values.items %}
                     {
                         name: '{{k}}',

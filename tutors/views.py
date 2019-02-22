@@ -53,7 +53,7 @@ class UpdateQuestionView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = 'Question "№%(number)d" was updated successfully!'
 
     def get_success_url(self):
-        return reverse_lazy('quiz:detail-quiz', kwargs={'quiz_id': self.kwargs[
+        return reverse_lazy('quiz:detail-quiz', kwargs={'pk': self.kwargs[
             'quiz_id']})
 
     def get_success_message(self, cleaned_data):
