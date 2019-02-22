@@ -21,6 +21,8 @@ class CustomUser(AbstractUser):
     gender = models.CharField(choices=GENDER_CHOICES, max_length=20, null=True)
     education = models.CharField(choices=EDUCATION_CHOICES, max_length=50,
                                  null=True)
+    email = models.EmailField(blank=True, max_length=254,
+                              verbose_name='email address', unique=True)
 
     def save(self, **kwargs):
         """

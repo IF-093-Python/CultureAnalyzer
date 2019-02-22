@@ -13,4 +13,4 @@ def lookup(dict_container, key):
     :return: value from dict_container, return False if value is not found
     """
 
-    return dict_container.get(str(key), False)
+    return dict_container.get(str(key),False)

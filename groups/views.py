@@ -11,7 +11,7 @@ from groups.models import Group
 from users.models import CustomUser
 from CultureAnalyzer.view import SafePaginationListView
 
-PAGINATOR = 50
+PAGINATOR = 10
 
 
 
@@ -36,7 +36,6 @@ class GroupsList(LoginRequiredMixin, SafePaginationListView):
             result = result.filter(
                 name__contains=self.request.GET.get('data_search'))
             self.__search = True
-            self.paginate_by = None
             self.__search_label = self.request.GET.get('data_search')
         return result
 
@@ -66,7 +65,6 @@ class CreateGroupView(generic.CreateView, LoginRequiredMixin,
             result = result.filter(
                 last_name__contains=self.request.GET.get('data_search'))
             self.__search = True
-            self.paginate_by = None
             self.__search_label = self.request.GET.get('data_search')
         return result
 
@@ -110,7 +108,6 @@ class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
             checked_mentors = checked_mentors.filter(
                 last_name__contains=self.request.GET.get('data_search'))
             self.__search = True
-            self.paginate_by = None
             self.__search_label = self.request.GET.get('data_search')
         result = list(chain(checked_mentors, mentors))
         return result
@@ -150,7 +147,6 @@ class MentorGroupsView(LoginRequiredMixin, SafePaginationListView):
             result = result.filter(
                 name__contains=self.request.GET.get('data_search'))
             self.__search = True
-            self.paginate_by = None
             self.__search_label = self.request.GET.get('data_search')
         return result
 
@@ -193,7 +189,6 @@ class MentorGroupUpdate(generic.UpdateView, SuccessMessageMixin,
             result = result.filter(
                 last_name__contains=self.request.GET.get('data_search'))
             self.__search = True
-            self.paginate_by = None
             self.__search_label = self.request.GET.get('data_search')
         return result
 
@@ -241,7 +236,6 @@ class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
             result = result.filter(
                 last_name__contains=self.request.GET.get('data_search'))
             self.__search = True
-            self.paginate_by = None
             self.__search_label = self.request.GET.get('data_search')
         return result
 
