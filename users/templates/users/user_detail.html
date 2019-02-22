@@ -4,14 +4,14 @@
 {% block content%}
 <div class="content-section">
     <div class="media">
-        {% if user.profile.image %}
-        <img src="{{ user.profile.image.url }}" alt="" class="circle_text" style="margin-left: -10px;">
+        {% if object.image %}
+        <img src="{{ object.image.url }}" alt="" class="circle_text" style="margin-left: -10px;">
         {% else %}
         <img src="{% static 'default.png' %}" alt="" class="circle_text" style="margin-left: -10px;">
         {% endif %}
         <div class="media-body">
-            <h2 class="account-heading">{{ user.username }}</h2>
-            <p class="text-secondary">{{ user.email }}</p>
+            <h2 class="account-heading">{{ object.username }}</h2>
+            <p class="text-secondary">{{ object.email }}</p>
         </div>
     </div>
     <form method="POST" enctype="multipart/form-data">
@@ -19,7 +19,6 @@
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Profile Info</legend>
             {{ form|crispy }}
-            {{ r_form|crispy }}
         </fieldset>
         <div class="form-group">
             <button class="btn btn-outline-info" type="submit">Update</button>

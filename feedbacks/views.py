@@ -59,11 +59,16 @@ class RecommendationCreateView(LoginRequiredMixin, CreateView):
     form_class = RecommendationForm
 
     def get(self, request, *args, **kwargs):
+        err_result = HttpResponseBadRequest(
+            '<h1>Invalid request parameters</h1>')
         try:
-            Feedback.objects.get(pk=int(self.request.GET.get('feedback')))
-        except (ValueError, TypeError, Feedback.DoesNotExist):
-            return HttpResponseBadRequest('<h1>Invalid request parameters</h1>')
-        return super().get(request, *args, *kwargs)
+            is_exists = Feedback.objects.filter(
+                pk=self.request.GET.get('feedback')).exists()
+            if not is_exists:
+                return err_result
+        except (ValueError, TypeError):
+            return err_result
+        return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
         with transaction.atomic():

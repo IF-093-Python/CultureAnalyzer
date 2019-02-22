@@ -1,18 +1,15 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.models import User
 
 from .choices import GENDER_CHOICES, EDUCATION_CHOICES
-from .models import Profile, Role
+from .models import CustomUser
 from .validators import ProfileValidator, PValidationError
 
 __all__ = [
     'UserLoginForm',
     'UserRegisterForm',
-    'ProfileUpdateForm',
     'UserUpdateForm',
     'BlockUserForm',
-    'ChangeRoleForm',
 ]
 
 EDUCATION_CHOICES_EMPTY_LABEL = (('', '--------------'),) + EDUCATION_CHOICES
@@ -41,7 +38,7 @@ class UserLoginForm(AuthenticationForm):
     ), label='')
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['username', 'password']
 
 
@@ -51,12 +48,12 @@ class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['username', 'email', 'first_name',
                   'last_name', 'password1', 'password2']
 
 
-class ProfileUpdateForm(forms.ModelForm):
+class UserUpdateForm(forms.ModelForm):
     image = forms.ImageField(widget=forms.FileInput, required=False)
     experience = forms.IntegerField()
     date_of_birth = forms.DateField(widget=DateInput())
@@ -64,9 +61,9 @@ class ProfileUpdateForm(forms.ModelForm):
     gender = forms.ChoiceField(choices=GENDER_CHOICES_EMPTY_LABEL)
 
     class Meta:
-        model = Profile
-        fields = ['image', 'experience', 'date_of_birth', 'education',
-                  'gender']
+        model = CustomUser
+        fields = ['first_name', 'last_name', 'image', 'experience',
+                  'date_of_birth', 'education', 'gender']
 
     def clean_experience(self):
         try:
@@ -75,22 +72,7 @@ class ProfileUpdateForm(forms.ModelForm):
             self.add_error('experience', str(err))
 
 
-class UserUpdateForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ['first_name', 'last_name']
-
-
 class BlockUserForm(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ['is_active']
-
-
-class ChangeRoleForm(forms.ModelForm):
-    role = forms.ModelChoiceField(queryset=Role.objects.all(),
-                                  empty_label=None)
-
-    class Meta:
-        model = Profile
-        fields = ['role']
+        model = CustomUser
+        fields = ['is_active', 'is_staff', 'is_superuser']

@@ -4,8 +4,8 @@
 {% block content%}
 <div class="content-section">
     <div class="media">
-        {% if user.profile.image %}
-        <img src="{{ user.profile.image.url }}" alt="" class="circle_text" style="margin-left: -10px;">
+        {% if user.image %}
+        <img src="{{ user.image.url }}" alt="" class="circle_text" style="margin-left: -10px;">
         {% else %}
         <img src="{% static 'default.png' %}" alt="" class="circle_text" style="margin-left: -10px;">
         {% endif %}
@@ -19,7 +19,6 @@
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Profile Info</legend>
             {{ form|crispy }}
-            {{ p_form|crispy }}
         </fieldset>
         <div class="border-top mb-3">
                 <a href="{% url 'password-change' user.id %}" class="contact_us">Change password</a>

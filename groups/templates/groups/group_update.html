@@ -1,11 +1,24 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
+{% load cool_paginate %}
+
 {% block content %}
+  {% block breadcrumbs %}
+    {% breadcrumb "Home" "/" %}
+    {% breadcrumb "Groups" "groups:groups-list" %}
+    {% breadcrumb group.name "groups:group-update" group.pk %}
+    <div style="color: blue">
+    {% render_breadcrumbs %}
+    </div>
+  {% endblock %}
+
   {% if messages %}
     <ul class="messages">
       {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        <a{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}</a>
       {% endfor %}
     </ul>
   {% endif %}
@@ -27,32 +40,32 @@
   </div>
   <br>
   {% block users %}
-      {% if mentors %}
+      {% if object_list %}
         <table class="table table-hover table-striped table-bordered table-sm">
           <thead class="thead-light">
             <tr>
               <th style="width: 1%"> </th>
               <th>Name</th>
-              <th style="width: 1%">Photo</th>
+              <th style="text-align: center; width: 1%">Photo</th>
             </tr>
           </thead>
       {% endif %}
   <form method="post">
     {% csrf_token %}
-    <button type="submit" class="btn btn-primary; float-left"
-            style="margin-right: 4px; background-color:
-                    cornflowerblue">Update group</button>
-    <a class="btn btn-danger" title="Back to all groups"
-       href="{% url 'groups:groups-list' %}">Back</a>
+    <a class="btn btn-danger" style="margin-right: 4px"
+       title="Back to all groups"
+       href="{% url 'groups:groups-list' %}">&#8630; Back</a>
+    <button type="submit" class="btn btn-primary"
+            style="background-color:cornflowerblue">Update group</button>
     {{ form.name|as_crispy_field }}
     <hr>
 
         {% if search %}
-        <b>Search results for "{{ search_label }}":</b>
+        <strong>Search results for "{{ search_label }}":</strong>
         {% else %}
-        <b>Mentors:</b>
+        <strong>Mentors:</strong>
         {% endif %}
-    {% if not mentors %}
+    {% if not object_list %}
       {% if search %}
         <p>There are no results that match your search.</p>
       {% else %}
@@ -61,74 +74,59 @@
     {% endif %}
 
     {% for user in checked_mentors %}
-      {% if user in mentors %}
+      {% if user in object_list %}
         <tbody>
         <tr>
           <td>
             <input type="checkbox" name="mentor"
-                   value="{{ user.profile.pk }}" checked>
+                   value="{{ user.pk }}" checked>
           </td>
           <td>{{ user.last_name }} {{ user.first_name }}
               ({{ user.username }})
           </td>
           <td>
-            {% if user.profile.image %}
-              <img src="{{ user.profile.image.url }}" alt=""
-                   class="circle_text" style="margin-left: -10px;">
+            {% if user.image %}
+              <img src="{{ user.image.url }}" alt=""
+                   class="circle_text" style="text-align: center">
             {% else %}
-              <img src="{%static 'default.png'%}" alt=""
-                   class="circle_text" style="margin-left: -10px;">
+               <img src="{%static 'default.png'%}" alt=""
+                    class="circle_text" style="text-align: center">
             {% endif %}
           </td>
         </tr>
       {% else %}
         <input type="checkbox" style="visibility: hidden"
-               name="mentor" value="{{ user.profile.pk }}" checked>
+               name="mentor" value="{{ user.pk }}" checked>
       {% endif %}
     {% endfor %}
 
-    {% for user in mentors %}
+    {% for user in object_list %}
       {% if user not in checked_mentors %}
         <tr>
           <td>
-            <input type="checkbox" name="mentor" value="{{ user.profile.pk }}">
+            <input type="checkbox" name="mentor" value="{{ user.pk }}">
           </td>
           <td>{{ user.last_name }} {{ user.first_name }}
               ({{ user.username }})
           </td>
           <td>
-            {% if user.profile.image %}
-              <img src="{{ user.profile.image.url }}" alt=""
-                   class="circle_text" style="margin-left: -10px;">
+            {% if user.image %}
+              <img src="{{ user.image.url }}" alt=""
+                   class="circle_text" style="text-align: center">
             {% else %}
-               <img src="{%static 'default.png'%}" alt="" class="circle_text" style="margin-left: -10px;">
+               <img src="{%static 'default.png'%}" alt=""
+                    class="circle_text" style="text-align: center">
             {% endif %}
+          </td>
       {% endif %}
     {% endfor %}
   </form>
 </tbody>
 </table>
-{% if is_paginated %}
-  <ul class="pagination">
-    {% if page_obj.has_previous %}
-      <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a>&nbsp;&nbsp;</li>
-    {% else %}
-      <li class="disabled"><span>&laquo;</span>&nbsp;&nbsp;</li>
+
+    {% if is_paginated %}
+        {% cool_paginate page_obj=page_obj %}
     {% endif %}
-    {% for i in paginator.page_range %}
-      {% if page_obj.number == i %}
-        <li class="active" style="color: #cd0a0a"><span>{{ i }} <span class="sr-only">(current)</span>&nbsp;</span></li>
-      {% else %}
-        <li><a href="?page={{ i }}"> {{ i }} </a>&nbsp;</li>
-      {% endif %}
-    {% endfor %}
-    {% if page_obj.has_next %}
-      <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-    {% else %}
-      <li class="disabled"><span>&raquo;</span></li>
-    {% endif %}
-  </ul>
-{% endif %}
 </div>
 {% endblock users %}
 {% endblock content %}

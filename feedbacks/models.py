@@ -8,7 +8,7 @@ __all__ = ['Feedback', 'Recommendation', ]
 class Feedback(models.Model):
     INDICATORS = (
         ('PDI', 'PDI'),
-        ('IND', 'IND'),
+        ('IDV', 'IDV'),
         ('MAS', 'MAS'),
         ('UAI', 'UAI'),
         ('LTO', 'LTO'),
