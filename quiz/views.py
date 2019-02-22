@@ -57,7 +57,7 @@ class QuizDetailView(LoginRequiredMixin, generic.ListView):
                 Q(question_text__icontains=question_search))
         return questions
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['search'] = self.request.GET.get("question_search")
         context['quiz'] = get_object_or_404(Quizzes, pk=self.kwargs['pk'])

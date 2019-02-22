@@ -42,7 +42,7 @@ class CreateQuestionView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         kwargs = super().get_form_kwargs()
         kwargs['instance'] = Questions(question_number=get_min_missing_value(
             'Questions', self.kwargs['quiz_id']), quiz=Quizzes(
-            self.kwargs['quiz_id']))
+                self.kwargs['quiz_id']))
         return kwargs
 
 
@@ -53,7 +53,7 @@ class UpdateQuestionView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = 'Question "№%(number)d" was updated successfully!'
 
     def get_success_url(self):
-        return reverse_lazy('quiz:detail-quiz', kwargs={'quiz_id': self.kwargs[
+        return reverse_lazy('quiz:detail-quiz', kwargs={'pk': self.kwargs[
             'quiz_id']})
 
     def get_success_message(self, cleaned_data):
@@ -121,7 +121,7 @@ class CreateAnswerView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['question'] = get_object_or_404(Questions,
-                                         pk=self.kwargs['question_id'])
+                                                pk=self.kwargs['question_id'])
         return context
 
     def get_form_kwargs(self):
