@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load filters %}
+{% load zip %}
 {% block title %}Your result{% endblock %}
 {% block content %}
     <form method="post">
@@ -30,10 +31,10 @@
             </tr>
             </thead>
             <tbody>
-            {% for val in result %}
+            {% for val, indicator in result|zip:indicator_name %}
             <tr>
-                <td>{{ ind }}</td>
-                <td>{{ val }}</td>
+                <td>{{indicator}}</td>
+                <td>{{val}}</td>
             </tr>
             {% endfor %}
             </tbody>
@@ -81,14 +82,18 @@
                                             {% for feedback_obj in feedbacks %}
                                                 - {{ feedback_obj.feedback }}<br>
 
-                                                {% if feedback_obj.recommendation_set.all %}
-                                                    <br>Recommendations:
-                                                {% endif %}
-                                                <ul>
-                                                    {% for r in feedback_obj.recommendation_set.all %}
-                                                        <li> {{ r.recommendation }}</li>
+                                                {% with recommendations=feedback_obj.recommendation_set.all %}
+                                                    {% if recommendations %}
+                                                        <br>Recommendations:
+                                                    {% endif %}
+
+                                                    <ul>
+                                                    {% for r in recommendations %}
+                                                       <li> {{ r.recommendation }}</li>
                                                     {% endfor %}
-                                                </ul>
+                                                    </ul>
+
+                                                {% endwith %}
 
                                             {% endfor %}
                                         {% endif %}
@@ -147,8 +152,8 @@
                     }
                 },
                 series: [{
-                    name: 'user',
-                    data: {{result}}
+                    name: '{{name}}',
+                    data: {{result}},
                 },{%for k, ind in countries_values.items %}
                     {
                         name: '{{k}}',

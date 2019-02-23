@@ -25,48 +25,51 @@
                         <button class="btn btn-outline-success my-2 my-sm-0"
                                 style="margin-right: 10px;" type="submit">Search</button>
                         <a class="btn btn-outline-danger my-2 my-sm-0"
-                          href ={% url 'groups:mentor_groups_view' %}>Clear</a>
+                          href ="{% url 'groups:mentor_groups_view' %}">Clear</a>
                     </div>
                     <br>
                 </form>
             </div><br><br>
         {% if search %}
-            <b>Search results for "{{ search_label }}":</b>
+            <strong>Search results for "{{ search_label }}":</strong>
         {% else %}
-            <b>Groups:</b>
+            <strong>Groups:</strong>
         {% endif %}
   {% if group_list %}
   <table class="table table-hover table-striped table-bordered table-sm">
-    <thead class="thead-light">
+      <thead class="thead-light">
       <tr>
-        <th>Name</th>
-        <th style="text-align: center; max-width: 20%">Number of members</th>
+          <th class='w-30'>Name</th>
+          <th style="text-align: center; max-width: 20%">Number
+              of members</th>
+          <th style="text-align: center; max-width: 20%">Result
+          </th>
       </tr>
-    </thead>
-    <tbody>
-        {% for group in group_list %}
-
+      </thead>
+      <tbody>
+      {% for group in group_list %}
       <tr>
-        <td>
-            <a href="{% url 'groups:mentor_group_update' group.pk %}">
-               {{ group }}</a>
-            <div class="float-right">
-                <a class="btn-outline-info"
-                   href="{% url 'groups:mentor_group_update' group.pk %}">
-                   &#9998;</a>
-            </div>
-        </td>
-        <td style="text-align: center">{{ group.total }}</td>
+          <td><a href="{% url 'groups:mentor_group_update' group.pk %}">
+                         {{ group }}</a></td>
+          <td style="text-align: center"><a>{{ group.total }}</a></td>
+          <td style="text-align: center">
+              <a class="btn btn-light"
+                 href="{% url 'quiz:result-chart-group' group.pk group.name %}">
+                  <span class="fas fa-chart-bar"></span></a>
+              <a class="btn btn-light"
+                 href="{% url 'groups:mentor_group_update' group.pk %}">
+                  <span class="fas fa-edit"></span></a>
+          </td>
       </tr>
-    {% endfor %}
-        <br>
-    {% else %}
-        {% if search %}
-            <p>There are no results that match your search.</p>
-        {% else %}
-            <p>You have no groups of students yet.</p>
-        {% endif %}
-    </tbody>
+      {% endfor %}
+      <br>
+      {% else %}
+      {% if search %}
+      <p>There are no results that match your search.</p>
+      {% else %}
+      <p>You have no groups of students yet.</p>
+      {% endif %}
+      </tbody>
   </table>
 {% endif %}
 

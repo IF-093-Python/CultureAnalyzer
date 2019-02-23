@@ -2,6 +2,13 @@
 {% load crispy_forms_tags %}
 {% block title %}Your result{% endblock %}
 {% block content %}
+    <div class="border-bottom my-3 pb-1">
+    <h1>
+        <a class="btn btn-light" href="{{back}}">
+            <splan class="fas fa-chevron-left"></splan></a>
+        {{current.username}}
+    </h1>
+    </div>
     <table class="table table-hover">
         <thead>
         <tr>
@@ -15,15 +22,15 @@
         {% for result in results %}
             <tr>
                 <td style="vertical-align: middle"><a
-                        href="{% url 'quiz:result-chart' result.id %}">
+                        href="{% url 'quiz:result-chart-user' pk=result.id current_user=current.username%}">
                     {{result.quiz}}</a>
                 </td>
                 <td>{{ result.quiz.description }}</td>
                 <td>{{ result.pass_date }}</td>
                 <td class="d-flex justify-content-around">
                     <a style="min-width: 40%" class="btn btn-primary"
-                       href="{% url 'quiz:result-chart' result.id %}">
-                        <i class="fa fa-eye"></i></a>
+                       href="{% url 'quiz:result-chart-user' pk=result.id current_user=current.username%}">
+                        <em class="fa fa-eye"></em></a>
                 </td>
             </tr>
         {% empty %}

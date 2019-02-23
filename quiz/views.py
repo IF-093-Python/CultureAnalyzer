@@ -2,24 +2,25 @@ import ast
 import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q, Count
-from django.shortcuts import redirect, get_object_or_404
+from django.contrib.auth.models import User, AbstractUser
+from django.shortcuts import get_object_or_404
+from django.db.models import Count, Q
 from django.urls import reverse_lazy
 from django.views import generic
 
-from CultureAnalyzer.settings import ITEMS_ON_PAGE
-from feedbacks.models import Feedback
-from indicators.models import CountryIndicator
 from quiz.forms import QuizCreateForm
 from quiz.models import Quizzes, Results
-from quiz.service import get_final_result
+from quiz.service import get_final_result, get_feedback
 from tutors.models import Questions
+from indicators.models import CountryIndicator
+from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
+from groups.models import Group
+from users.models import CustomUser
 
 
 class QuizzesList(LoginRequiredMixin, generic.ListView):
     model = Quizzes
     context_object_name = 'quizzes'
-    ordering = ('title')
     template_name = 'quiz/quizzes_list.html'
     paginate_by = 2
 
@@ -67,7 +68,6 @@ class QuizDetailView(LoginRequiredMixin, generic.ListView):
         context = super().get_context_data(**kwargs)
         context['search'] = self.request.GET.get("question_search")
         context['quiz'] = get_object_or_404(Quizzes, pk=self.kwargs['pk'])
-
         return context
 
 
@@ -91,8 +91,15 @@ class ResultsListView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'results'
 
     def get_queryset(self):
-        results = Results.objects.filter(user=self.request.user)
+        results = Results.objects.filter(user=self.kwargs['user_id'])
         return results
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['current'] = get_object_or_404(CustomUser, pk=self.kwargs[
+            'user_id'])
+        context['back'] = self.request.META['HTTP_REFERER']
+        return context
 
 
 class CurrentResultView(LoginRequiredMixin, generic.TemplateView):
@@ -112,7 +119,8 @@ class CurrentResultView(LoginRequiredMixin, generic.TemplateView):
                     iso_code=list(ast.literal_eval(o))[0])
                 countries_names.append(indicator_obj.name)
                 countries_feedbacks[indicator_obj.name] = get_feedback(
-                    list(ast.literal_eval(o).values())[0], context['result'])
+                    list(ast.literal_eval(o).values())[0], context[
+                        'result'], context['indicator_name'])
 
         context['countries_values'] = countries_values
         context['countries_names'] = countries_names
@@ -121,22 +129,16 @@ class CurrentResultView(LoginRequiredMixin, generic.TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['result'] = list(get_final_result(self.request.user,
-                                                  self.kwargs['pk']).values())
+        if self.kwargs.get('group', False):
+            context['result'] = list(get_final_result(
+                get_object_or_404(Group, id=self.kwargs['pk'])).values())
+            context['name'] = self.kwargs['group']
+        else:
+            context['result'] = list(get_final_result(
+                get_object_or_404(CustomUser, username=self.kwargs[
+                    'current_user']),
+                self.kwargs['pk']).values())
+            context['name'] = self.kwargs['current_user']
         context['country_indicators'] = CountryIndicator.objects.all()
-        context['countries_values'] = {}
-        context['countries_feedbacks'] = {}
+        context['indicator_name'] = ['pdi', 'idv', 'mas', 'uai', 'lto', 'ivr']
         return context
-
-
-def get_feedback(indicator_obj, dict_result):
-    indicator_name = ['pdi', 'idv', 'mas', 'uai', 'lto', 'ivr']
-    indicators_feedbacks = {}
-    for val in range(6):
-        indicators_difference = abs(indicator_obj[val] - dict_result[val])
-        indicator_feedback = Feedback.objects.filter(
-            Q(min_value__lte=indicators_difference) &
-            Q(max_value__gte=indicators_difference),
-            indicator__iexact=indicator_name[val])
-        indicators_feedbacks[indicator_name[val]] = indicator_feedback
-    return indicators_feedbacks

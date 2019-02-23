@@ -9,8 +9,8 @@ from django.views.generic import FormView, ListView
 
 from quiz.models import Results, Quizzes
 from tutors.models import Questions
-from users.models import CustomUser
 from .forms import QuestionSaveForm
+from users.models import CustomUser
 
 __all__ = ['TestPlayer', 'TestStart', ]
 
@@ -48,7 +48,6 @@ class TestPlayer(FormView):
             Questions, quiz_id=self.kwargs['quiz_id'],
             question_number=self.kwargs['question_number'])
         context['quiz_id'] = self.kwargs['quiz_id']
-
         return context
 
     def get_form_kwargs(self):
@@ -59,7 +58,7 @@ class TestPlayer(FormView):
         current_answers = current_questions.answers_set.all()
         if self.kwargs['quiz_id'] in self.request.session and self.kwargs[
             'question_number'] in self.request.session[
-            self.kwargs['quiz_id']].keys():
+                self.kwargs['quiz_id']].keys():
             d_answer = self.request.session[self.kwargs['quiz_id']].get(
                 self.kwargs['question_number'])
         else:
@@ -81,7 +80,6 @@ class TestPlayer(FormView):
                     'answers')})
 
         self.request.session[self.kwargs['quiz_id']] = s
-
 
         if 'finish' in self.request.POST:
             quiz_id = self.kwargs['quiz_id']

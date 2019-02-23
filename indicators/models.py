@@ -43,4 +43,3 @@ class CountryIndicator(models.Model):
         # country_values = {'pdi': self.pdi, 'ind': self.ind, 'mas': self.mas,
         #                   'uai': self.uai, 'lto': self.lto, 'ivr': self.ivr}
         return dict(country_values)
-

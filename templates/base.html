@@ -95,8 +95,10 @@
     <div class="row">
         <div class="col-md-12">
             {% if user.is_authenticated %}
+
                 {% block content %}
                 {% endblock content %}
+
             {% else %}
                 {% block anonymous_user %}
                 {% endblock anonymous_user %}
