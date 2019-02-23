@@ -7,7 +7,7 @@ from feedbacks.models import Feedback
 
 __all__ = ['get_constant', 'check_group_indicators', 'get_average_results',
            'get_indicators_values', 'get_groups_results', 'get_final_result',
-           'get_feedback', ]
+           'get_feedback', 'zip_list', ]
 
 
 def get_constant(indicator_value):
@@ -125,9 +125,12 @@ def get_final_result(data, *args):
                 'ivr': 0,
             }
         group_answers = get_groups_results(users_results)
+    print(group_answers)
     average_result = get_average_results(group_answers)
+    print(average_result)
     indicator_list = get_indicators_values(average_result)
     data = check_group_indicators(indicator_list)
+    print(data)
 
     return data
 
