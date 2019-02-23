@@ -20,19 +20,10 @@
                            class="btn btn-primary {% if current_question.question_number == 1 %}disabled{% endif %}"
                            name="prev"
                            value="Previous question">
-                    {% if questions %}
-                        {% if is_can_be_finished %}
-                            <button type="button" class="btn btn-primary"
-                                    data-toggle="modal" data-target="#exampleModalCenter">
-                                Finish quiz
-                            </button>
-                        {% else %}
-                            <input type='Submit'
-                                   class="btn btn-primary {% if current_question.question_number == questions.count %}d-none{% endif %} "
-                                   name="next_to"
-                                   value="Next question">
-                        {% endif %}
-                    {% endif %}
+                    <input type='Submit'
+                           class="btn btn-primary {% if current_question.question_number == questions.count %}disabled{% endif %} "
+                           name="next_to"
+                           value="Next question">
                 </div>
             </div>
             <!-- Navigate between questions-->
@@ -49,6 +40,17 @@
 
                     {% endfor %}
                     <br>
+
+                    <!-- Button trigger modal -->
+                    {% if questions %}
+                        {% if is_can_be_finished %}
+                            <button type="button" class="btn btn-primary"
+                                    data-toggle="modal" data-target="#exampleModalCenter"
+                                    style="margin-top: 3px;">
+                                Finish quiz
+                            </button>
+                        {% endif %}
+                    {% endif %}
 
 
                     <!-- Modal -->
