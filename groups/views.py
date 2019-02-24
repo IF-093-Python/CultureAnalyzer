@@ -6,8 +6,8 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.db.models import Count
-from groups.forms import GroupCreateForm, GroupUpdateForm
-from groups.models import Group
+from groups.forms import GroupCreateForm, GroupUpdateForm, SetQuizForGroupForm
+from groups.models import Group, DateOfQuiz
 from users.models import CustomUser
 from CultureAnalyzer.view import SafePaginationListView
 
@@ -254,3 +254,70 @@ class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
         form.cleaned_data['user'] = \
             chain(form.cleaned_data['user'], users_in_group)
         return super(MentorGroupAdd, self).form_valid(form)
+
+
+class SetQuizForGroupView(UserPassesTestMixin, generic.UpdateView):
+    model = DateOfQuiz
+    form_class = SetQuizForGroupForm
+    template_name = 'groups/set_quiz_for_group.html'
+    success_url = reverse_lazy('groups:mentor_groups_view')
+
+    def form_valid(self, form):
+        form.instance.group=Group.objects.get(pk=self.kwargs['pk'])
+        if not DateOfQuiz.objects.\
+                filter(group=form.instance.group).\
+                filter(quiz=form.instance.quiz).exists():
+            new=DateOfQuiz.objects.create(begin=form.instance.begin,end=form.instance.end,
+                                 quiz=form.instance.quiz,group=form.instance.group)
+            new.save()
+            return redirect(self.success_url)
+        else:
+            new=DateOfQuiz.objects.filter(quiz=form.instance.quiz,group=form.instance.group).first()
+            new.begin=form.instance.begin
+            new.end=form.instance.end
+            print('Замінив стару')
+            new.save()
+            return redirect(self.success_url)
+        print(form.instance)
+
+        return super(SetQuizForGroupView, self).form_valid(form)
+
+    def get_object(self, context=None):
+        """Returns Group that we are working with"""
+        print('get object')
+        print('KWARGS=',self.kwargs)
+        context = DateOfQuiz.objects.filter(
+            group_id=self.kwargs['pk']).order_by('id').last()
+        return context
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['group']=get_object_or_404(Group, pk=self.kwargs['pk'])
+        return context
+
+    def test_func(self):
+        """If user in not mentor of this group rises 403 exception"""
+        return Group.objects.filter(pk=self.kwargs['pk']).\
+            filter(mentor__id=self.request.user.pk).exists()
+
+
+# class SetQuizForGroupView(UserPassesTestMixin, generic.CreateView):
+#     model = Group
+#     form_class = SetQuizForGroupForm
+#     template_name = 'groups/set_quiz_for_group.html'
+#     success_url = reverse_lazy('groups:mentor_groups_view')
+#
+#     def form_valid(self, form):
+#         form.instance.group=self.get_object()
+#         return super(SetQuizForGroupView, self).form_valid(form)
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['group']=get_object_or_404(Group, pk=self.kwargs['pk'])
+#         print(context)
+#         return context
+#
+#     def test_func(self):
+#         """If user in not mentor of this group rises 403 exception"""
+#         return Group.objects.filter(pk=self.kwargs['pk']).\
+#             filter(mentor__id=self.request.user.pk).exists()

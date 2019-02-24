@@ -6,11 +6,13 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import FormView, ListView
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 from quiz.models import Results, Quizzes
 from tutors.models import Questions
 from .forms import QuestionSaveForm
 from users.models import CustomUser
+from groups.models import DateOfQuiz
 
 __all__ = ['TestPlayer', 'TestStart', ]
 
@@ -20,11 +22,16 @@ class TestStart(ListView):
     context_object_name = 'quizzes'
 
     def get_queryset(self):
-        quizzes = Quizzes.objects.all()
+        """Takes list of all Quizzes for Group of user, that are actual now
+        and shows only those that will end the last """
+        quizzes = DateOfQuiz.objects.filter(group__user=self.request.user). \
+            filter(end__gt=datetime.datetime.now()).\
+            order_by('quiz_id','-end').distinct('quiz_id')
         return quizzes
 
 
-class TestPlayer(FormView):
+
+class TestPlayer(UserPassesTestMixin, FormView ):
     template_name = 'test_player/test_player.html'
     form_class = QuestionSaveForm
 
@@ -131,3 +138,10 @@ class TestPlayer(FormView):
                                     'quiz_id'], 'question_number':
                                             self.kwargs['question_number']
                                         })
+
+    def test_func(self):
+        a = DateOfQuiz.objects.filter(group__user=self.request.user). \
+            filter(end__gt=datetime.datetime.now()).\
+            filter(begin__lte=datetime.datetime.now()).\
+            filter(quiz=self.kwargs['quiz_id'])
+        return a.exists()

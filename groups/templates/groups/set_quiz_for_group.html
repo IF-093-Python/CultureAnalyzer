@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load django_bootstrap_breadcrumbs %}
+{% load crispy_forms_tags %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+
+
+{% block title %}Set quiz for {{ group.name }}{% endblock %}
+
+{% block content %}
+{% bootstrap_javascript jquery='full' %}
+{{ form.media }}
+  {% block breadcrumbs %}
+    {% breadcrumb "Home" "/" %}
+    {% breadcrumb "Groups" "groups:mentor_groups_view" %}
+    {% breadcrumb group.name "groups:set_quiz_for_group" group.pk %}
+    <div style="color: blue">
+    {% render_breadcrumbs %}
+    </div>
+  {% endblock breadcrumbs%}
+
+{% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+            <a {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message }}</a>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+<h1>Set quiz for "{{ group.name }}"</h1>
+<div class="container">
+    <form method="post">{% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary; float-left"
+                style="margin-right: 10px; background-color: cornflowerblue">
+            Set Date
+        </button>
+    </form>
+    <a class="btn btn-secondary" title="Back to groups list"
+       href="{% url 'groups:mentor_groups_view' %}">Cancel</a>
+</div>
+
+
+
+{% endblock content %}

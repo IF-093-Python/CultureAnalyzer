@@ -16,5 +16,7 @@ urlpatterns = [
          name='mentor_group_update'),
     path('group/add/<int:pk>/', MentorGroupAdd.as_view(),
          name='mentor_group_add'),
+    path('group/set_quiz/<int:pk>/',SetQuizForGroupView.as_view(),
+         name='set_quiz_for_group'),
 
 ]

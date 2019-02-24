@@ -7,14 +7,18 @@
   <div class="container h-50">
     <div class="row h-100 align-items-center justify-content-center text-center">
       <div class="col-lg-10 align-self-end">
-        <h1 class="text-uppercase font-weight-bold">{{quiz.title}}</h1>
-        <hr class="divider my-4">
+        <h1 class="text-uppercase font-weight-bold">{{quiz.quiz.title}}</h1>
       </div>
-      <div class="col-lg-8 align-self-baseline">
-        <p class="text-white-75 font-weight-light mb-5">{{quiz.description}}</p>
-        <a class="btn btn-primary btn-xl js-scroll-trigger"
-           href="{% url 'test_player:test_player' quiz_id=quiz.id question_number=1%}">Start</a>
+        <div class="col-lg-3 align-self-baseline">
+            <p class="text-white-25 font-weight-light mb-3">{{quiz.quiz.description}}</p>
+            <span>Quiz starts at: <br> {{quiz.begin}} <br>
+                         Ends at: <br> {{ quiz.end }}</span>
+            <br><br>
+            <a class="btn btn-primary btn-xl js-scroll-trigger"
+            href="{% url 'test_player:test_player' quiz_id=quiz.quiz.id question_number=1%}">Start</a>
+            <hr class="divider">
       </div>
+
     </div>
   </div>
   {% endfor %}
