@@ -14,7 +14,8 @@ class GroupCreateForm(forms.ModelForm):
 
 class GroupUpdateForm(forms.ModelForm):
     user = forms.ModelMultipleChoiceField(
-        label='Users in group:',queryset=CustomUser.objects.all(),required=False)
+        label='Users in group:',
+        queryset=CustomUser.objects.all(), required=False)
 
     class Meta:
         model = Group

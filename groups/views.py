@@ -58,8 +58,7 @@ class CreateGroupView(generic.CreateView, LoginRequiredMixin,
         return context
 
     def get_queryset(self):
-        result = CustomUser.objects.all().filter(is_active=True). \
-            filter(is_staff=True).\
+        result = CustomUser.objects.filter(is_active=True, is_staff=True). \
             order_by('last_name')
         if self.request.GET.get('data_search'):
             result = result.filter(
@@ -96,12 +95,12 @@ class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
         concatenates them with unchecked mentors, so that
         checked mentors are always first in list"""
         checked_mentors = CustomUser.objects.filter(
-            mentor_in_group=self.kwargs['pk']).\
-            filter(is_active=True).order_by('last_name')
+            is_active=True, mentor_in_group=self.kwargs['pk']). \
+            order_by('last_name')
         self.__checked_mentors = checked_mentors
-        mentors = CustomUser.objects.filter(is_active=True).exclude(
-            mentor_in_group=self.kwargs['pk']). \
-            filter(is_staff=True).order_by('last_name')
+        mentors = CustomUser.objects.filter(is_active=True, is_staff=True). \
+            exclude(mentor_in_group=self.kwargs['pk']). \
+            order_by('last_name')
         if self.request.GET.get('data_search'):
             mentors = mentors.filter(
                 last_name__contains=self.request.GET.get('data_search'))
@@ -177,12 +176,12 @@ class MentorGroupUpdate(generic.UpdateView, SuccessMessageMixin,
 
     def test_func(self):
         """If user in not mentor of this group rises 403 exception"""
-        return Group.objects.filter(pk=self.kwargs['pk']).\
-            filter(mentor__id=self.request.user.pk).exists()
+        return Group.objects.filter(
+            pk=self.kwargs['pk'], mentor__id=self.request.user.pk).exists()
 
     def get_queryset(self):
-        result = CustomUser.objects.filter(is_active=True). \
-            filter(user_in_group=self.kwargs['pk']). \
+        result = CustomUser.objects.\
+            filter(is_active=True, user_in_group=self.kwargs['pk']). \
             order_by('last_name')
         self.__users_in_group = result
         if self.request.GET.get('data_search'):
@@ -222,15 +221,14 @@ class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
 
     def test_func(self):
         """If user in not mentor of this group rises 403 exception"""
-        return Group.objects.filter(pk=self.kwargs['pk']).\
-            filter(mentor__id=self.request.user.pk).exists()
+        return Group.objects.filter(
+            pk=self.kwargs['pk'],mentor__id=self.request.user.pk).exists()
 
     def get_queryset(self):
         """Gets all Trainee users that are not in groups and
         makes search in their last_name if needed"""
-        result = CustomUser.objects.filter(is_staff=False).\
+        result = CustomUser.objects.filter(is_active=True, is_staff=False).\
             exclude(user_in_group=self.kwargs['pk']).\
-            filter(is_active=True).\
             order_by('last_name')
         if self.request.GET.get('data_search'):
             result = result.filter(
@@ -246,8 +244,8 @@ class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
     def form_valid(self, form):
         """Gets users that are already in group and adds to users
         that where checked in form for adding to group"""
-        users_in_group = CustomUser.objects.filter(is_active=True).\
-            filter(user_in_group=self.kwargs['pk'])
+        users_in_group = CustomUser.objects.\
+            filter(is_active=True, user_in_group=self.kwargs['pk'])
         if not form.cleaned_data['user']:
             return redirect('groups:mentor_group_update',
                             pk=self.kwargs['pk'])
