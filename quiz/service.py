@@ -152,7 +152,3 @@ def get_feedback(indicator_obj, dict_result, indicator_name):
         indicators_feedbacks[indicator_name[val]] = indicator_feedback
     return indicators_feedbacks
 
-
-@register.filter(name='zip')
-def zip_list(a, b):
-    return zip(a, b)

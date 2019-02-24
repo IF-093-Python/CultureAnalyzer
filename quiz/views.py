@@ -3,6 +3,7 @@ import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin, \
     PermissionRequiredMixin
+from django.contrib.auth.models import User, AbstractUser
 from django.shortcuts import get_object_or_404
 from django.db.models import Count, Q
 from django.urls import reverse_lazy
@@ -15,6 +16,7 @@ from tutors.models import Questions
 from indicators.models import CountryIndicator
 from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
 from groups.models import Group
+from users.models import CustomUser
 
 
 class QuizzesList(LoginRequiredMixin, PermissionRequiredMixin,
@@ -102,8 +104,15 @@ class ResultsListView(LoginRequiredMixin, PermissionRequiredMixin,
     permission_required = 'view_results'
 
     def get_queryset(self):
-        results = Results.objects.filter(user=self.request.user)
+        results = Results.objects.filter(user=self.kwargs['user_id'])
         return results
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['current'] = get_object_or_404(CustomUser, pk=self.kwargs[
+            'user_id'])
+        context['back'] = self.request.META['HTTP_REFERER']
+        return context
 
 
 class CurrentResultView(LoginRequiredMixin, PermissionRequiredMixin,
@@ -141,8 +150,10 @@ class CurrentResultView(LoginRequiredMixin, PermissionRequiredMixin,
             context['name'] = self.kwargs['group']
         else:
             context['result'] = list(get_final_result(
-                self.request.user, self.kwargs['pk']).values())
-            context['name'] = self.request.user
+                get_object_or_404(CustomUser, username=self.kwargs[
+                    'current_user']),
+                self.kwargs['pk']).values())
+            context['name'] = self.kwargs['current_user']
         context['country_indicators'] = CountryIndicator.objects.all()
         context['indicator_name'] = ['pdi', 'idv', 'mas', 'uai', 'lto', 'ivr']
         return context
