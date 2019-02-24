@@ -1,5 +1,6 @@
 from itertools import chain
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, \
+    UserPassesTestMixin, PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -14,15 +15,16 @@ from CultureAnalyzer.view import SafePaginationListView
 PAGINATOR = 10
 
 
-
-class GroupsList(LoginRequiredMixin, SafePaginationListView):
-    """Makes list of all groups with number of mentors in each group"""
+class GroupsList(LoginRequiredMixin, PermissionRequiredMixin,
+                 SafePaginationListView):
+    '''Makes list of all groups with number of mentors in each group'''
     model = Group
     ordering = ('name')
     template_name = 'groups/groups_list.html'
     __search = False
     __search_label = 'Search'
     paginate_by = PAGINATOR
+    permission_required = 'groups.view_group'
 
     def get_context_data(self, **kwargs):
         context = super(GroupsList, self).get_context_data(**kwargs)
@@ -40,9 +42,8 @@ class GroupsList(LoginRequiredMixin, SafePaginationListView):
         return result
 
 
-
 class CreateGroupView(generic.CreateView, LoginRequiredMixin,
-                       SafePaginationListView):
+                      PermissionRequiredMixin, SafePaginationListView):
     model = Group
     form_class = GroupCreateForm
     template_name = 'groups/group_create.html'
@@ -50,6 +51,7 @@ class CreateGroupView(generic.CreateView, LoginRequiredMixin,
     __search = False
     __search_label = 'Search'
     paginate_by = PAGINATOR
+    permission_required = 'groups.add_group'
 
     def get_context_data(self, **kwargs):
         context = super(CreateGroupView, self).get_context_data(**kwargs)
@@ -68,9 +70,9 @@ class CreateGroupView(generic.CreateView, LoginRequiredMixin,
         return result
 
 
-
 class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
-                      LoginRequiredMixin, SafePaginationListView):
+                      LoginRequiredMixin, PermissionRequiredMixin,
+                      SafePaginationListView):
     form_class = GroupCreateForm
     template_name = 'groups/group_update.html'
     success_message = "Group was updated successfully"
@@ -78,10 +80,11 @@ class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
     __search_label = 'Search'
     __checked_mentors = None
     paginate_by = PAGINATOR
+    permission_required = 'groups.change_group'
 
     def get_success_url(self):
         pk = self.kwargs['pk']
-        return reverse('groups:update-group', kwargs={'pk':pk})
+        return reverse('groups:update-group', kwargs={'pk': pk})
 
     def get_context_data(self, **kwargs):
         context = super(UpdateGroupView, self).get_context_data(**kwargs)
@@ -117,13 +120,13 @@ class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
         return context
 
 
-
-class DeleteGroupView(LoginRequiredMixin, generic.DeleteView):
+class DeleteGroupView(LoginRequiredMixin, PermissionRequiredMixin,
+                      generic.DeleteView):
     model = Group
     context_object_name = 'group'
     template_name = 'groups/group_delete.html'
     success_url = reverse_lazy('groups:groups-list')
-
+    permission_required = 'groups.delete_group'
 
 
 class MentorGroupsView(LoginRequiredMixin, SafePaginationListView):
@@ -140,7 +143,7 @@ class MentorGroupsView(LoginRequiredMixin, SafePaginationListView):
         return context
 
     def get_queryset(self):
-        result = Group.objects.filter(mentor__id=self.request.user.pk).\
+        result = Group.objects.filter(mentor__id=self.request.user.pk). \
             annotate(total=Count('user')).order_by('name')
         if self.request.GET.get('data_search'):
             result = result.filter(
@@ -148,7 +151,6 @@ class MentorGroupsView(LoginRequiredMixin, SafePaginationListView):
             self.__search = True
             self.__search_label = self.request.GET.get('data_search')
         return result
-
 
 
 class MentorGroupUpdate(generic.UpdateView, SuccessMessageMixin,
@@ -165,7 +167,7 @@ class MentorGroupUpdate(generic.UpdateView, SuccessMessageMixin,
 
     def get_success_url(self):
         pk = self.kwargs['pk']
-        return reverse('groups:mentor_group_update', kwargs={'pk':pk})
+        return reverse('groups:mentor_group_update', kwargs={'pk': pk})
 
     def get_context_data(self, **kwargs):
         context = super(MentorGroupUpdate, self).get_context_data(**kwargs)
@@ -196,7 +198,6 @@ class MentorGroupUpdate(generic.UpdateView, SuccessMessageMixin,
         return context
 
 
-
 class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
                      LoginRequiredMixin, UserPassesTestMixin,
                      SafePaginationListView):
@@ -211,7 +212,7 @@ class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
 
     def get_success_url(self):
         pk = self.kwargs['pk']
-        return reverse('groups:mentor_group_update', kwargs={'pk':pk})
+        return reverse('groups:mentor_group_update', kwargs={'pk': pk})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -222,13 +223,13 @@ class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
     def test_func(self):
         """If user in not mentor of this group rises 403 exception"""
         return Group.objects.filter(
-            pk=self.kwargs['pk'],mentor__id=self.request.user.pk).exists()
+            pk=self.kwargs['pk'], mentor__id=self.request.user.pk).exists()
 
     def get_queryset(self):
         """Gets all Trainee users that are not in groups and
         makes search in their last_name if needed"""
-        result = CustomUser.objects.filter(is_active=True, is_staff=False).\
-            exclude(user_in_group=self.kwargs['pk']).\
+        result = CustomUser.objects.filter(is_active=True, is_staff=False). \
+            exclude(user_in_group=self.kwargs['pk']). \
             order_by('last_name')
         if self.request.GET.get('data_search'):
             result = result.filter(

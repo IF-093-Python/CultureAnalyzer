@@ -1,7 +1,8 @@
 import ast
 import json
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, \
+    PermissionRequiredMixin
 from django.contrib.auth.models import User, AbstractUser
 from django.shortcuts import get_object_or_404
 from django.db.models import Count, Q
@@ -18,11 +19,13 @@ from groups.models import Group
 from users.models import CustomUser
 
 
-class QuizzesList(LoginRequiredMixin, generic.ListView):
+class QuizzesList(LoginRequiredMixin, PermissionRequiredMixin,
+                  generic.ListView):
     model = Quizzes
     context_object_name = 'quizzes'
     template_name = 'quiz/quizzes_list.html'
     paginate_by = 2
+    permission_required = 'view_quizzes'
 
     def get_queryset(self):
         quizzes = Quizzes.objects.all().order_by('title')
@@ -38,18 +41,22 @@ class QuizzesList(LoginRequiredMixin, generic.ListView):
         return context
 
 
-class CreateQuizView(LoginRequiredMixin, generic.CreateView):
+class CreateQuizView(LoginRequiredMixin, PermissionRequiredMixin,
+                     generic.CreateView):
     model = Quizzes
     template_name = 'quiz/quiz_create.html'
     form_class = QuizCreateForm
     success_url = reverse_lazy('quiz:quizzes-list')
+    permission_required = 'add_quizzes'
 
 
-class QuizDetailView(LoginRequiredMixin, generic.ListView):
+class QuizDetailView(LoginRequiredMixin, PermissionRequiredMixin,
+                     generic.ListView):
     model = Questions
     context_object_name = 'questions'
     template_name = 'quiz/quiz_detail.html'
     paginate_by = ITEMS_ON_PAGE
+    permission_required = 'view_quizzes'
 
     def get_queryset(self):
         """
@@ -71,24 +78,30 @@ class QuizDetailView(LoginRequiredMixin, generic.ListView):
         return context
 
 
-class DeleteQuizView(LoginRequiredMixin, generic.DeleteView):
+class DeleteQuizView(LoginRequiredMixin, PermissionRequiredMixin,
+                     generic.DeleteView):
     model = Quizzes
     context_object_name = 'quiz'
     template_name = 'quiz/quiz_delete.html'
     success_url = reverse_lazy('quiz:quizzes-list')
+    permission_required = 'delete_quizzes'
 
 
-class UpdateQuizView(LoginRequiredMixin, generic.UpdateView):
+class UpdateQuizView(LoginRequiredMixin, PermissionRequiredMixin,
+                     generic.UpdateView):
     model = Quizzes
     form_class = QuizCreateForm
     template_name = 'quiz/quiz_update.html'
     success_url = reverse_lazy('quiz:quizzes-list')
+    permission_required = 'change_quizzes'
 
 
-class ResultsListView(LoginRequiredMixin, generic.ListView):
+class ResultsListView(LoginRequiredMixin, PermissionRequiredMixin,
+                      generic.ListView):
     model = Results
     template_name = 'quiz/result_list.html'
     context_object_name = 'results'
+    permission_required = 'view_results'
 
     def get_queryset(self):
         results = Results.objects.filter(user=self.kwargs['user_id'])
@@ -102,8 +115,10 @@ class ResultsListView(LoginRequiredMixin, generic.ListView):
         return context
 
 
-class CurrentResultView(LoginRequiredMixin, generic.TemplateView):
+class CurrentResultView(LoginRequiredMixin, PermissionRequiredMixin,
+                        generic.TemplateView):
     template_name = 'quiz/column_chart_from_result.html'
+    permission_required = 'view_results'
 
     def post(self, request, **kwargs):
         context = self.get_context_data()

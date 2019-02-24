@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col-md-6">
+                <ul class="user_list">
+                <h1>Group List</h1><br>
+                <a class="btn btn-default"
+                               href="{% url 'group_perm-create' %}" role="button"><span
+                                    class="btn btn-success">Create Group</span></a>
+                    {% for user in group %}
+                        <li>{{ user.id }}. {{ user.name }}
+                            <a class="btn btn-primary"
+                               href="{% url 'group_perm-update' user.id %}" role="button"><span
+                                    class="fas fa-edit"></span> </a>
+                            <a class="btn btn-danger"
+                               href="{% url 'group_perm-delete' user.id %}" role="button"><span
+                                    class="fas fa-trash-alt"></span></a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

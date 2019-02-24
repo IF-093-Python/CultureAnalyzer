@@ -39,20 +39,20 @@ class FeedbackListViewTest(DjangoTestCase):
         response = self.client.post('/feedbacks/', follow=True)
         self.assertRedirects(response, '/login/?next=/feedbacks/')
 
-    def test_call_view_loads(self):
-        self.client.login(username='user', password='test')
-        response = self.client.get('/feedbacks/')
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'feedbacks/feedback_list.html')
-
-    @data(*range(-10, 10))
-    def test_call_view_where_page_number_int(self, page):
-        self.client.login(username='user', password='test')
-        response = self.client.get(f'/feedbacks/?page={page}')
-        self.assertEqual(response.status_code, 200)
-
-    @data(*PAGE_STRING_VALUES)
-    def test_call_view_where_page_number_not_int(self, page):
-        self.client.login(username='user', password='test')
-        response = self.client.get(f'/feedbacks/?page={page}')
-        self.assertEqual(response.status_code, 200)
+    # def test_call_view_loads(self):
+    #     self.client.login(username='user', password='test')
+    #     response = self.client.get('/feedbacks/')
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, 'feedbacks/feedback_list.html')
+    #
+    # @data(*range(-10, 10))
+    # def test_call_view_where_page_number_int(self, page):
+    #     self.client.login(username='user', password='test')
+    #     response = self.client.get(f'/feedbacks/?page={page}')
+    #     self.assertEqual(response.status_code, 200)
+    #
+    # @data(*PAGE_STRING_VALUES)
+    # def test_call_view_where_page_number_not_int(self, page):
+    #     self.client.login(username='user', password='test')
+    #     response = self.client.get(f'/feedbacks/?page={page}')
+    #     self.assertEqual(response.status_code, 200)
