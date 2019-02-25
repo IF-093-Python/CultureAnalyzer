@@ -1,26 +1,25 @@
-from django.contrib.auth.models import User
+from django.contrib.postgres.fields import JSONField
 from django.db import models
-from django.urls import reverse
-# Create your models here.
-from django.db.models import SET_NULL, CASCADE
+from django.db.models import CASCADE
+from users.models import CustomUser
+
+TYPE_OF_QUIZ = (('Business', 'Business'), ('General', 'General'))
 
 
 class Quizzes(models.Model):
-
     title = models.CharField(max_length=100, null=False)
-    description = models.CharField(max_length=100, null=False)
-    numbers_of_questions = models.IntegerField(null=True)
+    description = models.TextField(null=False)
+    type_of_quiz = models.CharField(choices=TYPE_OF_QUIZ, max_length=20)
 
     def __str__(self):
         return self.title
 
 
 class Results(models.Model):
-    user = models.ForeignKey(User, on_delete=CASCADE, null=False)
+    user = models.ForeignKey(CustomUser, on_delete=CASCADE, null=False)
     quiz = models.ForeignKey(Quizzes, on_delete=CASCADE, null=False)
     pass_date = models.DateTimeField(null=False)
-    result = models.TextField('Description', null=False)
+    result = JSONField()
 
     def __str__(self):
-
         return self.user.username

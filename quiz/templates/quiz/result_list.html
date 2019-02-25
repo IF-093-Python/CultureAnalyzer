@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Your result{% endblock %}
+{% block content %}
+    <div class="border-bottom my-3 pb-1">
+    <h1>
+        <a class="btn btn-light" href="{{back}}">
+            <splan class="fas fa-chevron-left"></splan></a>
+        {{current.username}}
+    </h1>
+    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Test</th>
+            <th scope="col">Description</th>
+            <th>Pass date</th>
+            <th style="width: 15%">See more</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for result in results %}
+            <tr>
+                <td style="vertical-align: middle"><a
+                        href="{% url 'quiz:result-chart-user' pk=result.id current_user=current.username%}">
+                    {{result.quiz}}</a>
+                </td>
+                <td>{{ result.quiz.description }}</td>
+                <td>{{ result.pass_date }}</td>
+                <td class="d-flex justify-content-around">
+                    <a style="min-width: 40%" class="btn btn-primary"
+                       href="{% url 'quiz:result-chart-user' pk=result.id current_user=current.username%}">
+                        <em class="fa fa-eye"></em></a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td>No results yet.</td>
+                <caption>
+                    <a href="{% url 'test_player:start_test' %}"
+                       class="btn btn-primary">Pass first test</a>
+                </caption>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

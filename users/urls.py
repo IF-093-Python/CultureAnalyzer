@@ -1,15 +1,19 @@
 from django.contrib.auth import views as auth_views
 from django.urls import path, re_path
+from django.views.generic import TemplateView
 
 from . import views
 from .forms import UserLoginForm
-from .views import UserRegisterView
+from .views import UserRegisterView, ListGroups, UpdateGroups, DeleteGroups, \
+    CreateGroup
 
 __all__ = ['urlpatterns']
 
 urlpatterns = [
-    path('', views.index, name='home'),
+    path('', TemplateView.as_view(template_name='users/index.html'),
+         name='home'),
     path('register/', UserRegisterView.as_view(), name='register'),
+    path('admin_page/', views.AdminListView.as_view(), name='admin'),
     path('login/', views.LoginView.as_view(
         template_name='users/login.html', authentication_form=UserLoginForm),
          name='login'),
@@ -32,5 +36,14 @@ urlpatterns = [
         name='password_reset_confirm'),
     path('login/reset/done/', auth_views.PasswordResetCompleteView.as_view(
         template_name='users/password_reset_complete.html'),
-         name='password_reset_complete')
-]
+         name='password_reset_complete'),
+    path('admin_page/update/<int:pk>', views.ProfileUpdateView.as_view(),
+         name='change-profile'),
+
+    path('group_page/', ListGroups.as_view(), name='group_perm-list'),
+    path('update_group/<int:pk>', UpdateGroups.as_view(),
+         name='group_perm-update'),
+    path('delete_group/<int:pk>', DeleteGroups.as_view(),
+         name='group_perm-delete'),
+    path('create_group', CreateGroup.as_view(), name='group_perm-create'),
+    ]

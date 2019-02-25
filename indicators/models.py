@@ -1,8 +1,8 @@
 import re
 
-from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.validators import RegexValidator
+from django.db import models
 
 __all__ = ['CountryIndicator', 'IndicatorField']
 
@@ -19,7 +19,7 @@ class CountryIndicator(models.Model):
                                 validators=[RegexValidator(_RE_ISO_CODE)])
     name = models.CharField(max_length=200, unique=True)
     pdi = IndicatorField(verbose_name='PDI')
-    ind = IndicatorField(verbose_name='IND')
+    idv = IndicatorField(verbose_name='IDV')
     mas = IndicatorField(verbose_name='MAS')
     uai = IndicatorField(verbose_name='UAI')
     lto = IndicatorField(verbose_name='LTO')
@@ -32,3 +32,14 @@ class CountryIndicator(models.Model):
 
     def __str__(self):
         return f'{self.name[:MAX_FIELD_REPRESENTATION]} - {self.iso_code}'
+
+    @property
+    def get_indicators(self):
+        # country_values = [self.pdi, self.ind, self.mas, self.uai, self.lto,
+        #                   self.ivr]
+        country_values = {
+            self.iso_code: [self.pdi, self.idv, self.mas, self.uai, self.lto,
+                            self.ivr]}
+        # country_values = {'pdi': self.pdi, 'ind': self.ind, 'mas': self.mas,
+        #                   'uai': self.uai, 'lto': self.lto, 'ivr': self.ivr}
+        return dict(country_values)
