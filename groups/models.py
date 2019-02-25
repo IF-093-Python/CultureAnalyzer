@@ -3,7 +3,7 @@ from django.db import models
 from users.models import CustomUser
 from quiz.models import Quizzes
 
-__all__ = ['Group','DateOfQuiz',]
+__all__ = ['Group', 'DateOfQuiz', ]
 
 
 class Group(models.Model):
@@ -16,7 +16,6 @@ class Group(models.Model):
 
     def __str__(self):
         return f'{self.name}'
-
 
 
 class DateOfQuiz(models.Model):

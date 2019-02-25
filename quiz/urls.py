@@ -20,7 +20,7 @@ urlpatterns = [
     re_path('^column_chart/(?P<pk>\\d+)/', include([
         path('', CurrentResultView.as_view(), name='result-chart'),
         re_path('^group=(?P<group>\\w+[\\s,-]*\\w*)/$',
-                CurrentResultView.as_view(),name='result-chart-group'),
+                CurrentResultView.as_view(), name='result-chart-group'),
         re_path('^user=(?P<user>\\w+[\\s,-]*\\w*)/$',
                 CurrentResultView.as_view(), name='result-chart-user'),
         ])),
