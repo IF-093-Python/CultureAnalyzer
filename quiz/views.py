@@ -159,5 +159,4 @@ class CurrentResultView(PermissionRequiredMixin, UserPassesTestMixin,
             return Group.objects.filter(
                 pk=self.kwargs['pk'], mentor__id=self.request.user.pk).exists()
         else:
-            condition = (self.kwargs['pk'] == self.request.user.pk)
-            return condition
+            return self.kwargs['current_user'] == self.request.user.username
