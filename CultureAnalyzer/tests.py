@@ -6,4 +6,5 @@ class CustomTestRunner(DiscoverRunner):
     def setup_databases(self, **kwargs):
         databases = super().setup_databases(**kwargs)
         call_command("loaddata", "users/fixtures/fixtures.json")
+        call_command("loaddata", "users/fixtures/fixtures_groups.json")
         return databases
