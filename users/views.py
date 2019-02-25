@@ -64,25 +64,33 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return bool(self.request.user == current_user)
 
 
-class PasswordChangeView(UpdateView):
+class PasswordChangeView(UserPassesTestMixin, UpdateView):
     template_name = 'users/password_change.html'
     form_class = PasswordChangeForm
     success_url = '/'
-
-    def get_object(self, queryset=None):
-        return self.request.user
+    model = CustomUser
 
     def get_form_kwargs(self):
         kwargs = super(PasswordChangeView, self).get_form_kwargs()
         kwargs['user'] = kwargs.pop('instance')
         return kwargs
 
+    def test_func(self):
+        """
+        this func check that the user which want
+        to delete the post should be author of this post
+        """
+        current_user = self.get_object()
 
-class AdminListView(LoginRequiredMixin, SafePaginationListView):
+        return bool(self.request.user == current_user)
+
+
+class AdminListView(LoginRequiredMixin, PermissionRequiredMixin, SafePaginationListView):
     model = CustomUser
     template_name = 'users/admin_page.html'
     context_object_name = 'users'
     paginate_by = ITEMS_ON_PAGE
+    permission_required = 'users.view_customuser'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(AdminListView, self).get_context_data(**kwargs)
@@ -93,11 +101,12 @@ class AdminListView(LoginRequiredMixin, SafePaginationListView):
         return admin_search(self.request).qs
 
 
-class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+class ProfileUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'users/user_detail.html'
     form_class = BlockUserForm
     model = CustomUser
     success_url = '/admin_page'
+    permission_required = 'users.change_customuser'
 
 
 class ListGroups(LoginRequiredMixin, PermissionRequiredMixin, ListView):

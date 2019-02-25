@@ -16,6 +16,7 @@ def admin_search(request):
     """Admin can see all users except other admins
     if admin is superuser he can see all users (even admins) except himself
     """
+
     users_in_view = CustomUser.objects.exclude(is_superuser=True)
 
     if request.user.id == SUPER_USER_ID:
