@@ -85,7 +85,8 @@ class PasswordChangeView(UserPassesTestMixin, UpdateView):
         return bool(self.request.user == current_user)
 
 
-class AdminListView(LoginRequiredMixin, PermissionRequiredMixin, SafePaginationListView):
+class AdminListView(LoginRequiredMixin, PermissionRequiredMixin,
+                    SafePaginationListView):
     model = CustomUser
     template_name = 'users/admin_page.html'
     context_object_name = 'users'
@@ -95,14 +96,14 @@ class AdminListView(LoginRequiredMixin, PermissionRequiredMixin, SafePaginationL
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(AdminListView, self).get_context_data(**kwargs)
         context['form'] = admin_search(self.request).form
-        print(context)
         return context
 
     def get_queryset(self):
         return admin_search(self.request).qs
 
 
-class ProfileUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class ProfileUpdateView(LoginRequiredMixin, PermissionRequiredMixin,
+                        UpdateView):
     template_name = 'users/user_detail.html'
     form_class = BlockUserForm
     model = CustomUser
