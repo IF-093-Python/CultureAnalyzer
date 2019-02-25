@@ -1,7 +1,7 @@
 import ast
 import json
 
-from django.contrib.auth.mixins import LoginRequiredMixin, \
+from django.contrib.auth.mixins import UserPassesTestMixin, \
     PermissionRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.db.models import Count, Q
@@ -18,7 +18,7 @@ from groups.models import Group
 from users.models import CustomUser
 
 
-class QuizzesList(LoginRequiredMixin, PermissionRequiredMixin,
+class QuizzesList(PermissionRequiredMixin,
                   generic.ListView):
     model = Quizzes
     context_object_name = 'quizzes'
@@ -40,8 +40,7 @@ class QuizzesList(LoginRequiredMixin, PermissionRequiredMixin,
         return context
 
 
-class CreateQuizView(LoginRequiredMixin, PermissionRequiredMixin,
-                     generic.CreateView):
+class CreateQuizView(PermissionRequiredMixin, generic.CreateView):
     model = Quizzes
     template_name = 'quiz/quiz_create.html'
     form_class = QuizCreateForm
@@ -49,8 +48,7 @@ class CreateQuizView(LoginRequiredMixin, PermissionRequiredMixin,
     permission_required = 'quiz.add_quizzes'
 
 
-class QuizDetailView(LoginRequiredMixin, PermissionRequiredMixin,
-                     generic.ListView):
+class QuizDetailView(PermissionRequiredMixin, generic.ListView):
     model = Questions
     context_object_name = 'questions'
     template_name = 'quiz/quiz_detail.html'
@@ -77,8 +75,7 @@ class QuizDetailView(LoginRequiredMixin, PermissionRequiredMixin,
         return context
 
 
-class DeleteQuizView(LoginRequiredMixin, PermissionRequiredMixin,
-                     generic.DeleteView):
+class DeleteQuizView(PermissionRequiredMixin, generic.DeleteView):
     model = Quizzes
     context_object_name = 'quiz'
     template_name = 'quiz/quiz_delete.html'
@@ -86,8 +83,7 @@ class DeleteQuizView(LoginRequiredMixin, PermissionRequiredMixin,
     permission_required = 'quiz.delete_quizzes'
 
 
-class UpdateQuizView(LoginRequiredMixin, PermissionRequiredMixin,
-                     generic.UpdateView):
+class UpdateQuizView(PermissionRequiredMixin, generic.UpdateView):
     model = Quizzes
     form_class = QuizCreateForm
     template_name = 'quiz/quiz_update.html'
@@ -95,8 +91,7 @@ class UpdateQuizView(LoginRequiredMixin, PermissionRequiredMixin,
     permission_required = 'quiz.change_quizzes'
 
 
-class ResultsListView(LoginRequiredMixin, PermissionRequiredMixin,
-                      generic.ListView):
+class ResultsListView(PermissionRequiredMixin, generic.ListView):
     model = Results
     template_name = 'quiz/result_list.html'
     context_object_name = 'results'
@@ -114,7 +109,7 @@ class ResultsListView(LoginRequiredMixin, PermissionRequiredMixin,
         return context
 
 
-class CurrentResultView(LoginRequiredMixin, PermissionRequiredMixin,
+class CurrentResultView(PermissionRequiredMixin, UserPassesTestMixin,
                         generic.TemplateView):
     template_name = 'quiz/column_chart_from_result.html'
     permission_required = 'quiz.view_results'
@@ -156,3 +151,13 @@ class CurrentResultView(LoginRequiredMixin, PermissionRequiredMixin,
         context['country_indicators'] = CountryIndicator.objects.all()
         context['indicator_name'] = ['pdi', 'idv', 'mas', 'uai', 'lto', 'ivr']
         return context
+
+    def test_func(self):
+        """If user in not mentor of group and if group exists
+        or if user typed another id -- rises 403 exception"""
+        if self.kwargs.get('group'):
+            return Group.objects.filter(
+                pk=self.kwargs['pk'], mentor__id=self.request.user.pk).exists()
+        else:
+            condition = (self.kwargs['pk'] == self.request.user.pk)
+            return condition

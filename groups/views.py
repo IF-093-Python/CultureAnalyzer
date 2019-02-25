@@ -78,6 +78,7 @@ class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
     __search_label = 'Search'
     __checked_mentors = None
     paginate_by = PAGINATOR
+    permission_required = 'groups.add_group'
     permission_required = 'groups.change_group'
 
     def get_success_url(self):
@@ -127,12 +128,13 @@ class DeleteGroupView(PermissionRequiredMixin, generic.DeleteView):
     permission_required = 'groups.delete_group'
 
 
-class MentorGroupsView(SafePaginationListView):
+class MentorGroupsView(PermissionRequiredMixin, SafePaginationListView):
     model = Group
     template_name = 'groups/mentor_groups_list.html'
     __search = False
     __search_label = 'Search'
     paginate_by = PAGINATOR
+    permission_required = 'groups.change_group'
 
     def get_context_data(self, **kwargs):
         context = super(MentorGroupsView, self).get_context_data(**kwargs)
