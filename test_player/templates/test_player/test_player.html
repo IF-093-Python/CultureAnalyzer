@@ -14,14 +14,14 @@
                     <h5 class="text-dark font-weight-bold"><b>Question {{ current_question.question_number }}:</b></h5>
                     <h4 class="text-justify text-dark">{{ current_question.question_text }}</h4>
                     <div class="lead  text-justify text-dark ">
-                        {{ form }}
+                        {{ form.as_p }}
                     </div>
                     <input type='Submit'
-                           class="btn btn-primary {% if current_question.question_number == 1 %}disabled{% endif %}"
+                           class="btn btn-blue {% if current_question.question_number == 1 %}disabled{% endif %}"
                            name="prev"
                            value="Previous question">
                     <input type='Submit'
-                           class="btn btn-primary {% if current_question.question_number == questions.count %}disabled{% endif %} "
+                           class="btn btn-blue {% if current_question.question_number == questions.count %}disabled{% endif %} "
                            name="next_to"
                            value="Next question">
                 </div>
@@ -31,6 +31,7 @@
 
                 <p>Quiz navigation</p>
                 {% if questions %}
+                <div class="d-flex justify-content-between flex-wrap">
                     {% for question in questions %}
 
                         <input type='Submit'
@@ -39,6 +40,7 @@
                                value="{{ question.question_number }}">
 
                     {% endfor %}
+                </div>
                     <br>
 
                     <!-- Button trigger modal -->

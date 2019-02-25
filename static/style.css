@@ -94,6 +94,15 @@ a.contact_us, a.contact_us:hover {
     transition: all 0.3s;
 }
 
+hr {
+    color: #F5F5F5;
+    background-color: #f5f5f5;
+}
+
+li {
+    list-style-type: none;
+}
+
 /* -------------------------------------
     Login Page
  */
@@ -209,4 +218,8 @@ table.table-hover > tbody > tr > *  {
 
 .btn-blue:hover {
     background-color: rgb(29, 60, 92);
+}
+
+.btn-navigation {
+    width: 4rem;
 }
