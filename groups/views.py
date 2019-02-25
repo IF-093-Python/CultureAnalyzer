@@ -15,7 +15,7 @@ from CultureAnalyzer.view import SafePaginationListView
 PAGINATOR = 10
 
 
-class GroupsList(LoginRequiredMixin, PermissionRequiredMixin,
+class GroupsList(PermissionRequiredMixin,
                  SafePaginationListView):
     """Makes list of all groups with number of mentors in each group"""
     model = Group
