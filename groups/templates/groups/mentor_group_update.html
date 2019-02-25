@@ -5,124 +5,120 @@
 {% load cool_paginate %}
 
 {% block content %}
-    {% block breadcrumbs %}
-        {% breadcrumb "Home" "/" %}
-        {% breadcrumb "Groups" "groups:mentor_groups_view" %}
-        {% breadcrumb group.name "groups:mentor_group_update" group.pk %}
-        <div style="color: blue">
-            {% render_breadcrumbs %}
-        </div>
-    {% endblock %}
+  {% block breadcrumbs %}
+    {% breadcrumb "Home" "/" %}
+    {% breadcrumb "Groups" "groups:mentor_groups_view" %}
+    {% breadcrumb group.name "groups:mentor_group_update" group.pk %}
+    <div style="color: blue">
+    {% render_breadcrumbs %}
+    </div>
+  {% endblock %}
 
-    {% if messages %}
-        <ul class="messages">
+        {% if messages %}
+          <ul class="messages">
             {% for message in messages %}
-                <a {% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                    {{ message }}</a>
+            <a {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message }}</a>
             {% endfor %}
-        </ul>
-    {% endif %}
+          </ul>
+        {% endif %}
     <h1>Update group "{{ group.name }}"</h1>
 
-    <div class="container-fluid bg-1 main col-md-10">
+        <div class="container-fluid bg-1 main col-md-10">
         <div class="float-right">
-            <form class="form-inline my-2 my-lg-0" method="get" action="">
-                <input class="form-control mr-sm-2" type="search"
-                       placeholder="{{ search_label }}" aria-label="Search"
-                       name="data_search">
-                <div class="btn-toolbar">
-                    <button class="btn btn-outline-success my-2 my-sm-0"
-                            style="margin-right: 10px;" type="submit">Search
-                    </button>
-                    <a class="btn btn-outline-danger my-2 my-sm-0"
-                       href={% url 'groups:mentor_group_update' group.pk %}>Clear</a>
-                </div>
-                <br>
-            </form>
-        </div>
+    <form class="form-inline my-2 my-lg-0" method="get" action="">
+      <input class="form-control mr-sm-2" type="search"
+             placeholder="{{ search_label }}" aria-label="Search"
+             name="data_search">
+      <div class="btn-toolbar">
+        <button class="btn btn-outline-success my-2 my-sm-0"
+                style="margin-right: 10px;" type="submit">Search</button>
+        <a class="btn btn-outline-danger my-2 my-sm-0"
+           href ={% url 'groups:mentor_group_update' group.pk%}>Clear</a>
+      </div>
+      <br>
+    </form>
+  </div>
         <br>
         {% if not object_list %}
-            <a class="btn btn-danger" title="Back to all groups"
+        <a class="btn btn-danger" title="Back to all groups"
                href="{% url 'groups:mentor_groups_view' %}">&#8630; Back</a>
-            <a class="btn btn-success" title="Add user to group"
+        <a class="btn btn-success" title="Add user to group"
                href="{% url 'groups:mentor_group_add' group.pk %}">&#10010; Add</a>
         {% endif %}
-        {% block users %}
+            {% block users %}
 
             {% if object_list %}
-                <table class="table table-hover table-striped table-bordered table-sm">
-                <thead class="thead-light">
-                <tr>
-                    <th style="width: 1%"></th>
-                    <th>Name</th>
-                    <th style="text-align: center; width: 1%">Photo</th>
-                </tr>
-                </thead>
-                <tbody>
-                <form method="post">
-                    {% csrf_token %}
-                    <a class="btn btn-danger" title="Back to all groups"
-                       href="{% url 'groups:mentor_groups_view' %}">&#8630; Back</a>
-                    <button type="submit" class="btn btn-primary"
-                            style="margin-left: 4px;margin-right: 4px;
-            background-color: cornflowerblue">Update group
-                    </button>
-                    <a class="btn btn-success" title="Add user to group"
-                       href="{% url 'groups:mentor_group_add' group.pk %}">&#10010; Add</a>
-                    <br>
-                    <br>
-                    {% if search %}
-                        <b>Search results for "{{ search_label }}":</b>
-                    {% else %}
-                        <b>Users:</b>
-                    {% endif %}
+<table class="table table-hover table-striped table-bordered table-sm">
+    <thead class="thead-light">
+      <tr>
+          <th style="width: 1%"> </th>
+          <th>Name</th>
+          <th style="text-align: center; width: 1%">Photo</th>
+      </tr>
+    </thead>
+    <tbody>
+  <form method="post">
+     {% csrf_token %}
+    <a class="btn btn-danger" title="Back to all groups"
+               href="{% url 'groups:mentor_groups_view' %}">&#8630; Back</a>
+    <button type="submit" class="btn btn-primary"
+            style="margin-left: 4px;margin-right: 4px;
+            background-color: cornflowerblue">Update group</button>
+    <a class="btn btn-success" title="Add user to group"
+       href="{% url 'groups:mentor_group_add' group.pk %}">&#10010; Add</a>
+        <br>
+        <br>
+        {% if search %}
+        <b>Search results for "{{ search_label }}":</b>
+        {% else %}
+        <b>Users:</b>
+        {% endif %}
 
-                    {% for user in users_in_group %}
-                        {% if user not in object_list %}
-                            <input type="checkbox" style="visibility: hidden"
-                                   name="user" value="{{ user.pk }}" checked>
-                        {% endif %}
-                    {% endfor %}
+        {% for user in users_in_group %}
+        {% if user not in object_list %}
+            <input type="checkbox" style="visibility: hidden"
+               name="user" value="{{ user.pk }}" checked>
+        {% endif %}
+        {% endfor %}
 
-                    {% for user in object_list %}
-                        <tr>
+        {% for user in object_list %}
+      <tr>
         <td class="align-middle">
-                                <input type="checkbox" name="user" value="{{ user.pk }}" checked>
-                            </td>
+            <input type="checkbox" name="user" value="{{ user.pk }}" checked>
+        </td>
       <td class="align-middle">
-      <td><a href="{% url 'quiz:result-list' user.pk %}">
-                                {{ user.last_name }} {{ user.first_name }} ({{ user.username }})
-          </a>
-                            </td>
-                            <td>
-                                {% if user.image %}
-                                    <img src="{{ user.image.url }}" alt=""
-                                         class="circle_text" style="text-align: center">
-                                {% else %}
-                                    <img src="{% static 'default.png' %}" alt=""
-                                         class="circle_text" style="text-align: center">
-                                {% endif %}
-
-                            </td>
-                        </tr>
-                    {% endfor %}
-
-                </form>
-                <br>
+          {{ user.last_name }} {{ user.first_name }} ({{ user.username }})
+      </td>
+      <td>
+        {% if user.image %}
+              <img src="{{ user.image.url }}" alt=""
+                   class="circle_text" style="text-align: center">
             {% else %}
-                {% if search %}
-                    <p>There are no results that match your search.</p>
-                {% else %}
-                    <p>You have no students in this group yet.</p>
-                {% endif %}
+               <img src="{%static 'default.png'%}" alt=""
+                    class="circle_text" style="text-align: center">
             {% endif %}
 
+      </td>
+      </tr>
+    {% endfor %}
 
-        {% if is_paginated %}
-            {% cool_paginate page_obj=page_obj %}
+  </form>
+        <br>
+    {% else %}
+        {% if search %}
+            <p>There are no results that match your search.</p>
+        {% else %}
+            <p>You have no students in this group yet.</p>
         {% endif %}
-        </tbody>
-        </table>
-            </div>
-        {% endblock users %}
+    {% endif %}
+
+
+    {% if is_paginated %}
+        {% cool_paginate page_obj=page_obj %}
+    {% endif %}
+            </tbody>
+</table>
+        </div>
+    {% endblock users %}
 {% endblock content %}
