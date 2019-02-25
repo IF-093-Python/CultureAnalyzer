@@ -79,7 +79,6 @@ class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
     __checked_mentors = None
     paginate_by = PAGINATOR
     permission_required = 'groups.add_group'
-    permission_required = 'groups.change_group'
 
     def get_success_url(self):
         pk = self.kwargs['pk']
