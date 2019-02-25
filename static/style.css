@@ -221,5 +221,27 @@ table.table-hover > tbody > tr > *  {
 }
 
 .btn-navigation {
-    width: 4rem;
+    width: 2rem;
+}
+
+.bg-light-blue {
+    background-color: #17212B;
+    color: #F5F5F5;
+}
+
+.bg-dark-blue {
+    background-color: #0E1621;
+}
+
+.modal-backdrop {
+    position: static;
+}
+
+.modal-content > *{
+    border: none;
+}
+
+.close {
+    color: #fff; 
+    opacity: 1;
 }

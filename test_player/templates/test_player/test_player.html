@@ -10,10 +10,10 @@
         <div class="row">
             {% csrf_token %}
             <div class="col-md-10">
-                <div class="jumbotron">
-                    <h5 class="text-dark font-weight-bold"><b>Question {{ current_question.question_number }}:</b></h5>
-                    <h4 class="text-justify text-dark">{{ current_question.question_text }}</h4>
-                    <div class="lead  text-justify text-dark ">
+                <div class="jumbotron bg-light-blue">
+                    <h5 class="font-weight-bold"><b>Question {{ current_question.question_number }}:</b></h5>
+                    <h4 class="text-justify">{{ current_question.question_text }}</h4>
+                    <div class="lead  text-justify">
                         {{ form.as_p }}
                     </div>
                     <input type='Submit'
@@ -31,11 +31,11 @@
 
                 <p>Quiz navigation</p>
                 {% if questions %}
-                <div class="d-flex justify-content-between flex-wrap">
+                <div class="d-flex flex-wrap">
                     {% for question in questions %}
 
                         <input type='Submit'
-                               class="btn btn-navigation btn-sm {% if current_question.question_number == question.question_number %}btn-primary{% elif request.session|lookup:quiz_id|lookup:question.question_number %}btn-info{% else %}btn-outline-info{% endif %}"
+                               class="btn btn-navigation btn-sm m-1 {% if current_question.question_number == question.question_number %}btn-blue{% elif request.session|lookup:quiz_id|lookup:question.question_number %}btn-light{% else %}btn-outline-light{% endif %}"
                                name="next"
                                value="{{ question.question_number }}">
 
@@ -46,7 +46,7 @@
                     <!-- Button trigger modal -->
                     {% if questions %}
                         {% if is_can_be_finished %}
-                            <button type="button" class="btn btn-primary"
+                            <button type="button" class="btn btn-blue"
                                     data-toggle="modal" data-target="#exampleModalCenter"
                                     style="margin-top: 3px;">
                                 Finish quiz
@@ -59,10 +59,10 @@
                     <div class="modal fade" id="exampleModalCenter" tabindex="-1"
                          role="dialog"
                          aria-labelledby="exampleModalCenterTitle"
-                         aria-hidden="true">
+                         aria-hidden="true">    
                         <div class="modal-dialog modal-dialog-centered"
                              role="document">
-                            <div class="modal-content">
+                            <div class="modal-content bg-dark-blue">
                                 <div class="modal-header">
                                     <h5 class="modal-title"
                                         id="exampleModalLongTitle">Finishing
@@ -77,11 +77,11 @@
                                     Do you want to finish quiz?
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
+                                    <button type="button" class="btn btn-outline-light"
                                             data-dismiss="modal">Back
                                     </button>
                                     <button type="Submit" name="finish"
-                                            class="btn btn-primary">Submit finish
+                                            class="btn btn-blue">Submit finish
                                     </button>
                                 </div>
                             </div>
