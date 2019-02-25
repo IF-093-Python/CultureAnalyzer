@@ -72,8 +72,6 @@ class TestPlayer(FormView):
                 self.kwargs['question_number'])
         else:
             d_answer = None
-        print(self.kwargs)
-        print(dict(kwargs, answers=current_answers, default_choice=d_answer))
         return dict(kwargs, answers=current_answers, default_choice=d_answer)
 
     def form_valid(self, form):

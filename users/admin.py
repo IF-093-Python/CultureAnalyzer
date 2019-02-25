@@ -22,7 +22,6 @@ class CustomUserAdmin(UserAdmin):
 
     def role(self, instance):
         role=instance.profile.role.name
-        print(role)
         return role
 
     def get_inline_instances(self, request, obj=None):
