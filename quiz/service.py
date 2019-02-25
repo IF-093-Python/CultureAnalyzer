@@ -1,13 +1,12 @@
 import json
 from django.db.models import Q
-from django.template.defaultfilters import register
 
 from users.models import CustomUser
 from feedbacks.models import Feedback
 
 __all__ = ['get_constant', 'check_group_indicators', 'get_average_results',
            'get_indicators_values', 'get_groups_results', 'get_final_result',
-           'get_feedback', 'zip_list', ]
+           'get_feedback',]
 
 
 def get_constant(indicator_value):

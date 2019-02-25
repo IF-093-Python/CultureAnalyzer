@@ -11,6 +11,7 @@ __all__ = [
     'UserRegisterForm',
     'UserUpdateForm',
     'BlockUserForm',
+    'GroupForm',
     ]
 
 EDUCATION_CHOICES_EMPTY_LABEL = (('', '--------------'),) + EDUCATION_CHOICES
@@ -80,6 +81,10 @@ class BlockUserForm(forms.ModelForm):
 
 
 class GroupForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['permissions'].widget.attrs.update(size='10')
+
     class Meta:
         model = Group
         fields = ['name', 'permissions']

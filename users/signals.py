@@ -17,6 +17,9 @@ def add_group(sender, instance, created, **kwargs):
     then we add this instance into group
     """
     if created:
-        Group.objects.get(name='Trainee').user_set.add(instance)
+        if instance.is_superuser:
+            Group.objects.get(name='Admin').user_set.add(instance)
+        else:
+            Group.objects.get(name='Trainee').user_set.add(instance)
 
 

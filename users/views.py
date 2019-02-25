@@ -85,7 +85,8 @@ class PasswordChangeView(UserPassesTestMixin, UpdateView):
         return bool(self.request.user == current_user)
 
 
-class AdminListView(LoginRequiredMixin, PermissionRequiredMixin, SafePaginationListView):
+class AdminListView(LoginRequiredMixin, PermissionRequiredMixin,
+                    SafePaginationListView):
     model = CustomUser
     template_name = 'users/admin_page.html'
     context_object_name = 'users'
@@ -101,7 +102,8 @@ class AdminListView(LoginRequiredMixin, PermissionRequiredMixin, SafePaginationL
         return admin_search(self.request).qs
 
 
-class ProfileUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class ProfileUpdateView(LoginRequiredMixin, PermissionRequiredMixin,
+                        UpdateView):
     template_name = 'users/user_detail.html'
     form_class = BlockUserForm
     model = CustomUser
