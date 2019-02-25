@@ -14,15 +14,14 @@ class ProfileInline(admin.StackedInline):
 
 
 class CustomUserAdmin(UserAdmin):
-    inlines = (ProfileInline, )
+    inlines = (ProfileInline,)
     list_display = ('username', 'email', 'first_name', 'last_name',
                     'is_staff', 'role')
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
     list_select_related = ('profile',)
 
     def role(self, instance):
-        role=instance.profile.role.name
-        print(role)
+        role = instance.profile.role.name
         return role
 
     def get_inline_instances(self, request, obj=None):

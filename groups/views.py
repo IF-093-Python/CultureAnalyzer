@@ -17,9 +17,9 @@ PAGINATOR = 10
 
 class GroupsList(LoginRequiredMixin, PermissionRequiredMixin,
                  SafePaginationListView):
-    '''Makes list of all groups with number of mentors in each group'''
+    """Makes list of all groups with number of mentors in each group"""
     model = Group
-    ordering = ('name')
+    ordering = 'name'
     template_name = 'groups/groups_list.html'
     __search = False
     __search_label = 'Search'
@@ -162,6 +162,7 @@ class MentorGroupUpdate(generic.UpdateView, SuccessMessageMixin,
     success_message = "Group was updated successfully"
     __search = False
     __search_label = 'Search'
+    __users_in_group = None
     paginate_by = PAGINATOR
     raise_exception = True
 
