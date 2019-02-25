@@ -78,11 +78,13 @@ class PasswordChangeView(UpdateView):
         return kwargs
 
 
-class AdminListView(LoginRequiredMixin, SafePaginationListView):
+class AdminListView(LoginRequiredMixin, PermissionRequiredMixin,
+                    SafePaginationListView):
     model = CustomUser
     template_name = 'users/admin_page.html'
     context_object_name = 'users'
     paginate_by = ITEMS_ON_PAGE
+    permission_required = 'users.view_customuser'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(AdminListView, self).get_context_data(**kwargs)
