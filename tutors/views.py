@@ -26,7 +26,7 @@ class CreateQuestionView(LoginRequiredMixin, PermissionRequiredMixin,
     form_class = QuestionCreateForm
     template_name = 'tutors/question_create.html'
     success_message = 'Question "№%(number)d" was created successfully!'
-    permission_required = 'add_questions'
+    permission_required = 'tutors.add_questions'
 
     def get_success_url(self):
         return reverse_lazy('quiz:detail-quiz', kwargs={'pk': self.kwargs[
@@ -56,7 +56,7 @@ class UpdateQuestionView(LoginRequiredMixin, PermissionRequiredMixin,
     form_class = QuestionCreateForm
     template_name = 'tutors/question_create.html'
     success_message = 'Question "№%(number)d" was updated successfully!'
-    permission_required = 'change_questions'
+    permission_required = 'tutors.change_questions'
 
     def get_success_url(self):
         return reverse_lazy('quiz:detail-quiz', kwargs={'pk': self.kwargs[
@@ -79,7 +79,7 @@ class DeleteQuestionView(LoginRequiredMixin, PermissionRequiredMixin,
     template_name = 'tutors/question_delete.html'
     success_message = 'Question: "%(question_number)s" was deleted ' \
                       'successfully!'
-    permission_required = 'delete_questions'
+    permission_required = 'tutors.delete_questions'
 
     def get_success_url(self):
         return reverse_lazy('quiz:detail-quiz', kwargs={'pk': self.kwargs[
@@ -101,7 +101,7 @@ class AnswerListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     template_name = 'tutors/answers_list.html'
     context_object_name = 'answers'
     paginate_by = ITEMS_ON_PAGE
-    permission_required = 'view_answers'
+    permission_required = 'tutors.view_answers'
 
     def get_queryset(self):
         answers = Answers.objects.filter(
@@ -125,7 +125,7 @@ class CreateAnswerView(LoginRequiredMixin, PermissionRequiredMixin,
     form_class = AnswerCreateForm
     template_name = 'tutors/answer_create.html'
     success_message = 'Answers: "%(answer_text)s" was created successfully!'
-    permission_required = 'add_answers'
+    permission_required = 'tutors.add_answers'
 
     def get_success_url(self):
         return reverse_lazy('tutors:answers_list',
@@ -154,7 +154,7 @@ class UpdateAnswerView(LoginRequiredMixin, PermissionRequiredMixin,
     form_class = AnswerCreateForm
     template_name = 'tutors/answer_create.html'
     success_message = 'Answers: "%(answer_text)s" was updated successfully!'
-    permission_required = 'change_answers'
+    permission_required = 'tutors.change_answers'
 
     def get_success_url(self):
         return reverse_lazy('tutors:answers_list',
@@ -172,7 +172,7 @@ class DeleteAnswerView(LoginRequiredMixin, PermissionRequiredMixin,
     model = Answers
     template_name = 'tutors/answer_delete.html'
     success_message = 'Answers: "%(answer_text)s" was deleted successfully!'
-    permission_required = 'delete_answers'
+    permission_required = 'tutors.delete_answers'
 
     @transaction.atomic()
     def delete(self, request, *args, **kwargs):

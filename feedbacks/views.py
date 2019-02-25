@@ -23,27 +23,27 @@ class FeedbackListView(LoginRequiredMixin, PermissionRequiredMixin,
     paginate_by = ITEMS_ON_PAGE
     context_object_name = 'feedbacks'
     ordering = ['id']
-    permission_required = 'view_feedback'
+    permission_required = 'feedbacks.view_feedback'
 
 
 class FeedbackDetailView(LoginRequiredMixin, PermissionRequiredMixin,
                          DetailView):
     model = Feedback
-    permission_required = 'view_feedback'
+    permission_required = 'feedbacks.view_feedback'
 
 
 class FeedbackDeleteView(LoginRequiredMixin, PermissionRequiredMixin,
                          DeleteView):
     model = Feedback
     success_url = reverse_lazy('feedback-list')
-    permission_required = 'delete_feedback'
+    permission_required = 'feedbacks.delete_feedback'
 
 
 class FeedbackCreateView(LoginRequiredMixin, PermissionRequiredMixin,
                          CreateView):
     model = Feedback
     form_class = FeedbackForm
-    permission_required = 'add_feedback'
+    permission_required = 'feedbacks.add_feedback'
 
 
 class FeedbackUpdateView(LoginRequiredMixin, PermissionRequiredMixin,
@@ -51,13 +51,13 @@ class FeedbackUpdateView(LoginRequiredMixin, PermissionRequiredMixin,
     model = Feedback
     form_class = FeedbackForm
     template_name_suffix = '_form'
-    permission_required = 'change_feedback'
+    permission_required = 'feedbacks.change_feedback'
 
 
 class RecommendationDeleteView(LoginRequiredMixin, PermissionRequiredMixin,
                                DeleteView):
     model = Recommendation
-    permission_required = 'delete_recommendation'
+    permission_required = 'feedbacks.delete_recommendation'
 
     def delete(self, request, *args, **kwargs):
         """Redirect to linked feedback"""
@@ -72,7 +72,7 @@ class RecommendationCreateView(LoginRequiredMixin, PermissionRequiredMixin,
                                CreateView):
     model = Recommendation
     form_class = RecommendationForm
-    permission_required = 'add_recommendation'
+    permission_required = 'feedbacks.add_recommendation'
 
     def get(self, request, *args, **kwargs):
         err_result = HttpResponseBadRequest(
@@ -107,7 +107,7 @@ class RecommendationUpdateView(LoginRequiredMixin, PermissionRequiredMixin,
     model = Recommendation
     template_name_suffix = '_form'
     form_class = RecommendationForm
-    permission_required = 'change_recommendation'
+    permission_required = 'feedbacks.change_recommendation'
 
     def get(self, request, *args, **kwargs):
         """Set success_url to linked feedback"""

@@ -18,7 +18,7 @@ class CountryIndicatorListView(LoginRequiredMixin, PermissionRequiredMixin,
     template_name = 'indicators/list.html'
     context_object_name = 'indicators'
     paginate_by = ITEMS_ON_PAGE
-    permission_required = 'view_countryindicator'
+    permission_required = 'indicators.view_countryindicator'
 
 
 class CountryIndicatorCreate(LoginRequiredMixin, PermissionRequiredMixin,
@@ -29,7 +29,7 @@ class CountryIndicatorCreate(LoginRequiredMixin, PermissionRequiredMixin,
     template_name = 'indicators/create_update.html'
     success_url = reverse_lazy('country_indicator:country_indicator_list')
     success_message = 'Country indicator: "%(name)s" was created successfully'
-    permission_required = 'add_countryindicator'
+    permission_required = 'indicators.add_countryindicator'
 
 
 class CountryIndicatorDelete(LoginRequiredMixin, PermissionRequiredMixin,
@@ -40,7 +40,7 @@ class CountryIndicatorDelete(LoginRequiredMixin, PermissionRequiredMixin,
     template_name = 'indicators/delete.html'
     success_url = reverse_lazy('country_indicator:country_indicator_list')
     success_message = 'Country indicator: "%(name)s" was deleted successfully'
-    permission_required = 'delete_countryindicator'
+    permission_required = 'indicators.delete_countryindicator'
 
 
 class CountryIndicatorUpdate(LoginRequiredMixin, PermissionRequiredMixin,
@@ -51,7 +51,7 @@ class CountryIndicatorUpdate(LoginRequiredMixin, PermissionRequiredMixin,
     template_name = 'indicators/create_update.html'
     success_url = reverse_lazy('country_indicator:country_indicator_list')
     success_message = 'Country indicator: "%(name)s" was updated successfully'
-    permission_required = 'change_countryindicator'
+    permission_required = 'indicators.change_countryindicator'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
