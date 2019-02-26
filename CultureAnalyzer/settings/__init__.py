@@ -7,6 +7,11 @@ try:
 except ImportError:
     pass
 
+try:
+    from .production import *
+except ImportError:
+    pass
+
 if 'test' in sys.argv:
     try:
         from .test import *

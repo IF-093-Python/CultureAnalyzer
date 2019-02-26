@@ -44,8 +44,13 @@ before_deploy:
   - ssh-add "$DEPLOY_KEY_FILENAME"
 
 deploy:
-  provider: script
-  script: fab deploy
-  skip_cleanup: true
-  on:
-    branch: auto_deploy
+  # Production env
+  - provider: script
+    script: fab deploy_aws
+    on:
+      branch: auto_deploy
+  # Development env
+  - provider: script
+    script: fab deploy_gc
+    on:
+      branch: gc_auto_deploy
