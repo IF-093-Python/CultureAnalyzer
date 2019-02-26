@@ -16,15 +16,15 @@ urlpatterns = [
     path('admin_page/', views.AdminListView.as_view(), name='admin'),
     path('login/', views.LoginView.as_view(
         template_name='users/login.html', authentication_form=UserLoginForm),
-         name='login'),
+        name='login'),
     path('logout/', auth_views.LogoutView.as_view(
         template_name='users/logout.html'), name='logout'),
-    path('profile/<int:pk>', views.UserUpdateView.as_view(), name='profile'),
-    path('profile/<int:pk>/password_change', views.PasswordChangeView.as_view()
-         , name='password-change'),
+    path('profile/<int:pk>', views.UserDetailView.as_view(), name='profile'),
+    path('profile_update/<int:pk>', views.UserUpdateView.as_view(), name='profile-update'),
+    path('profile/<int:pk>/password_change', views.PasswordChangeView.as_view(), name='password-change'),
     path('login/password-reset/', auth_views.PasswordResetView.as_view(
         template_name='users/password_reset_form.html'),
-         name='password_reset'),
+        name='password_reset'),
     path('login/password-reset/done/',
          auth_views.PasswordResetDoneView.as_view(
              template_name='users/password_reset_done.html'),
@@ -36,7 +36,7 @@ urlpatterns = [
         name='password_reset_confirm'),
     path('login/reset/done/', auth_views.PasswordResetCompleteView.as_view(
         template_name='users/password_reset_complete.html'),
-         name='password_reset_complete'),
+        name='password_reset_complete'),
     path('admin_page/update/<int:pk>', views.ProfileUpdateView.as_view(),
          name='change-profile'),
 
@@ -46,4 +46,4 @@ urlpatterns = [
     path('delete_group/<int:pk>', DeleteGroups.as_view(),
          name='group_perm-delete'),
     path('create_group', CreateGroup.as_view(), name='group_perm-create'),
-    ]
+]

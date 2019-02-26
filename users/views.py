@@ -54,7 +54,7 @@ class UserDetailView(DetailView):
 
 
 class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    template_name = 'users/profile.html'
+    template_name = 'users/update_profile.html'
     model = CustomUser
     form_class = UserUpdateForm
     success_url = '/'
