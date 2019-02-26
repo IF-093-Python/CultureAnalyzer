@@ -1,12 +1,10 @@
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.models import User
-from django.forms.models import inlineformset_factory
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView, UpdateView
 
-from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
+from .forms import UserRegisterForm, UserUpdateForm
 from .models import CustomUser
 
 __all__ = [

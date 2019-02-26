@@ -2,7 +2,7 @@ from PIL import Image
 from django.db import models
 
 from users.choices import GENDER_CHOICES, EDUCATION_CHOICES
-from users.models import CustomUser
+from .custom_user import CustomUser
 
 __all__ = ['Profile', 'Role']
 

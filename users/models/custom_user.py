@@ -1,5 +1,5 @@
 from PIL import Image
-from django.contrib.auth.models import AbstractUser, Group
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from users.choices import GENDER_CHOICES, EDUCATION_CHOICES
@@ -23,21 +23,6 @@ class CustomUser(AbstractUser):
                                  null=True)
     email = models.EmailField(blank=True, max_length=254,
                               verbose_name='email address', unique=True)
-
-    @property
-    def is_admin(self):
-        group = Group.objects.get(name='Admin')
-        return group in self.groups.all()
-
-    @property
-    def is_trainee(self):
-        group = Group.objects.get(name='Trainee')
-        return group in self.groups.all()
-
-    @property
-    def is_mentor(self):
-        group = Group.objects.get(name='Mentor')
-        return group in self.groups.all()
 
     def save(self, **kwargs):
         """
