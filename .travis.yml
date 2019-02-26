@@ -28,7 +28,7 @@ script:
   - coverage erase
   - coverage run --branch --source='.' manage.py test
   - coverage xml -i
-  - sonar-scanner
+  #- sonar-scanner
 
 notifications:
   email:
@@ -47,11 +47,11 @@ before_deploy:
 deploy:
   # Production env
   - provider: script
-    script: fab deploy_aws
+    script: fab deploy-aws
     on:
       branch: auto_deploy
   # Development env
   - provider: script
-    script: fab deploy_gc
+    script: fab deploy-gc
     on:
       branch: gc_auto_deploy
