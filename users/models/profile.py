@@ -1,8 +1,8 @@
 from PIL import Image
-from django.contrib.auth.models import User
 from django.db import models
 
-from .choices import GENDER_CHOICES, EDUCATION_CHOICES
+from users.choices import GENDER_CHOICES, EDUCATION_CHOICES
+from users.models import CustomUser
 
 __all__ = ['Profile', 'Role']
 
@@ -26,7 +26,7 @@ class Profile(models.Model):
 
     Django forms and serializer do not allow you to leave data empty.
     """
-    user = models.OneToOneField(User, on_delete=models.CASCADE,
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE,
                                 db_column='user_id')
     role = models.ForeignKey(Role, on_delete=models.PROTECT,
                              db_column='role_id')
