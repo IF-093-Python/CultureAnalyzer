@@ -7,13 +7,14 @@ env = os.environ
 
 @task
 def deploy_aws(ctx):
-    deploy(username=env['DEPLOY_USERNAME'],
-           hostname=env['DEPLOY_HOSTNAME'],
-           port=env['DEPLOY_PORT'],
-           key_filename=env['DEPLOY_KEY_FILENAME'],
-           deploy_command=env['DEPLOY_COMMAND'])
+    deploy(username=env['AWS_DEPLOY_USERNAME'],
+           hostname=env['AWS_DEPLOY_HOSTNAME'],
+           port=env['AWS_DEPLOY_PORT'],
+           key_filename=env['AWS_DEPLOY_KEY_FILENAME'],
+           deploy_command=env['AWS_DEPLOY_COMMAND'])
 
 
+@task
 def deploy_gc(ctx):
     deploy(username=env['GC_DEPLOY_USERNAME'],
            hostname=env['GC_DEPLOY_HOSTNAME'],

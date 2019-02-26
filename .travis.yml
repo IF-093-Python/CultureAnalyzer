@@ -4,13 +4,14 @@ language: python
 python:
   - "3.6"
 
-
 addons:
   sonarcloud:
     organization: "$ORGANIZATION"
     token:
       secure: "$SONAR_TOKEN"
-  ssh_known_hosts: "$DEPLOY_HOSTNAME:$DEPLOY_PORT"
+  ssh_known_hosts:
+    - "$AWS_DEPLOY_HOSTNAME:$AWS_DEPLOY_PORT"
+    - "$GC_DEPLOY_HOSTNAME:$GC_DEPLOY_PORT"
 
 before_install:
   - export DJANGO_SETTINGS_MODULE=CultureAnalyzer.settings
@@ -22,7 +23,6 @@ install:
   - pip install coverage
   - pip install fabric==2.3.1
   - pip install cryptography==2.4.2
-
 
 script:
   - coverage erase
@@ -38,10 +38,11 @@ notifications:
     on_failure: always
 
 before_deploy:
-  - openssl aes-256-cbc -K $encrypted_95903a489ee5_key -iv $encrypted_95903a489ee5_iv -in deploy_key.enc -out "$DEPLOY_KEY_FILENAME" -d
+  - openssl aes-256-cbc -K $encrypted_95903a489ee5_key -iv $encrypted_95903a489ee5_iv -in deploy.tar.enc -out ./deploy.tar -d
+  - tar xvf deploy.tar
   - eval "$(ssh-agent -s)"
-  - chmod 600 "$DEPLOY_KEY_FILENAME"
-  - ssh-add "$DEPLOY_KEY_FILENAME"
+  - chmod 600 "$AWS_DEPLOY_KEY_FILENAME" "$GC_DEPLOY_KEY_FILENAME"
+  - ssh-add "$AWS_DEPLOY_KEY_FILENAME" && ssh-add "$GC_DEPLOY_KEY_FILENAME"
 
 deploy:
   # Production env
