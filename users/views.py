@@ -3,7 +3,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin, \
     UserPassesTestMixin, PermissionRequiredMixin
 from django.shortcuts import redirect
-from django.views.generic import CreateView, UpdateView, ListView, DeleteView
+from django.views.generic import CreateView, UpdateView, ListView, DeleteView, DetailView
 from django.contrib.auth.models import Group
 from django.urls import reverse_lazy
 
@@ -46,6 +46,11 @@ class UserRegisterView(CreateView):
         if request.user.is_authenticated:
             return redirect('home')
         return super(UserRegisterView, self).get(request, *args, **kwargs)
+
+
+class UserDetailView(DetailView):
+    template_name = 'users/profile.html'
+    model = CustomUser
 
 
 class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

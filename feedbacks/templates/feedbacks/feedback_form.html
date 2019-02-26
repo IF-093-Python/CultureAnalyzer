@@ -4,8 +4,27 @@
 {% block title %}Feedback{% endblock %}
 
 {% block content %}
-<form method="post">{% csrf_token %}
-    {{ form|crispy }}
-    <input class="btn btn-success" type="submit" value="Save">
+<form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            {{ form.feedback|as_crispy_field }}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            {{ form.min_value|as_crispy_field }}
+        </div>
+        <div class="form-group col-md-4">
+            {{ form.max_value|as_crispy_field }}
+        </div>
+        <div class="form-group col-md-4">
+            {{ form.indicator|as_crispy_field }}
+        </div>
+    </div>
+    <div class="d-flex">
+        <button type="submit" class="btn btn-blue">Save</button>
+        <a href="{% url 'feedback-list' %}" class="btn btn-outline-light ml-1">Cancel</a>
+    </div>
 </form>
 {% endblock content %}
