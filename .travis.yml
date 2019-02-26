@@ -39,7 +39,7 @@ notifications:
 
 before_deploy:
   - openssl aes-256-cbc -K $encrypted_95903a489ee5_key -iv $encrypted_95903a489ee5_iv -in deploy.tar.enc -out ./deploy.tar -d
-  - tar xvf deploy.tar
+  - tar xvf deploy.tar > /dev/null 2>&1
   - eval "$(ssh-agent -s)"
   - chmod 600 "$AWS_DEPLOY_KEY_FILENAME" "$GC_DEPLOY_KEY_FILENAME"
   - ssh-add "$AWS_DEPLOY_KEY_FILENAME" && ssh-add "$GC_DEPLOY_KEY_FILENAME"
