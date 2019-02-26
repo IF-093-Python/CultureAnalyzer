@@ -57,7 +57,9 @@
                     </div>
                 {% endfor %}
             {% endif %}
-            {% block content %}{% endblock %}
+            {% block content %}
+                Content here...
+            {% endblock %}
         </div>
         {% if user.is_authenticated %}
             <div class="col-md-4">
