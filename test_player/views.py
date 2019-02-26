@@ -16,20 +16,20 @@ from .forms import QuestionSaveForm
 __all__ = ['TestPlayer', 'TestStart', ]
 
 
-class TestStart(ListView, PermissionRequiredMixin):
+class TestStart(PermissionRequiredMixin, ListView):
     template_name = 'test_player/start_test.html'
     context_object_name = 'quizzes'
-    permission_required = 'view_results'
+    permission_required = 'quiz.view_results'
 
     def get_queryset(self):
         quizzes = Quizzes.objects.all()
         return quizzes
 
 
-class TestPlayer(FormView, PermissionRequiredMixin):
+class TestPlayer(PermissionRequiredMixin, FormView):
     template_name = 'test_player/test_player.html'
     form_class = QuestionSaveForm
-    permission_required = 'view_results'
+    permission_required = 'quiz.view_results'
 
     def get_success_url(self):
         if 'next_to' in self.request.POST or 'prev' in self.request.POST:
