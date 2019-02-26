@@ -59,7 +59,7 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{% url 'admin' %}">Admin page</a>
                             <a class="dropdown-item" href="{% url 'groups:groups-list' %}">Groups</a>
-                            <a class="dropdown-item" href="{% url 'group_perm-list' %}">Groups List</a>
+                            <a class="dropdown-item" href="{% url 'group_perm-list' %}">Permission-Groups</a>
                         </div>
                     </li>
                     {% elif user.is_mentor %}
