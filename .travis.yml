@@ -7,10 +7,10 @@ python:
 
 addons:
   sonarcloud:
-    organization: $ORGANIZATION
-  token:
-      secure: $SONAR_TOKEN
-
+    organization: "$ORGANIZATION"
+    token:
+      secure: "$SONAR_TOKEN"
+  ssh_known_hosts: "$DEPLOY_HOSTNAME:$DEPLOY_PORT"
 
 before_install:
   - export DJANGO_SETTINGS_MODULE=CultureAnalyzer.settings
@@ -20,6 +20,9 @@ install:
   - pip install pylint
   - pip install pylint-django
   - pip install coverage
+  - pip install fabric==2.3.1
+  - pip install cryptography==2.4.2
+
 
 script:
   - coverage erase
@@ -33,3 +36,16 @@ notifications:
       - test.mail.client008@gmail.com
     on_success: always
     on_failure: always
+
+before_deploy:
+  - openssl aes-256-cbc -K $encrypted_95903a489ee5_key -iv $encrypted_95903a489ee5_iv -in deploy_key.enc -out "$DEPLOY_KEY_FILENAME" -d
+  - eval "$(ssh-agent -s)"
+  - chmod 600 "$DEPLOY_KEY_FILENAME"
+  - ssh-add "$DEPLOY_KEY_FILENAME"
+
+deploy:
+  provider: script
+  script: fab deploy
+  skip_cleanup: true
+  on:
+    branch: auto_deploy
