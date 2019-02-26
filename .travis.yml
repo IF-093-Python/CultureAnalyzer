@@ -28,7 +28,7 @@ script:
   - coverage erase
   - coverage run --branch --source='.' manage.py test
   - coverage xml -i
-  #- sonar-scanner
+  - sonar-scanner
 
 notifications:
   email:
