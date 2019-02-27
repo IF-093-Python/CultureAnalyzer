@@ -31,14 +31,22 @@
 
                 <p>Quiz navigation</p>
                 {% if questions %}
-                    {% for question in questions %}
+                    {% with current_quiz=request.session|lookup:quiz_id %}
+                        {% for question in questions %}
 
                         <input type='Submit'
-                               class="btn btn-navigation btn-sm {% if current_question.question_number == question.question_number %}btn-primary{% elif request.session|lookup:quiz_id|lookup:question.question_number %}btn-info{% else %}btn-outline-info{% endif %}"
+                               class="btn btn-navigation btn-sm
+                               {% if current_question.question_number == question.question_number %}
+                               btn-primary
+                               {% elif current_quiz and current_quiz|lookup:question.question_number %}
+                               btn-info{% else %}
+                               btn-outline-info
+                               {% endif %}"
                                name="next"
                                value="{{ question.question_number }}">
 
-                    {% endfor %}
+                        {% endfor %}
+                    {% endwith %}
                     <br>
 
                     <!-- Button trigger modal -->

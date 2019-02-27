@@ -4,7 +4,7 @@ register = Library()
 
 
 @register.filter(name='lookup')
-def lookup(value, arg):
+def lookup(dict_container, key):
     """
     Filter for retrive value from dict.
 
@@ -12,5 +12,5 @@ def lookup(value, arg):
     :param key: string or key which possible convert to string
     :return: value from dict_container, return False if value is not found
     """
-    if value:
-        return value.get(str(arg), False)
+    return dict_container.get(str(key), False)
+
