@@ -12,8 +12,8 @@
                     <img src="{% static 'default.png' %}" alt="" class="circle_img" style="margin-left: -10px;">
                     {% endif %}
                     <div class="media-body">
-                        <a class="btn btn btn-outline-info mb-2" href="{% url 'profile-update' object.id %}">Edit profile</a><br>
-                        <a class="btn btn btn-outline-info" href="{% url 'password-change' object.id %}">Change password</a>
+                        <a class="btn btn-outline-light mb-2" href="{% url 'profile-update' object.id %}">Edit profile</a><br>
+                        <a class="btn btn-outline-light" href="{% url 'password-change' object.id %}">Change password</a>
                     </div>
                 </div>
             </div>
@@ -27,8 +27,6 @@
                     <p>Username: <span class="info-text">{{ object.username }}</span></p>
                     <p>Email: <span class="info-text">{{ object.email }}</span></p>
                 </div>
-            </div>
-            <div class="row mt-4 about">
                 <div class="col-md-6">
                     {% if object.date_of_birth %}
                     <p>Date of birth: <span class="info-text">{{ object.date_of_birth }}</span></p>
