@@ -1,13 +1,10 @@
 from django.db import models
-from django.urls import reverse
-# Create your models here.
-from django.db.models import SET_NULL, CASCADE
+from django.db.models import CASCADE
 
 from users.models import CustomUser
 
 
 class Quizzes(models.Model):
-
     title = models.CharField(max_length=100, null=False)
     description = models.CharField(max_length=100, null=False)
     numbers_of_questions = models.IntegerField(null=True)
@@ -23,5 +20,4 @@ class Results(models.Model):
     result = models.TextField('Description', null=False)
 
     def __str__(self):
-
         return self.user.username
