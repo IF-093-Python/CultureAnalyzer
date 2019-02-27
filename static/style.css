@@ -193,16 +193,16 @@ table.table-hover > tbody > tr > *  {
     border-color: #c5c5c5;
 }
 
-.page-item.active > a{
+.page-item.active > a {
     background-color: #2B5278 !important;
     border-color: #2B5278 !important;
 }
 
-.page-link{
+.page-link {
     color: #444;
 }
 
-.page-link:hover{
+.page-link:hover {
     color: #555;
 }
 

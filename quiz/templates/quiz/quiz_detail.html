@@ -4,14 +4,11 @@
 {% block title %}Quiz detail{% endblock %}
 {% block content %}
     <div class="container-fluid col-md-10">
-        <div class="border-bottom my-3 pb-1">
-            <h1>
-                <a class="btn btn-light" href="{% url 'quiz:quizzes-list' %}">
-                    <splan class="fas fa-chevron-left"></splan>
-                </a>
-                {{ quiz.title }}
-            </h1>
-            <strong class="text-white-75 font-weight-light">{{ quiz.description }}</strong>
+        <div class="border-bottom mb-3">
+                <p class="text-center font-weight-bold" style="font-size: 2rem;">
+                    {{ quiz.title.capitalize }}
+                </p>
+            <p class="font-weight-light my-2">{{ quiz.description }}</p>
         </div>
 
         <!--Success message about some action on the question-->
