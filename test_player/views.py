@@ -2,6 +2,7 @@ import datetime
 import json
 
 from django.contrib import messages
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -9,24 +10,26 @@ from django.views.generic import FormView, ListView
 
 from quiz.models import Results, Quizzes
 from tutors.models import Questions
-from .forms import QuestionSaveForm
 from users.models import CustomUser
+from .forms import QuestionSaveForm
 
 __all__ = ['TestPlayer', 'TestStart', ]
 
 
-class TestStart(ListView):
+class TestStart(PermissionRequiredMixin, ListView):
     template_name = 'test_player/start_test.html'
     context_object_name = 'quizzes'
+    permission_required = 'quiz.view_results'
 
     def get_queryset(self):
         quizzes = Quizzes.objects.all()
         return quizzes
 
 
-class TestPlayer(FormView):
+class TestPlayer(PermissionRequiredMixin, FormView):
     template_name = 'test_player/test_player.html'
     form_class = QuestionSaveForm
+    permission_required = 'quiz.view_results'
 
     def get_success_url(self):
         if 'next_to' in self.request.POST or 'prev' in self.request.POST:
@@ -38,7 +41,7 @@ class TestPlayer(FormView):
         return reverse_lazy('test_player:test_player',
                             kwargs={'quiz_id': self.kwargs[
                                 'quiz_id'], 'question_number':
-                                        self.request.POST.get('next')})
+                                         self.request.POST.get('next')})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -67,13 +70,11 @@ class TestPlayer(FormView):
         current_answers = current_questions.answers_set.all()
         if self.kwargs['quiz_id'] in self.request.session and self.kwargs[
             'question_number'] in self.request.session[
-                self.kwargs['quiz_id']].keys():
+            self.kwargs['quiz_id']].keys():
             d_answer = self.request.session[self.kwargs['quiz_id']].get(
                 self.kwargs['question_number'])
         else:
             d_answer = None
-        print(self.kwargs)
-        print(dict(kwargs, answers=current_answers, default_choice=d_answer))
         return dict(kwargs, answers=current_answers, default_choice=d_answer)
 
     def form_valid(self, form):
@@ -86,7 +87,6 @@ class TestPlayer(FormView):
             self.request.session[self.kwargs['quiz_id']] = s
 
         if form.cleaned_data.get('answers'):
-
             s.update({
                 self.kwargs['question_number']: form.cleaned_data.get(
                     'answers')})

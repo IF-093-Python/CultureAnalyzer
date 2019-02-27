@@ -1,6 +1,6 @@
 from itertools import chain
-from django.contrib.auth.mixins import LoginRequiredMixin, \
-    UserPassesTestMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import UserPassesTestMixin,\
+                                       PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -15,11 +15,10 @@ from CultureAnalyzer.view import SafePaginationListView
 PAGINATOR = 10
 
 
-class GroupsList(LoginRequiredMixin, PermissionRequiredMixin,
-                 SafePaginationListView):
-    '''Makes list of all groups with number of mentors in each group'''
+class GroupsList(PermissionRequiredMixin, SafePaginationListView):
+    """Makes list of all groups with number of mentors in each group"""
     model = Group
-    ordering = ('name')
+    ordering = 'name'
     template_name = 'groups/groups_list.html'
     __search = False
     __search_label = 'Search'
@@ -42,8 +41,8 @@ class GroupsList(LoginRequiredMixin, PermissionRequiredMixin,
         return result
 
 
-class CreateGroupView(generic.CreateView, LoginRequiredMixin,
-                      PermissionRequiredMixin, SafePaginationListView):
+class CreateGroupView(generic.CreateView, PermissionRequiredMixin,
+                      SafePaginationListView):
     model = Group
     form_class = GroupCreateForm
     template_name = 'groups/group_create.html'
@@ -60,8 +59,8 @@ class CreateGroupView(generic.CreateView, LoginRequiredMixin,
         return context
 
     def get_queryset(self):
-        result = CustomUser.objects.filter(is_active=True, is_staff=True). \
-            order_by('last_name')
+        result = CustomUser.objects.\
+            filter(is_active=True, groups__name='Mentor').order_by('last_name')
         if self.request.GET.get('data_search'):
             result = result.filter(
                 last_name__contains=self.request.GET.get('data_search'))
@@ -71,8 +70,7 @@ class CreateGroupView(generic.CreateView, LoginRequiredMixin,
 
 
 class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
-                      LoginRequiredMixin, PermissionRequiredMixin,
-                      SafePaginationListView):
+                      PermissionRequiredMixin, SafePaginationListView):
     form_class = GroupCreateForm
     template_name = 'groups/group_update.html'
     success_message = "Group was updated successfully"
@@ -80,6 +78,7 @@ class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
     __search_label = 'Search'
     __checked_mentors = None
     paginate_by = PAGINATOR
+    permission_required = 'groups.add_group'
     permission_required = 'groups.change_group'
 
     def get_success_url(self):
@@ -101,7 +100,8 @@ class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
             is_active=True, mentor_in_group=self.kwargs['pk']). \
             order_by('last_name')
         self.__checked_mentors = checked_mentors
-        mentors = CustomUser.objects.filter(is_active=True, is_staff=True). \
+        mentors = CustomUser.objects.\
+            filter(is_active=True, groups__name='Mentor'). \
             exclude(mentor_in_group=self.kwargs['pk']). \
             order_by('last_name')
         if self.request.GET.get('data_search'):
@@ -120,8 +120,7 @@ class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
         return context
 
 
-class DeleteGroupView(LoginRequiredMixin, PermissionRequiredMixin,
-                      generic.DeleteView):
+class DeleteGroupView(PermissionRequiredMixin, generic.DeleteView):
     model = Group
     context_object_name = 'group'
     template_name = 'groups/group_delete.html'
@@ -129,12 +128,13 @@ class DeleteGroupView(LoginRequiredMixin, PermissionRequiredMixin,
     permission_required = 'groups.delete_group'
 
 
-class MentorGroupsView(LoginRequiredMixin, SafePaginationListView):
+class MentorGroupsView(PermissionRequiredMixin, SafePaginationListView):
     model = Group
     template_name = 'groups/mentor_groups_list.html'
     __search = False
     __search_label = 'Search'
     paginate_by = PAGINATOR
+    permission_required = 'groups.change_group'
 
     def get_context_data(self, **kwargs):
         context = super(MentorGroupsView, self).get_context_data(**kwargs)
@@ -154,14 +154,14 @@ class MentorGroupsView(LoginRequiredMixin, SafePaginationListView):
 
 
 class MentorGroupUpdate(generic.UpdateView, SuccessMessageMixin,
-                        LoginRequiredMixin, UserPassesTestMixin,
-                        SafePaginationListView):
+                        UserPassesTestMixin, SafePaginationListView):
     model = Group
     form_class = GroupUpdateForm
     template_name = 'groups/mentor_group_update.html'
     success_message = "Group was updated successfully"
     __search = False
     __search_label = 'Search'
+    __users_in_group = None
     paginate_by = PAGINATOR
     raise_exception = True
 
@@ -199,8 +199,7 @@ class MentorGroupUpdate(generic.UpdateView, SuccessMessageMixin,
 
 
 class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
-                     LoginRequiredMixin, UserPassesTestMixin,
-                     SafePaginationListView):
+                     UserPassesTestMixin, SafePaginationListView):
     model = Group
     form_class = GroupUpdateForm
     template_name = 'groups/mentor_group_add.html'
@@ -228,7 +227,8 @@ class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
     def get_queryset(self):
         """Gets all Trainee users that are not in groups and
         makes search in their last_name if needed"""
-        result = CustomUser.objects.filter(is_active=True, is_staff=False). \
+        result = CustomUser.objects.\
+            filter(is_active=True, groups__name='Trainee'). \
             exclude(user_in_group=self.kwargs['pk']). \
             order_by('last_name')
         if self.request.GET.get('data_search'):

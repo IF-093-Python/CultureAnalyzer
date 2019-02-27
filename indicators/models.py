@@ -35,11 +35,14 @@ class CountryIndicator(models.Model):
 
     @property
     def get_indicators(self):
-        # country_values = [self.pdi, self.ind, self.mas, self.uai, self.lto,
-        #                   self.ivr]
+        """
+        Getter which returns indicators values set for single instance
+        :return: dict{iso_code:[pdi, idv, mas, uai, lto, ivr]}.
+         Where, key: iso_code which mean country identifier and value: list of
+           indicators values
+        """
+
         country_values = {
             self.iso_code: [self.pdi, self.idv, self.mas, self.uai, self.lto,
                             self.ivr]}
-        # country_values = {'pdi': self.pdi, 'ind': self.ind, 'mas': self.mas,
-        #                   'uai': self.uai, 'lto': self.lto, 'ivr': self.ivr}
         return dict(country_values)

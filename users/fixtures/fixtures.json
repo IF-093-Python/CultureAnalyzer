@@ -1,20 +1,20 @@
 [
 	{
-		"model" : "users.Role",
+		"model" : "auth.Group",
 		"pk" : 1,
 		"fields" : {
 			"name" : "Trainee"
 		}
 	},
 	{
-		"model" : "users.Role",
+		"model" : "auth.Group",
 		"pk" : 2,
 		"fields" : {
 			"name" : "Admin"
 		}
 	},
 	{
-		"model" : "users.Role",
+		"model" : "auth.Group",
 		"pk" : 3,
 		"fields" : {
 			"name" : "Mentor"
