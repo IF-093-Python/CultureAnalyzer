@@ -4,7 +4,7 @@ omit =
     **/settings/**
     **/migrations/**
     **/tests.py
-	**/tests/**
+    **/tests/**
     **/apps.py
     **/__init__.py
     **/wsgi.py
