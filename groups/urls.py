@@ -16,5 +16,7 @@ urlpatterns = [
          name='mentor_group_update'),
     path('group/add/<int:pk>/', MentorGroupAdd.as_view(),
          name='mentor_group_add'),
+    path('group/add_user/<int:pk>/<str:hash>', AddNewUser.as_view(),
+         name='add_new_user'),
 
 ]
