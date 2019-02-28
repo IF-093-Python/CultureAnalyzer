@@ -170,7 +170,7 @@ class MentorGroupUpdate(generic.UpdateView, SuccessMessageMixin,
     raise_exception = True
 
     def encode_data(self):
-        """Makes hash to generate url for adding students to group"""
+        """Makes hash for generation url for adding students to group"""
         group = self.get_object()
         signer = signing.Signer(SECRET)
         value = signer.sign(group.name)
@@ -274,6 +274,7 @@ class AddNewUser(LoginRequiredMixin, generic.CreateView):
     template_name = 'groups/add_new_user.html'
     form_class = GroupUpdateForm
     success_url = reverse_lazy('home')
+    __group = None
 
     def decode(self):
         signer = signing.Signer(SECRET)
@@ -285,8 +286,8 @@ class AddNewUser(LoginRequiredMixin, generic.CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         hash = self.decode()
-        group = get_object_or_404(Group, pk=self.kwargs['pk'])
-        if not hash == group.name:
+        self.__group = get_object_or_404(Group, pk=self.kwargs['pk'])
+        if not (hash == self.__group.name):
             raise Http404
         return super(AddNewUser, self).dispatch(request, *args, **kwargs)
 
@@ -295,13 +296,13 @@ class AddNewUser(LoginRequiredMixin, generic.CreateView):
         context['trainee'] = CustomUser.objects. \
             filter(pk=self.request.user.pk, groups__name='Trainee').exists()
         if context['trainee']:
-            context['group'] = get_object_or_404(Group, pk=self.kwargs['pk'])
+            context['group'] = self.__group
         else:
             context['role'] = CustomUser.objects. \
                 get(pk=self.request.user.pk).groups.values()[0]['name']
         return context
 
     def form_valid(self, form):
-        group = get_object_or_404(Group, pk=self.kwargs['pk'])
+        group = self.__group
         group.user.add(self.request.user.pk)
         return redirect(self.success_url)
