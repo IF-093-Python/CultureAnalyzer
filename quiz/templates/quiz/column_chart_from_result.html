@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load filters %}
 {% load zip %}
+{% load static %}
 {% block title %}Your result{% endblock %}
 {% block content %}
     <form method="post">
@@ -83,11 +84,11 @@
                                         {% if feedbacks %}
                                             <h5>Feedbacks for {{ indicator }}:</h5>
                                             {% for feedback_obj in feedbacks %}
-                                                - {{ feedback_obj.feedback }}<br>
+                                                <p class="result-feedback">- {{ feedback_obj.feedback }}</p>
 
-                                                {% with recommendations=feedback_obj.recommendation_set.all %}
+                                                {% with recommendations=feedback_obj.recommendation_set.all|slice:":5" first_load=5 %}
                                                     {% if recommendations %}
-                                                        <br>Recommendations:
+                                                        <p class="result-feedback">Recommendations:</p>
                                                     {% endif %}
 
                                                     <ul>
@@ -96,8 +97,13 @@
                                                     {% endfor %}
                                                     </ul>
 
+                                                    {% if feedback_obj.recommendation_set.count > first_load %}
+                                                        <button type="button" class="btn btn-link load_recommendation_button"
+                                                            data-url="{{ request.get_full_path }}"
+                                                            data-feedback-id="{{ feedback_obj.pk }}"
+                                                            data-offset="{{ first_load }}">Load more</button>
+                                                    {% endif %}
                                                 {% endwith %}
-
                                             {% endfor %}
                                         {% endif %}
                                     {% endfor %}
@@ -167,4 +173,6 @@
 
         </script>
     </form>
+
+
 {% endblock %}
