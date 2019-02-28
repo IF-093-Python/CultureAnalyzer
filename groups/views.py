@@ -1,13 +1,17 @@
 from itertools import chain
+from django.utils import timezone
+
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.db.models import Count
-from groups.forms import GroupCreateForm, GroupUpdateForm, SetQuizForGroupForm
-from groups.models import Group, DateOfQuiz
+
+from groups.forms import GroupCreateForm, GroupUpdateForm, SheduleForm
+from groups.models import Group, Shedule
 from users.models import CustomUser
 from CultureAnalyzer.view import SafePaginationListView
 
@@ -127,10 +131,12 @@ class MentorGroupsView(LoginRequiredMixin, SafePaginationListView):
     template_name = 'groups/mentor_groups_list.html'
     __search = False
     __search_label = 'Search'
+    __group_has_quiz = None
     paginate_by = PAGINATOR
 
     def get_context_data(self, **kwargs):
         context = super(MentorGroupsView, self).get_context_data(**kwargs)
+        context['has_quiz'] = self.__group_has_quiz
         context['search'] = self.__search
         context['search_label'] = self.__search_label
         return context
@@ -143,6 +149,7 @@ class MentorGroupsView(LoginRequiredMixin, SafePaginationListView):
                 name__contains=self.request.GET.get('data_search'))
             self.__search = True
             self.__search_label = self.request.GET.get('data_search')
+        self.__group_has_quiz = result.filter(shedule__end__gt=timezone.now())
         return result
 
 
@@ -250,27 +257,54 @@ class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
         return super(MentorGroupAdd, self).form_valid(form)
 
 
-class SetQuizForGroupView(UserPassesTestMixin, generic.CreateView):
-    model = DateOfQuiz
-    form_class = SetQuizForGroupForm
+class SheduleGroupList(UserPassesTestMixin, SafePaginationListView,
+                       SuccessMessageMixin):
+    model = Shedule
+    template_name = 'groups/quizzes_for_group_list.html'
+    paginate_by = PAGINATOR
+    context_object_name = 'quizzes'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['group'] = get_object_or_404(Group, pk=self.kwargs['pk'])
+        context['now'] = timezone.now
+        return context
+
+    def get_queryset(self):
+        quizzes = Shedule.objects.\
+            filter(group=self.kwargs['pk']).order_by('-end')
+        return quizzes
+
+    def test_func(self):
+        """If user in not mentor of this group rises 403 exception"""
+        return Group.objects.filter(pk=self.kwargs['pk']). \
+            filter(mentor__id=self.request.user.pk).exists()
+
+
+class SheduleGroupView(UserPassesTestMixin, generic.CreateView,
+                       SuccessMessageMixin):
+    model = Shedule
+    form_class = SheduleForm
     template_name = 'groups/set_quiz_for_group.html'
-    success_url = reverse_lazy('groups:mentor_groups_view')
 
     def form_valid(self, form):
         form.instance.group = Group.objects.get(pk=self.kwargs['pk'])
-        if DateOfQuiz.objects.filter(group=form.instance.group,
-                                     quiz=form.instance.quiz).exists():
-            new = DateOfQuiz.objects. \
+        if Shedule.objects.filter(group=form.instance.group,
+                                  quiz=form.instance.quiz).exists():
+            new = Shedule.objects. \
                 get(quiz=form.instance.quiz, group=form.instance.group)
             new.begin = form.instance.begin
             new.end = form.instance.end
         else:
-            new = DateOfQuiz.objects.create(begin=form.instance.begin,
-                                            end=form.instance.end,
-                                            quiz=form.instance.quiz,
-                                            group=form.instance.group)
+            new = Shedule.objects.create(begin=form.instance.begin,
+                                         end=form.instance.end,
+                                         quiz=form.instance.quiz,
+                                         group=form.instance.group)
         new.save()
-        return redirect(self.success_url)
+        messages.success(request=self.request,
+                         message=f'{form.instance.quiz} successfully was set '
+                                 f'for {form.instance.group}.')
+        return redirect('groups:quizzes_for_group_list', pk=self.kwargs['pk'])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -3,7 +3,7 @@ from django.db import models
 from users.models import CustomUser
 from quiz.models import Quizzes
 
-__all__ = ['Group', 'DateOfQuiz', ]
+__all__ = ['Group', 'Shedule', ]
 
 
 class Group(models.Model):
@@ -18,7 +18,7 @@ class Group(models.Model):
         return f'{self.name}'
 
 
-class DateOfQuiz(models.Model):
+class Shedule(models.Model):
     """
         Model for setting date and time for passing Quiz for Group
     """

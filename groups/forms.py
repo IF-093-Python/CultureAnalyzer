@@ -1,12 +1,12 @@
-from datetime import datetime
+from django.utils import timezone
 from django import forms
 
-from groups.models import Group, DateOfQuiz
+from groups.models import Group, Shedule
 from users.models import CustomUser
 from quiz.models import Quizzes
 from bootstrap_datepicker_plus import DateTimePickerInput
 
-__all__ = ['GroupCreateForm', 'GroupUpdateForm', 'SetQuizForGroupForm', ]
+__all__ = ['GroupCreateForm', 'GroupUpdateForm', 'SheduleForm', ]
 
 
 class GroupCreateForm(forms.ModelForm):
@@ -29,10 +29,10 @@ class GroupUpdateForm(forms.ModelForm):
         fields = ['user']
 
 
-class SetQuizForGroupForm(forms.ModelForm):
+class SheduleForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(SetQuizForGroupForm, self).__init__(*args, **kwargs)
-        date = datetime.now()
+        super(SheduleForm, self).__init__(*args, **kwargs)
+        date = timezone.now()
         quizzes = Quizzes.objects.order_by('type_of_quiz', 'title')
         self.fields['begin'].initial = date
         self.fields['end'].initial = date
@@ -40,9 +40,13 @@ class SetQuizForGroupForm(forms.ModelForm):
                                                      initial=quizzes[0])
 
     def clean(self):
-        cleaned_data = super(SetQuizForGroupForm, self).clean()
-        start = cleaned_data.get("begin").strftime('%Y-%m-%d %H:%M:%S')
-        end = cleaned_data.get("end").strftime('%Y-%m-%d %H:%M:%S')
+        cleaned_data = super(SheduleForm, self).clean()
+        start = cleaned_data.get("begin")
+        end = cleaned_data.get("end")
+        if cleaned_data.get("begin") < timezone.now():
+            msg = u"Start date already passed! Please enter valid date."
+            self.add_error('begin', msg)
+            raise forms.ValidationError(msg)
         if start > end:
             msg = u"End date should be after start date!"
             self.add_error('end', msg)
@@ -50,7 +54,7 @@ class SetQuizForGroupForm(forms.ModelForm):
         return cleaned_data
 
     class Meta:
-        model = DateOfQuiz
+        model = Shedule
         fields = ['begin', 'end', 'quiz']
         widgets = {
             'begin': DateTimePickerInput(options={

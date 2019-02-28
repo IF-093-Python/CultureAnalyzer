@@ -1,5 +1,6 @@
 import datetime
 import json
+import operator
 
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
@@ -12,7 +13,7 @@ from quiz.models import Results, Quizzes
 from tutors.models import Questions
 from .forms import QuestionSaveForm
 from users.models import CustomUser
-from groups.models import DateOfQuiz
+from groups.models import Shedule
 
 __all__ = ['TestPlayer', 'TestStart', ]
 
@@ -20,18 +21,26 @@ __all__ = ['TestPlayer', 'TestStart', ]
 class TestStart(ListView):
     template_name = 'test_player/start_test.html'
     context_object_name = 'quizzes'
+    __not_started_quizzes = None
 
     def get_queryset(self):
         """Takes list of all Quizzes for Group of user, that are actual now
         and shows only those that will end the last """
-        quizzes = DateOfQuiz.objects.filter(group__user=self.request.user). \
-            filter(end__gt=datetime.datetime.now()).\
-            order_by('quiz_id','-end').distinct('quiz_id')
-        return quizzes
+        quizzes = Shedule.objects.filter(group__user=self.request.user). \
+            filter(end__gt=timezone.now()). \
+            order_by('quiz_id', 'begin').distinct('quiz_id')
+        self.__not_started_quizzes = quizzes.filter(begin__gt=timezone.now())
+        result = sorted(quizzes, key=operator.attrgetter('end'),
+                        reverse=True)
+        return result
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['not_started'] = self.__not_started_quizzes
+        return context
 
 
-
-class TestPlayer(UserPassesTestMixin, FormView ):
+class TestPlayer(UserPassesTestMixin, FormView):
     template_name = 'test_player/test_player.html'
     form_class = QuestionSaveForm
 
@@ -63,15 +72,13 @@ class TestPlayer(UserPassesTestMixin, FormView ):
             Questions, quiz_id=self.kwargs['quiz_id'],
             question_number=self.kwargs['question_number'])
         current_answers = current_questions.answers_set.all()
-        if self.kwargs['quiz_id'] in self.request.session and self.kwargs[
-            'question_number'] in self.request.session[
-            self.kwargs['quiz_id']].keys():
+        if self.kwargs['quiz_id'] in self.request.session and \
+                self.kwargs['question_number'] in \
+                self.request.session[self.kwargs['quiz_id']].keys():
             d_answer = self.request.session[self.kwargs['quiz_id']].get(
                 self.kwargs['question_number'])
         else:
             d_answer = None
-        print(self.kwargs)
-        print(dict(kwargs, answers=current_answers, default_choice=d_answer))
         return dict(kwargs, answers=current_answers, default_choice=d_answer)
 
     def form_valid(self, form):
@@ -84,7 +91,6 @@ class TestPlayer(UserPassesTestMixin, FormView ):
             self.request.session[self.kwargs['quiz_id']] = s
 
         if form.cleaned_data.get('answers'):
-
             s.update({
                 self.kwargs['question_number']: form.cleaned_data.get(
                     'answers')})
@@ -92,7 +98,8 @@ class TestPlayer(UserPassesTestMixin, FormView ):
 
         if 'finish' in self.request.POST:
             quiz_id = self.kwargs['quiz_id']
-            user = CustomUser.objects.get(pk=self.request.session['_auth_user_id'])
+            user = CustomUser.objects.get(
+                pk=self.request.session['_auth_user_id'])
             quiz = Quizzes.objects.get(pk=quiz_id)
             timezone.now()
             date = datetime.datetime.now()
@@ -140,8 +147,8 @@ class TestPlayer(UserPassesTestMixin, FormView ):
                                         })
 
     def test_func(self):
-        a = DateOfQuiz.objects.filter(group__user=self.request.user). \
-            filter(end__gt=datetime.datetime.now()).\
-            filter(begin__lte=datetime.datetime.now()).\
+        a = Shedule.objects.filter(group__user=self.request.user). \
+            filter(end__gt=datetime.datetime.now()). \
+            filter(begin__lte=datetime.datetime.now()). \
             filter(quiz=self.kwargs['quiz_id'])
         return a.exists()

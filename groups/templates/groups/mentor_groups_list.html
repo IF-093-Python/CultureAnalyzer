@@ -49,17 +49,25 @@
       {% for group in group_list %}
       <tr>
           <td class="align-bottom">
-              <a class="align-middle" href="{% url 'groups:mentor_group_update' group.pk %}">
-                         {{ group }}</a>
+              <a class="align-middle"
+                 href="{% url 'groups:mentor_group_update' group.pk %}">
+                 {{ group }}</a>
 
               <a class="btn btn-light aligned float-right"
                  href="{% url 'groups:mentor_group_update' group.pk %}">
                   <span class="fa fa-edit"></span></a>
           </td>
+
           <td style="text-align: center">
-              <a class="btn btn-light"
-                 href="{% url 'groups:set_quiz_for_group' group.pk %}">
+              {% if group in has_quiz %}
+              <a class="btn btn-warning"
+                 href="{% url 'groups:quizzes_for_group_list' group.pk %}">
                   <span class="fa fa-clock"></span></a>
+              {% else %}
+              <a class="btn btn-light"
+                 href="{% url 'groups:quizzes_for_group_list' group.pk %}">
+                  <span class="fa fa-clock"></span></a>
+              {% endif %}
           </td>
           <td style="text-align: center">
               <a class="btn btn-light"

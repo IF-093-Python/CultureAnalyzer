@@ -1,3 +1,8 @@
 from django.test import TestCase
 
-# Create your tests here.
+from groups.models import Group, Shedule
+from groups.forms import GroupCreateForm, GroupUpdateForm, SheduleForm
+
+
+# class GroupCreateFormTest(TestCase):
+
