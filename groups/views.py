@@ -1,8 +1,10 @@
 from itertools import chain
+from django.utils import timezone
 from django.core import signing
 
 from django.contrib.auth.mixins import UserPassesTestMixin, \
     LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -11,8 +13,8 @@ from django.views import generic
 from django.db.models import Count
 from django.http import Http404
 
-from groups.forms import GroupCreateForm, GroupUpdateForm
-from groups.models import Group
+from groups.forms import GroupCreateForm, GroupUpdateForm, SheduleForm
+from groups.models import Group, Shedule
 from users.models import CustomUser
 from CultureAnalyzer.view import SafePaginationListView
 
@@ -149,11 +151,13 @@ class MentorGroupsView(PermissionRequiredMixin, SafePaginationListView):
     template_name = 'groups/mentor_groups_list.html'
     __search = False
     __search_label = 'Search'
+    __group_has_quiz = None
     paginate_by = PAGINATOR
     permission_required = 'groups.change_group'
 
     def get_context_data(self, **kwargs):
         context = super(MentorGroupsView, self).get_context_data(**kwargs)
+        context['has_quiz'] = self.__group_has_quiz
         context['search'] = self.__search
         context['search_label'] = self.__search_label
         return context
@@ -167,6 +171,7 @@ class MentorGroupsView(PermissionRequiredMixin, SafePaginationListView):
             result = result.filter(name__contains=search)
             self.__search = True
             self.__search_label = search
+        self.__group_has_quiz = result.filter(shedule__end__gt=timezone.now())
         return result
 
 
@@ -181,7 +186,6 @@ class MentorGroupUpdate(generic.UpdateView, SuccessMessageMixin,
     __search_label = 'Search'
     __users_in_group = None
     paginate_by = PAGINATOR
-    raise_exception = True
 
     def encode_data(self):
         """Makes hash for generation url for adding students to group."""
@@ -332,3 +336,63 @@ class AddNewUser(LoginRequiredMixin, generic.CreateView):
         group = self.__group
         group.user.add(self.request.user.pk)
         return redirect(self.success_url)
+
+
+class SheduleGroupList(UserPassesTestMixin, SafePaginationListView,
+                       SuccessMessageMixin):
+    model = Shedule
+    template_name = 'groups/shedule_group_list.html'
+    paginate_by = PAGINATOR
+    context_object_name = 'quizzes'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['group'] = get_object_or_404(Group, pk=self.kwargs['pk'])
+        context['now'] = timezone.now
+        return context
+
+    def get_queryset(self):
+        quizzes = Shedule.objects.\
+            filter(group=self.kwargs['pk']).order_by('-end')
+        return quizzes
+
+    def test_func(self):
+        """If user in not mentor of this group rises 403 exception"""
+        return Group.objects.filter(pk=self.kwargs['pk']). \
+            filter(mentor__id=self.request.user.pk).exists()
+
+
+class SheduleGroupView(UserPassesTestMixin, generic.CreateView,
+                       SuccessMessageMixin):
+    model = Shedule
+    form_class = SheduleForm
+    template_name = 'groups/shedule_group.html'
+
+    def form_valid(self, form):
+        form.instance.group = Group.objects.get(pk=self.kwargs['pk'])
+        if Shedule.objects.filter(group=form.instance.group,
+                                  quiz=form.instance.quiz).exists():
+            new = Shedule.objects. \
+                get(quiz=form.instance.quiz, group=form.instance.group)
+            new.begin = form.instance.begin
+            new.end = form.instance.end
+        else:
+            new = Shedule.objects.create(begin=form.instance.begin,
+                                         end=form.instance.end,
+                                         quiz=form.instance.quiz,
+                                         group=form.instance.group)
+        new.save()
+        messages.success(request=self.request,
+                         message=f'{form.instance.quiz} successfully was set '
+                                 f'for {form.instance.group}.')
+        return redirect('groups:shedule_group_list', pk=self.kwargs['pk'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['group'] = get_object_or_404(Group, pk=self.kwargs['pk'])
+        return context
+
+    def test_func(self):
+        """If user in not mentor of this group rises 403 exception"""
+        return Group.objects.filter(pk=self.kwargs['pk']). \
+            filter(mentor__id=self.request.user.pk).exists()
