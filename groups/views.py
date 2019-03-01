@@ -1,18 +1,23 @@
 from itertools import chain
+from django.core import signing
+
 from django.contrib.auth.mixins import UserPassesTestMixin, \
-    PermissionRequiredMixin
+    LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.db.models import Count
+from django.http import Http404
+
 from groups.forms import GroupCreateForm, GroupUpdateForm
 from groups.models import Group
 from users.models import CustomUser
 from CultureAnalyzer.view import SafePaginationListView
 
 PAGINATOR = 10
+SECRET = 'IF.093_Python'
 
 
 class GroupsList(PermissionRequiredMixin, SafePaginationListView):
@@ -164,6 +169,13 @@ class MentorGroupUpdate(generic.UpdateView, SuccessMessageMixin,
     paginate_by = PAGINATOR
     raise_exception = True
 
+    def encode_data(self):
+        """Makes hash for generation url for adding students to group"""
+        group = self.get_object()
+        signer = signing.Signer(SECRET)
+        value = signer.sign(group.name)
+        return value
+
     def get_success_url(self):
         pk = self.kwargs['pk']
         return reverse('groups:mentor_group_update', kwargs={'pk': pk})
@@ -173,6 +185,9 @@ class MentorGroupUpdate(generic.UpdateView, SuccessMessageMixin,
         context['search_label'] = self.__search_label
         context['users_in_group'] = self.__users_in_group
         context['search'] = self.__search
+        my_url = reverse_lazy('groups:add_new_user',
+                              args=[self.kwargs['pk'], '1'])
+        context['url'] = my_url[:-1] + self.encode_data()
         return context
 
     def test_func(self):
@@ -252,3 +267,42 @@ class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
         form.cleaned_data['user'] = \
             chain(form.cleaned_data['user'], users_in_group)
         return super(MentorGroupAdd, self).form_valid(form)
+
+
+class AddNewUser(LoginRequiredMixin, generic.CreateView):
+    model = Group
+    template_name = 'groups/add_new_user.html'
+    form_class = GroupUpdateForm
+    success_url = reverse_lazy('home')
+    __group = None
+
+    def decode(self):
+        signer = signing.Signer(SECRET)
+        try:
+            original = signer.unsign(self.kwargs['hash'])
+        except signing.BadSignature:
+            raise Http404
+        return original
+
+    def dispatch(self, request, *args, **kwargs):
+        hash = self.decode()
+        self.__group = get_object_or_404(Group, pk=self.kwargs['pk'])
+        if not (hash == self.__group.name):
+            raise Http404
+        return super(AddNewUser, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['trainee'] = CustomUser.objects. \
+            filter(pk=self.request.user.pk, groups__name='Trainee').exists()
+        if context['trainee']:
+            context['group'] = self.__group
+        else:
+            context['role'] = CustomUser.objects. \
+                get(pk=self.request.user.pk).groups.values()[0]['name']
+        return context
+
+    def form_valid(self, form):
+        group = self.__group
+        group.user.add(self.request.user.pk)
+        return redirect(self.success_url)
