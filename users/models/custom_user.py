@@ -1,8 +1,10 @@
 from PIL import Image
+from django import forms
 from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
 
 from users.choices import GENDER_CHOICES, EDUCATION_CHOICES
+from users.validators import PValidationError
 
 
 class CustomUser(AbstractUser):
@@ -44,14 +46,17 @@ class CustomUser(AbstractUser):
         if img is too big we decrease img
         because the less image is the less memory it takes
         """
-        super(CustomUser, self).save(**kwargs)
-        if self.image:
-            img = Image.open(self.image.path)
+        try:
+            super(CustomUser, self).save(**kwargs)
+            if self.image:
+                img = Image.open(self.image.path)
 
-            if img.height > 300 or img.width > 300:
-                output_size = (300, 300)
-                img.thumbnail(output_size)
-                img.save(self.image.path)
+                if img.height > 300 or img.width > 300:
+                    output_size = (300, 300)
+                    img.thumbnail(output_size)
+                    img.save(self.image.path)
+        except PValidationError:
+            raise PValidationError('You can`t save this image.')
 
     def __str__(self):
         return f'{self.username}'
