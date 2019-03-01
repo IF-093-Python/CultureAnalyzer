@@ -22,7 +22,7 @@ urlpatterns = [
         re_path('^group=(?P<group>\\w+[\\s,-]*\\w*)/$',
                 CurrentResultView.as_view(), name='result-chart-group'),
         re_path('^user=(?P<current_user>\\w+[\\s,-]*\\w*)/$',
-                CurrentResultView.as_view(),name='result-chart-group'),
+                CurrentResultView.as_view(),name='result-chart-user'),
 
         ])),
 ]
