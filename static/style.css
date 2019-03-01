@@ -2,7 +2,7 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: rgb(56, 58, 79);
+    background: #0E1621;
     color: #F5F5F5;
 }
 
@@ -260,13 +260,6 @@ table.table-hover > tbody > tr > *  {
     margin-right: 20px;
 }
 
-@media screen and (max-width: 400px) {
-    .circle_img {
-        height: 90px;
-        width: 90px;
-    }
-}
-
 .about {
     font-size: 20px;
     color: lightgray;
@@ -274,4 +267,11 @@ table.table-hover > tbody > tr > *  {
 
 .info-text {
     color: white;
+}
+
+@media screen and (max-width: 400px) {
+    .circle_img {
+        height: 90px;
+        width: 90px;
+    }
 }

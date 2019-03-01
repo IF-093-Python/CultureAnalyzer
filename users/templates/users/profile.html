@@ -1,28 +1,21 @@
 {%extends 'base.html' %}
 {% load static %}
+{% block title %}{{request.user.username.capitalize}}`s profile{% endblock title %}
 {% block content%}
-<div class="container">
-    <div class="row justify-content-md-center">
-        <div class="profile-section col-md-10">
-            <div>
-                <div class="media">
-                    {% if object.image %}
-                    <img src="{{ object.image.url }}" alt="" class="circle_img img-fluid" style="margin-left: -10px;">
-                    {% else %}
-                    <img src="{% static 'default.png' %}" alt="" class="circle_img" style="margin-left: -10px;">
-                    {% endif %}
-                    <div class="media-body">
-                        <a class="btn btn-outline-light mb-2" href="{% url 'profile-update' object.id %}">Edit profile</a><br>
-                        <a class="btn btn-outline-light" href="{% url 'password-change' object.id %}">Change password</a>
-                    </div>
-                </div>
+<div class="d-flex justify-content-center">
+        <div class="block-rounded bg-body-dark col-md-10">
+            <div class="d-flex justify-content-center m-2">
+                {% if object.image %}
+                <img src="{{ object.image.url }}" alt="" class="circle_img img-fluid" style="margin-left: -10px;">
+                {% else %}
+                <img src="{% static 'default.png' %}" alt="" class="circle_img" style="margin-left: -10px;">
+                {% endif %}
             </div>
-            <div class="row mt-5 about">
+            <div class="d-flex flex-wrap justify-content-center mt-5 about">
                 <div class="col-md-6">
                     <p>First name: <span class="info-text">{{ object.first_name }}</span></p>
                     <p>Last name: <span class="info-text">{{ object.last_name }}</span></p>
                 </div>
-
                 <div class="col-md-6">
                     <p>Username: <span class="info-text">{{ object.username }}</span></p>
                     <p>Email: <span class="info-text">{{ object.email }}</span></p>
@@ -35,7 +28,6 @@
                     <p>Education: <span class="info-text">{{ object.education }}</span></p>
                     {% endif %}
                 </div>
-
                 <div class="col-md-6">
                     {% if object.gender %}
                     <p>Gender: <span class="info-text">{{ object.gender }}</span></p>
@@ -45,9 +37,10 @@
                     {% endif %}
                 </div>
             </div>
+            <div class="d-flex justify-content-center mb-2">
+                <a class="btn btn-blue" href="{% url 'profile-update' object.id %}">Edit profile</a><br>
+                <a class="btn btn-blue ml-1" href="{% url 'password-change' object.id %}">Change password</a>
+            </div>
         </div>
-
-    </div>
-
 </div>
 {%endblock content%}
