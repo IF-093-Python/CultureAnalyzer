@@ -167,8 +167,9 @@ li {
 }
 
 .block-rounded {
-    border-radius: .25rem;
+    border-radius: .50rem;
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 20px;
 }
 
 .block-content {
@@ -260,6 +261,11 @@ table.table-hover > tbody > tr > *  {
     margin-right: 20px;
 }
 
+.admin_circle_img {
+    height: 100px;
+    width: 100px;
+}
+
 .about {
     font-size: 20px;
     color: lightgray;
@@ -274,4 +280,22 @@ table.table-hover > tbody > tr > *  {
         height: 90px;
         width: 90px;
     }
+    .admin_circle_img {
+        height: 70px;
+        width: 70px;
+    }
 }
+
+.user_list {
+    list-style-type: none;
+    margin-left: -40px;
+}
+
+.user_list li{
+    background: rgba(248,249,250, .1);
+    padding: 20px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+

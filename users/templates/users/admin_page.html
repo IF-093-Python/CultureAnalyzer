@@ -1,5 +1,5 @@
 {%extends 'base.html' %}
-{% load static  %}
+{% load static %}
 {% load cool_paginate %}
 {% load crispy_forms_tags %}
 {% block content%}
@@ -16,15 +16,13 @@
             <ul class="user_list">
                 {% for user in users %}
                 <li><a href="{% url 'change-profile' user.id %}">
-
-                    {% if user.image %}
-
-                    <img src="{{ user.image.url }}" alt="" class="circle_text" style="margin-left: -10px;">
-                    {% else %}
-                    <img src="{% static 'default.png' %}" alt="" class="circle_text" style="margin-left: -10px;">
-                    {% endif %}
-                    {{ user.username }}
-                </a>
+                        {% if user.image %}
+                        <img src="{{ user.image.url }}" alt="" class="circle_img admin_circle_img" style="margin-left: -10px;">
+                        {% else %}
+                        <img src="{% static 'default.png' %}" alt="" class="circle_img admin_circle_img" style="margin-left: -10px;">
+                        {% endif %}
+                        {{ user.username }}
+                    </a>
                 </li>
                 {% endfor %}
             </ul>

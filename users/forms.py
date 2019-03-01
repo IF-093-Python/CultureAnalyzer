@@ -12,7 +12,7 @@ __all__ = [
     'UserUpdateForm',
     'BlockUserForm',
     'GroupForm',
-    ]
+]
 
 EDUCATION_CHOICES_EMPTY_LABEL = (('', '--------------'),) + EDUCATION_CHOICES
 GENDER_CHOICES_EMPTY_LABEL = (('', '--------------'),) + GENDER_CHOICES
@@ -30,14 +30,14 @@ class UserLoginForm(AuthenticationForm):
         attrs={
             'class': 'input_attr',
             'placeholder': 'Username'
-            }
-        ))
+        }
+    ))
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={
             'class': 'input_attr',
             'placeholder': 'Password'
-            }
-        ), label='')
+        }
+    ), label='')
 
     class Meta:
         model = CustomUser
@@ -77,7 +77,7 @@ class UserUpdateForm(forms.ModelForm):
 class BlockUserForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['is_active', 'is_staff', 'is_superuser', 'groups']
+        fields = ['is_active', 'is_staff', 'groups']
 
 
 class GroupForm(forms.ModelForm):
