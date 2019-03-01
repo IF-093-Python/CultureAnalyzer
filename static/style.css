@@ -2,7 +2,7 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: #0E1621;
+    background: rgb(56, 58, 79);
     color: #F5F5F5;
 }
 
@@ -244,4 +244,34 @@ table.table-hover > tbody > tr > *  {
 .close {
     color: #fff; 
     opacity: 1;
+}
+
+
+.profile-section {
+    background: rgb(82, 85, 117);
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.circle_img {
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+@media screen and (max-width: 400px) {
+    .circle_img {
+        height: 90px;
+        width: 90px;
+    }
+}
+
+.about {
+    font-size: 20px;
+    color: lightgray;
+}
+
+.info-text {
+    color: white;
 }
