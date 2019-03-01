@@ -24,7 +24,7 @@
                        placeholder="Search"
                         {% if search %} value="{{ search }}" {% endif %}>
                     <button class="btn btn-blue ml-1" type="submit">
-                        <splan class="fas fa-search"></splan>
+                        <span class="fas fa-search"></span>
                     </button>
                 </div>
                 <a class="btn btn-blue mt-1" href="{% url 'tutors:create_question' quiz_id=quiz.pk %}">
@@ -54,7 +54,7 @@
                         <td class="align-middle">{{ question.num_answer }}</td>
                         <td>
                             <div class="d-flex justify-content-center">
-                            <a class="btn btn-light btn-option ml-1"
+                            <a class="btn btn-light btn-option"
                                href="{% url 'tutors:update_question' quiz.id question.id %}">
                                 <span class="fas fa-edit"></span></a>
                             <a class="btn btn-light btn-option ml-1"
