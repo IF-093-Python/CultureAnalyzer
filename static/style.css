@@ -248,7 +248,7 @@ table.table-hover > tbody > tr > *  {
 
 
 .profile-section {
-    background: rgb(82, 85, 117);
+    background: rgba(248,249,250, .1);
     padding: 30px;
     border-radius: 10px;
 }
