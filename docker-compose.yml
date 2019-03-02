@@ -1,0 +1,33 @@
+version: '3.6'
+
+services:
+  app:
+    build: .
+    restart: always
+    volumes:
+      - .:/var/www/CultureAnalyzer
+      - static_volume:/var/www/CultureAnalyzer/static
+    entrypoint:
+      - /var/www/CultureAnalyzer/docker-entrypoint.sh
+    networks:
+      - nginx_network
+
+  nginx:
+    image: nginx
+    restart: always
+    ports:
+      - 8080:8080
+    volumes:
+      - ./config/nginx/conf.d:/etc/nginx/conf.d
+      - static_volume:/var/www/CultureAnalyzer/static
+    depends_on:
+      - app
+    networks:
+      - nginx_network
+
+networks:
+  nginx_network:
+    driver: bridge
+
+volumes:
+  static_volume:
