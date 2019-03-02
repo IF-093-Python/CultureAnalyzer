@@ -16,7 +16,7 @@ services:
     image: nginx
     restart: always
     ports:
-      - 8080:8080
+      - 80:80
     volumes:
       - ./config/nginx/conf.d:/etc/nginx/conf.d
       - static_volume:/var/www/CultureAnalyzer/static
