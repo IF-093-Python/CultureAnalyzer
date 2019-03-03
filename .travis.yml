@@ -18,11 +18,8 @@ before_install:
 
 install:
   - pip install -r requirements.txt
-  - pip install pylint
-  - pip install pylint-django
-  - pip install coverage
-  - pip install fabric==2.3.1
-  - pip install cryptography==2.4.2
+  - pip install --no-deps -r build-requirements.txt
+  - pip install -r deploy-requirements.txt
 
 script:
   - coverage erase
