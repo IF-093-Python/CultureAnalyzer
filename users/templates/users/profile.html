@@ -3,22 +3,27 @@
 {% block title %}{{request.user.username.capitalize}}`s profile{% endblock title %}
 {% block content%}
 <div class="d-flex justify-content-center">
-        <div class="block-rounded bg-body-dark col-md-10">
-            <div class="d-flex justify-content-center m-2">
+        <div class="d-flex flex-wrap block-rounded bg-body-dark col-md-8">
+            <div class="col-md-4"><div class="d-flex justify-content-center m-2">
                 {% if object.image %}
-                <img src="{{ object.image.url }}" alt="" class="circle_img img-fluid" style="margin-left: -10px;">
+                <img src="{{ object.image.url }}" alt="" class="circle_img img-fluid">
                 {% else %}
                 <img src="{% static 'default.png' %}" alt="" class="circle_img" style="margin-left: -10px;">
                 {% endif %}
             </div>
-            <div class="d-flex flex-wrap justify-content-center mt-5 about">
+            <div class="d-flex justify-content-center flex-wrap">
+                <a class="btn btn-blue btn-block my-1" href="{% url 'profile-update' object.id %}">Edit profile</a><br>
+                <a class="btn btn-blue btn-block my-1" href="{% url 'password-change' object.id %}">Change password</a>
+            </div>
+            </div>
+            <div class="d-flex flex-wrap justify-content-center mt-2 col-md-6 about">
                 <div class="col-md-6">
                     <p>First name: <span class="info-text">{{ object.first_name }}</span></p>
                     <p>Last name: <span class="info-text">{{ object.last_name }}</span></p>
                 </div>
                 <div class="col-md-6">
                     <p>Username: <span class="info-text">{{ object.username }}</span></p>
-                    <p>Email: <span class="info-text">{{ object.email }}</span></p>
+                    <p>Email: <a href="mailto:{{ object.email }}" class="info-text">{{ object.email }}</a></p>
                 </div>
                 <div class="col-md-6">
                     {% if object.date_of_birth %}
@@ -36,10 +41,6 @@
                     <p>Age of experience: <span class="info-text">{{ object.experience }}</span></p>
                     {% endif %}
                 </div>
-            </div>
-            <div class="d-flex justify-content-center mb-2">
-                <a class="btn btn-blue" href="{% url 'profile-update' object.id %}">Edit profile</a><br>
-                <a class="btn btn-blue ml-1" href="{% url 'password-change' object.id %}">Change password</a>
             </div>
         </div>
 </div>
