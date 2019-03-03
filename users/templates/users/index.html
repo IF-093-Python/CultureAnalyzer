@@ -9,9 +9,19 @@ Culture Analyzer
             <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="{% url 'profile' request.user.id %}">
                 <div class="block-content">
                     <p class="mb-2 d-sm-block">
-                        <i class="fa fa-pencil-alt text-gray fa-2x"></i>
+                        <i class="fas fa-address-card text-gray fa-2x"></i>
                     </p>
                     <p class="font-w600 font-size-sm text-uppercase">Profile</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2">
+            <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="{% url 'test_player:start_test' %}">
+                <div class="block-content">
+                    <p class="mb-2 d-sm-block">
+                        <i class="fas fa-play text-gray fa-2x"></i>
+                    </p>
+                    <p class="font-w600 font-size-sm text-uppercase">Pass test</p>
                 </div>
             </a>
         </div>

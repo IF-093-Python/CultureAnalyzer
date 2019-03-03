@@ -2,35 +2,36 @@
 {% load crispy_forms_tags %}
 {% block title %}Your result{% endblock %}
 {% block content %}
-    <div class="border-bottom my-3 pb-1">
+    <div class="d-flex justify-content-center my-3">
     <h1>
-        <a class="btn btn-light" href="{{back}}">
-            <splan class="fas fa-chevron-left"></splan></a>
-        {{current.username}}
+        {{current.username.capitalize}}'s results
     </h1>
     </div>
+    <div class="table-responsive">
     <table class="table table-hover">
-        <thead>
+        <thead class="thead-light">
         <tr>
-            <th>Test</th>
+            <th scope="col">Test</th>
             <th scope="col">Description</th>
-            <th>Pass date</th>
-            <th style="width: 15%">See more</th>
+            <th scope="col">Pass date</th>
+            <th scope="col">See more</th>
         </tr>
         </thead>
         <tbody>
         {% for result in results %}
             <tr>
-                <td style="vertical-align: middle"><a
+                <td class="align-middle"><a
                         href="{% url 'quiz:result-chart-user' pk=result.id current_user=current.username%}">
-                    {{result.quiz}}</a>
+                    {{ result.quiz.title.capitalize }}</a>
                 </td>
-                <td>{{ result.quiz.description }}</td>
-                <td>{{ result.pass_date }}</td>
-                <td class="d-flex justify-content-around">
-                    <a style="min-width: 40%" class="btn btn-primary"
+                <td class="align-middle">{{ result.quiz.description|truncatechars:70 }}</td>
+                <td class="align-middle">{{ result.pass_date }}</td>
+                <td>
+                    <div class="d-flex justify-content-center">
+                    <a class="btn btn-light"
                        href="{% url 'quiz:result-chart-user' pk=result.id current_user=current.username%}">
                         <em class="fa fa-eye"></em></a>
+                    </div>
                 </td>
             </tr>
         {% empty %}
@@ -44,4 +45,5 @@
         {% endfor %}
         </tbody>
     </table>
+    </div>
 {% endblock %}
