@@ -37,7 +37,7 @@ class SheduleForm(forms.ModelForm):
         self.fields['begin'].initial = date
         self.fields['end'].initial = date
         self.fields['quiz'] = forms.ModelChoiceField(queryset=quizzes,
-                                                     initial=quizzes[0])
+                                                     initial=quizzes.first())
 
     def clean(self):
         cleaned_data = super(SheduleForm, self).clean()
