@@ -7,6 +7,7 @@ services:
     volumes:
       - .:/var/www/CultureAnalyzer
       - static_volume:/var/www/CultureAnalyzer/static
+      - ./media:/var/www/CultureAnalyzer/media
     entrypoint:
       - /var/www/CultureAnalyzer/docker-entrypoint.sh
     networks:
@@ -20,6 +21,7 @@ services:
     volumes:
       - ./config/nginx/conf.d:/etc/nginx/conf.d
       - static_volume:/var/www/CultureAnalyzer/static
+      - ./media:/var/www/CultureAnalyzer/media
     depends_on:
       - app
     networks:
