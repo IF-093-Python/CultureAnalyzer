@@ -18,7 +18,7 @@ from groups.models import Group, Shedule
 from users.models import CustomUser
 from CultureAnalyzer.view import SafePaginationListView
 
-PAGINATOR = 10
+PAGINATOR = 50
 SECRET = 'IF.093_Python'
 
 
