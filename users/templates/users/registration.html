@@ -3,17 +3,17 @@
 {% block title %}Register{% endblock title %}
 {% block anonymous_user %}
     <div class="container-fluid col-md-8">
+        <legend class="border-bottom mb-4">Registration</legend>
         <form method="POST">
             {% csrf_token %}
-            <fieldset class="d-flex flex-wrap">
-                <legend class="border-bottom mb-4">Registration</legend>
+            <div class="d-flex flex-wrap">
                 <div class="col-md-6">{{ form.username|as_crispy_field }}</div>
                 <div class="col-md-6">{{ form.email|as_crispy_field }}</div>
                 <div class="col-md-6">{{ form.first_name|as_crispy_field }}</div>
                 <div class="col-md-6">{{ form.last_name|as_crispy_field }}</div>
                 <div class="col-md-6">{{ form.password1|as_crispy_field }}</div>
                 <div class="col-md-6">{{ form.password2|as_crispy_field }}</div>
-            </fieldset>
+            </div>
             <div class="form-group">
                 <button class="btn btn-blue" type="submit">Register
                 </button>
@@ -25,6 +25,5 @@
                                             class="ml-2">Login</a>
             </p>
         </div>
-        </form>
     </div>
 {% endblock anonymous_user %}
