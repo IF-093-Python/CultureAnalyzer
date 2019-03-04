@@ -1,11 +1,10 @@
-from django.contrib.auth import views as auth_views
+from django.contrib.auth import views as auth_views, get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView, UpdateView
 
 from .forms import UserRegisterForm, UserUpdateForm
-from .models import CustomUser
 
 __all__ = [
     'LoginView',
@@ -41,7 +40,7 @@ class UserRegisterView(CreateView):
 
 class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'users/profile.html'
-    model = CustomUser
+    model = get_user_model()
     form_class = UserUpdateForm
     success_url = '/'
 

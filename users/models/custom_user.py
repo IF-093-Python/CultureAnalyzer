@@ -1,8 +1,10 @@
 from PIL import Image
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.transaction import atomic
 
 from users.choices import GENDER_CHOICES, EDUCATION_CHOICES
+from users.validators import PValidationError
 
 
 class CustomUser(AbstractUser):
@@ -24,19 +26,24 @@ class CustomUser(AbstractUser):
     email = models.EmailField(blank=True, max_length=254,
                               verbose_name='email address', unique=True)
 
+    @atomic
     def save(self, **kwargs):
         """
         if img is too big we decrease img
         because the less image is the less memory it takes
         """
-        super(CustomUser, self).save(**kwargs)
-        if self.image:
-            img = Image.open(self.image.path)
-
-            if img.height > 300 or img.width > 300:
-                output_size = (300, 300)
-                img.thumbnail(output_size)
-                img.save(self.image.path)
+        try:
+            super(CustomUser, self).save(**kwargs)
+            if self.image:
+                img = Image.open(self.image.path)
+                if img.height > 300 or img.width > 300:
+                    output_size = (300, 300)
+                    img.thumbnail(output_size)
+                    img.save(self.image.path)
+        except (OSError, IOError):
+            self.image = None
+            super(CustomUser, self).save(update_fields=['image'])
+            raise PValidationError('Image can`t be saved')
 
     def __str__(self):
         return f'{self.username}'

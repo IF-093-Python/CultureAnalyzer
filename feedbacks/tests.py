@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 from ddt import ddt, data
+from django.contrib.auth import get_user_model
 from django.test import TestCase as DjangoTestCase
 
 from feedbacks.forms import FeedbackForm
@@ -8,7 +9,6 @@ from feedbacks.models import Feedback
 from feedbacks.tests_data.test_form_data import (FEEDBACK_INVALID_DATA,
                                                  FEEDBACK_VALID_DATA)
 from feedbacks.tests_data.test_view_data import PAGE_STRING_VALUES
-from users.models import CustomUser
 
 __all__ = ['FeedbackFormTest', ]
 
@@ -29,7 +29,7 @@ class FeedbackFormTest(TestCase):
 @ddt
 class FeedbackListViewTest(DjangoTestCase):
     def setUp(self):
-        CustomUser.objects.create_user('user', password='test').save()
+        get_user_model().objects.create_user('user', password='test').save()
         for i in range(10):
             Feedback.objects.create(feedback='Some text', min_value=i + 1,
                                     max_value=i + 5, indicator='PDI')

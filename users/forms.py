@@ -1,8 +1,8 @@
 from django import forms
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 from .choices import GENDER_CHOICES, EDUCATION_CHOICES
-from .models import CustomUser
 from .validators import ProfileValidator
 
 __all__ = [
@@ -37,7 +37,7 @@ class UserLoginForm(AuthenticationForm):
     ), label='')
 
     class Meta:
-        model = CustomUser
+        model = get_user_model()
         fields = ['username', 'password']
 
 
@@ -47,7 +47,7 @@ class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
 
     class Meta:
-        model = CustomUser
+        model = get_user_model()
         fields = ['username', 'email', 'first_name',
                   'last_name', 'password1', 'password2']
 
@@ -59,7 +59,7 @@ class UserUpdateForm(forms.ModelForm):
     gender = forms.ChoiceField(choices=GENDER_CHOICES_EMPTY_LABEL)
 
     class Meta:
-        model = CustomUser
+        model = get_user_model()
         fields = ['first_name', 'last_name', 'image', 'experience',
                   'date_of_birth', 'education', 'gender']
 

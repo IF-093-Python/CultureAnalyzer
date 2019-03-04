@@ -1,8 +1,12 @@
 from PIL import Image
 from django.db import models
+from django.db.transaction import atomic
 
 from users.choices import GENDER_CHOICES, EDUCATION_CHOICES
-from .custom_user import CustomUser
+# import CustomUser instead of get_user_model because CustomUser
+# is not initialized yet and get_user_model cannot return CustomUser
+from users.models.custom_user import CustomUser
+from users.validators import PValidationError
 
 __all__ = ['Profile', 'Role']
 
@@ -38,19 +42,24 @@ class Profile(models.Model):
     education = models.CharField(choices=EDUCATION_CHOICES, max_length=50,
                                  null=True)
 
+    @atomic
     def save(self, **kwargs):
         """
         if img is too big we decrease img
         because the less image is the less memory it takes
         """
-        super(Profile, self).save(**kwargs)
-        if self.image:
-            img = Image.open(self.image.path)
-
-            if img.height > 300 or img.width > 300:
-                output_size = (300, 300)
-                img.thumbnail(output_size)
-                img.save(self.image.path)
+        try:
+            super(Profile, self).save(**kwargs)
+            if self.image:
+                img = Image.open(self.image.path)
+                if img.height > 300 or img.width > 300:
+                    output_size = (300, 300)
+                    img.thumbnail(output_size)
+                    img.save(self.image.path)
+        except (OSError, IOError):
+            self.image = None
+            super(Profile, self).save(update_fields=['image'])
+            raise PValidationError('Image can`t be saved')
 
     def __str__(self):
         return f'{self.user.username} => {self.role.name}'

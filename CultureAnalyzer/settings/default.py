@@ -37,12 +37,12 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_cool_paginator',
 
-    'users.apps.UsersConfig',
     'groups',
     'tutors',
     'indicators',
     'quiz',
     'feedbacks',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -127,4 +127,3 @@ LOGIN_URL = 'login'
 ITEMS_ON_PAGE = 5
 
 TEST_RUNNER = 'CultureAnalyzer.tests.CustomTestRunner'
-
