@@ -15,7 +15,7 @@ Culture Analyzer
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-4 col-xl-2">
+        <div class="col-6 col-md-4 col-xl-2 {% if not perms.quiz.view_results %}d-none{% endif %}">
             <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="{% url 'test_player:start_test' %}">
                 <div class="block-content">
                     <p class="mb-2 d-sm-block">
@@ -25,7 +25,7 @@ Culture Analyzer
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-4 col-xl-2">
+        <div class="col-6 col-md-4 col-xl-2 {% if not perms.users.view_customuser %}d-none{% endif %}">
             <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="javascript:void(0)">
                 <div class="block-content">
                     <p class="mb-2 d-sm-block">
@@ -35,7 +35,7 @@ Culture Analyzer
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-4 col-xl-2">
+        <div class="col-6 col-md-4 col-xl-2 {% if not perms.groups.view_group %}d-none{% endif %}">
             <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="javascript:void(0)">
                 <div class="block-content">
                     <p class="mb-2 d-sm-block">
@@ -45,7 +45,7 @@ Culture Analyzer
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-4 col-xl-2">
+        <div class="col-6 col-md-4 col-xl-2 {% if not perms.quiz.view_quizzes %}d-none{% endif %}">
             <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="{% url 'quiz:quizzes-list' %}">
                 <div class="block-content">
                     <p class="mb-2 d-sm-block">
@@ -55,7 +55,7 @@ Culture Analyzer
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-4 col-xl-2">
+        <div class="col-6 col-md-4 col-xl-2 {% if not perms.feedbacks.view_feedback %}d-none{% endif %}">
             <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="{% url 'feedback-list' %}">
                 <div class="block-content">
                     <p class="mb-2 d-sm-block">
@@ -65,7 +65,7 @@ Culture Analyzer
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-4 col-xl-2">
+        <div class="col-6 col-md-4 col-xl-2 {% if not perms.indicators.view_country_indicator %}d-none{% endif %}">
             <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="{% url 'country_indicator:country_indicator_list' %}">
                 <div class="block-content">
                     <p class="mb-2 d-sm-block">
