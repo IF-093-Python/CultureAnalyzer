@@ -176,3 +176,10 @@ a, a:hover, a:focus {
 #id_answers  {
   list-style-type: none;
 }
+
+p.result-feedback {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: black;
+}

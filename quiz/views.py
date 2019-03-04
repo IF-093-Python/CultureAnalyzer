@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Count, Q
 from django.urls import reverse_lazy
 from django.views import generic
+from django.http import JsonResponse
 
 from quiz.forms import QuizCreateForm
 from quiz.models import Quizzes, Results
@@ -16,6 +17,7 @@ from indicators.models import CountryIndicator
 from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
 from groups.models import Group
 from users.models import CustomUser
+from feedbacks.models import Recommendation
 
 
 class QuizzesList(PermissionRequiredMixin,
@@ -160,3 +162,25 @@ class CurrentResultView(PermissionRequiredMixin, UserPassesTestMixin,
                 pk=self.kwargs['pk'], mentor__id=self.request.user.pk).exists()
         else:
             return self.kwargs['current_user'] == self.request.user.username
+
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            try:
+                feedback_id = request.GET['feedback_id']
+                offset = int(request.GET['offset'])
+                paginate_by = int(request.GET['paginate_by'])
+            except (KeyError, ValueError):
+                message = 'Incorrect request parameters'
+                return JsonResponse({'status': 'false', 'message': message},
+                                    status=400)
+
+            query = Recommendation.objects.filter(feedback__id=feedback_id)\
+                                            [offset:offset+paginate_by]
+            recommendations = list(query.values_list('recommendation',
+                                                     flat=True))
+            recommendations_count = Recommendation.objects\
+                .filter(feedback__id=feedback_id).count()
+            end = 'end' if recommendations_count <= offset+paginate_by else ''
+            return JsonResponse({'end': end,
+                                 'recommendations': recommendations})
+        return super().get(request, *args, **kwargs)
