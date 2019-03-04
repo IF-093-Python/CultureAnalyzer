@@ -274,3 +274,7 @@ table.table-hover > tbody > tr > *  {
         width: 90px;
     }
 }
+
+#hint_id_password1 {
+    display: none;
+}
