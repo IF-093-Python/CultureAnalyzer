@@ -1,10 +1,10 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import Group
+from django.contrib.auth import get_user_model
 from django.forms import CheckboxSelectMultiple
 
 from .choices import GENDER_CHOICES, EDUCATION_CHOICES
-from .models import CustomUser
 from .validators import ProfileValidator, PValidationError
 
 __all__ = [
@@ -41,7 +41,7 @@ class UserLoginForm(AuthenticationForm):
     ), label='')
 
     class Meta:
-        model = CustomUser
+        model = get_user_model()
         fields = ['username', 'password']
 
 
@@ -51,7 +51,7 @@ class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
 
     class Meta:
-        model = CustomUser
+        model = get_user_model()
         fields = ['username', 'email', 'first_name',
                   'last_name', 'password1', 'password2']
 
@@ -69,7 +69,7 @@ class UserUpdateForm(forms.ModelForm):
     gender = forms.ChoiceField(choices=GENDER_CHOICES_EMPTY_LABEL)
 
     class Meta:
-        model = CustomUser
+        model = get_user_model()
         fields = ['first_name', 'last_name', 'image', 'experience',
                   'date_of_birth', 'education', 'gender']
 
@@ -92,8 +92,8 @@ class BlockUserForm(forms.ModelForm):
         self.fields['groups'].widget = CheckboxSelectMultiple()
 
     class Meta:
-        model = CustomUser
-        fields = ['is_active', 'is_staff', 'groups']
+        model = get_user_model()
+        fields = ['is_active', 'groups']
 
 
 class GroupForm(forms.ModelForm):

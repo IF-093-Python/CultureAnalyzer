@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, \
 from django.shortcuts import redirect
 from django.views.generic import CreateView, UpdateView, ListView, DeleteView, DetailView
 from django.contrib.auth.models import Group
+from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
 
 from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
@@ -17,7 +18,6 @@ from .forms import (
     BlockUserForm,
     GroupForm,
     )
-from .models import CustomUser
 
 __all__ = [
     'LoginView',
@@ -54,7 +54,7 @@ class UserRegisterView(CreateView):
 
 class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     template_name = 'users/profile.html'
-    model = CustomUser
+    model = get_user_model()
 
     def test_func(self):
         """
@@ -68,7 +68,7 @@ class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
 class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'users/update_profile.html'
-    model = CustomUser
+    model = get_user_model()
     form_class = UserUpdateForm
     success_url = '/'
 
@@ -93,7 +93,7 @@ class PasswordChangeView(UserPassesTestMixin, UpdateView):
     template_name = 'users/password_change.html'
     form_class = PasswordChangeForm
     success_url = '/'
-    model = CustomUser
+    model = get_user_model()
 
     def get_form_kwargs(self):
         kwargs = super(PasswordChangeView, self).get_form_kwargs()
@@ -112,7 +112,7 @@ class PasswordChangeView(UserPassesTestMixin, UpdateView):
 
 class AdminListView(LoginRequiredMixin, PermissionRequiredMixin,
                     SafePaginationListView):
-    model = CustomUser
+    model = get_user_model()
     template_name = 'users/admin_page.html'
     context_object_name = 'users'
     paginate_by = ITEMS_ON_PAGE
@@ -131,7 +131,7 @@ class ProfileUpdateView(LoginRequiredMixin, PermissionRequiredMixin,
                         UpdateView):
     template_name = 'users/user_detail.html'
     form_class = BlockUserForm
-    model = CustomUser
+    model = get_user_model()
     success_url = '/admin_page'
     permission_required = 'users.change_customuser'
 
@@ -168,7 +168,7 @@ class DeleteGroups(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
 
 
 class CreateGroup(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    model = CustomUser
+    model = get_user_model()
     form_class = GroupForm
     context_object_name = 'group'
     template_name = 'users/group_permissions.html'
