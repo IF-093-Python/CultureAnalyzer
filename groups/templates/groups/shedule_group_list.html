@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load django_bootstrap_breadcrumbs %}
+{% load tz %}
+
+
+{% block title %}Quizzes for {{ group.name }}{% endblock %}
+
+{% block content %}
+
+  {% block breadcrumbs %}
+    {% breadcrumb "Home" "/" %}
+    {% breadcrumb "Groups" "groups:mentor_groups_view" %}
+    {% breadcrumb group.name "groups:shedule_group_list" group.pk %}
+    <div style="color: blue">
+    {% render_breadcrumbs %}
+    </div>
+  {% endblock breadcrumbs%}
+
+{% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+            <a {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message }}</a>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+<h1>Quizzes for "{{ group.name }}"</h1>
+
+    <a class="btn btn-danger" title="Back to all groups"
+       href="{% url 'groups:mentor_groups_view' %}">&#8630; Back</a>
+    <a class="btn btn-primary"
+                 href="{% url 'groups:shedule_group' group.pk %}">
+        <span class="fa fa-clock"></span> Set quiz </a>
+    <br>
+    <strong>Now: </strong> {{ now }}
+{% if quizzes %}
+<table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Test</th>
+            <th scope="col">Description</th>
+            <th>Begin</th>
+            <th>End</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for quiz in quizzes %}
+            {% if quiz.end|utc > now|utc %}
+            <tr style="color: red">
+            {% else %}
+            <tr>
+            {% endif %}
+                <td style="vertical-align: middle"> {{ quiz.quiz }} </td>
+                <td>{{ quiz.quiz.description }}</td>
+                <td>{{ quiz.begin }}</td>
+                <td> {{ quiz.end }} </td>
+            </tr>
+        {% empty %}
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+<p>There had been no quizzes set for this group</p>
+{% endif %}
+
+{% endblock content %}

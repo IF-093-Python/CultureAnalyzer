@@ -36,7 +36,7 @@ class Feedback(models.Model):
 
 class Recommendation(models.Model):
     recommendation = models.TextField()
-    feedback = models.ForeignKey('Feedback', on_delete=models.PROTECT)
+    feedback = models.ForeignKey('Feedback', on_delete=models.CASCADE)
 
     def get_absolute_url(self):
         return reverse('feedback-detail', args=[self.feedback.pk])

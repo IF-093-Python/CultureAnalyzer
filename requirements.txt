@@ -10,3 +10,4 @@ ddt==1.2.0
 djangorestframework==3.9.1
 djangorestframework-simplejwt==3.3
 django-bootstrap-breadcrumbs==0.9.1
+django-bootstrap-datepicker-plus==3.0.5
