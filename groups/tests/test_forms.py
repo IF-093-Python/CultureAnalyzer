@@ -18,7 +18,6 @@ class SheduleFormTest(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_invalid_shedule_form(self):
-        quiz = Quizzes.objects.create()
         form = SheduleForm(data={
             'begin': datetime.datetime.now() + datetime.timedelta(days=1),
             'end': datetime.datetime.now() + datetime.timedelta(days=2),
@@ -38,7 +37,7 @@ class SheduleFormTest(TestCase):
     def test_invalid_shedule_form_begin_less_then_now(self):
         quiz = Quizzes.objects.create()
         form = SheduleForm(data={
-            'begin': datetime.datetime.now(),
+            'begin': datetime.datetime.now() - datetime.timedelta(days=1),
             'end': datetime.datetime.now() + datetime.timedelta(days=1),
             'quiz': quiz.pk
         })

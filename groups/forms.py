@@ -1,5 +1,6 @@
 from django.utils import timezone
 from django import forms
+import datetime
 
 from groups.models import Group, Shedule
 from users.models import CustomUser
@@ -43,7 +44,8 @@ class SheduleForm(forms.ModelForm):
         cleaned_data = super(SheduleForm, self).clean()
         start = cleaned_data.get("begin")
         end = cleaned_data.get("end")
-        if cleaned_data.get("begin") < timezone.now():
+        if cleaned_data.get("begin") < \
+                (timezone.now()+timezone.timedelta(minutes=1)):
             msg = u"Start date already passed! Please enter valid date."
             self.add_error('begin', msg)
             raise forms.ValidationError(msg)
