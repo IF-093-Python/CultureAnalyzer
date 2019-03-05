@@ -3,13 +3,14 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin, \
     UserPassesTestMixin, PermissionRequiredMixin
 from django.shortcuts import redirect
-from django.views.generic import CreateView, UpdateView, ListView, DeleteView
+from django.views.generic import CreateView, UpdateView, ListView, DeleteView, DetailView
 from django.contrib.auth.models import Group
 from django.urls import reverse_lazy
 
 from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
 from CultureAnalyzer.view import SafePaginationListView
 from .filters import admin_search
+from .validators import PValidationError
 from .forms import (
     UserRegisterForm,
     UserUpdateForm,
@@ -51,8 +52,13 @@ class UserRegisterView(CreateView):
         return super(UserRegisterView, self).get(request, *args, **kwargs)
 
 
-class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class UserDetailView(DetailView):
     template_name = 'users/profile.html'
+    model = CustomUser
+
+
+class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    template_name = 'users/update_profile.html'
     model = CustomUser
     form_class = UserUpdateForm
     success_url = '/'
@@ -65,6 +71,13 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         current_user = self.get_object()
 
         return bool(self.request.user == current_user)
+
+    def form_valid(self, form):
+        try:
+            return super().form_valid(form)
+        except PValidationError as err:
+            form.add_error('__all__', err)
+            return super().form_invalid(form)
 
 
 class PasswordChangeView(UserPassesTestMixin, UpdateView):
@@ -119,7 +132,7 @@ class ListGroups(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     context_object_name = 'group'
     template_name = 'users/group.html'
     queryset = Group.objects.all()
-    permission_required = 'users.add_group'
+    permission_required = 'auth.view_group'
 
 
 class UpdateGroups(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
@@ -127,7 +140,7 @@ class UpdateGroups(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Group
     form_class = GroupForm
     success_url = reverse_lazy('group_perm-list')
-    permission_required = 'users.change_group'
+    permission_required = 'auth.change_group'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -142,7 +155,7 @@ class DeleteGroups(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     form_class = GroupForm
     success_url = reverse_lazy('group_perm-list')
     success_message = 'Group: "%(name)s" was deleted successfully'
-    permission_required = 'users.delete_group'
+    permission_required = 'auth.delete_group'
 
 
 class CreateGroup(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
@@ -152,4 +165,4 @@ class CreateGroup(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     template_name = 'users/group_permissions.html'
     success_url = reverse_lazy('group_perm-list')
     success_message = 'Country indicator: "%(name)s" was created successfully'
-    permission_required = 'users.add_group'
+    permission_required = 'auth.add_group'

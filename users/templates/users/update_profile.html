@@ -1,0 +1,43 @@
+{%extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content%}
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="profile-section col-md-10">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col">
+                        {{ form.first_name|as_crispy_field }}
+                    </div>
+                    <div class="col">
+                        {{ form.last_name|as_crispy_field }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        {{ form.education|as_crispy_field }}
+                    </div>
+                    <div class="col">
+                        {{ form.gender|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        {{ form.experience|as_crispy_field }}
+                    </div>
+                    <div class="col">
+                        {{ form.date_of_birth|as_crispy_field }}
+                    </div>
+
+                    <div class="col">
+                        {{ form.image|as_crispy_field }}
+                    </div>
+                </div>
+                <button class="btn btn-outline-info" type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
+{%endblock content%}
