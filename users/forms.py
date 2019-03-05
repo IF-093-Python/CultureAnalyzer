@@ -13,7 +13,7 @@ __all__ = [
     'UserUpdateForm',
     'BlockUserForm',
     'GroupForm',
-    ]
+]
 
 EDUCATION_CHOICES_EMPTY_LABEL = (('', '--------------'),) + EDUCATION_CHOICES
 GENDER_CHOICES_EMPTY_LABEL = (('', '--------------'),) + GENDER_CHOICES
@@ -59,8 +59,6 @@ class UserRegisterForm(UserCreationForm):
 class UserUpdateForm(forms.ModelForm):
     image = forms.ImageField(widget=forms.FileInput, required=False)
     experience = forms.IntegerField(label='Experience in years')
-    date_of_birth = forms.DateField(widget=DateInput())
-    experience = forms.IntegerField()
     date_of_birth = forms.DateField(widget=DateInput(attrs={
         'max': '2000-12-31',
         'value': '2000-01-01',
