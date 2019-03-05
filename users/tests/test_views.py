@@ -43,15 +43,17 @@ class TestViews(TestCase):
         self.assertEquals(response.status_code, 302)
 
     def test_update_profile_view(self):
-        self.client.post(reverse('profile-update',
-                                 args=[self.user.id]), {
-                             'first_name': 'Yurii',
-                             'experience': 1,
-                             'date_of_birth': datetime.date(
-                                 1999, 5, 21),
-                             'education': 'Secondary',
-                             'gender': 'Male',
-                         })
+        self.response = self.client.post(reverse('profile-update',
+                                                 args=[self.user.id]), {
+                                             'first_name': 'Yurii',
+                                             'experience': 1,
+                                             'date_of_birth': datetime.date(
+                                                 1999, 5, 21),
+                                             'education': 'Secondary',
+                                             'gender': 'Male',
+                                         })
+
+        self.user.refresh_from_db()
         self.assertEquals(self.user.first_name, 'Yurii')
         self.assertEquals(self.user.education, 'Secondary')
         self.assertEquals(self.user.gender, 'Male')
