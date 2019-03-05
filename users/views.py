@@ -146,6 +146,7 @@ class ListGroups(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # In this case, only superuser will have access
         context['can_change_permissions'] = self.request.user.has_perm(
             perm='auth.change_group')
         context['can_delete_permissions'] = self.request.user.has_perm(
@@ -163,9 +164,6 @@ class UpdateGroups(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['has_permissions'] = self.request.user.has_perm(
-            perm='auth.change_group')
-        print(context)
         context['update'] = True
         return context
 
