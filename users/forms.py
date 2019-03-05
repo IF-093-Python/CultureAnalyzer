@@ -58,7 +58,10 @@ class UserRegisterForm(UserCreationForm):
 class UserUpdateForm(forms.ModelForm):
     image = forms.ImageField(widget=forms.FileInput, required=False)
     experience = forms.IntegerField()
-    date_of_birth = forms.DateField(widget=DateInput())
+    date_of_birth = forms.DateField(widget=DateInput(attrs={
+        'max': '2000-12-31',
+        'value': '2000-01-01',
+    }))
     education = forms.ChoiceField(choices=EDUCATION_CHOICES_EMPTY_LABEL)
     gender = forms.ChoiceField(choices=GENDER_CHOICES_EMPTY_LABEL)
 
@@ -72,6 +75,12 @@ class UserUpdateForm(forms.ModelForm):
             return ProfileValidator.validate(self.cleaned_data)
         except PValidationError as err:
             self.add_error('experience', str(err))
+
+    def clean_date_of_birth(self):
+        try:
+            return ProfileValidator.date_validation(self.cleaned_data)
+        except PValidationError as err:
+            self.add_error('date_of_birth', str(err))
 
 
 class BlockUserForm(forms.ModelForm):

@@ -1,5 +1,5 @@
 from PIL import Image
-from django import forms
+from datetime import date
 from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
 
@@ -40,6 +40,10 @@ class CustomUser(AbstractUser):
     def is_mentor(self):
         group = Group.objects.get(name='Mentor')
         return group in self.groups.all()
+
+    @property
+    def get_age(self):
+        return (date.today() - self.date_of_birth).days / 365.2425
 
     def save(self, **kwargs):
         """
