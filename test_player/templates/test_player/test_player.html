@@ -30,11 +30,10 @@
         <div class="col-md-2">
             <p>Quiz navigation</p>
             {% if questions %}
-
             <div class="d-flex flex-wrap">
-            {% with current_quiz=request.session|lookup:quiz_id %}
+                {% with current_quiz=request.session|lookup:quiz_id %}
                 {% for question in questions %}
-                <input type='Submit' class="btn btn-navigation btn-sm sm1
+                <input type='Submit' class="btn btn-navigation btn-sm m-1
                                {% if current_question.question_number == question.question_number %}
                                btn-blue
                                {% elif current_quiz and current_quiz|lookup:question.question_number %}
@@ -42,8 +41,8 @@
                                btn-outline-light
                                {% endif %}" name="next" value="{{ question.question_number }}">
                 {% endfor %}
-            {% endwith %}
-                        </div>
+                {% endwith %}
+            </div>
             <br>
             <!-- Modal -->
             <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
