@@ -176,7 +176,6 @@ class CreateGroupViewTest(TestCase):
         self.client.post(reverse('groups:create-group'),
                          data={'name': 'somename', 'mentor': mentors})
         group = Group.objects.filter(mentor__in=mentors)
-        self.assertTrue(Group.objects.filter(
-            name='somename', mentor__in=mentors).exists())
+        self.assertTrue(Group.objects.filter(mentor__in=mentors).exists())
         self.assertTrue(len(group) == 4)
         self.assertTrue(len(group.distinct()) == 1)

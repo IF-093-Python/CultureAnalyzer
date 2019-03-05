@@ -313,3 +313,8 @@ table.table-hover > tbody > tr > *  {
     margin-bottom: 10px;
     border-radius: 5px;
 }
+
+.recommendation li {
+    list-style-type: circle;
+    color: white;
+}

@@ -3,7 +3,8 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin, \
     UserPassesTestMixin, PermissionRequiredMixin
 from django.shortcuts import redirect
-from django.views.generic import CreateView, UpdateView, ListView, DeleteView, DetailView
+from django.views.generic import CreateView, UpdateView, ListView, DeleteView, \
+    DetailView
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
@@ -142,6 +143,16 @@ class ListGroups(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     template_name = 'users/group.html'
     queryset = Group.objects.all()
     permission_required = 'auth.view_group'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # In this case, only superuser will have access
+        context['can_change_permissions'] = self.request.user.has_perm(
+            perm='auth.change_group')
+        context['can_delete_permissions'] = self.request.user.has_perm(
+            perm='auth.delete_group'
+            )
+        return context
 
 
 class UpdateGroups(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):

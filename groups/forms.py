@@ -32,7 +32,7 @@ class GroupUpdateForm(forms.ModelForm):
 class SheduleForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SheduleForm, self).__init__(*args, **kwargs)
-        date = timezone.now()
+        date = timezone.now() + timezone.timedelta(minutes=1)
         quizzes = Quizzes.objects.order_by('type_of_quiz', 'title')
         self.fields['begin'].initial = date
         self.fields['end'].initial = date
@@ -43,12 +43,11 @@ class SheduleForm(forms.ModelForm):
         cleaned_data = super(SheduleForm, self).clean()
         start = cleaned_data.get("begin")
         end = cleaned_data.get("end")
-        if cleaned_data.get("begin") < \
-                (timezone.now()+timezone.timedelta(minutes=1)):
+        if cleaned_data.get("begin") < timezone.now():
             msg = u"Start date already passed! Please enter valid date."
             self.add_error('begin', msg)
             raise forms.ValidationError(msg)
-        if start > end:
+        if start >= end:
             msg = u"End date should be after start date!"
             self.add_error('end', msg)
             raise forms.ValidationError(msg)
