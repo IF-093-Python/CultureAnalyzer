@@ -1,3 +1,5 @@
+from datetime import date
+
 __all__ = ['ProfileValidator', 'PValidationError']
 
 MIN_YEARS_OF_EXPERIENCE = 0
@@ -26,3 +28,12 @@ class ProfileValidator:
                 f' {MAX_YEARS_OF_EXPERIENCE})')
 
         return experience
+
+    @staticmethod
+    def date_validation(rq_data):
+        date_of_birth = rq_data.get('date_of_birth')
+        difference = (date.today() - date_of_birth).days / 365.2425
+
+        if difference < 18:
+            raise PValidationError('You should be at least 18 year old!')
+        return date_of_birth

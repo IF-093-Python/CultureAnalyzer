@@ -1,102 +1,62 @@
 {% extends 'base.html' %}
-{% load django_bootstrap_breadcrumbs %}
 {% load crispy_forms_tags %}
 {% load staticfiles %}
 {% load cool_paginate %}
 
+{% block title %}Create group{% endblock title %}
+
 {% block content %}
-  {% block breadcrumbs %}
-    {% breadcrumb "Home" "/" %}
-    {% breadcrumb "Groups" "groups:groups-list" %}
-    {% breadcrumb "Create group" "groups:groups-list" %}
-    <div style="color: blue">
-    {% render_breadcrumbs %}
+<div class="container-fluid col-md-10">
+    <div class="border-bottom">
+        <p class="text-center font-weight-bold" style="font-size: 2rem;">
+            Groups
+        </p>
     </div>
-  {% endblock %}
-
-  {% if messages %}
-    <ul class="messages">
-      {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-  <h1>Create group</h1>
-
-  <div class="container-fluid bg-1 main col-md-10">
-  <div class="float-right">
-    <form class="form-inline my-2 my-lg-0" method="get" action="">
-      <input class="form-control mr-sm-2" type="search"
-             placeholder="{{ search_label }}" aria-label="Search"
-             name="data_search">
-      <div class="btn-toolbar">
-        <button class="btn btn-outline-success my-2 my-sm-0"
-                style="margin-right: 10px;" type="submit">Search</button>
-        <a class="btn btn-outline-danger my-2 my-sm-0"
-           href ={% url 'groups:create-group'%}>Clear</a>
-      </div>
-      <br>
-    </form>
-  </div>
-  <br>
-  {% block users %}
-      {% if object_list %}
-        <table class="table table-hover table-striped table-bordered table-sm">
-          <thead class="thead-light">
-            <tr>
-              <th style="width: 1%"> </th>
-              <th>Name</th>
-              <th style="text-align: center; width: 1%">Photo</th>
-            </tr>
-          </thead>
-      {% endif %}
-  <form method="post">
-    {% csrf_token %}
-    <a class="btn btn-danger" style="margin-right: 4px"
-       title="Back to all groups"
-       href="{% url 'groups:groups-list' %}">&#8630; Back</a>
-    <button type="submit" class="btn btn-primary"
-            style="background-color:cornflowerblue">Create group</button>
-      {{ form.name|as_crispy_field }}
-    <hr>
-    {% if search %}
-        <strong>Search results for "{{ search_label }}":</strong>
+    <div class="my-2">
+        <form class="d-flex flex-wrap justify-content-between mt-n1" method="GET">
+            <div class="d-flex mt-1">
+                <input class="form-control" type="text" name="data_search" placeholder="Search" {% if search %}
+                    value="{{ search_label }}" {% endif %}>
+                <button class="btn btn-blue ml-1" type="submit">
+                    <span class="fas fa-search"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-blue">Create group</button>
+        <div class="col-md-6 mx-auto">
+            {{ form.name|as_crispy_field }}
+        </div>
+        {% if search %}
+        <p>Search results for "{{ search_label }}":</p>
         {% else %}
-        <strong>Add Mentors:</strong>
-    {% endif %}
-    {% if not object_list %}
-      {% if search %}
+        <p>Add Mentors:</p>
+        {% endif %}
+        {% if not object_list %}
+        {% if search %}
         <p>There are no results that match your search.</p>
-      {% else %}
+        {% else %}
         <p>There are no available mentors for this group yet.</p>
-      {% endif %}
-    {% endif %}
-<tbody>
-    {% for user in object_list %}
-        <tr>
-          <td>
-            <input type="checkbox" name="mentor" value="{{ user.pk }}">
-          </td>
-          <td>{{ user.last_name }} {{ user.first_name }}
-              ({{ user.username }})
-          </td>
-          <td>
-            {% if user.image %}
-              <img src="{{ user.image.url }}" alt=""
-                   class="circle_text" style="text-align: center">
-            {% else %}
-               <img src="{%static 'default.png'%}" alt=""
-                    class="circle_text" style="text-align: center">
-            {% endif %}
-          </td>
-    {% endfor %}
-  </form>
-</tbody>
-</table>
-
+        {% endif %}
+        {% endif %}
+        {% for user in object_list %}
+        <div class="col-md-6 mx-auto my-2">
+            <div class="d-flex justify-content-between text-center bg-body-dark block-rounded">
+                {% if user.image %}
+                <img src="{{ user.image.url }}" alt="avatar" class="list_img m-1">
+                {% else %}
+                <img src="{% static 'default.png' %}" alt="avatar" class="list_img m-1">
+                {% endif %}
+                <h5 class="my-auto ml-4 mr-auto">{{ user.username }}</h5>
+                <input type="checkbox" name="mentor" value="{{ user.pk }}" class="my-auto mr-4">
+            </div>
+        </div>
+        {% endfor %}
+    </form>
     {% if is_paginated %}
-        {% cool_paginate page_obj=page_obj %}
+    {% cool_paginate page_obj=page_obj %}
     {% endif %}
 </div>
-{% endblock users %}
 {% endblock content %}

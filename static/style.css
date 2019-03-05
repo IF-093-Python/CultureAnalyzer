@@ -2,7 +2,8 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: #f5f4f4;
+    background: #0E1621;
+    color: #F5F5F5;
 }
 
 p {
@@ -10,7 +11,6 @@ p {
     font-size: 1.1em;
     font-weight: 300;
     line-height: 1.7em;
-    color: #999;
 }
 
 a, a:hover, a:focus {
@@ -40,26 +40,67 @@ a, a:hover, a:focus {
     border-bottom: 1px dashed #ddd;
     margin: 40px 0;
 }
+
+/* ---------------------------------------------------
+    SIDEBAR STYLE
+----------------------------------------------------- */
+
 .wrapper {
     display: flex;
     width: 100%;
     align-items: stretch;
-
+    perspective: 1500px;
 }
-.circle_text {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    line-height: 16px;
-    text-align: center;
-    margin-left: 22px;
-    margin-right: 20px;
 
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+a[data-toggle="collapse"] {
+    position: relative;
+}
+
+ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: #6d7fcc;
+}
+
+ul.CTAs {
+    padding: 20px;
+}
+
+ul.CTAs a {
+    text-align: center;
+    font-size: 0.9em !important;
+    display: block;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+a.feedback {
+    background: #fff;
+    color: #7386D5;
+}
+
+a.contact_us, a.contact_us:hover {
+    background: #6d7fcc !important;
+    color: #fff !important;
+}
+
+/* ---------------------------------------------------
+    CONTENT STYLE
+----------------------------------------------------- */
+#content {
+    width: 100%;
+    padding: 20px;
+    min-height: 100vh;
+    transition: all 0.3s;
+}
+
+hr {
+    color: #F5F5F5;
+    background-color: #f5f5f5;
+}
+
+li {
+    list-style-type: none;
 }
 
 /* -------------------------------------
@@ -96,44 +137,169 @@ a, a:hover, a:focus {
     box-shadow: 7px 4px 6px 1px rgba(0,0,0,0.75);
 }
 
-@media screen and (max-width: 420px) {
-    .login_form {
-        width: 370px;
-    }
-
-    .input_attr {
-        width: 330px;
-    }
-
-    .img_attr {
-        width: 370px;
-        height: 370px;
-    }
-}
-
-
-@media screen and (max-width: 380px) {
-    .login_form {
-        width: 320px;
-    }
-
-    .input_attr {
-        width: 280px;
-    }
-
-    .img_attr {
-        width: 320px;
-        height: 320px;
-    }
-}
-
-
-
 
 .content-section {
     padding: 10px 20px;
+    border: 1px solid #dddddd;
     border-radius: 3px;
     margin-bottom: 20px;
+}
+
+.content-section li {
+    background: #ebd7ff;
+}
+/* ---------------------------------------------------
+    HOME STYLE
+----------------------------------------------------- */
+.bg-body-dark{
+    background-color: rgba(248,249,250, .1);
+}
+
+.block {
+    background-color: #2B5278;
+    margin-bottom: 1.75rem;
+    box-shadow: 0 2px 6px rgba(231,234,243,.4);
+    color: #F5F5F5;
+}
+
+.block:hover {
+    color: #000000;
+}
+
+.block-rounded {
+    border-radius: .50rem;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.block-content {
+    transition: opacity .25s ease-out;
+    width: 100%;
+    margin: 0 auto;
+    padding: 1.25rem 1.25rem 1px;
+    overflow-x: visible;
+}
+
+.navbar-custom {
+    background-color: rgba(248,249,250, .1);
+    margin-bottom: 10px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-option{
+    width: 50px;
+}
+
+table.table-hover > tbody > tr > *  {
+    border-color: #c5c5c5;
+}
+
+.page-item.active > a {
+    background-color: #2B5278 !important;
+    border-color: #2B5278 !important;
+}
+
+.page-link {
+    color: #444;
+}
+
+.page-link:hover {
+    color: #555;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(245,245,245, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+}
+
+.btn-blue {
+    color: #F5F5F5;
+    background-color: #2B5278;
+    border-color: #2B5278;
+}
+
+.btn-blue:hover {
+    background-color: rgb(29, 60, 92);
+}
+
+.btn-navigation {
+    width: 2rem;
+}
+
+.bg-light-blue {
+    background-color: #17212B;
+    color: #F5F5F5;
+}
+
+.bg-dark-blue {
+    background-color: #0E1621;
+}
+
+.modal-backdrop {
+    position: static;
+}
+
+.modal-content > *{
+    border: none;
+}
+
+.close {
+    color: #fff;
+    opacity: 1;
+}
+
+
+.profile-section {
+    background: rgba(248,249,250, .1);
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.circle_img {
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+}
+
+.list_img {
+    height: 90px;
+    width: 90px;
+    border-radius: 50%;
+}
+
+.admin_circle_img {
+    height: 100px;
+    width: 100px;
+}
+
+.about {
+    font-size: 20px;
+    color: lightgray;
+}
+
+.info-text {
+    color: white;
+}
+
+#hint_id_password1 {
+    display: none;
+}
+
+.profile-card {
+    background-color: rgba(248,249,250, .1);
+    border-radius: .25rem;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    height: 100px;
+}
+
+@media screen and (max-width: 400px) {
+    .circle_img {
+        height: 90px;
+        width: 90px;
+    }
+    .admin_circle_img {
+        height: 70px;
+        width: 70px;
+    }
 }
 
 .user_list {
@@ -141,38 +307,18 @@ a, a:hover, a:focus {
     margin-left: -40px;
 }
 
-.user_list li {
-    background: white;
-    border: 1px solid lightgrey;
-    border-radius: 5px;
+.user_list li{
+    background: rgba(248,249,250, .1);
     padding: 20px;
     margin-bottom: 10px;
-}
-
-.photo_index {
-    opacity: .4;
-}
-
-.contact_us {
-    color: white;
-    background: rgb(158, 10, 158);
     border-radius: 5px;
-    padding: 10px;
-    border: 1px solid white;
 }
 
-.contact_us:hover {
-    color: rgb(158, 10, 158);
-    background: white;
-    border: 1px solid rgb(158, 10, 158);
-}
 
-.btn-navigation {
-    margin-top: 3px;
-    max-width: 35px;
-    min-width: 35px;
-}
 
-#id_answers  {
-  list-style-type: none;
+p.result-feedback {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: black;
 }

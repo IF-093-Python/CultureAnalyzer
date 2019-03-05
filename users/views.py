@@ -3,20 +3,21 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin, \
     UserPassesTestMixin, PermissionRequiredMixin
 from django.shortcuts import redirect
-from django.views.generic import CreateView, UpdateView, ListView, DeleteView
+from django.views.generic import CreateView, UpdateView, ListView, DeleteView, DetailView
 from django.contrib.auth.models import Group
+from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
 
 from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
 from CultureAnalyzer.view import SafePaginationListView
 from .filters import admin_search
+from .validators import PValidationError
 from .forms import (
     UserRegisterForm,
     UserUpdateForm,
     BlockUserForm,
     GroupForm,
     )
-from .models import CustomUser
 
 __all__ = [
     'LoginView',
@@ -26,6 +27,9 @@ __all__ = [
     'AdminListView',
     'ProfileUpdateView',
     'ListGroups',
+    'CreateGroup',
+    'UpdateGroups',
+    'DeleteGroups',
     ]
 
 
@@ -48,9 +52,23 @@ class UserRegisterView(CreateView):
         return super(UserRegisterView, self).get(request, *args, **kwargs)
 
 
-class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     template_name = 'users/profile.html'
-    model = CustomUser
+    model = get_user_model()
+
+    def test_func(self):
+        """
+        this func check that the user which want
+        to delete the post should be author of this post
+        """
+        current_user = self.get_object()
+
+        return bool(self.request.user == current_user)
+
+
+class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    template_name = 'users/update_profile.html'
+    model = get_user_model()
     form_class = UserUpdateForm
     success_url = '/'
 
@@ -63,12 +81,19 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
         return bool(self.request.user == current_user)
 
+    def form_valid(self, form):
+        try:
+            return super().form_valid(form)
+        except PValidationError as err:
+            form.add_error('__all__', err)
+            return super().form_invalid(form)
+
 
 class PasswordChangeView(UserPassesTestMixin, UpdateView):
     template_name = 'users/password_change.html'
     form_class = PasswordChangeForm
     success_url = '/'
-    model = CustomUser
+    model = get_user_model()
 
     def get_form_kwargs(self):
         kwargs = super(PasswordChangeView, self).get_form_kwargs()
@@ -87,7 +112,7 @@ class PasswordChangeView(UserPassesTestMixin, UpdateView):
 
 class AdminListView(LoginRequiredMixin, PermissionRequiredMixin,
                     SafePaginationListView):
-    model = CustomUser
+    model = get_user_model()
     template_name = 'users/admin_page.html'
     context_object_name = 'users'
     paginate_by = ITEMS_ON_PAGE
@@ -106,7 +131,7 @@ class ProfileUpdateView(LoginRequiredMixin, PermissionRequiredMixin,
                         UpdateView):
     template_name = 'users/user_detail.html'
     form_class = BlockUserForm
-    model = CustomUser
+    model = get_user_model()
     success_url = '/admin_page'
     permission_required = 'users.change_customuser'
 
@@ -116,7 +141,7 @@ class ListGroups(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     context_object_name = 'group'
     template_name = 'users/group.html'
     queryset = Group.objects.all()
-    permission_required = 'users.add_group'
+    permission_required = 'auth.view_group'
 
 
 class UpdateGroups(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
@@ -124,7 +149,7 @@ class UpdateGroups(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Group
     form_class = GroupForm
     success_url = reverse_lazy('group_perm-list')
-    permission_required = 'users.change_group'
+    permission_required = 'auth.change_group'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -139,13 +164,14 @@ class DeleteGroups(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     form_class = GroupForm
     success_url = reverse_lazy('group_perm-list')
     success_message = 'Group: "%(name)s" was deleted successfully'
-    permission_required = 'users.delete_group'
+    permission_required = 'auth.delete_group'
 
 
 class CreateGroup(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    model = CustomUser
+    model = get_user_model()
     form_class = GroupForm
+    context_object_name = 'group'
     template_name = 'users/group_permissions.html'
     success_url = reverse_lazy('group_perm-list')
     success_message = 'Country indicator: "%(name)s" was created successfully'
-    permission_required = 'users.add_group'
+    permission_required = 'auth.add_group'

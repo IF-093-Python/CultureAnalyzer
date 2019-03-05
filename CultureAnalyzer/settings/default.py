@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django_cool_paginator',
     'django_filters',
     'django_bootstrap_breadcrumbs',
+    'bootstrap_datepicker_plus',
 
     'users.apps.UsersConfig',
     'groups',
@@ -101,7 +102,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Kiev'
 
 USE_I18N = True
 

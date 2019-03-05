@@ -1,13 +1,12 @@
 from django.db.models.signals import post_save
 from django.contrib.auth.models import Group
+from django.contrib.auth import get_user_model
 from django.dispatch import receiver
-
-from .models import CustomUser
 
 __all__ = ['add_group']
 
 
-@receiver(post_save, sender=CustomUser)
+@receiver(post_save, sender=get_user_model())
 def add_group(sender, instance, created, **kwargs):
     """
     When sender is saved we send signal post_save
@@ -17,9 +16,6 @@ def add_group(sender, instance, created, **kwargs):
     then we add this instance into group
     """
     if created:
-        if instance.is_superuser:
-            Group.objects.get(name='Admin').user_set.add(instance)
-        else:
-            Group.objects.get(name='Trainee').user_set.add(instance)
+        Group.objects.get(name='Trainee').user_set.add(instance)
 
 

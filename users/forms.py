@@ -1,9 +1,10 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import Group
+from django.contrib.auth import get_user_model
+from django.forms import CheckboxSelectMultiple
 
 from .choices import GENDER_CHOICES, EDUCATION_CHOICES
-from .models import CustomUser
 from .validators import ProfileValidator, PValidationError
 
 __all__ = [
@@ -30,17 +31,17 @@ class UserLoginForm(AuthenticationForm):
         attrs={
             'class': 'input_attr',
             'placeholder': 'Username'
-            }
-        ))
+        }
+    ))
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={
             'class': 'input_attr',
             'placeholder': 'Password'
-            }
-        ), label='')
+        }
+    ), label='')
 
     class Meta:
-        model = CustomUser
+        model = get_user_model()
         fields = ['username', 'password']
 
 
@@ -50,20 +51,25 @@ class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
 
     class Meta:
-        model = CustomUser
+        model = get_user_model()
         fields = ['username', 'email', 'first_name',
                   'last_name', 'password1', 'password2']
 
 
 class UserUpdateForm(forms.ModelForm):
     image = forms.ImageField(widget=forms.FileInput, required=False)
-    experience = forms.IntegerField()
+    experience = forms.IntegerField(label='Experience in years')
     date_of_birth = forms.DateField(widget=DateInput())
+    experience = forms.IntegerField()
+    date_of_birth = forms.DateField(widget=DateInput(attrs={
+        'max': '2000-12-31',
+        'value': '2000-01-01',
+    }))
     education = forms.ChoiceField(choices=EDUCATION_CHOICES_EMPTY_LABEL)
     gender = forms.ChoiceField(choices=GENDER_CHOICES_EMPTY_LABEL)
 
     class Meta:
-        model = CustomUser
+        model = get_user_model()
         fields = ['first_name', 'last_name', 'image', 'experience',
                   'date_of_birth', 'education', 'gender']
 
@@ -73,18 +79,24 @@ class UserUpdateForm(forms.ModelForm):
         except PValidationError as err:
             self.add_error('experience', str(err))
 
+    def clean_date_of_birth(self):
+        try:
+            return ProfileValidator.date_validation(self.cleaned_data)
+        except PValidationError as err:
+            self.add_error('date_of_birth', str(err))
+
 
 class BlockUserForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['groups'].widget = CheckboxSelectMultiple()
+
     class Meta:
-        model = CustomUser
-        fields = ['is_active', 'is_staff', 'is_superuser', 'groups']
+        model = get_user_model()
+        fields = ['is_active', 'groups']
 
 
 class GroupForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['permissions'].widget.attrs.update(size='10')
-
     class Meta:
         model = Group
         fields = ['name', 'permissions']

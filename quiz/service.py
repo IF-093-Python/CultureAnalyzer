@@ -1,12 +1,13 @@
 import json
 from django.db.models import Q
+from django.template.defaultfilters import register
+from django.contrib.auth import get_user_model
 
-from users.models import CustomUser
 from feedbacks.models import Feedback
 
 __all__ = ['get_constant', 'check_group_indicators', 'get_average_results',
            'get_indicators_values', 'get_groups_results', 'get_final_result',
-           'get_feedback',]
+           'get_feedback', 'zip_list', ]
 
 
 def get_constant(indicator_value):
@@ -109,7 +110,7 @@ def get_final_result(data, *args):
     :param int args: id of result (only for profile)
     :return dict: Dictionary of indicators
     """
-    if isinstance(data, CustomUser):
+    if isinstance(data, get_user_model()):
         group_answers = [json.loads(
             data.results_set.filter(pk=args[0]).first().result)]
     else:
@@ -127,7 +128,6 @@ def get_final_result(data, *args):
     average_result = get_average_results(group_answers)
     indicator_list = get_indicators_values(average_result)
     data = check_group_indicators(indicator_list)
-
     return data
 
 
@@ -148,3 +148,7 @@ def get_feedback(indicator_obj, dict_result, indicator_name):
         indicators_feedbacks[indicator_name[val]] = indicator_feedback
     return indicators_feedbacks
 
+
+@register.filter(name='zip')
+def zip_list(a, b):
+    return zip(a, b)
