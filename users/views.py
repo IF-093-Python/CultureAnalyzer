@@ -151,7 +151,6 @@ class ListGroups(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         context['can_delete_permissions'] = self.request.user.has_perm(
             perm='auth.delete_group'
             )
-        print(context)
         return context
 
 
