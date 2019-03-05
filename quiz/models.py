@@ -11,6 +11,11 @@ class Quizzes(models.Model):
     description = models.TextField(null=False)
     type_of_quiz = models.CharField(choices=TYPE_OF_QUIZ, max_length=20)
 
+    class Meta:
+        permissions = (
+            ("view_test_player", "Can view the test player"),
+        )
+
     def __str__(self):
         return self.title
 
