@@ -1,8 +1,8 @@
 import json
 from django.db.models import Q
 from django.template.defaultfilters import register
+from django.contrib.auth import get_user_model
 
-from users.models import CustomUser
 from feedbacks.models import Feedback
 
 __all__ = ['get_constant', 'check_group_indicators', 'get_average_results',
@@ -110,7 +110,7 @@ def get_final_result(data, *args):
     :param int args: id of result (only for profile)
     :return dict: Dictionary of indicators
     """
-    if isinstance(data, CustomUser):
+    if isinstance(data, get_user_model()):
         group_answers = [json.loads(
             data.results_set.filter(pk=args[0]).first().result)]
     else:

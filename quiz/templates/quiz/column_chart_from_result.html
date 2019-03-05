@@ -54,9 +54,9 @@
                 {% if countries_names %}
                     {% for country_name in countries_names %}
                         <li class="nav-item">
-                            <a class="nav-link" id="{{ country_name }}-tab" data-toggle="tab" href="#{{ country_name }}"
+                            <a class="nav-link" id="{{ country_name|cut:" " }}-tab" data-toggle="tab" href="#{{ country_name|cut:" " }}"
                                role="tab"
-                               aria-controls="{{ country_name }}"
+                               aria-controls="{{ country_name|cut:" " }}"
                                aria-selected="false">
                                 {{ country_name|truncatechars:12 }}
                             </a>
@@ -71,9 +71,8 @@
                 </div>
                 {% if countries_values %}
                     {% for country_name in countries_names %}
-                        <div class="tab-pane fade" id="{{ country_name }}" role="tabpanel"
-                             aria-labelledby="{{ country_name }}-tab"
-                             style="background-color: #fff;">
+                        <div class="tab-pane fade" id="{{ country_name|cut:" " }}" role="tabpanel"
+                             aria-labelledby="{{ country_name|cut:" " }}-tab">
                             <!--Creating views of feedbacks and recommendations-->
                             <div class="container">
                                 {% with feedbacks_by_ind=countries_feedbacks|lookup:country_name %}
@@ -81,19 +80,25 @@
                                         {% if feedbacks %}
                                             <h5>Feedbacks for {{ indicator }}:</h5>
                                             {% for feedback_obj in feedbacks %}
-                                                - {{ feedback_obj.feedback }}<br>
 
-                                                {% with recommendations=feedback_obj.recommendation_set.all %}
+                                                <p>- {{ feedback_obj.feedback }}</p>
+                                                {% with recommendations=feedback_obj.recommendation_set.all|slice:":5" first_load=5 %}
                                                     {% if recommendations %}
-                                                        <br>Recommendations:
+                                                        <p>Recommendations:</p>
                                                     {% endif %}
 
-                                                    <ul>
+                                                    <ul class="recommendation">
                                                     {% for r in recommendations %}
                                                        <li> {{ r.recommendation }}</li>
                                                     {% endfor %}
                                                     </ul>
 
+                                                    {% if feedback_obj.recommendation_set.count > first_load %}
+                                                        <button type="button" class="btn btn-link load_recommendation_button"
+                                                            data-url="{{ request.get_full_path }}"
+                                                            data-feedback-id="{{ feedback_obj.pk }}"
+                                                            data-offset="{{ first_load }}">Load more</button>
+                                                    {% endif %}
                                                 {% endwith %}
 
                                             {% endfor %}

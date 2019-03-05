@@ -1,7 +1,7 @@
+from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import CASCADE
-from users.models import CustomUser
 
 TYPE_OF_QUIZ = (('Business', 'Business'), ('General', 'General'))
 
@@ -21,7 +21,7 @@ class Quizzes(models.Model):
 
 
 class Results(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=CASCADE, null=False)
+    user = models.ForeignKey(get_user_model(), on_delete=CASCADE, null=False)
     quiz = models.ForeignKey(Quizzes, on_delete=CASCADE, null=False)
     pass_date = models.DateTimeField(null=False)
     result = JSONField()

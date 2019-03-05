@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin, \
     LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
@@ -15,7 +16,6 @@ from django.http import Http404
 
 from groups.forms import GroupCreateForm, GroupUpdateForm, SheduleForm
 from groups.models import Group, Shedule
-from users.models import CustomUser
 from CultureAnalyzer.view import SafePaginationListView
 
 PAGINATOR = 50
@@ -72,7 +72,7 @@ class CreateGroupView(generic.CreateView, PermissionRequiredMixin,
 
     def get_queryset(self):
         """List of mentors"""
-        result = CustomUser.objects. \
+        result = get_user_model().objects. \
             filter(is_active=True, groups__name='Mentor').order_by('last_name')
         if self.request.GET.get('data_search'):
             search = self.request.GET.get('data_search')
@@ -112,11 +112,11 @@ class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
         concatenates them with unchecked mentors, so that
         checked mentors are always first in list
         """
-        checked_mentors = CustomUser.objects.filter(
+        checked_mentors = get_user_model().objects.filter(
             is_active=True, mentor_in_group=self.kwargs['pk']). \
             order_by('last_name')
         self.__checked_mentors = checked_mentors
-        mentors = CustomUser.objects. \
+        mentors = get_user_model().objects. \
             filter(is_active=True, groups__name='Mentor'). \
             exclude(mentor_in_group=self.kwargs['pk']). \
             order_by('last_name')
@@ -219,7 +219,7 @@ class MentorGroupUpdate(PermissionRequiredMixin, generic.UpdateView,
 
     def get_queryset(self):
         """List of all students of group."""
-        result = CustomUser.objects. \
+        result = get_user_model().objects. \
             filter(is_active=True, user_in_group=self.kwargs['pk']). \
             order_by('last_name')
         self.__users_in_group = result
@@ -268,7 +268,7 @@ class MentorGroupAdd(PermissionRequiredMixin, generic.UpdateView,
         """Gets all Trainee users that are not in group and
         makes search in their last_name if needed.
         """
-        result = CustomUser.objects. \
+        result = get_user_model().objects. \
             filter(is_active=True, groups__name='Trainee'). \
             exclude(user_in_group=self.kwargs['pk']). \
             order_by('last_name')
@@ -287,7 +287,7 @@ class MentorGroupAdd(PermissionRequiredMixin, generic.UpdateView,
         """Gets users that are already in group and adds to users
         that where checked in form for adding to group.
         """
-        users_in_group = CustomUser.objects. \
+        users_in_group = get_user_model().objects. \
             filter(is_active=True, user_in_group=self.kwargs['pk'])
         if not form.cleaned_data['user']:  # If we don't add any students
             return redirect('groups:mentor_group_update',
@@ -325,13 +325,13 @@ class AddNewUser(LoginRequiredMixin, generic.CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Checks if user is trainee
-        context['trainee'] = CustomUser.objects. \
+        context['trainee'] = get_user_model().objects. \
             filter(pk=self.request.user.pk, groups__name='Trainee').exists()
         if context['trainee']:
             context['group'] = self.__group
         else:
             # Takes role of not-Trainee user
-            context['role'] = CustomUser.objects. \
+            context['role'] = get_user_model().objects. \
                 get(pk=self.request.user.pk).groups.values()[0]['name']
         return context
 

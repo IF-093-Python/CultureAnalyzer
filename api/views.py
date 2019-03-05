@@ -1,17 +1,17 @@
-from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from django.contrib.auth import get_user_model
 from rest_framework import generics
+from rest_framework import viewsets
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from api.permissions import IsAdmin, IsMentor, IsSuperAdmin
 from api.permissions import is_mentor, is_admin, is_superadmin
 from api.service import get_superadmin_users, get_mentor_users, get_admin_users
-from .serializers import UserSerializer
 from feedbacks.models import Feedback, Recommendation
 from feedbacks.serializers import FeedbackSerializer, RecommendationSerializer
 from indicators.models import CountryIndicator
 from indicators.serializers import CountryIndicatorSerializer
-from users.models import CustomUser
+from .serializers import UserSerializer
 
 
 @api_view(['GET'])
@@ -21,7 +21,7 @@ def protected_view(request):
 
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes = (IsSuperAdmin | IsAdmin | IsMentor,)
-    queryset = CustomUser.objects.none()
+    queryset = get_user_model().objects.none()
     serializer_class = UserSerializer
 
     def get_queryset(self):
@@ -42,8 +42,8 @@ class UserViewSet(viewsets.ModelViewSet):
 class FeedbackList(generics.ListCreateAPIView):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
-    filter_fields = ('indicator', )
-    search_fields = ('feedback', )
+    filter_fields = ('indicator',)
+    search_fields = ('feedback',)
 
 
 class FeedbackDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -54,7 +54,7 @@ class FeedbackDetail(generics.RetrieveUpdateDestroyAPIView):
 class RecommendationList(generics.ListCreateAPIView):
     queryset = Recommendation.objects.all()
     serializer_class = RecommendationSerializer
-    search_fields = ('recommendation', )
+    search_fields = ('recommendation',)
 
 
 class RecommendationDetail(generics.RetrieveUpdateDestroyAPIView):

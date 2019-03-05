@@ -1,6 +1,6 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 
-from users.models import CustomUser
 from quiz.models import Quizzes
 
 __all__ = ['Group', 'Shedule', ]
@@ -11,8 +11,8 @@ class Group(models.Model):
         Model for representing Group entity
     """
     name = models.CharField(max_length=50, null=False)
-    user = models.ManyToManyField(CustomUser, related_name='user_in_group')
-    mentor = models.ManyToManyField(CustomUser, related_name='mentor_in_group')
+    user = models.ManyToManyField(get_user_model(), related_name='user_in_group')
+    mentor = models.ManyToManyField(get_user_model(), related_name='mentor_in_group')
 
     class Meta:
         permissions = (

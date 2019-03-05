@@ -314,4 +314,7 @@ table.table-hover > tbody > tr > *  {
     border-radius: 5px;
 }
 
-
+.recommendation li {
+    list-style-type: circle;
+    color: white;
+}

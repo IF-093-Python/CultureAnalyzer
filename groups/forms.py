@@ -1,17 +1,17 @@
-from django.utils import timezone
+from bootstrap_datepicker_plus import DateTimePickerInput
 from django import forms
+from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 from groups.models import Group, Shedule
-from users.models import CustomUser
 from quiz.models import Quizzes
-from bootstrap_datepicker_plus import DateTimePickerInput
 
 __all__ = ['GroupCreateForm', 'GroupUpdateForm', 'SheduleForm', ]
 
 
 class GroupCreateForm(forms.ModelForm):
     mentor = forms.ModelMultipleChoiceField(
-        label='Mentors of group:', queryset=CustomUser.objects.all(),
+        label='Mentors of group:', queryset=get_user_model().objects.all(),
         required=False)
 
     class Meta:
@@ -22,7 +22,7 @@ class GroupCreateForm(forms.ModelForm):
 class GroupUpdateForm(forms.ModelForm):
     user = forms.ModelMultipleChoiceField(
         label='Users in group:',
-        queryset=CustomUser.objects.all(), required=False)
+        queryset=get_user_model().objects.all(), required=False)
 
     class Meta:
         model = Group
@@ -58,9 +58,9 @@ class SheduleForm(forms.ModelForm):
         fields = ['begin', 'end', 'quiz']
         widgets = {
             'begin': DateTimePickerInput(options={
-                                         'locale': 'en-gb',
-                                         }),
+                'locale': 'en-gb',
+            }),
             'end': DateTimePickerInput(options={
-                                         'locale': 'en-gb',
-                                         }),
+                'locale': 'en-gb',
+            }),
         }
