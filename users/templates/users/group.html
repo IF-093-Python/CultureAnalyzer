@@ -12,6 +12,7 @@
                                     class="btn btn-success">Create Group</span></a>
                     {% for user in group %}
                         <li>{{ user.id }}. {{ user.name }}
+
                             <a class="btn btn-primary"
                                href="{% url 'group_perm-update' user.id %}" role="button"><span
                                     class="fas fa-edit"></span> </a>

@@ -3,7 +3,8 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin, \
     UserPassesTestMixin, PermissionRequiredMixin
 from django.shortcuts import redirect
-from django.views.generic import CreateView, UpdateView, ListView, DeleteView, DetailView
+from django.views.generic import CreateView, UpdateView, ListView, DeleteView, \
+    DetailView
 from django.contrib.auth.models import Group
 from django.urls import reverse_lazy
 
@@ -153,6 +154,9 @@ class UpdateGroups(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['has_permissions'] = self.request.user.has_perm(
+            perm='auth.change_group')
+        print(context)
         context['update'] = True
         return context
 
@@ -165,6 +169,13 @@ class DeleteGroups(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     success_url = reverse_lazy('group_perm-list')
     success_message = 'Group: "%(name)s" was deleted successfully'
     permission_required = 'auth.delete_group'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['has_permissions'] = self.request.user.has_perm(
+            perm='auth.delete_group')
+        print(context)
+        return context
 
 
 class CreateGroup(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
