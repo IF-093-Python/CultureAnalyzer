@@ -59,7 +59,7 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{% url 'admin' %}">Admin page</a>
                             <a class="dropdown-item" href="{% url 'groups:groups-list' %}">Groups</a>
-                            <a class="dropdown-item" href="{% url 'group_perm-list' %}">Groups List</a>
+                            <a class="dropdown-item" href="{% url 'group_perm-list' %}">Permissions</a>
                         </div>
                     </li>
                     {% elif user.is_mentor %}
@@ -68,10 +68,10 @@
                             Mentor
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{% url 'feedback-list' %}">Feedbacks</a>
+                            <a class="dropdown-item" href="{% url 'groups:mentor_groups_view' %}">Groups</a>
+                            <a class="dropdown-item" href="{% url 'feedback-list' %}">Feedback</a>
                             <a class="dropdown-item" href="{% url 'quiz:quizzes-list' %}">Quizzes</a>
                             <a class="dropdown-item" href="{% url 'country_indicator:country_indicator_list' %}">Indicators</a>
-                            <a class="dropdown-item" href="{% url 'groups:mentor_groups_view' %}">Groups</a>
                         </div>
                     </li>
                     {% else %}
@@ -122,6 +122,7 @@
 <!-- JavaScript for bootstrap-select button-->
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/js/bootstrap-select.min.js"></script>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="{% static 'quiz/js/load_recommendations.js' %}"></script>
 </body>
 </html>

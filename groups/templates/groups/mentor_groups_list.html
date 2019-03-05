@@ -40,25 +40,41 @@
       <thead class="thead-light">
       <tr>
           <th class='w-30'>Name</th>
+          <th class='w-30' style="text-align: center; width: 15%">Set Test</th>
           <th style="text-align: center; width: 15%">Result
           <th style="text-align: center; width: 15%">Members</th>
-          </th>
       </tr>
       </thead>
       <tbody>
       {% for group in group_list %}
       <tr>
-          <td class="align-middle"><a href="{% url 'groups:mentor_group_update' group.pk %}">
-                         {{ group }}</a></td>
+          <td class="align-bottom">
+              <a class="align-middle"
+                 href="{% url 'groups:mentor_group_update' group.pk %}">
+                 {{ group }}</a>
+
+              <a class="btn btn-light aligned float-right"
+                 href="{% url 'groups:mentor_group_update' group.pk %}">
+                  <span class="fa fa-edit"></span></a>
+          </td>
+
+          <td style="text-align: center">
+              {% if group in has_quiz %}
+              <a class="btn btn-warning"
+                 href="{% url 'groups:shedule_group_list' group.pk %}">
+                  <span class="fa fa-clock"></span></a>
+              {% else %}
+              <a class="btn btn-light"
+                 href="{% url 'groups:shedule_group_list' group.pk %}">
+                  <span class="fa fa-clock"></span></a>
+              {% endif %}
+          </td>
           <td style="text-align: center">
               <a class="btn btn-light"
                  href="{% url 'quiz:result-chart-group' group.pk group.name %}">
                   <span class="fas fa-chart-bar"></span></a>
-              <a class="btn btn-light"
-                 href="{% url 'groups:mentor_group_update' group.pk %}">
-                  <span class="fas fa-edit"></span></a>
           </td>
-          <td style="text-align: center"><a>{{ group.total }}</a></td>
+          <td class="align-middle" style="text-align: center"><a>{{ group.total }}</a></td>
       </tr>
       {% endfor %}
       <br>

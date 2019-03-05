@@ -18,9 +18,11 @@ urlpatterns = [
     path('quiz_detail/<int:pk>/', QuizDetailView.as_view(),
          name='detail-quiz'),
     re_path('^column_chart/(?P<pk>\\d+)/', include([
+        path('', CurrentResultView.as_view(), name='result-chart'),
         re_path('^group=(?P<group>\\w+[\\s,-]*\\w*)/$',
-                CurrentResultView.as_view(),name='result-chart-group'),
+                CurrentResultView.as_view(), name='result-chart-group'),
         re_path('^user=(?P<current_user>\\w+[\\s,-]*\\w*)/$',
-                CurrentResultView.as_view(), name='result-chart-user'),
+                CurrentResultView.as_view(),name='result-chart-user'),
+
         ])),
 ]

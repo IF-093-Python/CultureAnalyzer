@@ -27,6 +27,9 @@ __all__ = [
     'AdminListView',
     'ProfileUpdateView',
     'ListGroups',
+    'CreateGroup',
+    'UpdateGroups',
+    'DeleteGroups',
     ]
 
 
@@ -153,6 +156,7 @@ class DeleteGroups(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
 class CreateGroup(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = CustomUser
     form_class = GroupForm
+    context_object_name = 'group'
     template_name = 'users/group_permissions.html'
     success_url = reverse_lazy('group_perm-list')
     success_message = 'Country indicator: "%(name)s" was created successfully'
