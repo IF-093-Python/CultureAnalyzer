@@ -1,17 +1,16 @@
 import datetime
 
-from django.contrib.auth.models import User
 from django.test import TestCase
 
-from .forms import ProfileUpdateForm
+from .forms import UserUpdateForm
 
-__all__ = ['ProfileFormTest', 'UserTestCase']
+__all__ = ['ProfileFormTest']
 
 
 class ProfileFormTest(TestCase):
 
     def test_valid_form(self):
-        form = ProfileUpdateForm(data={
+        form = UserUpdateForm(data={
             'experience': 10,
             'date_of_birth': datetime.date(1999, 12, 1),
             'education': 'Higher',
@@ -20,7 +19,7 @@ class ProfileFormTest(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_invalid_form(self):
-        form = ProfileUpdateForm(data={
+        form = UserUpdateForm(data={
             'experience': -1,
             'date_of_birth': datetime.date(1999, 12, 1),
             'education': 'Higher',
