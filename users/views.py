@@ -10,6 +10,7 @@ from django.urls import reverse_lazy
 from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
 from CultureAnalyzer.view import SafePaginationListView
 from .filters import admin_search
+from .validators import PValidationError
 from .forms import (
     UserRegisterForm,
     UserUpdateForm,
@@ -65,6 +66,13 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         current_user = self.get_object()
 
         return bool(self.request.user == current_user)
+
+    def form_valid(self, form):
+        try:
+            return super().form_valid(form)
+        except PValidationError as err:
+            form.add_error('__all__', err)
+            return super().form_invalid(form)
 
 
 class PasswordChangeView(UserPassesTestMixin, UpdateView):
