@@ -3,13 +3,6 @@
 {% load cool_paginate %}
 {% block title %}Groups of {{ user.username }}{% endblock %}
 {% block content %}
-{% block breadcrumbs %}
-{% breadcrumb "Home" "/" %}
-{% breadcrumb "Groups" "groups:mentor_groups_view" %}
-<div style="color: blue">
-    {% render_breadcrumbs %}
-</div>
-{% endblock %}
 {% block groups %}
 <div class="container-fluid col-md-10">
     <div class="border-bottom">

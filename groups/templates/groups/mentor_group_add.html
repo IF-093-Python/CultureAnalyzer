@@ -5,15 +5,6 @@
 {% load cool_paginate %}
 
 {% block content %}
-  {% block breadcrumbs %}
-    {% breadcrumb "Home" "/" %}
-    {% breadcrumb "Groups" "groups:mentor_groups_view" %}
-    {% breadcrumb group.name "groups:mentor_group_update" group.pk %}
-    <div style="color: blue">
-    {% render_breadcrumbs %}
-    </div>
-
-  {% endblock %}
 
         {% if messages %}
           <ul class="messages">
