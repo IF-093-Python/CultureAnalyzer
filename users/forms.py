@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import Group
+from django.forms import CheckboxSelectMultiple
 
 from .choices import GENDER_CHOICES, EDUCATION_CHOICES
 from .models import CustomUser
@@ -84,6 +85,10 @@ class UserUpdateForm(forms.ModelForm):
 
 
 class BlockUserForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['groups'].widget = CheckboxSelectMultiple()
+
     class Meta:
         model = CustomUser
         fields = ['is_active', 'is_staff', 'is_superuser', 'groups']
