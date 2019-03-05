@@ -23,7 +23,7 @@ class TestStart(PermissionRequiredMixin, ListView):
     template_name = 'test_player/start_test.html'
     context_object_name = 'quizzes'
     __not_started_quizzes = None
-    permission_required = 'quiz.view_results'
+    permission_required = 'quiz.view_test_player'
 
     def get_queryset(self):
         """Takes list of all Quizzes for Group of user, that are actual now
