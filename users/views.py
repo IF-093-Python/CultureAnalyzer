@@ -119,7 +119,7 @@ class ListGroups(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     context_object_name = 'group'
     template_name = 'users/group.html'
     queryset = Group.objects.all()
-    permission_required = 'users.add_group'
+    permission_required = 'auth.view_group'
 
 
 class UpdateGroups(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
@@ -127,7 +127,7 @@ class UpdateGroups(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Group
     form_class = GroupForm
     success_url = reverse_lazy('group_perm-list')
-    permission_required = 'users.change_group'
+    permission_required = 'auth.change_group'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -142,7 +142,7 @@ class DeleteGroups(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     form_class = GroupForm
     success_url = reverse_lazy('group_perm-list')
     success_message = 'Group: "%(name)s" was deleted successfully'
-    permission_required = 'users.delete_group'
+    permission_required = 'auth.delete_group'
 
 
 class CreateGroup(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
@@ -152,4 +152,4 @@ class CreateGroup(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     template_name = 'users/group_permissions.html'
     success_url = reverse_lazy('group_perm-list')
     success_message = 'Country indicator: "%(name)s" was created successfully'
-    permission_required = 'users.add_group'
+    permission_required = 'auth.add_group'
