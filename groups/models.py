@@ -14,6 +14,13 @@ class Group(models.Model):
     user = models.ManyToManyField(CustomUser, related_name='user_in_group')
     mentor = models.ManyToManyField(CustomUser, related_name='mentor_in_group')
 
+    class Meta:
+        permissions = (
+            ("view_mentor_group", "Can view mentor group"),
+            ("change_mentor_group", "Can change mentor group"),
+            ("add_mentor_group", "Can add mentor to group"),
+            )
+
     def __str__(self):
         return f'{self.name}'
 

@@ -153,7 +153,7 @@ class MentorGroupsView(PermissionRequiredMixin, SafePaginationListView):
     __search_label = 'Search'
     __group_has_quiz = None
     paginate_by = PAGINATOR
-    permission_required = 'groups.change_group'
+    permission_required = 'groups.view_mentor_group'
 
     def get_context_data(self, **kwargs):
         context = super(MentorGroupsView, self).get_context_data(**kwargs)
@@ -175,7 +175,8 @@ class MentorGroupsView(PermissionRequiredMixin, SafePaginationListView):
         return result
 
 
-class MentorGroupUpdate(generic.UpdateView, SuccessMessageMixin,
+class MentorGroupUpdate(PermissionRequiredMixin, generic.UpdateView,
+                        SuccessMessageMixin,
                         UserPassesTestMixin, SafePaginationListView):
     """Makes list of students to add or remove from group."""
     model = Group
@@ -186,6 +187,7 @@ class MentorGroupUpdate(generic.UpdateView, SuccessMessageMixin,
     __search_label = 'Search'
     __users_in_group = None
     paginate_by = PAGINATOR
+    permission_required = 'groups.change_mentor_group'
 
     def encode_data(self):
         """Makes hash for generation url for adding students to group."""
@@ -233,7 +235,8 @@ class MentorGroupUpdate(generic.UpdateView, SuccessMessageMixin,
         return context
 
 
-class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
+class MentorGroupAdd(PermissionRequiredMixin, generic.UpdateView,
+                     SuccessMessageMixin,
                      UserPassesTestMixin, SafePaginationListView):
     """Makes list of all students that can be added to group."""
     model = Group
@@ -244,6 +247,7 @@ class MentorGroupAdd(generic.UpdateView, SuccessMessageMixin,
     __search_label = 'Search'
     paginate_by = PAGINATOR
     raise_exception = True
+    permission_required = 'groups.add_mentor_group'
 
     def get_success_url(self):
         pk = self.kwargs['pk']
@@ -352,7 +356,7 @@ class SheduleGroupList(UserPassesTestMixin, SafePaginationListView,
         return context
 
     def get_queryset(self):
-        quizzes = Shedule.objects.\
+        quizzes = Shedule.objects. \
             filter(group=self.kwargs['pk']).order_by('-end')
         return quizzes
 
@@ -384,7 +388,7 @@ class SheduleGroupView(UserPassesTestMixin, generic.CreateView,
         new.save()
         messages.success(request=self.request,
                          message=f'{form.instance.quiz} successfully was set '
-                                 f'for {form.instance.group}.')
+                         f'for {form.instance.group}.')
         return redirect('groups:shedule_group_list', pk=self.kwargs['pk'])
 
     def get_context_data(self, **kwargs):
