@@ -3,6 +3,7 @@ import json
 import operator
 
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -12,7 +13,6 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 
 from quiz.models import Results, Quizzes
 from tutors.models import Questions
-from users.models import CustomUser
 from .forms import QuestionSaveForm
 from groups.models import Shedule
 
@@ -23,7 +23,7 @@ class TestStart(PermissionRequiredMixin, ListView):
     template_name = 'test_player/start_test.html'
     context_object_name = 'quizzes'
     __not_started_quizzes = None
-    permission_required = 'quiz.view_results'
+    permission_required = 'quiz.view_test_player'
 
     def get_queryset(self):
         """Takes list of all Quizzes for Group of user, that are actual now
@@ -101,7 +101,7 @@ class TestPlayer(UserPassesTestMixin, FormView):
         print(s)
         if 'finish' in self.request.POST:
             quiz_id = self.kwargs['quiz_id']
-            user = CustomUser.objects.get(
+            user = get_user_model().objects.get(
                 pk=self.request.session['_auth_user_id'])
             quiz = Quizzes.objects.get(pk=quiz_id)
             timezone.now()

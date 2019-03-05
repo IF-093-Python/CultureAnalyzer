@@ -1,16 +1,15 @@
 import datetime
 
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.test import TestCase
 from django.urls import reverse
-
-from users.models import CustomUser
 
 
 class TestViews(TestCase):
 
     def setUp(self):
-        self.user = CustomUser.objects.create_user(username='Test',
+        self.user = get_user_model().objects.create_user(username='Test',
                                                    password='testview123')
         self.response = self.client.login(username='Test',
                                           password='testview123')
@@ -29,21 +28,21 @@ class TestViews(TestCase):
             'last_name': 'Kulyk',
             'password1': 'testview123',
             'password2': 'testview123',
-            })
+        })
 
-        self.assertEquals(CustomUser.objects.get(username='Yurii').email,
+        self.assertEquals(get_user_model().objects.get(username='Yurii').email,
                           'jura@mail.com')
 
     def test_login_view(self):
         response = self.client.post(reverse('login'), {
             'username': 'Test',
             'password': 'testview123'
-            })
+        })
 
         self.assertEquals(response.status_code, 302)
 
     def test_update_profile_view(self):
-        self.response = self.client.post(reverse('profile',
+        self.response = self.client.post(reverse('profile-update',
                                                  args=[self.user.id]), {
                                              'first_name': 'Yurii',
                                              'experience': 1,
@@ -51,7 +50,7 @@ class TestViews(TestCase):
                                                  1999, 5, 21),
                                              'education': 'Secondary',
                                              'gender': 'Male',
-                                             })
+                                         })
 
         self.user.refresh_from_db()
         self.assertEquals(self.user.first_name, 'Yurii')
