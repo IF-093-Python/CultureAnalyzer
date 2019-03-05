@@ -52,9 +52,18 @@ class UserRegisterView(CreateView):
         return super(UserRegisterView, self).get(request, *args, **kwargs)
 
 
-class UserDetailView(DetailView):
+class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     template_name = 'users/profile.html'
     model = CustomUser
+
+    def test_func(self):
+        """
+        this func check that the user which want
+        to delete the post should be author of this post
+        """
+        current_user = self.get_object()
+
+        return bool(self.request.user == current_user)
 
 
 class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
