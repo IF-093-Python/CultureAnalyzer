@@ -2,10 +2,21 @@
 {% load crispy_forms_tags %}
 {% load staticfiles %}
 {% load cool_paginate %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block title %}Create group{% endblock title %}
 
 {% block content %}
+  {% block breadcrumbs %}
+    <div>
+    {% breadcrumb "Home" "/" %}
+    {% breadcrumb "Groups" "groups:groups-list" %}
+    {% breadcrumb "Create Group" "groups:groups-list" %}
+    <div style="color: blue">
+    {% render_breadcrumbs %}
+    </div>
+    </div>
+  {% endblock %}
 <div class="container-fluid col-md-10">
     <div class="border-bottom">
         <p class="text-center font-weight-bold" style="font-size: 2rem;">
@@ -49,7 +60,7 @@
                 {% else %}
                 <img src="{% static 'default.png' %}" alt="avatar" class="list_img m-1">
                 {% endif %}
-                <h5 class="my-auto ml-4 mr-auto">{{ user.username }}</h5>
+                <h5 class="my-auto ml-4 mr-auto">{{ user.last_name }} {{ user.first_name }} ({{ user.username }})</h5>
                 <input type="checkbox" name="mentor" value="{{ user.pk }}" class="my-auto mr-4">
             </div>
         </div>

@@ -216,8 +216,9 @@ class MentorGroupUpdate(PermissionRequiredMixin, generic.UpdateView,
         # Generates url with '1' in the end as 'hash'
         my_url = reverse_lazy('groups:add_new_user',
                               args=[self.kwargs['pk'], '1'])
+        domain = self.request.build_absolute_uri('/')[:-1]
         # Alternates faked '1' hash in the end to real hash
-        context['url'] = my_url[:-1] + self.encode_data()
+        context['url'] = domain + my_url[:-1] + self.encode_data()
         return context
 
     def test_func(self):

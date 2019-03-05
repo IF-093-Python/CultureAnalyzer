@@ -23,7 +23,7 @@
                             <div class="dropdown-divider {% if not perms.quiz.view_test_player %}d-none{% endif %}"></div>
                             <a class="dropdown-item {% if not perms.users.view_customuser %}d-none{% endif %}" href="{% url 'admin' %}">Users</a>
                             <a class="dropdown-item {% if not perms.groups.view_group %}d-none{% endif %}" href="{% url 'groups:groups-list' %}">Groups</a>
-                            <a class="dropdown-item {% if not perms.groups.view_mentor_group %}d-none{% endif %}" href="{% url 'groups:groups-list' %}">Mentor</a>
+                            <a class="dropdown-item {% if not perms.groups.view_mentor_group %}d-none{% endif %}" href="{% url 'groups:mentor_groups_view' %}">Mentor</a>
                             <div class="dropdown-divider {% if not perms.groups.view_group and not perms.users.view_customuser and not perms.groups.view_mentor_group %}d-none{% endif %}"></div>
                             <a class="dropdown-item {% if not perms.quiz.view_quizzes %}d-none{% endif %}" href="{% url 'quiz:quizzes-list' %}">Quizzes</a>
                             <a class="dropdown-item {% if not perms.feedbacks.view_feedback %}d-none{% endif %}" href="{% url 'feedback-list' %}">Feedback</a>

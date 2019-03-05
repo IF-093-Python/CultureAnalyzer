@@ -33,23 +33,24 @@
             <thead class="thead-light">
                 <tr>
                     <th scope="col">Name</th>
-                    <th scope="col" class="text-center w-25">Mentors</th>
                     <th scope="col" class="text-center w-25">Options</th>
+                    <th scope="col" class="text-center w-25">Mentors</th>
                 </tr>
             </thead>
             <tbody>
                 {% for group in group_list %}
                 <tr>
-                    <td class="align-middle">{{ group.name }}
-                    </td>
-                    <td class="align-middle text-center">
-                        {{ group.total }}
+                    <td class="align-middle">
+                        <a class="align-middle" href="{% url 'groups:update-group' group.pk %}">{{ group.name }}</a>
                     </td>
                     <td class="align-middle">
                         <div class="d-flex justify-content-center">
                             <a class="btn btn-light btn-option" href="{% url 'groups:update-group' group.pk %}"><i class="far fa-edit"></i></a>
                             <a class="btn btn-light btn-option ml-1" href="{% url 'groups:delete-group' group.pk %}"><i class="far fa-trash-alt"></i></a>
                         </div>
+                    </td>
+                    <td class="align-middle text-center">
+                        {{ group.total }}
                     </td>
                 </tr>
                 {% endfor %}

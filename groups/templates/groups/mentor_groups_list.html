@@ -36,7 +36,7 @@
             <strong>Groups:</strong>
         {% endif %}
   {% if group_list %}
-  <table class="table table-hover table-striped table-bordered table-sm">
+  <table class="table table-hover">
       <thead class="thead-light">
       <tr>
           <th class='w-30'>Name</th>
@@ -49,7 +49,7 @@
       {% for group in group_list %}
       <tr>
           <td class="align-bottom">
-              <a class="align-middle"
+              <a class="align-bottom"
                  href="{% url 'groups:mentor_group_update' group.pk %}">
                  {{ group }}</a>
 
