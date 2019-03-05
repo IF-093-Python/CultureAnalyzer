@@ -9,14 +9,24 @@ Culture Analyzer
             <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="{% url 'profile' request.user.id %}">
                 <div class="block-content">
                     <p class="mb-2 d-sm-block">
-                        <i class="fa fa-pencil-alt text-gray fa-2x"></i>
+                        <i class="fas fa-address-card text-gray fa-2x"></i>
                     </p>
                     <p class="font-w600 font-size-sm text-uppercase">Profile</p>
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-4 col-xl-2">
-            <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="javascript:void(0)">
+        <div class="col-6 col-md-4 col-xl-2 {% if not perms.quiz.view_results %}d-none{% endif %}">
+            <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="{% url 'test_player:start_test' %}">
+                <div class="block-content">
+                    <p class="mb-2 d-sm-block">
+                        <i class="fas fa-play text-gray fa-2x"></i>
+                    </p>
+                    <p class="font-w600 font-size-sm text-uppercase">Pass test</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2 {% if not perms.users.view_customuser %}d-none{% endif %}">
+            <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="{% url 'admin' %}">
                 <div class="block-content">
                     <p class="mb-2 d-sm-block">
                         <i class="fas fa-user text-gray fa-2x"></i>
@@ -25,8 +35,8 @@ Culture Analyzer
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-4 col-xl-2">
-            <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="javascript:void(0)">
+        <div class="col-6 col-md-4 col-xl-2 {% if not perms.groups.view_group %}d-none{% endif %}">
+            <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="{% url 'groups:groups-list' %}">
                 <div class="block-content">
                     <p class="mb-2 d-sm-block">
                         <i class="fas fa-users text-gray fa-2x"></i>
@@ -35,7 +45,7 @@ Culture Analyzer
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-4 col-xl-2">
+        <div class="col-6 col-md-4 col-xl-2 {% if not perms.quiz.view_quizzes %}d-none{% endif %}">
             <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="{% url 'quiz:quizzes-list' %}">
                 <div class="block-content">
                     <p class="mb-2 d-sm-block">
@@ -45,7 +55,7 @@ Culture Analyzer
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-4 col-xl-2">
+        <div class="col-6 col-md-4 col-xl-2 {% if not perms.feedbacks.view_feedback %}d-none{% endif %}">
             <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="{% url 'feedback-list' %}">
                 <div class="block-content">
                     <p class="mb-2 d-sm-block">
@@ -55,13 +65,23 @@ Culture Analyzer
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-4 col-xl-2">
+        <div class="col-6 col-md-4 col-xl-2 {% if not perms.indicators.view_country_indicator %}d-none{% endif %}">
             <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="{% url 'country_indicator:country_indicator_list' %}">
                 <div class="block-content">
                     <p class="mb-2 d-sm-block">
                         <i class="fab fa-font-awesome-flag text-gray fa-2x"></i>
                     </p>
                     <p class="font-w600 font-size-sm text-uppercase">Indicators</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2 {% if not perms.quiz.view_results %}d-none{% endif %}">
+            <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="{% url 'quiz:result-list' request.user.id %}">
+                <div class="block-content">
+                    <p class="mb-2 d-sm-block">
+                        <i class="fas fa-poll text-gray fa-2x"></i>
+                    </p>
+                    <p class="font-w600 font-size-sm text-uppercase">Results</p>
                 </div>
             </a>
         </div>

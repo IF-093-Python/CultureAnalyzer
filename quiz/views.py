@@ -105,7 +105,6 @@ class ResultsListView(PermissionRequiredMixin, generic.ListView):
         context = super().get_context_data(**kwargs)
         context['current'] = get_object_or_404(CustomUser, pk=self.kwargs[
             'user_id'])
-        context['back'] = self.request.META['HTTP_REFERER']
         return context
 
 

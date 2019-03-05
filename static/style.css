@@ -258,7 +258,12 @@ table.table-hover > tbody > tr > *  {
     height: 150px;
     width: 150px;
     border-radius: 50%;
-    margin-right: 20px;
+}
+
+.list_img {
+    height: 90px;
+    width: 90px;
+    border-radius: 50%;
 }
 
 .admin_circle_img {
@@ -273,6 +278,17 @@ table.table-hover > tbody > tr > *  {
 
 .info-text {
     color: white;
+}
+
+#hint_id_password1 {
+    display: none;
+}
+
+.profile-card {
+    background-color: rgba(248,249,250, .1);
+    border-radius: .25rem;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    height: 100px;
 }
 
 @media screen and (max-width: 400px) {
