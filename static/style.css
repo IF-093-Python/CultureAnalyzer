@@ -259,6 +259,12 @@ table.table-hover > tbody > tr > *  {
     border-radius: 50%;
 }
 
+.list_img {
+    height: 90px;
+    width: 90px;
+    border-radius: 50%;
+}
+
 .about {
     font-size: 20px;
     color: lightgray;
@@ -268,13 +274,20 @@ table.table-hover > tbody > tr > *  {
     color: white;
 }
 
+#hint_id_password1 {
+    display: none;
+}
+
+.profile-card {
+    background-color: rgba(248,249,250, .1);
+    border-radius: .25rem;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    height: 100px;
+}
+
 @media screen and (max-width: 400px) {
     .circle_img {
         height: 90px;
         width: 90px;
     }
-}
-
-#hint_id_password1 {
-    display: none;
 }
