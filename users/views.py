@@ -144,6 +144,16 @@ class ListGroups(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     queryset = Group.objects.all()
     permission_required = 'auth.view_group'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['can_change_permissions'] = self.request.user.has_perm(
+            perm='auth.change_group')
+        context['can_delete_permissions'] = self.request.user.has_perm(
+            perm='auth.delete_group'
+            )
+        print(context)
+        return context
+
 
 class UpdateGroups(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'users/group_permissions.html'
@@ -169,13 +179,6 @@ class DeleteGroups(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     success_url = reverse_lazy('group_perm-list')
     success_message = 'Group: "%(name)s" was deleted successfully'
     permission_required = 'auth.delete_group'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['has_permissions'] = self.request.user.has_perm(
-            perm='auth.delete_group')
-        print(context)
-        return context
 
 
 class CreateGroup(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
