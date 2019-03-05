@@ -2,21 +2,21 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
+<div class="conntainer-fluid col-md-8 mx-auto">
+    <h1 class="text-center border-bottom mb-4">Group Permissions</h1>
     <form method="post">
         {% csrf_token %}
         <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Group Permissions</legend>
-            <p> {{ form.name }} </p>
-            <select name='permissions' class="selectpicker"
-                    multiple="multiple" data-live-search="true" >
+            <p> {{ form.name|as_crispy_field }} </p>
+            <select name='permissions' class="selectpicker" multiple="multiple" data-live-search="true">
                 {% for i in form.permissions %}
-                        {{ i }}
+                {{ i }}
                 {% endfor %}
             </select>
         </fieldset>
         <div class="form-group">
-            <button class="btn btn-outline-info" type="submit">{% if update %}Update{% else %}Create{% endif %}</button>
+            <button class="btn btn-blue" type="submit">{% if update %}Update{% else %}Create{% endif %}</button>
         </div>
     </form>
-    </div>
+</div>
 {% endblock content %}

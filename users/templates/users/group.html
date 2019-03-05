@@ -2,30 +2,29 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="container">
-        <div class="row justify-content-md-center">
-            <div class="col-md-6">
-                <ul class="user_list">
-                    <h1>Group List</h1><br>
-                    <a class="btn btn-default"
-                       href="{% url 'group_perm-create' %}" role="button"><span
-                            class="btn btn-success">Create Group</span></a>
-                    {% for user in group %}
-                        <li>{{ user.id }}. {{ user.name }}
-                            {% if can_change_permissions %}
-                                <a class="btn btn-primary"
-                                   href="{% url 'group_perm-update' user.id %}" role="button"><span
-                                        class="fas fa-edit"></span> </a>
-                            {% endif %}
-                            {% if can_delete_permissions %}
-                                <a class="btn btn-danger"
-                                   href="{% url 'group_perm-delete' user.id %}" role="button"><span
-                                        class="fas fa-trash-alt"></span></a>
-                            {% endif %}
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-md-6">
+            <h1 class="text-center border-bottom mb-1">Group List</h1>
+            <a class="btn btn-blue mb-2" href="{% url 'group_perm-create' %}" role="button">Create Group</a>
+            <ul class="user_list">
+                {% for user in group %}
+                <li class="d-flex justify-content-between">
+                    <div class="align-self-center">{{ user.id }}. {{ user.name }}</div>
+                    <div>
+                        {% if can_change_permissions %}
+                        <a class="btn btn-light btn-option" href="{% url 'group_perm-update' user.id %}"
+                            role="button"><span class="fas fa-edit"></span> </a>
+                        {% endif %}
+                        {% if can_delete_permissions %}
+                        <a class="btn btn-light btn-option" href="{% url 'group_perm-delete' user.id %}"
+                            role="button"><span class="fas fa-trash-alt"></span></a>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
+</div>
 {% endblock %}
