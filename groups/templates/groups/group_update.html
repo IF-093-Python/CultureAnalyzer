@@ -68,7 +68,7 @@
                 {% else %}
                 <img src="{% static 'default.png' %}" alt="avatar" class="list_img m-1">
                 {% endif %}
-                <h5 class="my-auto ml-4 mr-auto">{{ user.username }}</h5>
+                <h5 class="my-auto ml-4 mr-auto">{{ user.last_name }} {{ user.first_name }} ({{ user.username }})</h5>
                 <input type="checkbox" name="mentor" value="{{ user.pk }}" class="my-auto mr-4" {% if user in checked_mentors%}checked{% endif %}>
             </div>
         </div>
