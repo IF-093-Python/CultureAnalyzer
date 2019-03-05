@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load cool_paginate %}
 {% block title %}Quiz detail{% endblock %}
 {% block content %}
 <div class="container-fluid col-md-10">
     <div class="border-bottom my-3 pb-1">
     <h1>
-        <strong class="btn btn-light" href="{% url 'quiz:quizzes-list' %}">
-            <splan class="fas fa-chevron-left"></splan></strong>
+        <a class="btn btn-light" href="{% url 'quiz:quizzes-list' %}">
+            <splan class="fas fa-chevron-left"></splan></a>
         {{quiz.title}}
     </h1>
     <b class="text-white-75 font-weight-light">{{quiz.description}}</b>
@@ -69,7 +70,9 @@
     </table>
 
     <!--Include paginator-->
-    {% include "tutors/pagination.html" with page=page_obj %}
+    {% if is_paginated %}
+        {% cool_paginate page_obj=page_obj %}
+    {% endif %}
 
     {% else %}
     <p class="mt-4">You have not created any question yet.</p>

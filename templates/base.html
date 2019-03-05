@@ -39,7 +39,7 @@
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
                     {% if user.is_authenticated %}
-                    {% if user.profile.role.name == 'Mentor' %}
+                    {% if user.is_mentor %}
                     <li class="nav-item dropdown">
                         <a class="nav-item nav-link dropdown-toggle ite" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
                             Mentor
@@ -50,7 +50,7 @@
                             <a class="dropdown-item" href="{% url 'country_indicator:country_indicator_list' %}">Indicators</a>
                         </div>
                     </li>
-                    {% elif user.profile.role.name == 'Admin' %}
+                    {% elif user.is_admin %}
                     <li class="nav-item dropdown">
                         <a class="nav-item nav-link dropdown-toggle ite" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
                             Admin
@@ -59,14 +59,14 @@
                             <a class="dropdown-item" href="{% url 'admin' %}">Admin page</a>
                         </div>
                     </li>
-                    {% elif user.profile.role.name == 'Trainee' %}
+                    {% else %}
                     <li class="nav-item dropdown">
                         <a class="nav-item nav-link dropdown-toggle ite" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
                             Test
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{% url 'test_player:start_test' %}">Start Test</a>
-                            <a class="dropdown-item" href="{% url 'test_player:results-list' %}">See results</a>
+                            <a class="dropdown-item" href="">Start Test</a>
+                            <a class="dropdown-item" href="">See results</a>
                         </div>
                     </li>
                     {% endif %}

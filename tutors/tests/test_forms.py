@@ -8,26 +8,15 @@ __all__ = ['QuestionFormTest', 'AnswerCreateForm', ]
 
 _fx_question_form_data_valid = (
     (
-        {'quiz': 1,
-         'question_text': 'Some valid question'},
+        {
+            'question_text': 'Some valid question'},
         True,
     ),
 )
 
 _fx_question_form_data_invalid = (
     (
-        {'quiz': 2,
-         'question_text': 'Some invalid question'},
-        False,
-    ),
-    (
-        {'quiz': 1,
-         'question_text': ''},
-        False,
-    ),
-    (
-        {'quiz': '',
-         'question_text': 'Some invalid question'},
+        {'question_text': ''},
         False,
     ),
 )
