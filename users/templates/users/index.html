@@ -15,7 +15,7 @@ Culture Analyzer
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-4 col-xl-2 {% if not perms.quiz.test_player_view %}d-none{% endif %}">
+        <div class="col-6 col-md-4 col-xl-2 {% if not perms.quiz.view_test_player %}d-none{% endif %}">
             <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="{% url 'test_player:start_test' %}">
                 <div class="block-content">
                     <p class="mb-2 d-sm-block">
@@ -85,7 +85,7 @@ Culture Analyzer
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-4 col-xl-2 {% if not perms.quiz.test_player_view %}d-none{% endif %}">
+        <div class="col-6 col-md-4 col-xl-2 {% if not perms.quiz.view_test_player %}d-none{% endif %}">
             <a class="block block-rounded block-link-pop text-center d-flex align-items-center" href="{% url 'quiz:result-list' request.user.id %}">
                 <div class="block-content">
                     <p class="mb-2 d-sm-block">
