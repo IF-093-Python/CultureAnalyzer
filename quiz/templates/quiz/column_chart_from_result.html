@@ -1,45 +1,45 @@
 {% extends 'base.html' %}
 {% load filters %}
 {% load zip %}
-{% load static %}
 {% block title %}Your result{% endblock %}
 {% block content %}
-    <div class="d-flex justiy-content-between flex-wrap">
-        <div class="form-group col-md-4">
-            <form method="post" class="mb-1">
-                {% csrf_token %}
-                <input type="submit" class="btn btn-blue" value="Result">
-                <select name='select_indicator' class="selectpicker"
-                        multiple="multiple" data-live-search="true" data-max-options="5">
-                    {% for i in country_indicators %}
-                        <option value="{{ i.get_indicators }}"
-                                {% if i.iso_code is countries_values.keys %}
-                                selected="selected"
-                                {% endif %}>
-                            {{ i.name }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </form>
-            <!--Table with indicators -->
-            <table class="table table-hover">
-                <thead class="thead-light">
-                <tr>
-                    <th scope="col" class="text-center w-50">Indicator</th>
-                    <th scope="col" class="text-center w-50">Value</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for val, indicator in result|zip:indicator_name %}
-                    <tr>
-                        <td class="text-center">{{ indicator }}</td>
-                        <td class="text-center">{{ val }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            <!--End table-->
-        </div>
+<div class="d-flex justiy-content-between flex-wrap">
+    <div class="form-group col-md-4">
+    <form method="post" class="mb-1">
+        {% csrf_token %}
+        <input type="submit" class="btn btn-blue" value="Result">
+        <select name='select_indicator' class="selectpicker"
+                multiple="multiple" data-live-search="true" data-max-options="5">
+            {% for i in country_indicators%}
+            <option value="{{i.get_indicators}}"
+                    {% if i.iso_code is countries_values.keys %}
+                    selected="selected"
+                    {% endif %}>
+                {{i.name}}
+            </option>
+            {% endfor %}
+        </select>
+    </form>
+        <!--Table with indicators -->
+        <table class="table table-hover">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col" class="text-center w-50">Indicator</th>
+                <th scope="col" class="text-center w-50">Value</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for val, indicator in result|zip:indicator_name %}
+            <tr>
+                <td class="text-center">{{indicator}}</td>
+                <td class="text-center">{{val}}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <!--End table-->
+        {% include "quiz/explanation_indicators.html" %}
+    </div>
 
 
         <div class="form-group col-md-8">
@@ -48,35 +48,30 @@
                     <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
                        aria-controls="home"
                        aria-selected="true">Chart</a>
-
                 </li>
-
                 {% if countries_names %}
                     {% for country_name in countries_names %}
                         <li class="nav-item">
-                            <a class="nav-link" id="{{ country_name }}-tab" data-toggle="tab" href="#{{ country_name }}"
+                            <a class="nav-link" id="{{ country_name|cut:" " }}-tab" data-toggle="tab" href="#{{ country_name|cut:" " }}"
                                role="tab"
-                               aria-controls="{{ country_name }}"
+                               aria-controls="{{ country_name|cut:" " }}"
                                aria-selected="false">
                                 {{ country_name|truncatechars:12 }}
                             </a>
                         </li>
                     {% endfor %}
                 {% endif %}
-                <li class="nav-item">
-                    {% include "quiz/explanation_indicators.html" %}
-                </li>
             </ul>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                     <div id="container"
-                         style="min-width: 310px; height: 400px; margin: 0 auto;"></div>
+                         style=
+                {% include "quiz/explanation_indicators.html" %}"min-width: 310px; height: 400px; margin: 0 auto;"></div>
                 </div>
                 {% if countries_values %}
                     {% for country_name in countries_names %}
-                        <div class="tab-pane fade" id="{{ country_name }}" role="tabpanel"
-                             aria-labelledby="{{ country_name }}-tab"
-                             style="background-color: #fff;">
+                        <div class="tab-pane fade" id="{{ country_name|cut:" " }}" role="tabpanel"
+                             aria-labelledby="{{ country_name|cut:" " }}-tab">
                             <!--Creating views of feedbacks and recommendations-->
                             <div class="container">
                                 {% with feedbacks_by_ind=countries_feedbacks|lookup:country_name %}
@@ -84,28 +79,27 @@
                                         {% if feedbacks %}
                                             <h5>Feedbacks for {{ indicator }}:</h5>
                                             {% for feedback_obj in feedbacks %}
-                                                <p class="result-feedback">- {{ feedback_obj.feedback }}</p>
 
+                                                <p>- {{ feedback_obj.feedback }}</p>
                                                 {% with recommendations=feedback_obj.recommendation_set.all|slice:":5" first_load=5 %}
                                                     {% if recommendations %}
-                                                        <p class="result-feedback">Recommendations:</p>
+                                                        <p>Recommendations:</p>
                                                     {% endif %}
 
-                                                    <ul>
-                                                        {% for r in recommendations %}
-                                                            <li> {{ r.recommendation }}</li>
-                                                        {% endfor %}
+                                                    <ul class="recommendation">
+                                                    {% for r in recommendations %}
+                                                       <li> {{ r.recommendation }}</li>
+                                                    {% endfor %}
                                                     </ul>
 
                                                     {% if feedback_obj.recommendation_set.count > first_load %}
-                                                        <button type="button"
-                                                                class="btn btn-link load_recommendation_button"
-                                                                data-url="{{ request.get_full_path }}"
-                                                                data-feedback-id="{{ feedback_obj.pk }}"
-                                                                data-offset="{{ first_load }}">Load more
-                                                        </button>
+                                                        <button type="button" class="btn btn-link load_recommendation_button"
+                                                            data-url="{{ request.get_full_path }}"
+                                                            data-feedback-id="{{ feedback_obj.pk }}"
+                                                            data-offset="{{ first_load }}">Load more</button>
                                                     {% endif %}
                                                 {% endwith %}
+
                                             {% endfor %}
                                         {% endif %}
                                     {% endfor %}
@@ -174,5 +168,5 @@
             });
 
         </script>
-    </div>
+</div>
 {% endblock %}

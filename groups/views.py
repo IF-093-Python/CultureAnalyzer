@@ -81,6 +81,14 @@ class CreateGroupView(generic.CreateView, PermissionRequiredMixin,
             self.__search_label = search
         return result
 
+    # def post(self, request, *args, **kwargs):
+    #     context = super(CreateGroupView, self).post(request, *args, **kwargs)
+    #     print('request:', request.POST)
+    #     print('args:', args)
+    #     print('kwargs:', kwargs)
+    #     print(context)
+    #     return context
+
 
 class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
                       PermissionRequiredMixin, SafePaginationListView):
@@ -208,8 +216,9 @@ class MentorGroupUpdate(PermissionRequiredMixin, generic.UpdateView,
         # Generates url with '1' in the end as 'hash'
         my_url = reverse_lazy('groups:add_new_user',
                               args=[self.kwargs['pk'], '1'])
+        domain = self.request.build_absolute_uri('/')[:-1]
         # Alternates faked '1' hash in the end to real hash
-        context['url'] = my_url[:-1] + self.encode_data()
+        context['url'] = domain + my_url[:-1] + self.encode_data()
         return context
 
     def test_func(self):
@@ -236,8 +245,8 @@ class MentorGroupUpdate(PermissionRequiredMixin, generic.UpdateView,
 
 
 class MentorGroupAdd(PermissionRequiredMixin, generic.UpdateView,
-                     SuccessMessageMixin,
-                     UserPassesTestMixin, SafePaginationListView):
+                     SuccessMessageMixin, UserPassesTestMixin,
+                     SafePaginationListView):
     """Makes list of all students that can be added to group."""
     model = Group
     form_class = GroupUpdateForm
@@ -342,12 +351,13 @@ class AddNewUser(LoginRequiredMixin, generic.CreateView):
         return redirect(self.success_url)
 
 
-class SheduleGroupList(UserPassesTestMixin, SafePaginationListView,
-                       SuccessMessageMixin):
+class SheduleGroupList(PermissionRequiredMixin, UserPassesTestMixin,
+                       SafePaginationListView, SuccessMessageMixin):
     model = Shedule
     template_name = 'groups/shedule_group_list.html'
     paginate_by = PAGINATOR
     context_object_name = 'quizzes'
+    permission_required = 'groups.view_shedule'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -366,11 +376,12 @@ class SheduleGroupList(UserPassesTestMixin, SafePaginationListView,
             filter(mentor__id=self.request.user.pk).exists()
 
 
-class SheduleGroupView(UserPassesTestMixin, generic.CreateView,
-                       SuccessMessageMixin):
+class SheduleGroupView(PermissionRequiredMixin,UserPassesTestMixin,
+                       generic.CreateView, SuccessMessageMixin):
     model = Shedule
     form_class = SheduleForm
     template_name = 'groups/shedule_group.html'
+    permission_required = 'groups.change_shedule'
 
     def form_valid(self, form):
         form.instance.group = Group.objects.get(pk=self.kwargs['pk'])

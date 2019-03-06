@@ -3,7 +3,7 @@
 {% block title %}{{request.user.username.capitalize}}`s profile{% endblock title %}
 {% block content%}
 <div class="d-flex justify-content-center">
-        <div class="d-flex flex-wrap block-rounded bg-body-dark col-md-8">
+        <div class="d-flex flex-wrap block-rounded bg-body-dark col-md-8 profile-section">
             <div class="col-md-4"><div class="d-flex justify-content-center m-2">
                 {% if object.image %}
                 <img src="{{ object.image.url }}" alt="" class="circle_img img-fluid">

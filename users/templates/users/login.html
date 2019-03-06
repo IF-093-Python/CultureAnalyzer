@@ -145,6 +145,13 @@ body {
 						  </div>
 						  <button class="btn btn-lg btn-blue btn-block text-uppercase" type="submit">Sign in</button>
 						  <hr class="d-none my-4">
+
+              <small class="text-muted">
+                  Forget password? <a href="{% url 'password_reset' %}" class="mx-2">Reset</a>
+              </small><br>
+              <small class="text-muted">
+                  Need An Account? <a href="{% url 'register' %}" class="ml-2">Sign Up Now</a>
+              </small>
 						  <button class="d-none btn btn-lg btn-google btn-block text-uppercase" type="submit"><i class="fab fa-google mr-2"></i> Sign in with Google</button>
 						  <button class="d-none btn btn-lg btn-facebook btn-block text-uppercase" type="submit"><i class="fab fa-facebook-f mr-2"></i> Sign in with Facebook</button>
 						</form>

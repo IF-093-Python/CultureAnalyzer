@@ -1,94 +1,80 @@
+{% extends 'abstract.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% block navbar %}
+<nav class="navbar navbar-expand-lg block-rounded navbar-custom">
+    <div class="container-fluid">
+        <a class="navbar-brand mr-4" href="{% url 'home' %}">Culture Analyzer</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarToggle">
 
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-          crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
-    <title>Culture-Analyzer</title>
-
-</head>
-
-<body>
-<header class="site-header">
-    <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
-        <div class="container">
-            <a class="navbar-brand mr-4" href="/">Culture Analyzer</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
-                    aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarToggle">
-                <div class="navbar-nav mr-auto">
-                    <a class="nav-item nav-link" href="{% url 'home' %}">Home</a>
-                    <a class="nav-item nav-link" href="#">About</a>
-                </div>
-                <!-- Navbar Right Side -->
-                <div class="navbar-nav">
-                    {% if user.is_authenticated %}
-
-
-                        <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
-                        <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
-                    {% else %}
-                        <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-                        <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </nav>
-</header>
-<main role="main" class="container">
-    <div class="row">
-        <div class="{% if user.is_authenticated %} col-md-8 {% else %} col-md-12 {% endif %}">
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
-                        {{ message }}
+            <!-- Navbar Right Side -->
+            <div class="navbar-nav ml-auto">
+                {% if user.is_authenticated %}
+                {% if user.is_trainee %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle ite" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
+                        Menu
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item {% if not perms.quiz.view_results %}d-none{% endif %}" href="{% url 'test_player:start_test' %}">Start test</a>
+                        <a class="dropdown-item {% if not perms.quiz.view_results %}d-none{% endif %}" href="{% url 'quiz:result-list' request.user.id %}">Results</a>
                     </div>
-                {% endfor %}
-            {% endif %}
-            {% block content %}{% endblock %}
-        </div>
-        {% if user.is_authenticated %}
-            <div class="col-md-4">
-                <div class="content-section">
-                    <h3>Our Sidebar</h3>
-                    <p class='text-muted'>Menu
-                    <ul class="list-group">
-                        {% if user.is_authenticated %}
-                            <li class="list-group-item list-group-item-light"><a class="nav-item nav-link" href="#">Something...</a>
-                            </li>
-                            <li class="list-group-item list-group-item-light"><a class="nav-item nav-link" href="#">Something...</a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                    </p>
-                </div>
+                </li>
+                {% elif user.is_mentor %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle ite" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
+                        Menu
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item {% if not perms.groups.view_group %}d-none{% endif %}" href="{% url 'groups:mentor_groups_view' %}">Groups</a>
+                        <div class="dropdown-divider {% if not perms.groups.view_group and not perms.users.view_customuser %}d-none{% endif %}"></div>
+                        <a class="dropdown-item {% if not perms.quiz.view_quizzes %}d-none{% endif %}" href="{% url 'quiz:quizzes-list' %}">Quizzes</a>
+                        <a class="dropdown-item {% if not perms.feedbacks.view_feedback %}d-none{% endif %}" href="{% url 'feedback-list' %}">Feedback</a>
+                        <a class="dropdown-item" href="{% url 'country_indicator:country_indicator_list' %}">Indicators</a>
+                    </div>
+                </li>
+                {% elif user.is_admin %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle ite" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
+                        Menu
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'admin' %}">Users</a>
+                        <a class="dropdown-item" href="{% url 'groups:groups-list' %}">Groups</a>
+                        <a class="dropdown-item" href="{% url 'group_perm-list' %}">Permissions</a>
+                    </div>
+                </li>
+                {% endif %}
+                <li class="nav-item dropdown">
+                    <a class="nav-item nav-link dropdown-toggle ite" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
+                        {{ request.user.username }}
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'profile' request.user.id %}">Profile</a>
+                        <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                    </div>
+                </li>
+                {% else %}
+                <a class="nav-item nav-link" href="{% url 'login' %}">Sign in</a>
+                <a class="nav-item nav-link" href="{% url 'register' %}">Sign up</a>
+                {% endif %}
             </div>
-        {% endif %}
+        </div>
     </div>
-</main>
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim. min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
-</body>
+</nav>
+{% endblock navbar %}
 
-</html>
+{% block breadcrumb %}
+<nav aria-label="breadcrumb" class="mb-2">
+    <ol class="breadcrumb navbar-custom">
+        <li class="breadcrumb-item active" aria-current="page">Home</li>
+    </ol>
+</nav>
+{% endblock breadcrumb %}
+
+{% block content %}
+<h1>Content</h1>
+{% endblock content %}

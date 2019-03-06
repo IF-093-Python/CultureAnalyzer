@@ -31,8 +31,8 @@ class Shedule(models.Model):
     """
     begin = models.DateTimeField(null=False)
     end = models.DateTimeField(null=False)
-    quiz = models.ForeignKey(Quizzes, on_delete=models.PROTECT)
-    group = models.ForeignKey(Group, on_delete=models.PROTECT)
+    quiz = models.ForeignKey(Quizzes, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.group} - {self.quiz}'
