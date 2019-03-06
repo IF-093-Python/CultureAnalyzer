@@ -52,7 +52,7 @@ class TestPlayer(UserPassesTestMixin, FormView):
     """
     template_name = 'test_player/test_player.html'
     form_class = QuestionSaveForm
-    permission_required = 'quiz.view_results'
+    permission_required = 'quiz.view_test_player'
 
     def get_success_url(self):
         """
