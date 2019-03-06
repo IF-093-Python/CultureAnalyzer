@@ -2,21 +2,11 @@
 {% load crispy_forms_tags %}
 {% load staticfiles %}
 {% load cool_paginate %}
-{% load django_bootstrap_breadcrumbs %}
+
 
 {% block title %}Create group{% endblock title %}
 
 {% block content %}
-  {% block breadcrumbs %}
-    <div>
-    {% breadcrumb "Home" "/" %}
-    {% breadcrumb "Groups" "groups:groups-list" %}
-    {% breadcrumb "Create Group" "groups:groups-list" %}
-    <div style="color: blue">
-    {% render_breadcrumbs %}
-    </div>
-    </div>
-  {% endblock %}
 <div class="container-fluid col-md-10">
     <div class="border-bottom">
         <p class="text-center font-weight-bold" style="font-size: 2rem;">

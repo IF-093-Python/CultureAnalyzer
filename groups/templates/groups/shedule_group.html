@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% load django_bootstrap_breadcrumbs %}
 {% load crispy_forms_tags %}
 
 {% block title %}Set quiz for {{ group.name }}{% endblock %}
@@ -8,38 +7,30 @@
 <script src="//cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 {{ form.media }}
-  {% block breadcrumbs %}
-    {% breadcrumb "Home" "/" %}
-    {% breadcrumb "Groups" "groups:mentor_groups_view" %}
-    {% breadcrumb "Quizzes for group" "groups:shedule_group_list" group.pk %}
-    {% breadcrumb group.name "groups:shedule_group" group.pk %}
-    <div style="color: blue">
-    {% render_breadcrumbs %}
-    </div>
-  {% endblock breadcrumbs%}
 
-{% if messages %}
-          <ul class="messages">
-            {% for message in messages %}
-            <a {% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                {{ message }}</a>
-            {% endfor %}
-          </ul>
-        {% endif %}
+<h1 class="text-center">Set quiz for "{{ group.name }}"</h1>
 
-<h1>Set quiz for "{{ group.name }}"</h1>
-<div class="container">
-    <form method="post">{% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit" class="btn btn-primary; float-left"
-                style="margin-right: 10px; background-color: cornflowerblue">
-            Set Date
-        </button>
+<div class="container col-md-8">
+    <form method="post">
+        {% csrf_token %}
+        <div class="d-flex">
+            <div class="col-md-6">
+                {{ form.begin|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.end|as_crispy_field }}
+            </div>
+        </div>
+        <div class="col-md-12">
+            {{ form.quiz|as_crispy_field }}
+        </div>
+        <div class="d-flex">
+            <button type="submit" class="btn btn-blue">
+                Set Date
+            </button>
+            <a class="btn btn-outline-light ml-1" title="Back to groups list"
+                href="{% url 'groups:shedule_group_list' group.pk %}">Cancel</a>
+        </div>
     </form>
-    <a class="btn btn-secondary" title="Back to groups list"
-       href="{% url 'groups:shedule_group_list' group.pk %}">Cancel</a>
 </div>
-
-
-
 {% endblock content %}

@@ -38,6 +38,7 @@
             </tbody>
         </table>
         <!--End table-->
+        {% include "quiz/explanation_indicators.html" %}
     </div>
 
 
@@ -60,10 +61,6 @@
                         </li>
                     {% endfor %}
                 {% endif %}
-                <li class="nav-item">
-                    
-                {% include "quiz/explanation_indicators.html" %}
-                </li>
             </ul>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
