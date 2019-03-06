@@ -77,7 +77,7 @@
                                 {% with feedbacks_by_ind=countries_feedbacks|lookup:country_name %}
                                     {% for indicator, feedbacks in feedbacks_by_ind.items %}
                                         {% if feedbacks %}
-                                            <h5>Feedbacks for {{ indicator }}:</h5>
+                                            <h5>Feedback for {{ indicator }}:</h5>
                                             {% for feedback_obj in feedbacks %}
 
                                                 <p>- {{ feedback_obj.feedback }}</p>
