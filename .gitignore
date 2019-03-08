@@ -99,3 +99,5 @@ ENV/
 
 # local settings
 local.py
+
+.scannerwork/
