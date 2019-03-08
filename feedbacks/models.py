@@ -40,3 +40,6 @@ class Recommendation(models.Model):
 
     def get_absolute_url(self):
         return reverse('feedback-detail', args=[self.feedback.pk])
+
+    def __str__(self):
+        return self.recommendation[:30]
