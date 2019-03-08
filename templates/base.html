@@ -10,8 +10,8 @@
             <li>
                 <div class="row" style="margin: 0 auto">
                     <p>
-                {% if user.profile.image %}
-                    <img src="{{ user.profile.image.url }}" alt="" class="circle_text">
+                {% if user.image %}
+                    <img src="{{ user.image.url }}" alt="" class="circle_text">
                 {% else %}
                     <img src="{% static 'default.png' %}" alt="" class="circle_text">
                 {% endif %}</p>
