@@ -53,6 +53,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'CultureAnalyzer.middleware.AuthRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'CultureAnalyzer.urls'
@@ -122,6 +124,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
+LOGOUT_REDIRECT_URL = LOGIN_URL
 
 ITEMS_ON_PAGE = 5
 
