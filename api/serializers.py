@@ -19,3 +19,15 @@ class SignUpSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['password'] = make_password(validated_data['password'])
         return super().create(validated_data)
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    password = PasswordField()
+
+    class Meta:
+        model = get_user_model()
+        fields = ('first_name', 'last_name', 'password')
+
+    def update(self, instance, validated_data):
+        validated_data['password'] = make_password(validated_data['password'])
+        return super().update(instance, validated_data)
