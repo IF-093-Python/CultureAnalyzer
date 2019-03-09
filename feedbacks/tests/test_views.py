@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 
 from feedbacks.tests_data.test_view_data import PAGE_STRING_VALUES
-from feedbacks.models import Feedback
+from feedbacks.models import Feedback, Recommendation
 
 __all__ = ['FeedbackListViewTest', ]
 
@@ -62,3 +62,24 @@ class FeedbackListViewTest(TestCase):
         self.assertEqual(response.status_code, expected_response.status_code)
         self.assertEqual(response.rendered_content,
                          expected_response.rendered_content)
+
+
+class RecommendationDeleteViewTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        User.objects.create_user('user', password='test')
+        Feedback.objects.create(feedback='Some text', min_value=0, max_value=10,
+                                indicator='PDI')
+
+    def setUp(self):
+        feedback = Feedback.objects.get(pk=1)
+        Recommendation.objects.create(recommendation='Lorem ipsum',
+                                      feedback=feedback)
+
+    def test_redirects_to_related_feedback(self):
+        self.client.login(username='user', password='test')
+        response = self.client.post(
+            reverse('recommendation-delete', kwargs={'pk': 1}))
+        self.assertRedirects(response,
+                             reverse('feedback-detail', kwargs={'pk': 1}))
