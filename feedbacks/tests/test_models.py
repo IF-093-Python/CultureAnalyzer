@@ -3,7 +3,7 @@ from django.test import TestCase
 
 from feedbacks.models import Feedback, Recommendation
 
-__all__ = ['FeedbackModelTest', ]
+__all__ = ['FeedbackModelTest', 'RecommendationModelTest']
 
 
 class FeedbackModelTest(TestCase):
