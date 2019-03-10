@@ -1,45 +1,25 @@
 from ddt import ddt, data
 from django.test import TestCase
-from django.contrib.auth.models import User
 from django.urls import reverse
 
 from feedbacks.tests_data.test_view_data import PAGE_STRING_VALUES
-from feedbacks.models import Feedback, Recommendation
+from feedbacks.tests_data.test_form_data import (
+    FEEDBACK_MIN_VALUE_IS_GREATER_MAX_VALUE_DATA,
+)
+from feedbacks.tests.mixins import (FeedbackCRUDViewsSetUpMixin,
+                                    RecommendationCRUDViewsSetUpMixin,
+                                    SetUpUserMixin)
+from feedbacks.models import Feedback
 
 __all__ = ['FeedbackListViewTest', ]
 
 
-class RecommendationCRUDViewsSetUpMixin(object):
-
-    @classmethod
-    def setUpTestData(cls):
-        User.objects.create_user('user', password='test')
-        Feedback.objects.create(feedback='Some text', min_value=0, max_value=10,
-                                indicator='PDI')
-
-    def setUp(self):
-        feedback = Feedback.objects.get(pk=1)
-        Recommendation.objects.create(recommendation='Lorem ipsum',
-                                      feedback=feedback)
-
-
-class FeedbackCRUDViewsSetUpMixin(object):
-
-    @classmethod
-    def setUpTestData(cls):
-        User.objects.create_user('user', password='test')
-
-    def setUp(self):
-        Feedback.objects.create(feedback='Some text', min_value=0, max_value=10,
-                                indicator='PDI')
-
-
 @ddt
-class FeedbackListViewTest(TestCase):
+class FeedbackListViewTest(SetUpUserMixin, TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        User.objects.create_user('user', password='test')
+        super().setUpTestData()
         for i in range(10):
             Feedback.objects.create(feedback='Some text', min_value=i,
                                     max_value=i + 5, indicator='PDI')
@@ -107,6 +87,64 @@ class FeedbackDeleteViewTest(FeedbackCRUDViewsSetUpMixin, TestCase):
         response = self.client.post(reverse('feedback-delete',
                                             kwargs={'pk': 1}))
         self.assertRedirects(response, reverse('feedback-list'))
+
+
+@ddt
+class FeedbackUpdateViewTest(FeedbackCRUDViewsSetUpMixin, TestCase):
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse('feedback-update', kwargs={'pk': 1}))
+        self.assertRedirects(
+            response,
+            f'/login/?next={reverse("feedback-update", kwargs={"pk": 1})}')
+        response = self.client.post(reverse('feedback-update',
+                                            kwargs={'pk': 1}))
+        self.assertRedirects(
+            response,
+            f'/login/?next={reverse("feedback-update", kwargs={"pk": 1})}')
+
+    def test_uses_correct_template(self):
+        self.client.login(username='user', password='test')
+        response = self.client.get(reverse('feedback-update', kwargs={'pk': 1}))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'feedbacks/feedback_form.html')
+
+    @data(*FEEDBACK_MIN_VALUE_IS_GREATER_MAX_VALUE_DATA)
+    def test_form_invalid_max_less_min(self, feedback_data):
+        self.client.login(username='user', password='test')
+        response = self.client.post(
+            reverse('feedback-update', kwargs={'pk': 1}), feedback_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(response, 'form', 'min_value',
+                             'Min value must be less then max value')
+
+
+@ddt
+class FeedbackCreateViewTest(FeedbackCRUDViewsSetUpMixin, TestCase):
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse('feedback-create'))
+        self.assertRedirects(
+            response,
+            f'/login/?next={reverse("feedback-create")}')
+        response = self.client.post(reverse("feedback-create"))
+        self.assertRedirects(
+            response,
+            f'/login/?next={reverse("feedback-create")}')
+
+    def test_uses_correct_template(self):
+        self.client.login(username='user', password='test')
+        response = self.client.get(reverse("feedback-create"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'feedbacks/feedback_form.html')
+
+    @data(*FEEDBACK_MIN_VALUE_IS_GREATER_MAX_VALUE_DATA)
+    def test_form_invalid_max_less_min(self, feedback_data):
+        self.client.login(username='user', password='test')
+        response = self.client.post(reverse("feedback-create"), feedback_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(response, 'form', 'min_value',
+                             'Min value must be less then max value')
 
 
 class RecommendationDeleteViewTest(RecommendationCRUDViewsSetUpMixin, TestCase):
