@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/2.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
-
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -124,9 +123,12 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
+REGISTER_URL = 'register'
+API_URL = 'api'
+
 LOGOUT_REDIRECT_URL = LOGIN_URL
+REDIRECT_EXCLUDE_ROUTES = (LOGIN_URL, REGISTER_URL, API_URL)
 
 ITEMS_ON_PAGE = 5
 
 TEST_RUNNER = 'CultureAnalyzer.tests.CustomTestRunner'
-

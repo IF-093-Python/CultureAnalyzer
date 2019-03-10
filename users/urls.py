@@ -1,6 +1,7 @@
 from django.contrib.auth import views as auth_views
 from django.urls import path, re_path
 
+from CultureAnalyzer.settings import LOGIN_URL, REGISTER_URL
 from . import views
 from .forms import UserLoginForm
 from .views import UserRegisterView
@@ -10,13 +11,13 @@ __all__ = ['urlpatterns']
 urlpatterns = [
     path('', views.index, name='home'),
 
-    path('register/', UserRegisterView.as_view(), name='register'),
+    path('register/', UserRegisterView.as_view(), name=REGISTER_URL),
 
     path('login/',
          views.LoginView.as_view(
              template_name='users/login.html',
              authentication_form=UserLoginForm),
-         name='login'),
+         name=LOGIN_URL),
 
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 
