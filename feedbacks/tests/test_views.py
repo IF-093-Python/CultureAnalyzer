@@ -8,7 +8,7 @@ from feedbacks.tests_data.test_form_data import (
 )
 from feedbacks.tests.mixins import (FeedbackCRUDViewsSetUpMixin,
                                     RecommendationCRUDViewsSetUpMixin,
-                                    SetUpUserMixin)
+                                    SetUpUserMixin, USERNAME, PASSWORD)
 from feedbacks.models import Feedback
 
 __all__ = ['FeedbackListViewTest', ]
@@ -33,14 +33,14 @@ class FeedbackListViewTest(SetUpUserMixin, TestCase):
                              f'/login/?next={reverse("feedback-list")}')
 
     def test_call_view_loads(self):
-        self.client.login(username='user', password='test')
+        self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.get(reverse('feedback-list'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'feedbacks/feedback_list.html')
 
     @data(*range(-10, 1))
     def test_call_view_where_page_number_less_then_1(self, page):
-        self.client.login(username='user', password='test')
+        self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.get(f'{reverse("feedback-list")}?page={page}')
         expected_response = self.client.get(
             f'{reverse("feedback-list")}?page=1')
@@ -50,7 +50,7 @@ class FeedbackListViewTest(SetUpUserMixin, TestCase):
 
     @data(*range(10, 21))
     def test_call_view_where_page_number_is_to_large(self, page):
-        self.client.login(username='user', password='test')
+        self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.get(f'{reverse("feedback-list")}?page={page}')
         expected_response = self.client.get(
             f'{reverse("feedback-list")}?page=2')
@@ -60,7 +60,7 @@ class FeedbackListViewTest(SetUpUserMixin, TestCase):
 
     @data(*PAGE_STRING_VALUES)
     def test_call_view_where_page_number_not_int(self, page):
-        self.client.login(username='user', password='test')
+        self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.get(f'{reverse("feedback-list")}?page={page}')
         expected_response = self.client.get(
             f'{reverse("feedback-list")}?page=1')
@@ -83,7 +83,7 @@ class FeedbackDeleteViewTest(FeedbackCRUDViewsSetUpMixin, TestCase):
             f'/login/?next={reverse("feedback-delete", kwargs={"pk": 1})}')
 
     def test_redirect_to_feedback_list_on_success(self):
-        self.client.login(username='user', password='test')
+        self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.post(reverse('feedback-delete',
                                             kwargs={'pk': 1}))
         self.assertRedirects(response, reverse('feedback-list'))
@@ -104,14 +104,14 @@ class FeedbackUpdateViewTest(FeedbackCRUDViewsSetUpMixin, TestCase):
             f'/login/?next={reverse("feedback-update", kwargs={"pk": 1})}')
 
     def test_uses_correct_template(self):
-        self.client.login(username='user', password='test')
+        self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.get(reverse('feedback-update', kwargs={'pk': 1}))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'feedbacks/feedback_form.html')
 
     @data(*FEEDBACK_MIN_VALUE_IS_GREATER_MAX_VALUE_DATA)
     def test_form_invalid_max_less_min(self, feedback_data):
-        self.client.login(username='user', password='test')
+        self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.post(
             reverse('feedback-update', kwargs={'pk': 1}), feedback_data)
         self.assertEqual(response.status_code, 200)
@@ -133,14 +133,14 @@ class FeedbackCreateViewTest(FeedbackCRUDViewsSetUpMixin, TestCase):
             f'/login/?next={reverse("feedback-create")}')
 
     def test_uses_correct_template(self):
-        self.client.login(username='user', password='test')
+        self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.get(reverse("feedback-create"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'feedbacks/feedback_form.html')
 
     @data(*FEEDBACK_MIN_VALUE_IS_GREATER_MAX_VALUE_DATA)
     def test_form_invalid_max_less_min(self, feedback_data):
-        self.client.login(username='user', password='test')
+        self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.post(reverse("feedback-create"), feedback_data)
         self.assertEqual(response.status_code, 200)
         self.assertFormError(response, 'form', 'min_value',
@@ -162,7 +162,7 @@ class RecommendationDeleteViewTest(RecommendationCRUDViewsSetUpMixin, TestCase):
             f'/login/?next={reverse("recommendation-delete", kwargs={"pk": 1})}')
 
     def test_redirects_to_related_feedback(self):
-        self.client.login(username='user', password='test')
+        self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.post(
             reverse('recommendation-delete', kwargs={'pk': 1}))
         self.assertEqual(response.status_code, 302)
@@ -186,7 +186,7 @@ class RecommendationUpdateViewTest(RecommendationCRUDViewsSetUpMixin, TestCase):
             f'/login/?next={reverse("recommendation-update", kwargs={"pk": 1})}')
 
     def test_redirects_to_related_feedback(self):
-        self.client.login(username='user', password='test')
+        self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.post(
             reverse('recommendation-update', kwargs={'pk': 1}),
             {'recommendation': 'Another recommendation'})
@@ -195,7 +195,7 @@ class RecommendationUpdateViewTest(RecommendationCRUDViewsSetUpMixin, TestCase):
                              reverse('feedback-detail', kwargs={'pk': 1}))
 
     def test_uses_correct_template(self):
-        self.client.login(username='user', password='test')
+        self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.get(reverse('recommendation-update',
                                            kwargs={'pk': 1}))
         self.assertEqual(response.status_code, 200)
@@ -206,25 +206,25 @@ class RecommendationUpdateViewTest(RecommendationCRUDViewsSetUpMixin, TestCase):
 class RecommendationCreateViewTest(RecommendationCRUDViewsSetUpMixin, TestCase):
 
     def test_get_create_with_missing_feedback_argument(self):
-        self.client.login(username='user', password='test')
+        self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.get(reverse('recommendation-create'))
         self.assertEqual(response.status_code, 400)
 
     @data(*range(2, 12))
     def test_get_create_with_wrong_feedback_argument(self, feedback_id):
-        self.client.login(username='user', password='test')
+        self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.get(
             f'{reverse("recommendation-create")}?feedback={feedback_id}')
         self.assertEqual(response.status_code, 400)
 
     def test_get_create_with_valid_feedback_argument(self):
-        self.client.login(username='user', password='test')
+        self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.get(
             f'{reverse("recommendation-create")}?feedback={1}')
         self.assertEqual(response.status_code, 200)
 
     def test_post_create_with_valid_feedback_argument(self):
-        self.client.login(username='user', password='test')
+        self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.post(
             f'{reverse("recommendation-create")}?feedback={1}',
             {'recommendation': 'Second recommendation'})
@@ -232,7 +232,7 @@ class RecommendationCreateViewTest(RecommendationCRUDViewsSetUpMixin, TestCase):
 
     @data(*range(2, 12))
     def test_post_create_with_invalid_feedback_argument(self, feedback_id):
-        self.client.login(username='user', password='test')
+        self.client.login(username=USERNAME, password=PASSWORD)
         with self.assertRaises(Feedback.DoesNotExist):
             self.client.post(
                 f'{reverse("recommendation-create")}?feedback={feedback_id}',

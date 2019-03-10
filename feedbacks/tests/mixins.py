@@ -3,14 +3,18 @@ from django.contrib.auth import get_user_model
 from feedbacks.models import Feedback, Recommendation
 
 __all__ = ['FeedbackCRUDViewsSetUpMixin', 'RecommendationCRUDViewsSetUpMixin',
-           'SetUpUserMixin']
+           'SetUpUserMixin', 'USERNAME', 'PASSWORD']
+
+USERNAME = 'test_user'
+PASSWORD = '12345'
 
 
 class SetUpUserMixin(object):
 
     @classmethod
     def setUpTestData(cls):
-        get_user_model().objects.create_user('user', password='test')
+        get_user_model().objects.create_user(username=USERNAME,
+                                             password=PASSWORD)
 
 
 class RecommendationCRUDViewsSetUpMixin(SetUpUserMixin):
