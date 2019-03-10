@@ -131,3 +131,40 @@ class RecommendationUpdateViewTest(RecommendationCRUDViewsSetUpMixin, TestCase):
                                            kwargs={'pk': 1}))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'feedbacks/recommendation_form.html')
+
+
+@ddt
+class RecommendationCreateViewTest(RecommendationCRUDViewsSetUpMixin, TestCase):
+
+    def test_get_create_with_missing_feedback_argument(self):
+        self.client.login(username='user', password='test')
+        response = self.client.get(reverse('recommendation-create'))
+        self.assertEqual(response.status_code, 400)
+
+    @data(*range(2, 12))
+    def test_get_create_with_wrong_feedback_argument(self, feedback_id):
+        self.client.login(username='user', password='test')
+        response = self.client.get(
+            f'{reverse("recommendation-create")}?feedback={feedback_id}')
+        self.assertEqual(response.status_code, 400)
+
+    def test_get_create_with_valid_feedback_argument(self):
+        self.client.login(username='user', password='test')
+        response = self.client.get(
+            f'{reverse("recommendation-create")}?feedback={1}')
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_create_with_valid_feedback_argument(self):
+        self.client.login(username='user', password='test')
+        response = self.client.post(
+            f'{reverse("recommendation-create")}?feedback={1}',
+            {'recommendation': 'Second recommendation'})
+        self.assertEqual(response.status_code, 302)
+
+    @data(*range(2, 12))
+    def test_post_create_with_invalid_feedback_argument(self, feedback_id):
+        self.client.login(username='user', password='test')
+        with self.assertRaises(Feedback.DoesNotExist):
+            self.client.post(
+                f'{reverse("recommendation-create")}?feedback={feedback_id}',
+                {'recommendation': 'Second recommendation'})
