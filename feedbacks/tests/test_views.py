@@ -23,6 +23,17 @@ class RecommendationCRUDViewsSetUpMixin(object):
                                       feedback=feedback)
 
 
+class FeedbackCRUDViewsSetUpMixin(object):
+
+    @classmethod
+    def setUpTestData(cls):
+        User.objects.create_user('user', password='test')
+
+    def setUp(self):
+        Feedback.objects.create(feedback='Some text', min_value=0, max_value=10,
+                                indicator='PDI')
+
+
 @ddt
 class FeedbackListViewTest(TestCase):
 
@@ -76,6 +87,26 @@ class FeedbackListViewTest(TestCase):
         self.assertEqual(response.status_code, expected_response.status_code)
         self.assertEqual(response.rendered_content,
                          expected_response.rendered_content)
+
+
+class FeedbackDeleteViewTest(FeedbackCRUDViewsSetUpMixin, TestCase):
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse('feedback-delete', kwargs={'pk': 1}))
+        self.assertRedirects(
+            response,
+            f'/login/?next={reverse("feedback-delete", kwargs={"pk": 1})}')
+        response = self.client.post(reverse('feedback-delete',
+                                            kwargs={'pk': 1}))
+        self.assertRedirects(
+            response,
+            f'/login/?next={reverse("feedback-delete", kwargs={"pk": 1})}')
+
+    def test_redirect_to_feedback_list_on_success(self):
+        self.client.login(username='user', password='test')
+        response = self.client.post(reverse('feedback-delete',
+                                            kwargs={'pk': 1}))
+        self.assertRedirects(response, reverse('feedback-list'))
 
 
 class RecommendationDeleteViewTest(RecommendationCRUDViewsSetUpMixin, TestCase):
