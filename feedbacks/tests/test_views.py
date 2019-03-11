@@ -72,20 +72,22 @@ class FeedbackListViewTest(SetUpUserMixin, TestCase):
 class FeedbackDeleteViewTest(FeedbackCRUDViewsSetUpMixin, TestCase):
 
     def test_redirect_if_not_logged_in(self):
-        response = self.client.get(reverse('feedback-delete', kwargs={'pk': 1}))
+        pk = self.pk
+        response = self.client.get(
+            reverse('feedback-delete', kwargs={'pk': pk}))
         self.assertRedirects(
             response,
-            f'/login/?next={reverse("feedback-delete", kwargs={"pk": 1})}')
+            f'/login/?next={reverse("feedback-delete", kwargs={"pk": pk})}')
         response = self.client.post(reverse('feedback-delete',
-                                            kwargs={'pk': 1}))
+                                            kwargs={'pk': pk}))
         self.assertRedirects(
             response,
-            f'/login/?next={reverse("feedback-delete", kwargs={"pk": 1})}')
+            f'/login/?next={reverse("feedback-delete", kwargs={"pk": pk})}')
 
     def test_redirect_to_feedback_list_on_success(self):
         self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.post(reverse('feedback-delete',
-                                            kwargs={'pk': 1}))
+                                            kwargs={'pk': self.pk}))
         self.assertRedirects(response, reverse('feedback-list'))
 
 
@@ -93,19 +95,22 @@ class FeedbackDeleteViewTest(FeedbackCRUDViewsSetUpMixin, TestCase):
 class FeedbackUpdateViewTest(FeedbackCRUDViewsSetUpMixin, TestCase):
 
     def test_redirect_if_not_logged_in(self):
-        response = self.client.get(reverse('feedback-update', kwargs={'pk': 1}))
+        pk = self.pk
+        response = self.client.get(
+            reverse('feedback-update', kwargs={'pk': pk}))
         self.assertRedirects(
             response,
-            f'/login/?next={reverse("feedback-update", kwargs={"pk": 1})}')
+            f'/login/?next={reverse("feedback-update", kwargs={"pk": pk})}')
         response = self.client.post(reverse('feedback-update',
-                                            kwargs={'pk': 1}))
+                                            kwargs={'pk': pk}))
         self.assertRedirects(
             response,
-            f'/login/?next={reverse("feedback-update", kwargs={"pk": 1})}')
+            f'/login/?next={reverse("feedback-update", kwargs={"pk": pk})}')
 
     def test_uses_correct_template(self):
         self.client.login(username=USERNAME, password=PASSWORD)
-        response = self.client.get(reverse('feedback-update', kwargs={'pk': 1}))
+        response = self.client.get(reverse('feedback-update',
+                                           kwargs={'pk': self.pk}))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'feedbacks/feedback_form.html')
 
@@ -113,7 +118,8 @@ class FeedbackUpdateViewTest(FeedbackCRUDViewsSetUpMixin, TestCase):
     def test_form_invalid_max_less_min(self, feedback_data):
         self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.post(
-            reverse('feedback-update', kwargs={'pk': 1}), feedback_data)
+            reverse('feedback-update', kwargs={'pk': self.pk}),
+            feedback_data)
         self.assertEqual(response.status_code, 200)
         self.assertFormError(response, 'form', 'min_value',
                              'Min value must be less then max value')
@@ -150,54 +156,64 @@ class FeedbackCreateViewTest(FeedbackCRUDViewsSetUpMixin, TestCase):
 class RecommendationDeleteViewTest(RecommendationCRUDViewsSetUpMixin, TestCase):
 
     def test_redirect_if_not_logged_in(self):
+        pk = self.feedback_pk
         response = self.client.get(
-            reverse('recommendation-delete', kwargs={'pk': 1}), follow=True)
+            reverse('recommendation-delete', kwargs={'pk': pk}), follow=True)
         self.assertRedirects(
             response,
-            f'/login/?next={reverse("recommendation-delete", kwargs={"pk": 1})}')
+            f'/login/?next='
+            f'{reverse("recommendation-delete", kwargs={"pk": pk})}')
         response = self.client.post(
-            reverse('recommendation-delete', kwargs={'pk': 1}), follow=True)
+            reverse('recommendation-delete', kwargs={'pk': pk}), follow=True)
         self.assertRedirects(
             response,
-            f'/login/?next={reverse("recommendation-delete", kwargs={"pk": 1})}')
+            f'/login/?next='
+            f'{reverse("recommendation-delete", kwargs={"pk": pk})}')
 
     def test_redirects_to_related_feedback(self):
         self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.post(
-            reverse('recommendation-delete', kwargs={'pk': 1}))
+            reverse('recommendation-delete', kwargs={'pk': self.feedback_pk}))
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response,
-                             reverse('feedback-detail', kwargs={'pk': 1}))
+                             reverse('feedback-detail',
+                                     kwargs={'pk': self.feedback_pk}))
 
 
 class RecommendationUpdateViewTest(RecommendationCRUDViewsSetUpMixin, TestCase):
 
     def test_redirect_if_not_logged_in(self):
+        pk = self.recommendation_pk
         response = self.client.get(
-            reverse('recommendation-update', kwargs={'pk': 1}), follow=True)
+            reverse('recommendation-update', kwargs={'pk': pk}), follow=True)
         self.assertRedirects(
             response,
-            f'/login/?next={reverse("recommendation-update", kwargs={"pk": 1})}')
+            f'/login/?next='
+            f'{reverse("recommendation-update", kwargs={"pk": pk})}')
         response = self.client.post(
-            reverse('recommendation-update', kwargs={'pk': 1}),
+            reverse('recommendation-update', kwargs={'pk': pk}),
             {'recommendation': 'Another recommendation'}, follow=True)
         self.assertRedirects(
             response,
-            f'/login/?next={reverse("recommendation-update", kwargs={"pk": 1})}')
+            f'/login/?next='
+            f'{reverse("recommendation-update", kwargs={"pk": pk})}')
 
     def test_redirects_to_related_feedback(self):
         self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.post(
-            reverse('recommendation-update', kwargs={'pk': 1}),
+            reverse('recommendation-update',
+                    kwargs={'pk': self.recommendation_pk}),
             {'recommendation': 'Another recommendation'})
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response,
-                             reverse('feedback-detail', kwargs={'pk': 1}))
+                             reverse('feedback-detail',
+                                     kwargs={'pk': self.feedback_pk}))
 
     def test_uses_correct_template(self):
+        pk = self.recommendation_pk
         self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.get(reverse('recommendation-update',
-                                           kwargs={'pk': 1}))
+                                           kwargs={'pk': pk}))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'feedbacks/recommendation_form.html')
 
@@ -220,13 +236,13 @@ class RecommendationCreateViewTest(RecommendationCRUDViewsSetUpMixin, TestCase):
     def test_get_create_with_valid_feedback_argument(self):
         self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.get(
-            f'{reverse("recommendation-create")}?feedback={1}')
+            f'{reverse("recommendation-create")}?feedback={self.feedback_pk}')
         self.assertEqual(response.status_code, 200)
 
     def test_post_create_with_valid_feedback_argument(self):
         self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.post(
-            f'{reverse("recommendation-create")}?feedback={1}',
+            f'{reverse("recommendation-create")}?feedback={self.feedback_pk}',
             {'recommendation': 'Second recommendation'})
         self.assertEqual(response.status_code, 302)
 

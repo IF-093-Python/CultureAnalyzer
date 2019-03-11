@@ -26,13 +26,15 @@ class RecommendationCRUDViewsSetUpMixin(SetUpUserMixin):
                                 indicator='PDI')
 
     def setUp(self):
-        feedback = Feedback.objects.get(pk=1)
-        Recommendation.objects.create(recommendation='Lorem ipsum',
-                                      feedback=feedback)
+        self.feedback_pk = Feedback.objects.get(pk=1).id
+        self.recommendation_pk = Recommendation.objects.create(
+            recommendation='Lorem ipsum', feedback_id=self.feedback_pk).id
 
 
 class FeedbackCRUDViewsSetUpMixin(SetUpUserMixin):
 
     def setUp(self):
-        Feedback.objects.create(feedback='Some text', min_value=0, max_value=10,
-                                indicator='PDI')
+        self.pk = Feedback.objects.create(feedback='Some text',
+                                                       min_value=0,
+                                                       max_value=10,
+                                                       indicator='PDI').id
