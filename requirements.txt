@@ -6,3 +6,5 @@ psycopg2==2.7.6.1
 psycopg2-binary==2.7.6.1
 pytz==2018.9
 ddt==1.2.0
+djangorestframework==3.9.1
+djangorestframework-simplejwt==3.3
