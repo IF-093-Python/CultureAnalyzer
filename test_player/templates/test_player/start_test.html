@@ -2,6 +2,11 @@
 {% load crispy_forms_tags %}
 {% block title %}Your quiz{% endblock %}
 {% block content %}
+  {% if messages %}
+  {% for message in messages %}
+      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+  {% endfor %}
+  {% endif %}
     {% if quizzes %}
         {% for quiz in quizzes %}
             <div class="container border-top mt-3">
@@ -14,7 +19,7 @@
                         {% if quiz in not_started %}
                             <span style="color: red">Quiz starts at: <br> {{ quiz.begin }}</span>
                         {% else %}
-                            <span>Quiz starts at: <br> {{ quiz.begin }}</span>
+                            <span>Quiz starts at: <br> <mark>Already started!</mark></span>
                         {% endif %}
                         {% if quiz in not_started %}
                             <br>

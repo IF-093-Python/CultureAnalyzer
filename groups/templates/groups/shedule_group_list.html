@@ -24,7 +24,7 @@
         <tbody>
             {% for quiz in quizzes %}
             {% if quiz.end|utc > now|utc %}
-            <tr>
+            <tr style="color: red">
                 {% else %}
             <tr>
                 {% endif %}

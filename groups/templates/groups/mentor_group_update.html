@@ -15,7 +15,9 @@
 <div class="container-fluid col-md-10">
     <div class="border-bottom">
         <h1 class="text-center font-weight-bold">Update group "{{ group.name }}"</h1>
-        <p>Link to join to group: <br> <a style="color: #cd0a0a" href="{{ url }}">{{ url }}</a></p>
+        <p>Link to join to group avialable until {{ time }}:
+            <br>
+            <a style="color: #cd0a0a" href="{{ url }}">{{ url }}</a></p>
     </div>
     <div class="my-2">
         <form class="d-flex flex-wrap justify-content-between mt-n1" method="get">

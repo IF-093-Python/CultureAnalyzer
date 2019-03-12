@@ -1,7 +1,7 @@
 from django.urls import path
 from groups.views import *
 
-app_name = "groups"
+app_name = 'groups'
 
 
 urlpatterns = [
@@ -21,7 +21,7 @@ urlpatterns = [
          name='add_new_user'),
     path('group/set_quiz/<int:pk>/', SheduleGroupView.as_view(),
          name='shedule_group'),
-    path('group/quizes/<int:pk>/', SheduleGroupList.as_view(),
+    path('group/quiz/<int:pk>/', SheduleGroupList.as_view(),
          name='shedule_group_list'),
 
 ]

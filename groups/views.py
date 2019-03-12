@@ -19,6 +19,7 @@ from groups.models import Group, Shedule
 from CultureAnalyzer.view import SafePaginationListView
 
 PAGINATOR = 50
+EXPIRED_TIME_days = 5
 SECRET = 'IF.093_Python'
 
 
@@ -27,15 +28,15 @@ class GroupsList(PermissionRequiredMixin, SafePaginationListView):
     model = Group
     ordering = 'name'
     template_name = 'groups/groups_list.html'
-    __search = False
-    __search_label = 'Search'
+    _search = False
+    _search_label = 'Search'
     paginate_by = PAGINATOR
     permission_required = 'groups.view_group'
 
     def get_context_data(self, **kwargs):
         context = super(GroupsList, self).get_context_data(**kwargs)
-        context['search'] = self.__search
-        context['search_label'] = self.__search_label
+        context['search'] = self._search
+        context['search_label'] = self._search_label
         return context
 
     def get_queryset(self):
@@ -43,31 +44,35 @@ class GroupsList(PermissionRequiredMixin, SafePaginationListView):
         result = Group.objects.annotate(total=Count('mentor')).order_by('name')
         if self.request.GET.get('data_search'):
             search = self.request.GET.get('data_search')
-            result = result.filter(name__contains=search)
-            self.__search = True
-            self.__search_label = search
+            result = result.filter(name__icontains=search)
+            self._search = True
+            self._search_label = search
         return result
 
 
-class CreateGroupView(generic.CreateView, PermissionRequiredMixin,
+class CreateGroupView(PermissionRequiredMixin, generic.CreateView,
                       SafePaginationListView):
-    """Creates new group of students
+    """
+    Creates new group of students
     Also makes list with checkboxes of all mentors
     that can be added to this group
     """
-    model = Group
     form_class = GroupCreateForm
     template_name = 'groups/group_create.html'
     success_url = reverse_lazy('groups:groups-list')
-    __search = False
-    __search_label = 'Search'
+    _search = False
+    _search_label = 'Search'
     paginate_by = PAGINATOR
     permission_required = 'groups.add_group'
 
+    def form_invalid(self, form):
+        self.object_list = self.get_queryset()
+        return super().form_invalid(form=form)
+
     def get_context_data(self, **kwargs):
         context = super(CreateGroupView, self).get_context_data(**kwargs)
-        context['search_label'] = self.__search_label
-        context['search'] = self.__search
+        context['search_label'] = self._search_label
+        context['search'] = self._search
         return context
 
     def get_queryset(self):
@@ -76,33 +81,30 @@ class CreateGroupView(generic.CreateView, PermissionRequiredMixin,
             filter(is_active=True, groups__name='Mentor').order_by('last_name')
         if self.request.GET.get('data_search'):
             search = self.request.GET.get('data_search')
-            result = result.filter(last_name__contains=search)
-            self.__search = True
-            self.__search_label = search
+            result = result.filter(last_name__icontains=search)
+            self._search = True
+            self._search_label = search
         return result
 
-    # def post(self, request, *args, **kwargs):
-    #     context = super(CreateGroupView, self).post(request, *args, **kwargs)
-    #     print('request:', request.POST)
-    #     print('args:', args)
-    #     print('kwargs:', kwargs)
-    #     print(context)
-    #     return context
 
-
-class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
-                      PermissionRequiredMixin, SafePaginationListView):
-    """Updates group of students.
+class UpdateGroupView(PermissionRequiredMixin, SuccessMessageMixin,
+                      generic.UpdateView, SafePaginationListView):
+    """
+    Updates group of students.
     Allows to change name of group and to add or remove mentors
     """
     form_class = GroupCreateForm
     template_name = 'groups/group_update.html'
     success_message = "Group was updated successfully"
-    __search = False
-    __search_label = 'Search'
-    __checked_mentors = None
+    _search = False
+    _search_label = 'Search'
+    _checked_mentors = None
     paginate_by = PAGINATOR
-    permission_required = 'groups.add_group'
+    permission_required = 'groups.change_group'
+
+    def form_invalid(self, form):
+        self.object_list = self.get_queryset()
+        return super().form_invalid(form=form)
 
     def get_success_url(self):
         pk = self.kwargs['pk']
@@ -110,31 +112,32 @@ class UpdateGroupView(generic.UpdateView, SuccessMessageMixin,
 
     def get_context_data(self, **kwargs):
         context = super(UpdateGroupView, self).get_context_data(**kwargs)
-        context['search_label'] = self.__search_label
-        context['checked_mentors'] = self.__checked_mentors
-        context['search'] = self.__search
+        context['search_label'] = self._search_label
+        context['checked_mentors'] = self._checked_mentors
+        context['search'] = self._search
         return context
 
     def get_queryset(self):
-        """Remembers all checked_mentors of group and then
+        """
+        Remembers all checked_mentors of group and then
         concatenates them with unchecked mentors, so that
         checked mentors are always first in list
         """
         checked_mentors = get_user_model().objects.filter(
             is_active=True, mentor_in_group=self.kwargs['pk']). \
             order_by('last_name')
-        self.__checked_mentors = checked_mentors
+        self._checked_mentors = checked_mentors
         mentors = get_user_model().objects. \
             filter(is_active=True, groups__name='Mentor'). \
             exclude(mentor_in_group=self.kwargs['pk']). \
             order_by('last_name')
         if self.request.GET.get('data_search'):
             search = self.request.GET.get('data_search')
-            mentors = mentors.filter(last_name__contains=search)
+            mentors = mentors.filter(last_name__icontains=search)
             checked_mentors = checked_mentors. \
-                filter(last_name__contains=search)
-            self.__search = True
-            self.__search_label = search
+                filter(last_name__icontains=search)
+            self._search = True
+            self._search_label = search
         result = list(chain(checked_mentors, mentors))
         return result
 
@@ -157,17 +160,17 @@ class MentorGroupsView(PermissionRequiredMixin, SafePaginationListView):
     """Makes list af all groups of students of current Mentor"""
     model = Group
     template_name = 'groups/mentor_groups_list.html'
-    __search = False
-    __search_label = 'Search'
-    __group_has_quiz = None
+    _search = False
+    _search_label = 'Search'
+    _group_has_quiz = None
     paginate_by = PAGINATOR
     permission_required = 'groups.view_mentor_group'
 
     def get_context_data(self, **kwargs):
         context = super(MentorGroupsView, self).get_context_data(**kwargs)
-        context['has_quiz'] = self.__group_has_quiz
-        context['search'] = self.__search
-        context['search_label'] = self.__search_label
+        context['has_quiz'] = self._group_has_quiz
+        context['search'] = self._search
+        context['search_label'] = self._search_label
         return context
 
     def get_queryset(self):
@@ -176,32 +179,34 @@ class MentorGroupsView(PermissionRequiredMixin, SafePaginationListView):
             annotate(total=Count('user')).order_by('name')
         if self.request.GET.get('data_search'):
             search = self.request.GET.get('data_search')
-            result = result.filter(name__contains=search)
-            self.__search = True
-            self.__search_label = search
-        self.__group_has_quiz = result.filter(shedule__end__gt=timezone.now())
+            result = result.filter(name__icontains=search)
+            self._search = True
+            self._search_label = search
+        self._group_has_quiz = result.filter(shedule__end__gt=timezone.now())
         return result
 
 
-class MentorGroupUpdate(PermissionRequiredMixin, generic.UpdateView,
-                        SuccessMessageMixin,
-                        UserPassesTestMixin, SafePaginationListView):
+class MentorGroupUpdate(UserPassesTestMixin, PermissionRequiredMixin,
+                        SuccessMessageMixin, generic.UpdateView,
+                        SafePaginationListView):
     """Makes list of students to add or remove from group."""
     model = Group
     form_class = GroupUpdateForm
     template_name = 'groups/mentor_group_update.html'
     success_message = "Group was updated successfully"
-    __search = False
-    __search_label = 'Search'
-    __users_in_group = None
+    _search = False
+    _search_label = 'Search'
+    _users_in_group = None
     paginate_by = PAGINATOR
     permission_required = 'groups.change_mentor_group'
 
     def encode_data(self):
         """Makes hash for generation url for adding students to group."""
         group = self.get_object()
-        signer = signing.Signer(SECRET)
-        value = signer.sign(group.name)
+        signer = signing.Signer(SECRET + str(group.pk))
+        time = int((timezone.now() +
+                    timezone.timedelta(days=EXPIRED_TIME_days)).timestamp())
+        value = signer.sign(time)
         return value
 
     def get_success_url(self):
@@ -210,15 +215,17 @@ class MentorGroupUpdate(PermissionRequiredMixin, generic.UpdateView,
 
     def get_context_data(self, **kwargs):
         context = super(MentorGroupUpdate, self).get_context_data(**kwargs)
-        context['search_label'] = self.__search_label
-        context['users_in_group'] = self.__users_in_group
-        context['search'] = self.__search
+        context['search_label'] = self._search_label
+        context['users_in_group'] = self._users_in_group
+        context['search'] = self._search
         # Generates url with '1' in the end as 'hash'
         my_url = reverse_lazy('groups:add_new_user',
                               args=[self.kwargs['pk'], '1'])
         domain = self.request.build_absolute_uri('/')[:-1]
         # Alternates faked '1' hash in the end to real hash
         context['url'] = domain + my_url[:-1] + self.encode_data()
+        context['time'] = timezone.now() + \
+            timezone.timedelta(days=EXPIRED_TIME_days)
         return context
 
     def test_func(self):
@@ -231,12 +238,12 @@ class MentorGroupUpdate(PermissionRequiredMixin, generic.UpdateView,
         result = get_user_model().objects. \
             filter(is_active=True, user_in_group=self.kwargs['pk']). \
             order_by('last_name')
-        self.__users_in_group = result
+        self._users_in_group = result
         if self.request.GET.get('data_search'):
             search = self.request.GET.get('data_search')
-            result = result.filter(last_name__contains=search)
-            self.__search = True
-            self.__search_label = search
+            result = result.filter(last_name__icontains=search)
+            self._search = True
+            self._search_label = search
         return result
 
     def get_object(self, context=None):
@@ -244,16 +251,16 @@ class MentorGroupUpdate(PermissionRequiredMixin, generic.UpdateView,
         return context
 
 
-class MentorGroupAdd(PermissionRequiredMixin, generic.UpdateView,
-                     SuccessMessageMixin, UserPassesTestMixin,
+class MentorGroupAdd(PermissionRequiredMixin, SuccessMessageMixin,
+                     UserPassesTestMixin, generic.UpdateView,
                      SafePaginationListView):
     """Makes list of all students that can be added to group."""
     model = Group
     form_class = GroupUpdateForm
     template_name = 'groups/mentor_group_add.html'
     success_message = "Group was updated successfully"
-    __search = False
-    __search_label = 'Search'
+    _search = False
+    _search_label = 'Search'
     paginate_by = PAGINATOR
     raise_exception = True
     permission_required = 'groups.add_mentor_group'
@@ -264,8 +271,8 @@ class MentorGroupAdd(PermissionRequiredMixin, generic.UpdateView,
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['search_label'] = self.__search_label
-        context['search'] = self.__search
+        context['search_label'] = self._search_label
+        context['search'] = self._search
         return context
 
     def test_func(self):
@@ -274,7 +281,8 @@ class MentorGroupAdd(PermissionRequiredMixin, generic.UpdateView,
             pk=self.kwargs['pk'], mentor__id=self.request.user.pk).exists()
 
     def get_queryset(self):
-        """Gets all Trainee users that are not in group and
+        """
+        Gets all Trainee users that are not in group and
         makes search in their last_name if needed.
         """
         result = get_user_model().objects. \
@@ -283,9 +291,9 @@ class MentorGroupAdd(PermissionRequiredMixin, generic.UpdateView,
             order_by('last_name')
         if self.request.GET.get('data_search'):
             search = self.request.GET.get('data_search')
-            result = result.filter(last_name__contains=search)
-            self.__search = True
-            self.__search_label = search
+            result = result.filter(last_name__icontains=search)
+            self._search = True
+            self._search_label = search
         return result
 
     def get_object(self, context=None):
@@ -293,7 +301,8 @@ class MentorGroupAdd(PermissionRequiredMixin, generic.UpdateView,
         return context
 
     def form_valid(self, form):
-        """Gets users that are already in group and adds to users
+        """
+        Gets users that are already in group and adds to users
         that where checked in form for adding to group.
         """
         users_in_group = get_user_model().objects. \
@@ -311,12 +320,13 @@ class AddNewUser(LoginRequiredMixin, generic.CreateView):
     model = Group
     template_name = 'groups/add_new_user.html'
     form_class = GroupUpdateForm
-    success_url = reverse_lazy('home')
-    __group = None
+    success_url = reverse_lazy('test_player:start_test')
+    _group = None
+    _date_valid = False
 
     def decode(self):
         """Decodes hash and checks if it is valid"""
-        signer = signing.Signer(SECRET)
+        signer = signing.Signer(SECRET + str(self.kwargs['pk']))
         try:
             original = signer.unsign(self.kwargs['hash'])
         except signing.BadSignature:
@@ -324,20 +334,25 @@ class AddNewUser(LoginRequiredMixin, generic.CreateView):
         return original
 
     def dispatch(self, request, *args, **kwargs):
-        """Checks if decoded hash coincides with name of group"""
-        hash = self.decode()
-        self.__group = get_object_or_404(Group, pk=self.kwargs['pk'])
-        if not (hash == self.__group.name):
-            raise Http404
+        """Checks if decoded date isn't expired"""
+        self._group = get_object_or_404(Group, pk=self.kwargs['pk'])
+        hash = int(self.decode())
+        if hash > timezone.now().timestamp():
+            self._date_valid = True
         return super(AddNewUser, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['date_valid'] = self._date_valid
+        if not self._date_valid:
+            message = 'Sorry, but this link has expired.'
+            messages.warning(self.request, message=message)
+            return context
         # Checks if user is trainee
         context['trainee'] = get_user_model().objects. \
             filter(pk=self.request.user.pk, groups__name='Trainee').exists()
         if context['trainee']:
-            context['group'] = self.__group
+            context['group'] = self._group
         else:
             # Takes role of not-Trainee user
             context['role'] = get_user_model().objects. \
@@ -346,13 +361,15 @@ class AddNewUser(LoginRequiredMixin, generic.CreateView):
 
     def form_valid(self, form):
         """Adds user to group"""
-        group = self.__group
+        group = self._group
         group.user.add(self.request.user.pk)
+        message = 'You successfully joined to group "' + group.name + '".'
+        messages.success(self.request, message=message)
         return redirect(self.success_url)
 
 
 class SheduleGroupList(PermissionRequiredMixin, UserPassesTestMixin,
-                       SafePaginationListView, SuccessMessageMixin):
+                       SuccessMessageMixin, SafePaginationListView):
     model = Shedule
     template_name = 'groups/shedule_group_list.html'
     paginate_by = PAGINATOR
@@ -376,8 +393,8 @@ class SheduleGroupList(PermissionRequiredMixin, UserPassesTestMixin,
             filter(mentor__id=self.request.user.pk).exists()
 
 
-class SheduleGroupView(PermissionRequiredMixin,UserPassesTestMixin,
-                       generic.CreateView, SuccessMessageMixin):
+class SheduleGroupView(PermissionRequiredMixin, UserPassesTestMixin,
+                       SuccessMessageMixin, generic.CreateView):
     model = Shedule
     form_class = SheduleForm
     template_name = 'groups/shedule_group.html'
@@ -399,7 +416,7 @@ class SheduleGroupView(PermissionRequiredMixin,UserPassesTestMixin,
         new.save()
         messages.success(request=self.request,
                          message=f'{form.instance.quiz} successfully was set '
-                         f'for {form.instance.group}.')
+                                 f'for {form.instance.group}.')
         return redirect('groups:shedule_group_list', pk=self.kwargs['pk'])
 
     def get_context_data(self, **kwargs):

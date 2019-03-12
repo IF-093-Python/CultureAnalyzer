@@ -15,34 +15,32 @@ from quiz.models import Results
 from tutors.models import Questions
 from .forms import QuestionSaveForm
 
-__all__ = ['TestPlayer', 'TestStart', ]
+__all__ = ['TestPlayer', 'StartTest', ]
 
 
-class TestStart(PermissionRequiredMixin, ListView):
+class StartTest(PermissionRequiredMixin, ListView):
     """
     Return a list of all available tests
-
     get_queryset: return queryset of Quizzes model objects
-
     """
     template_name = 'test_player/start_test.html'
     context_object_name = 'quizzes'
-    __not_started_quizzes = None
+    _not_started_quizzes = None
     permission_required = 'quiz.view_test_player'
 
     def get_queryset(self):
         """Takes list of all Quizzes for Group of user, that are actual now
         and shows only those that will end the last """
-        quizzes = Shedule.objects.filter(group__user=self.request.user). \
-            filter(end__gt=timezone.now()). \
+        quizzes = Shedule.objects.filter(
+            group__user=self.request.user, end__gt=timezone.now()). \
             order_by('quiz_id', 'begin').distinct('quiz_id')
-        self.__not_started_quizzes = quizzes.filter(begin__gt=timezone.now())
+        self._not_started_quizzes = quizzes.filter(begin__gt=timezone.now())
         result = sorted(quizzes, key=operator.attrgetter('end'))
         return result
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['not_started'] = self.__not_started_quizzes
+        context['not_started'] = self._not_started_quizzes
         return context
 
 

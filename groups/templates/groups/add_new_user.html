@@ -1,16 +1,18 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% load staticfiles %}
-{% load django_bootstrap_breadcrumbs %}
 
 {% block content %}
-  {% block breadcrumbs %}
-    {% breadcrumb "Home" "/" %}
-    {% breadcrumb "Join group" "/" %}
-    <div style="color: blue">
-    {% render_breadcrumbs %}
-    </div>
-  {% endblock %}
+  {% if messages %}
+  {% for message in messages %}
+      <div class="alert
+        {% if message.tags %}alert-{{ message.tags }}{% endif %}
+        " role="alert">
+        {{ message }}
+      </div>
+  {% endfor %}
+  {% endif %}
+  {% if date_valid %}
     {% if trainee %}
     <div class="container mt-5">
         <form class="form text-center" action="" method="post">
@@ -23,4 +25,5 @@
     {% else %}
     <h3>Sorry, you can't join to this group as "{{ role }}"...  8(</h3>
     {% endif %}
+  {% endif %}
 {% endblock content %}
