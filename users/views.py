@@ -2,6 +2,7 @@ from django.contrib.auth import views as auth_views, get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views.generic import CreateView, UpdateView
 
 from .forms import UserRegisterForm, UserUpdateForm
@@ -55,6 +56,20 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return True
         else:
             return False
+
+    def form_valid(self, form):
+        """Try to save form, and check if image was in form,
+        and after save image is None, then there is a error and we
+        return error to user
+        """
+        if form.cleaned_data['image']:
+            user = form.save()
+            if not user.image:
+                form.add_error('__all__', 'Image can`t be saved!')
+                return super().form_invalid(form)
+        else:
+            form.save()
+        return redirect(reverse('home'))
 
 
 class PasswordChangeView(UpdateView):
