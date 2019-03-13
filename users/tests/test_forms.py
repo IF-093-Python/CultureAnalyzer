@@ -19,7 +19,6 @@ class UpdateUserFormTest(TestCase):
         form = UserUpdateForm(data=value)
         self.assertTrue(form.is_valid())
 
-
     @data(*INVALID_UPDATE_USER_DATA)
     def test_invalid_update_user_data(self, value):
         form = UserUpdateForm(data=value)

@@ -13,13 +13,13 @@ class LoginViewTest(SetUpMixin, TestCase):
         response = self.client.post(reverse('login'), {
                                     'username': 'TestUser', 'password': 'test_qwerty'})
 
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
     def test_redirect_to_home_page_if_user_logged_in(self):
         self.client.login(username='TestUser', password='test_qwerty')
         response = self.client.get(reverse('login'))
 
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('home'))
 
 
@@ -34,15 +34,15 @@ class RegisterViewTest(SetUpMixin, TestCase):
             'password1': 'testview123',
             'password2': 'testview123',
         })
-        self.assertEquals(response.status_code, 302)
-        self.assertEquals(get_user_model().objects.get(username='Yurii').email,
-                          'jura@mail.com')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(get_user_model().objects.get(username='Yurii').email,
+                         'jura@mail.com')
 
     def test_redirect_to_home_page_if_user_logged_in(self):
         self.client.login(username='TestUser', password='test_qwerty')
         response = self.client.get(reverse('register'))
 
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('home'))
 
 
@@ -60,9 +60,9 @@ class UpdateUserViewTest(SetUpMixin, TestCase):
                                     'gender': 'Male', })
 
         current_user.refresh_from_db()
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('home'))
-        self.assertEquals(current_user.first_name, 'Yurii')
+        self.assertEqual(current_user.first_name, 'Yurii')
 
     def test_get_403_to_user(self):
         self.client.login(username='TestUser', password='test_qwerty')
@@ -71,4 +71,4 @@ class UpdateUserViewTest(SetUpMixin, TestCase):
                                                             email='ano@mail.com')
 
         response = self.client.get(reverse('profile', args=[another_user.id]))
-        self.assertEquals(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)
