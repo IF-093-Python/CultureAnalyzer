@@ -22,6 +22,7 @@ services:
     volumes:
       - ./config/nginx/conf.d:/etc/nginx/conf.d
       - /etc/letsencrypt/live/culture-analyzer.pp.ua:/etc/ssl/certs
+      - /etc/letsencrypt/archive/culture-analyzer.pp.ua:/etc/archive/culture-analyzer.pp.ua
       - static_volume:/var/www/CultureAnalyzer/static
       - ./media:/var/www/CultureAnalyzer/media
     depends_on:
