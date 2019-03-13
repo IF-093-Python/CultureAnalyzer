@@ -1,12 +1,13 @@
 from django.db import transaction
 from django.http import HttpResponseRedirect, HttpResponseBadRequest
+from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, UpdateView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 
 from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
-from CultureAnalyzer.view import SafePaginationListView
+from CultureAnalyzer.mixins import SafePaginationMixin
 from feedbacks.models import Feedback, Recommendation
 from feedbacks.forms import FeedbackForm, RecommendationForm
 
@@ -16,7 +17,7 @@ __all__ = ['FeedbackListView', 'FeedbackCreateView', 'FeedbackUpdateView',
            'RecommendationDeleteView', ]
 
 
-class FeedbackListView(LoginRequiredMixin, SafePaginationListView):
+class FeedbackListView(LoginRequiredMixin, SafePaginationMixin, ListView):
     model = Feedback
     paginate_by = ITEMS_ON_PAGE
     context_object_name = 'feedbacks'
