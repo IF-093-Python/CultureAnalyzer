@@ -18,8 +18,10 @@ services:
     restart: always
     ports:
       - 80:80
+      - 443:443
     volumes:
       - ./config/nginx/conf.d:/etc/nginx/conf.d
+      - /etc/letsencrypt/live/culture-analyzer.pp.ua:/etc/ssl/certs
       - static_volume:/var/www/CultureAnalyzer/static
       - ./media:/var/www/CultureAnalyzer/media
     depends_on:

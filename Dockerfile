@@ -6,5 +6,6 @@ WORKDIR /opt/services/CultureAnalyzer
 COPY . /opt/services/CultureAnalyzer
 
 EXPOSE 8000
+EXPOSE 443
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
