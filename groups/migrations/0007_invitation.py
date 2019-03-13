@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name='Invitation',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.UUIDField(default=uuid.uuid4, editable=False)),
+                ('code', models.UUIDField(default=uuid.uuid4)),
                 ('start', models.DateTimeField()),
                 ('end', models.DateTimeField()),
                 ('items_left', models.PositiveSmallIntegerField()),

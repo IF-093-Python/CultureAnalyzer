@@ -1,30 +1,36 @@
 from itertools import chain
-from django.utils import timezone
-from django.core import signing
 
 from django.contrib.auth.mixins import UserPassesTestMixin, \
     LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth import get_user_model
+from django.db import transaction
+from django.db.models import Count
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
+from django.utils import timezone
 from django.views import generic
-from django.db.models import Count
-from django.http import Http404
 
-from groups.forms import GroupCreateForm, GroupUpdateForm, SheduleForm
-from groups.models import Group, Shedule
+from groups.forms import GroupCreateForm, GroupUpdateForm, SheduleForm, \
+    InvitationForm
+from groups.models import Group, Shedule, Invitation
 from CultureAnalyzer.view import SafePaginationListView
 
 PAGINATOR = 50
-EXPIRED_TIME_days = 5
-SECRET = 'IF.093_Python'
+
+__all__ = ['GroupsList', 'CreateGroupView', 'UpdateGroupView',
+           'DeleteGroupView', 'MentorGroupsView', 'MentorGroupUpdate',
+           'MentorGroupAdd', 'AddNewUser', 'SheduleGroupList',
+           'SheduleGroupView', 'AddInvitation']
 
 
 class GroupsList(PermissionRequiredMixin, SafePaginationListView):
-    """Makes list of all groups with number of mentors in each group"""
+    """
+    Makes list of all groups with number of mentors in each group
+    """
     model = Group
     ordering = 'name'
     template_name = 'groups/groups_list.html'
@@ -40,7 +46,10 @@ class GroupsList(PermissionRequiredMixin, SafePaginationListView):
         return context
 
     def get_queryset(self):
-        """Makes table of searched groups with number of mentors in them"""
+        """
+        Makes table of groups with number of mentors in them.
+        Search by name of group is available.
+        """
         result = Group.objects.annotate(total=Count('mentor')).order_by('name')
         if self.request.GET.get('data_search'):
             search = self.request.GET.get('data_search')
@@ -66,6 +75,7 @@ class CreateGroupView(PermissionRequiredMixin, generic.CreateView,
     permission_required = 'groups.add_group'
 
     def form_invalid(self, form):
+        """Overrides parent function to take object_list if form is invalid"""
         self.object_list = self.get_queryset()
         return super().form_invalid(form=form)
 
@@ -76,7 +86,7 @@ class CreateGroupView(PermissionRequiredMixin, generic.CreateView,
         return context
 
     def get_queryset(self):
-        """List of mentors"""
+        """List of mentors. Search by last_name is available"""
         result = get_user_model().objects. \
             filter(is_active=True, groups__name='Mentor').order_by('last_name')
         if self.request.GET.get('data_search'):
@@ -103,6 +113,7 @@ class UpdateGroupView(PermissionRequiredMixin, SuccessMessageMixin,
     permission_required = 'groups.change_group'
 
     def form_invalid(self, form):
+        """Overrides parent function to take object_list if form is invalid"""
         self.object_list = self.get_queryset()
         return super().form_invalid(form=form)
 
@@ -122,6 +133,7 @@ class UpdateGroupView(PermissionRequiredMixin, SuccessMessageMixin,
         Remembers all checked_mentors of group and then
         concatenates them with unchecked mentors, so that
         checked mentors are always first in list
+        Search by last_name of mentor is available
         """
         checked_mentors = get_user_model().objects.filter(
             is_active=True, mentor_in_group=self.kwargs['pk']). \
@@ -157,7 +169,9 @@ class DeleteGroupView(PermissionRequiredMixin, generic.DeleteView):
 
 
 class MentorGroupsView(PermissionRequiredMixin, SafePaginationListView):
-    """Makes list af all groups of students of current Mentor"""
+    """
+    Makes list af all groups of students of current Mentor
+    """
     model = Group
     template_name = 'groups/mentor_groups_list.html'
     _search = False
@@ -174,7 +188,11 @@ class MentorGroupsView(PermissionRequiredMixin, SafePaginationListView):
         return context
 
     def get_queryset(self):
-        """List of searched groups of mentor with number of students in them"""
+        """
+        List of groups with number of students in them.
+        Lists only groups that are assigned to current mentor
+        Search by name of group is available.
+        """
         result = Group.objects.filter(mentor__id=self.request.user.pk). \
             annotate(total=Count('user')).order_by('name')
         if self.request.GET.get('data_search'):
@@ -189,7 +207,10 @@ class MentorGroupsView(PermissionRequiredMixin, SafePaginationListView):
 class MentorGroupUpdate(UserPassesTestMixin, PermissionRequiredMixin,
                         SuccessMessageMixin, generic.UpdateView,
                         SafePaginationListView):
-    """Makes list of students to add or remove from group."""
+    """
+    Makes list of students to add or remove from group.
+    Shows also URL for joining to group if it is valid
+    """
     model = Group
     form_class = GroupUpdateForm
     template_name = 'groups/mentor_group_update.html'
@@ -200,15 +221,6 @@ class MentorGroupUpdate(UserPassesTestMixin, PermissionRequiredMixin,
     paginate_by = PAGINATOR
     permission_required = 'groups.change_mentor_group'
 
-    def encode_data(self):
-        """Makes hash for generation url for adding students to group."""
-        group = self.get_object()
-        signer = signing.Signer(SECRET + str(group.pk))
-        time = int((timezone.now() +
-                    timezone.timedelta(days=EXPIRED_TIME_days)).timestamp())
-        value = signer.sign(time)
-        return value
-
     def get_success_url(self):
         pk = self.kwargs['pk']
         return reverse('groups:mentor_group_update', kwargs={'pk': pk})
@@ -218,14 +230,17 @@ class MentorGroupUpdate(UserPassesTestMixin, PermissionRequiredMixin,
         context['search_label'] = self._search_label
         context['users_in_group'] = self._users_in_group
         context['search'] = self._search
-        # Generates url with '1' in the end as 'hash'
-        my_url = reverse_lazy('groups:add_new_user',
-                              args=[self.kwargs['pk'], '1'])
-        domain = self.request.build_absolute_uri('/')[:-1]
-        # Alternates faked '1' hash in the end to real hash
-        context['url'] = domain + my_url[:-1] + self.encode_data()
-        context['time'] = timezone.now() + \
-            timezone.timedelta(days=EXPIRED_TIME_days)
+        # Looks for valid invitation link
+        url = Invitation.objects.filter(group_id=self.kwargs['pk'],
+                                        start__lte=timezone.now(),
+                                        end__gte=timezone.now()).first()
+        if url:
+            my_url = reverse_lazy('groups:add_new_user',
+                                  kwargs={'hash': url.code})
+            domain = self.request.build_absolute_uri('/')[:-1]
+            context['url'] = domain + str(my_url)
+            context['time'] = url.end
+            context['left'] = ' %s  students can join.' % url.items_left
         return context
 
     def test_func(self):
@@ -234,7 +249,7 @@ class MentorGroupUpdate(UserPassesTestMixin, PermissionRequiredMixin,
             pk=self.kwargs['pk'], mentor__id=self.request.user.pk).exists()
 
     def get_queryset(self):
-        """List of all students of group."""
+        """List of all students of group. Search by last_name is available."""
         result = get_user_model().objects. \
             filter(is_active=True, user_in_group=self.kwargs['pk']). \
             order_by('last_name')
@@ -247,6 +262,11 @@ class MentorGroupUpdate(UserPassesTestMixin, PermissionRequiredMixin,
         return result
 
     def get_object(self, context=None):
+        """
+        Takes group that we are working with to:
+        1) change students in it
+        2) make URL to join
+        """
         context = get_object_or_404(Group, pk=self.kwargs['pk'])
         return context
 
@@ -254,7 +274,9 @@ class MentorGroupUpdate(UserPassesTestMixin, PermissionRequiredMixin,
 class MentorGroupAdd(PermissionRequiredMixin, SuccessMessageMixin,
                      UserPassesTestMixin, generic.UpdateView,
                      SafePaginationListView):
-    """Makes list of all students that can be added to group."""
+    """
+    Makes list of all students that can be added to group.
+    """
     model = Group
     form_class = GroupUpdateForm
     template_name = 'groups/mentor_group_add.html'
@@ -316,38 +338,31 @@ class MentorGroupAdd(PermissionRequiredMixin, SuccessMessageMixin,
 
 
 class AddNewUser(LoginRequiredMixin, generic.CreateView):
-    """Adds currently logined student to group."""
+    """
+    Adds currently logged student to group.
+    """
     model = Group
     template_name = 'groups/add_new_user.html'
     form_class = GroupUpdateForm
     success_url = reverse_lazy('test_player:start_test')
     _group = None
-    _date_valid = False
-
-    def decode(self):
-        """Decodes hash and checks if it is valid"""
-        signer = signing.Signer(SECRET + str(self.kwargs['pk']))
-        try:
-            original = signer.unsign(self.kwargs['hash'])
-        except signing.BadSignature:
-            raise Http404
-        return original
+    _invitation = None
 
     def dispatch(self, request, *args, **kwargs):
-        """Checks if decoded date isn't expired"""
-        self._group = get_object_or_404(Group, pk=self.kwargs['pk'])
-        hash = int(self.decode())
-        if hash > timezone.now().timestamp():
-            self._date_valid = True
+        """Checks if hash exists and is valid"""
+        invitation = Invitation.objects.filter(code__exact=self.kwargs['hash'],
+                                               start__lte=timezone.now(),
+                                               end__gte=timezone.now(),
+                                               items_left__gt=0).first()
+        if invitation:
+            self._group = get_object_or_404(Group, pk=invitation.group.pk)
+            self._invitation = invitation
+        else:
+            raise Http404
         return super(AddNewUser, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['date_valid'] = self._date_valid
-        if not self._date_valid:
-            message = 'Sorry, but this link has expired.'
-            messages.warning(self.request, message=message)
-            return context
         # Checks if user is trainee
         context['trainee'] = get_user_model().objects. \
             filter(pk=self.request.user.pk, groups__name='Trainee').exists()
@@ -362,7 +377,19 @@ class AddNewUser(LoginRequiredMixin, generic.CreateView):
     def form_valid(self, form):
         """Adds user to group"""
         group = self._group
-        group.user.add(self.request.user.pk)
+        invitation = self._invitation
+        if Group.objects.filter(id=group.pk, user=self.request.user).exists():
+            message = 'You already are in group "' + group.name + '".'
+            messages.success(self.request, message=message)
+            return redirect(self.success_url)
+        # Check if invitation still has items and we can add user to group
+        with transaction.atomic():
+            if invitation.items_left > 0:
+                group.user.add(self.request.user.pk)
+                invitation.items_left -= 1
+                invitation.save()
+            else:
+                raise Http404
         message = 'You successfully joined to group "' + group.name + '".'
         messages.success(self.request, message=message)
         return redirect(self.success_url)
@@ -370,6 +397,9 @@ class AddNewUser(LoginRequiredMixin, generic.CreateView):
 
 class SheduleGroupList(PermissionRequiredMixin, UserPassesTestMixin,
                        SuccessMessageMixin, SafePaginationListView):
+    """
+    Makes list of shedules that where assigned to this group
+    """
     model = Shedule
     template_name = 'groups/shedule_group_list.html'
     paginate_by = PAGINATOR
@@ -394,30 +424,31 @@ class SheduleGroupList(PermissionRequiredMixin, UserPassesTestMixin,
 
 
 class SheduleGroupView(PermissionRequiredMixin, UserPassesTestMixin,
-                       SuccessMessageMixin, generic.CreateView):
-    model = Shedule
+                       generic.FormView):
+    """
+    Adds shedule to group
+    """
     form_class = SheduleForm
     template_name = 'groups/shedule_group.html'
     permission_required = 'groups.change_shedule'
 
+    def get_success_url(self):
+        return reverse_lazy('groups:shedule_group_list',
+                            kwargs={'pk': self.kwargs['pk']})
+
     def form_valid(self, form):
-        form.instance.group = Group.objects.get(pk=self.kwargs['pk'])
-        if Shedule.objects.filter(group=form.instance.group,
-                                  quiz=form.instance.quiz).exists():
-            new = Shedule.objects. \
-                get(quiz=form.instance.quiz, group=form.instance.group)
-            new.begin = form.instance.begin
-            new.end = form.instance.end
+        """Updates existing shedule or creates new one if it doest'n exist"""
+        group = Group.objects.get(pk=self.kwargs['pk'])
+        shedule = Shedule.objects.filter(group=group, quiz=form.instance.quiz)
+        form.cleaned_data['group'] = group
+        if shedule:
+            shedule.update(**form.cleaned_data)
         else:
-            new = Shedule.objects.create(begin=form.instance.begin,
-                                         end=form.instance.end,
-                                         quiz=form.instance.quiz,
-                                         group=form.instance.group)
-        new.save()
+            Shedule.objects.create(**form.cleaned_data)
         messages.success(request=self.request,
-                         message=f'{form.instance.quiz} successfully was set '
-                                 f'for {form.instance.group}.')
-        return redirect('groups:shedule_group_list', pk=self.kwargs['pk'])
+                         message=f'{form.instance.quiz} set '
+                                 f'for "{group}" successfully.')
+        return super(SheduleGroupView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -428,3 +459,51 @@ class SheduleGroupView(PermissionRequiredMixin, UserPassesTestMixin,
         """If user in not mentor of this group rises 403 exception"""
         return Group.objects.filter(pk=self.kwargs['pk']). \
             filter(mentor__id=self.request.user.pk).exists()
+
+
+class AddInvitation(generic.FormView):
+    """
+    Makes URL by which users can join to group
+    """
+    template_name = 'groups/add_invitation.html'
+    form_class = InvitationForm
+    _group = None
+    _url_code = None
+
+    def dispatch(self, request, *args, **kwargs):
+        """Checks if there are expired invitations and deletes them"""
+        expired_urls = Invitation.objects.filter(end__lt=timezone.now())
+        if expired_urls:
+            expired_urls.delete()
+        return super(AddInvitation, self).dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse_lazy('groups:mentor_group_update',
+                            kwargs={'pk': self.kwargs['pk']})
+
+    def get_form_kwargs(self):
+        """
+        Initialises form by current group and
+        sets number of students that can join by this link to 1
+        """
+        kwargs = super().get_form_kwargs()
+        group = get_object_or_404(Group, pk=self.kwargs['pk'])
+        self._group = group
+        kwargs.update(initial={'group': self._group, 'items_left': 1})
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['group'] = self._group
+        return context
+
+    def form_valid(self, form):
+        """If there is some URL for this group we change it or create new"""
+        invitation = Invitation.objects.filter(group=form.instance.group)
+        if invitation:
+            invitation.update(**form.cleaned_data)
+        else:
+            Invitation.objects.create(**form.cleaned_data)
+        message = 'New URL generated successfully!'
+        messages.success(self.request, message=message)
+        return super(AddInvitation, self).form_valid(form)

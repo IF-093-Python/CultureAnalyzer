@@ -20,8 +20,7 @@ __all__ = ['TestPlayer', 'StartTest', ]
 
 class StartTest(PermissionRequiredMixin, ListView):
     """
-    Return a list of all available tests
-    get_queryset: return queryset of Quizzes model objects
+    Returns list of all available tests for user
     """
     template_name = 'test_player/start_test.html'
     context_object_name = 'quizzes'
@@ -29,12 +28,15 @@ class StartTest(PermissionRequiredMixin, ListView):
     permission_required = 'quiz.view_test_player'
 
     def get_queryset(self):
-        """Takes list of all Quizzes for Group of user, that are actual now
-        and shows only those that will end the last """
+        """
+        Takes list of all Quizzes that are sheduled for Groups of user, that
+        are actual now and shows only those that will end the last
+        """
         quizzes = Shedule.objects.filter(
             group__user=self.request.user, end__gt=timezone.now()). \
             order_by('quiz_id', 'begin').distinct('quiz_id')
         self._not_started_quizzes = quizzes.filter(begin__gt=timezone.now())
+        # we can't sort result by begin and then by end so we make it like this
         result = sorted(quizzes, key=operator.attrgetter('end'))
         return result
 

@@ -3,21 +3,28 @@
 {% load staticfiles %}
 {% load cool_paginate %}
 {% block content %}
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <a {% if message.tags %} class="{{ message.tags }}" {% endif %}>
-        {{ message }}</a>
-    {% endfor %}
-</ul>
-{% endif %}
+  {% if messages %}
+  {% for message in messages %}
+      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+  {% endfor %}
+  {% endif %}
 <br>
 <div class="container-fluid col-md-10">
     <div class="border-bottom">
         <h1 class="text-center font-weight-bold">Update group "{{ group.name }}"</h1>
-        <p>Link to join to group avialable until {{ time }}:
+    <div class="my-2">
+        <p>Generate new URL: <a class="btn btn-outline-primary ml-1" title="Generate URL"
+                href="{% url 'groups:add_invitation' group.pk %}">Make URL</a>
+        </p>
+
+    </div>
+    {% if url %}
+        <p>Link avialable until {{ time }}:
+            <br>
+            {{ left }}
             <br>
             <a style="color: #cd0a0a" href="{{ url }}">{{ url }}</a></p>
+    {% endif %}
     </div>
     <div class="my-2">
         <form class="d-flex flex-wrap justify-content-between mt-n1" method="get">

@@ -5,7 +5,7 @@ from django.db import models
 
 from quiz.models import Quizzes
 
-__all__ = ['Group', 'Shedule', 'Invitation' ]
+__all__ = ['Group', 'Shedule', 'Invitation']
 
 
 class Group(models.Model):
@@ -47,7 +47,7 @@ class Invitation(models.Model):
         Model for saving generated URL for joining to group
     """
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    code = models.UUIDField(default=uuid.uuid4, editable=False)
+    code = models.UUIDField(default=uuid.uuid4)
     start = models.DateTimeField()
     end = models.DateTimeField()
     items_left = models.PositiveSmallIntegerField()

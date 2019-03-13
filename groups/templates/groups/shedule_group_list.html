@@ -5,6 +5,11 @@
 {% block title %}Quizzes for {{ group.name }}{% endblock %}
 
 {% block content %}
+{% if messages %}
+  {% for message in messages %}
+      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+  {% endfor %}
+{% endif %}
 <h1 class="text-center">Quizzes for "{{ group.name }}"</h1>
 <div class="d-flex justify-content-between mb-2">
     <a class="btn btn-blue" href="{% url 'groups:shedule_group' group.pk %}">Set quiz</a>
