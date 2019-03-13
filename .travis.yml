@@ -21,8 +21,7 @@ install:
   - pip install -r build-requirements.txt
 
 script:
-  - ./build_script.sh
-  - cat pylint_report_file.txt
+  - ./scripts/build.sh || travis_terminate 1;
   - sonar-scanner
 
 notifications:
