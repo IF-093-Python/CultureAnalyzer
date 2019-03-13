@@ -2,12 +2,12 @@
 
 {% load cool_paginate %}
 
-{% block title %}Feedbacks{% endblock %}
+{% block title %}Feedback{% endblock %}
 
 {% block content %}
     <div class="d-flex justify-content-between">
         <div></div>
-        <h2>Feedbacks</h2>
+        <h2>Feedback</h2>
         <div class="form-group row">
             <div class="col-sm-3">
                 <a href="{% url 'feedback-create' %}" class="btn btn-blue">Add feedback</a>
@@ -43,7 +43,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td>No feedbacks yet.</td>
+                    <td>No feedback yet.</td>
                 </tr>
                 {% endfor %}
             </tbody>

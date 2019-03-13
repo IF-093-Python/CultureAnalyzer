@@ -52,7 +52,7 @@ class TestPlayer(UserPassesTestMixin, FormView):
     """
     template_name = 'test_player/test_player.html'
     form_class = QuestionSaveForm
-    permission_required = 'quiz.view_results'
+    permission_required = 'quiz.view_test_player'
 
     def get_success_url(self):
         """
@@ -201,11 +201,11 @@ class TestPlayer(UserPassesTestMixin, FormView):
         """
         :param self
         :param context: 'context' object which is being rendered that view;
-        :var self.current_quiz(int): id current test(form keyword argument) \
+        :var current_quiz(int): id current test(form keyword argument) \
          for accessing to session data about current test;
-        :var self.session(dict): with session data from session object;
-        :var self.answers(list): with dict values which contain user answers;
-        :var self.answered(int): counter, which represent \
+        :var session(dict): with session data from session object;
+        :var answers(list): with dict values which contain user answers;
+        :var answered(int): counter, which represent \
          answered answers (not None).
         :var number_of_questions(int): number of questions \
          related with current quiz
@@ -214,53 +214,53 @@ class TestPlayer(UserPassesTestMixin, FormView):
         current_quiz = self.kwargs['quiz_id']
         number_of_questions = Questions.objects.filter(
             quiz=current_quiz).count()
-        self.session = dict(self.request.session)
+        session = dict(self.request.session)
 
-        if current_quiz in self.session.keys():
-            self.answers = self.session[current_quiz].values()
+        if current_quiz in session.keys():
+            answers = session[current_quiz].values()
 
-            self.answered = sum(1 for answer in self.answers if answer)
+            answered = sum(1 for answer in answers if answer)
 
-            if self.answered >= (number_of_questions - 1):
+            if answered >= (number_of_questions - 1):
                 context['is_can_be_finished'] = True
 
     def _handle_previous_and_next_questions(self):
         """
         :param self
-        :var self.current_quiz(int): id current test(form keyword argument) \
+        :var current_quiz(int): id current test(form keyword argument) \
          for accessing to session data about current test;
-        :var self.question_number(int): number current question \
+        :var question_number(int): number current question \
          (form keyword argument)
-        :var self.question_count(int): total quantity of questions in the test
+        :var question_count(int): total quantity of questions in the test
         :return: reverse to next or previous question with \
          form kwargs: id of test, number of question that will be rendered
 
         """
-        self.current_quiz = self.kwargs['quiz_id']
-        self.question_number = self.kwargs['question_number']
-        self.question_count = Questions.objects.filter(
-            quiz_id=self.current_quiz).count()
+        current_quiz = self.kwargs['quiz_id']
+        question_number = self.kwargs['question_number']
+        question_count = Questions.objects.filter(
+            quiz_id=current_quiz).count()
 
-        next_question_number = int(self.question_number) + 1
-        prev_question_number = int(self.question_number) - 1
+        next_question_number = int(question_number) + 1
+        prev_question_number = int(question_number) - 1
 
         if 'next_to' in self.request.POST \
-                and next_question_number <= self.question_count:
+                and next_question_number <= question_count:
 
             return reverse_lazy('test_player:test_player',
-                                kwargs={'quiz_id': self.current_quiz,
+                                kwargs={'quiz_id': current_quiz,
                                         'question_number': next_question_number
                                         })
         elif 'prev' in self.request.POST and prev_question_number > 0:
 
             return reverse_lazy('test_player:test_player',
-                                kwargs={'quiz_id': self.current_quiz,
+                                kwargs={'quiz_id': current_quiz,
                                         'question_number': prev_question_number
                                         })
         else:
             return reverse_lazy('test_player:test_player',
-                                kwargs={'quiz_id': self.current_quiz,
-                                        'question_number': self.question_number
+                                kwargs={'quiz_id': current_quiz,
+                                        'question_number': question_number
                                         })
 
     def test_func(self):
