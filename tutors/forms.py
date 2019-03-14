@@ -1,8 +1,7 @@
-from django import forms
-from django.db.models import Q
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Button, Fieldset, Layout, Field, HTML
-from django.shortcuts import get_object_or_404
+from django import forms
+from django.db.models import Q
 
 from tutors.models import CategoryQuestion, Question, Answer
 
@@ -83,14 +82,14 @@ class AnswerCreateForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 'Create/Update answer', css_class='display-4'),
-            Fieldset('', Field('answer_text'), css_class='border-top '
-                                                         'border-bottom'),
+            Fieldset('',
+                     Field('answer_text'),
+                     css_class='border-top border-bottom'),
             Fieldset('',
                      Submit('save', 'Save', css_class='btn-success mt-3'),
                      HTML("""<a class='btn btn-outline-success mt-3' 
-                 href="{%url 'tutors:answers_list' question_id=q.id%}">
-                 Cancel</a>"""),
-                     )
+                     href="{%url 'tutors:answers_list' question_id=q.id%}">
+                     Cancel</a>"""))
         )
 
     class Meta:

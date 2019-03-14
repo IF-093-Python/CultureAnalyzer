@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import CASCADE
 
+__all__ = ['Quizzes', 'Results']
+
 
 class Quizzes(models.Model):
     title = models.CharField(max_length=100, null=False)

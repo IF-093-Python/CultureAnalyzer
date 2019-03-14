@@ -99,3 +99,6 @@ ENV/
 
 # local settings
 local.py
+
+.scannerwork/
+pylint_report_file.txt
