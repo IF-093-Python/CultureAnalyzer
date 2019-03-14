@@ -1,6 +1,15 @@
 from django import forms
 
-__all__ = ['ProfileValidator']
+__all__ = ['ProfileValidator', 'PValidationError']
+
+
+class CAError(Exception):
+    pass
+
+
+class PValidationError(CAError, ValueError):
+    pass
+
 
 MIN_YEARS_OF_EXPERIENCE = 0
 MAX_YEARS_OF_EXPERIENCE = 100

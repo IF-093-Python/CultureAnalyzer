@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -7,7 +7,7 @@ from .models import Profile, Role
 __all__ = ['create_profile', 'save_profile']
 
 
-@receiver(post_save, sender=User)
+@receiver(post_save, sender=get_user_model())
 def create_profile(sender, instance, created, **kwargs):
     """
     When sender is saved we send signal post_save
@@ -22,7 +22,7 @@ def create_profile(sender, instance, created, **kwargs):
                                role=Role.objects.get(name="Trainee"))
 
 
-@receiver(post_save, sender=User)
+@receiver(post_save, sender=get_user_model())
 def save_profile(sender, instance, **kwargs):
     """
     When user is saved then we save his profile

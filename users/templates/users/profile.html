@@ -4,8 +4,8 @@
 {% block content%}
 <div class="content-section">
     <div class="media">
-        {% if user.profile.image %}
-        <img src="{{ user.profile.image.url }}" alt="" class="circle_text" style="margin-left: -10px;">
+        {% if user.image %}
+        <img src="{{ user.image.url }}" alt="" class="circle_text" style="margin-left: -10px;">
         {% else %}
         <img src="{% static 'default.png' %}" alt="" class="circle_text" style="margin-left: -10px;">
         {% endif %}
