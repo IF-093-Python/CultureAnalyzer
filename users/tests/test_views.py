@@ -1,8 +1,8 @@
 import datetime
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth import get_user_model
 
 from users.tests.mixins import SetUpMixin
 
@@ -10,8 +10,8 @@ from users.tests.mixins import SetUpMixin
 class LoginViewTest(SetUpMixin, TestCase):
 
     def test_redirect_when_user_logged_in(self):
-        response = self.client.post(reverse('login'), {
-                                    'username': 'TestUser', 'password': 'test_qwerty'})
+        response = self.client.post(reverse('login'), {'username': 'TestUser',
+                                                       'password': 'test_qwerty'})
 
         self.assertEqual(response.status_code, 302)
 
@@ -51,13 +51,15 @@ class UpdateUserViewTest(SetUpMixin, TestCase):
     def test_valid_data_update_view(self):
         self.client.login(username='TestUser', password='test_qwerty')
         current_user = get_user_model().objects.get(username='TestUser')
-        response = self.client.post(reverse('profile', args=[current_user.id]), {
-                                    'first_name': 'Yurii', 'last_name': 'Kulyk',
-                                    'experience': 1,
-                                    'date_of_birth': datetime.date(
-                                        1999, 5, 21),
-                                    'education': 'Secondary',
-                                    'gender': 'Male', })
+        response = self.client.post(reverse('profile', args=[current_user.id]),
+                                    {
+                                        'first_name': 'Yurii',
+                                        'last_name': 'Kulyk',
+                                        'experience': 1,
+                                        'date_of_birth': datetime.date(
+                                            1999, 5, 21),
+                                        'education': 'Secondary',
+                                        'gender': 'Male', })
 
         current_user.refresh_from_db()
         self.assertEqual(response.status_code, 302)
@@ -72,3 +74,15 @@ class UpdateUserViewTest(SetUpMixin, TestCase):
 
         response = self.client.get(reverse('profile', args=[another_user.id]))
         self.assertEqual(response.status_code, 403)
+
+
+class PasswordChangeViewTest(SetUpMixin, TestCase):
+    def test_change_password(self):
+        self.client.login(username='TestUser', password='test_qwerty')
+        current_user = get_user_model().objects.get(username='TestUser')
+        response = self.client.post(
+            reverse('password-change', args=[current_user.id]),
+            {'old_password': 'test_qwerty', 'new_password1': 'test_qwerty1',
+             'new_password2': 'test_qwerty1'})
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('home'))
