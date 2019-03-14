@@ -1,12 +1,9 @@
-from PIL import Image
 from django.db import models
-from django.db.transaction import atomic
 
 from users.choices import GENDER_CHOICES, EDUCATION_CHOICES
 # import CustomUser instead of get_user_model because CustomUser
 # is not initialized yet and get_user_model cannot return CustomUser
 from users.models.custom_user import CustomUser
-from users.validators import PValidationError
 
 __all__ = ['Profile', 'Role']
 
