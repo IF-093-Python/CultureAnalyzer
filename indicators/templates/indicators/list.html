@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% load cool_paginate %}
+
+{% block title %}Countries indicators list{% endblock %}
+
+{% block content %}
+
+    <h2>Countries' indicators</h2>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+          <div class="alert alert-primary" role="alert">
+
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+          </div>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <br>
+    <div class="form-group row">
+        <div class="col-sm-3">
+            <a href="{% url 'country_indicator:country_indicator_create' %}" class="btn btn-primary">Create indicator</a>
+        </div>
+    </div>
+    <br>
+        <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">ISO code</th>
+              <th scope="col">Name</th>
+              <th scope="col">PDI</th>
+              <th scope="col">IND</th>
+              <th scope="col">MAS</th>
+              <th scope="col">UAI</th>
+              <th scope="col">LTO</th>
+              <th scope="col">IVR</th>
+              <th scope="col">Control</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for indicator in indicators %}
+            <tr>
+              <th scope="row">{{ forloop.counter0|add:page_obj.start_index }}</th>
+              <td>{{ indicator.iso_code }}</td>
+              <td>{{ indicator.name }}</td>
+              <td>{{ indicator.pdi }}</td>
+              <td>{{ indicator.ind }}</td>
+              <td>{{ indicator.mas }}</td>
+              <td>{{ indicator.uai }}</td>
+              <td>{{ indicator.lto }}</td>
+              <td>{{ indicator.ivr }}</td>
+
+              <td>
+                <a class="btn btn-primary" href="{% url 'country_indicator:country_indicator_update' indicator.pk %}" role="button"><span class="fas fa-edit"></span> </a>
+                <a class="btn btn-danger" href="{% url 'country_indicator:country_indicator_delete' indicator.pk %}" role="button"><span class="fas fa-trash-alt"></span></a>
+              </td>
+            </tr>
+          {% empty %}
+            <p>There aren't any countries indicators.</p>
+          {% endfor %}
+          </tbody>
+        </table>
+
+    {% if is_paginated %}
+        {% cool_paginate page_obj=page_obj %}
+    {% endif %}
+
+
+{% endblock %}

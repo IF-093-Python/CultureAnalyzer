@@ -27,15 +27,12 @@ Temporary Items
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
 
 # C extensions
 *.so
 
 # Distribution / packaging
 .Python
-env/
 build/
 develop-eggs/
 dist/
@@ -70,7 +67,6 @@ coverage.xml
 
 # Translations
 *.mo
-*.pot
 
 # Sphinx documentation
 docs/_build/
@@ -82,11 +78,10 @@ target/
 ### Django ###
 *.log
 *.pot
-*.pyc
 __pycache__/
-local_settings.py
+local.py
+*.pyc
 
-.env
 db.sqlite3
 
 .vscode/*
@@ -95,5 +90,15 @@ db.sqlite3
 # idea
 .idea/
 
+# virtual env
+.env
+.venv
+env/
+venv/
+ENV/
 
+# local settings
+local.py
 
+.scannerwork/
+pylint_report_file.txt
