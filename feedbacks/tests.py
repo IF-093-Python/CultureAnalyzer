@@ -1,13 +1,13 @@
-from unittest import TestCase
-from ddt import ddt, idata, data
-from django.test import TestCase as DjangoTestCase
+from ddt import ddt, data
 from django.contrib.auth.models import User
+from django.test import TestCase as DjangoTestCase
+from unittest import TestCase
 
+from feedbacks.forms import FeedbackForm
+from feedbacks.models import Feedback
 from feedbacks.tests_data.test_form_data import (FEEDBACK_INVALID_DATA,
                                                  FEEDBACK_VALID_DATA)
 from feedbacks.tests_data.test_view_data import PAGE_STRING_VALUES
-from feedbacks.models import Feedback
-from feedbacks.forms import FeedbackForm
 
 __all__ = ['FeedbackFormTest', ]
 

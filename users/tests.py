@@ -1,11 +1,9 @@
 import datetime
-
-from django.contrib.auth.models import User
 from django.test import TestCase
 
 from .forms import ProfileUpdateForm
 
-__all__ = ['ProfileFormTest', 'UserTestCase']
+__all__ = ['ProfileFormTest']
 
 
 class ProfileFormTest(TestCase):

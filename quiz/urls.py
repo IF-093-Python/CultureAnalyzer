@@ -1,6 +1,8 @@
-from django.urls import include, re_path
-from quiz.views import QuizzesList, CreateQuizView, \
-    DeleteQuizView, UpdateQuizView
+from django.urls import re_path
+
+from quiz.views import (QuizzesList, CreateQuizView,
+                        DeleteQuizView, UpdateQuizView)
+
 app_name = "quiz"
 
 urlpatterns = [
@@ -10,5 +12,4 @@ urlpatterns = [
             name='delete-quiz'),
     re_path('^update_quiz/(?P<pk>\\d+)$', UpdateQuizView.as_view(),
             name='update-quiz'),
-
 ]
