@@ -45,7 +45,7 @@
                                {% elif current_quiz and current_quiz|lookup:question.question_number %}
                                btn-light{% else %}
                                btn-outline-light
-                               {% endif %}" name="next" value="{{ question.question_number }}">
+                               {% endif %}" name="next_number" value="{{ question.question_number }}">
                 {% endfor %}
                 {% endwith %}
             </div>

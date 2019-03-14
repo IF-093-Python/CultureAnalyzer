@@ -3,44 +3,49 @@ import json
 import operator
 
 from django.contrib import messages
-from django.contrib.auth.mixins import PermissionRequiredMixin, \
-    UserPassesTestMixin
+from django.contrib.auth.mixins import (PermissionRequiredMixin,
+                                        UserPassesTestMixin)
+from django.db import transaction
 from django.shortcuts import get_object_or_404
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils import timezone
-from django.views.generic import FormView, ListView
+from django.views.generic import (FormView, ListView)
 
 from groups.models import Shedule
 from quiz.models import Results
 from tutors.models import Questions
 from .forms import QuestionSaveForm
 
-__all__ = ['TestPlayer', 'StartTest', ]
+__all__ = ['StartTest', 'TestPlayer', ]
 
 
 class StartTest(PermissionRequiredMixin, ListView):
     """
-    Returns list of all available tests for user
+    Return a list of all available tests
+
+    get_queryset: return queryset of Quizzes model objects
+
     """
     template_name = 'test_player/start_test.html'
     context_object_name = 'quizzes'
-    _not_started_quizzes = None
+    __not_started_quizzes = None
     permission_required = 'quiz.view_test_player'
 
     def get_queryset(self):
         """
-        Takes list of all Quizzes that are sheduled for Groups of user, that
-        are actual now and shows only those that will end the last
-        """
-        quizzes = Shedule.objects.filter(
-            group__user=self.request.user, end__gt=timezone.now()). \
+        Takes list of all Quizzes for Group of user, that are actual now
+        and shows only those that will end the last
+
+         """
+        quizzes = Shedule.objects.filter(group__user=self.request.user). \
+            filter(end__gt=timezone.now()). \
             order_by('quiz_id', 'begin').distinct('quiz_id')
         self._not_started_quizzes = quizzes.filter(begin__gt=timezone.now())
         # we can't sort result by begin and then by end so we make it like this
         result = sorted(quizzes, key=operator.attrgetter('end'))
         return result
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['not_started'] = self._not_started_quizzes
         return context
@@ -59,17 +64,18 @@ class TestPlayer(UserPassesTestMixin, FormView):
         Handling user activity while passing the test
 
         """
-
-        if 'next_to' in self.request.POST or 'prev' in self.request.POST:
-            return self._handle_previous_and_next_questions()
-        if 'submit_finish' in self.request.POST:
-            return reverse_lazy('quiz:result-list',
-                                kwargs={'user_id': self.request.session[
-                                    '_auth_user_id']})
-        return reverse_lazy('test_player:test_player',
-                            kwargs={'quiz_id': self.kwargs[
-                                'quiz_id'], 'question_number':
-                                        self.request.POST.get('next')})
+        current_quiz = self.kwargs['quiz_id']
+        next_number = self.request.POST.get('next_number')
+        success_url = reverse_lazy('test_player:test_player',
+                                   kwargs={'quiz_id': current_quiz,
+                                           'question_number': next_number})
+        if 'prev' in self.request.POST:
+            success_url = self._handle_previous_question()
+        elif 'next_to' in self.request.POST:
+            success_url = self._handle_next_question()
+        elif 'submit_finish' in self.request.POST:
+            success_url = self._handle_finish_test()
+        return success_url
 
     def get_context_data(self, **kwargs):
         """
@@ -83,22 +89,24 @@ class TestPlayer(UserPassesTestMixin, FormView):
         :return: context object for template which will be rendered that view
 
         """
+
         context = super().get_context_data(**kwargs)
-        current_quiz = self.kwargs['quiz_id']
-        question_number = self.kwargs['question_number']
-
-        context['questions'] = Questions.objects.filter(
+        current_quiz, question_number = self.get_quiz_data()
+        questions = Questions.objects.filter(
             quiz_id=current_quiz).order_by('question_number')
-
-        context['current_question'] = get_object_or_404(
-            Questions, quiz_id=current_quiz,
-            question_number=question_number)
-
+        current_question = questions.get(question_number=question_number)
+        context['questions'] = questions
+        context['current_question'] = current_question
         context['quiz_id'] = current_quiz
 
-        self._handle_finish_test(context)
+        self._count_user_answers(context)
 
         return context
+
+    def get_quiz_data(self):
+        current_quiz = self.kwargs['quiz_id']
+        question_number = self.kwargs['question_number']
+        return current_quiz, question_number
 
     def get_form_kwargs(self):
         """
@@ -111,16 +119,14 @@ class TestPlayer(UserPassesTestMixin, FormView):
          of current question;
         :var current_answers(queryset): model queryset object with answers \
          related with current question;
-        :return additional form instance attributes
+        :return additional form instance attributes;
 
         """
         kwargs = super().get_form_kwargs()
-        current_quiz = self.kwargs['quiz_id']
-        question_number = self.kwargs['question_number']
-
-        current_question = get_object_or_404(
-            Questions, quiz_id=current_quiz,
-            question_number=question_number)
+        current_quiz, question_number = self.get_quiz_data()
+        current_question = get_object_or_404(Questions,
+                                             quiz_id=current_quiz,
+                                             question_number=question_number)
         current_answers = current_question.answers_set.all()
 
         if current_quiz in self.request.session and question_number in \
@@ -147,57 +153,39 @@ class TestPlayer(UserPassesTestMixin, FormView):
         :return form_valid(form)
 
         """
-        current_quiz = self.kwargs['quiz_id']
-        question_number = self.kwargs['question_number']
+        current_quiz, question_number = self.get_quiz_data()
         answer = form.cleaned_data.get('answers')
-        session_user = self.request.session['_auth_user_id']
-        initial_question = dict.fromkeys(list(zip(*Questions.objects.filter(
-            quiz=current_quiz).values_list(
-            'question_number').order_by('question_number')))[0], None)
-
-        # initialize session variable for test and setting initial values \
-        # (nested dictionary like: {quiz_id: {question_number: answer}}
-
-        if self.request.session.setdefault(current_quiz, False):
-            session_data = self.request.session[current_quiz]
-        else:
-            session_data = initial_question
-            self.request.session[current_quiz] = session_data
+        # checking if session variable exist, if not - call method, which \
+        # set default initial values (used only once during the first request)
+        if current_quiz not in self.request.session:
+            self._setting_initial_session_data()
 
         # updating session data with relevant data
+        session_data = self.request.session[current_quiz]
         if answer:
-            session_data.update({
-                question_number: answer})
+            session_data.update(
+                {question_number: answer}
+            )
         self.request.session[current_quiz] = session_data
-
-        # handling submit modal button, and saving to database
-        if 'submit_finish' in self.request.POST:
-            timezone.now()
-            date = datetime.datetime.now()
-            result = []
-            # checking that the user answered all the questions, \
-            # because it`s important condition for \
-            # correct calculation of the result
-            for key in self.request.session[current_quiz]:
-                if self.request.session[current_quiz].get(key) is None:
-                    messages.info(self.request,
-                                  "You need to answer all the questions!!!")
-                    return super(TestPlayer, self).form_invalid(form)
-                result.append(
-                    int(self.request.session[current_quiz].get(key)))
-            result = json.dumps(result, ensure_ascii=False)
-            # saving user replies to a database for \
-            # further calculation by formula
-            Results.objects.create(user_id=int(session_user),
-                                   quiz_id=int(current_quiz),
-                                   pass_date=date,
-                                   result=result)
-            del self.request.session[
-                current_quiz]  # clear session data about passed and saved test
 
         return super(TestPlayer, self).form_valid(form)
 
-    def _handle_finish_test(self, context):
+    def _setting_initial_session_data(self):
+        """
+        Method, which set default initial values (used only once \
+        during the first request)
+
+        """
+        current_quiz, question_number = self.get_quiz_data()
+
+        questions = Questions.objects.filter(quiz=current_quiz).values_list(
+            'question_number', flat=True).order_by('question_number')
+        initial_questions = dict.fromkeys(questions)
+
+        self.request.session.setdefault(current_quiz, None)
+        self.request.session[current_quiz] = initial_questions
+
+    def _handle_finish_test(self):
         """
         :param self
         :param context: 'context' object which is being rendered that view;
@@ -211,20 +199,52 @@ class TestPlayer(UserPassesTestMixin, FormView):
          related with current quiz
 
         """
-        current_quiz = self.kwargs['quiz_id']
+        current_quiz, _ = self.get_quiz_data()
+
+        for question in self.request.session[current_quiz]:
+            if self.request.session[current_quiz].get(question) is None:
+                messages.info(self.request,
+                              "You need to answer all the questions!!!")
+                return reverse('test_player:test_player',
+                               kwargs={'quiz_id': current_quiz,
+                                       'question_number': question})
+
+        self._saving_user_answers()
+
+        return reverse('quiz:result-list', kwargs={
+            'user_id': self.request.session['_auth_user_id']})
+
+    def _saving_user_answers(self):
+        current_quiz, _ = self.get_quiz_data()
+        session_user = self.request.session['_auth_user_id']
+        session_data = dict(self.request.session[current_quiz])
+        result = []
+
+        for answer in session_data:
+            result.append(int(session_data.get(answer)))
+        result = json.dumps(result, ensure_ascii=False)
+
+        Results.objects.create(user_id=int(session_user),
+                               quiz_id=int(current_quiz),
+                               pass_date=datetime.datetime.now(
+                                   timezone.get_current_timezone()),
+                               result=result)
+        del self.request.session[current_quiz]
+
+    def _count_user_answers(self, context):
+        current_quiz, _ = self.get_quiz_data()
         number_of_questions = Questions.objects.filter(
             quiz=current_quiz).count()
-        session = dict(self.request.session)
 
-        if current_quiz in session.keys():
-            answers = session[current_quiz].values()
+        if current_quiz in self.request.session.keys():
+            answers = dict(self.request.session[current_quiz]).values()
 
             answered = sum(1 for answer in answers if answer)
 
             if answered >= (number_of_questions - 1):
                 context['is_can_be_finished'] = True
 
-    def _handle_previous_and_next_questions(self):
+    def _handle_previous_question(self):
         """
         :param self
         :var current_quiz(int): id current test(form keyword argument) \
@@ -232,40 +252,49 @@ class TestPlayer(UserPassesTestMixin, FormView):
         :var question_number(int): number current question \
          (form keyword argument)
         :var question_count(int): total quantity of questions in the test
-        :return: reverse to next or previous question with \
+        :return: reverse to previous question with \
          form kwargs: id of test, number of question that will be rendered
 
         """
-        current_quiz = self.kwargs['quiz_id']
-        question_number = self.kwargs['question_number']
-        question_count = Questions.objects.filter(
-            quiz_id=current_quiz).count()
-
-        next_question_number = int(question_number) + 1
+        current_quiz, question_number = self.get_quiz_data()
         prev_question_number = int(question_number) - 1
 
-        if 'next_to' in self.request.POST \
-                and next_question_number <= question_count:
-
-            return reverse_lazy('test_player:test_player',
-                                kwargs={'quiz_id': current_quiz,
-                                        'question_number': next_question_number
-                                        })
-        elif 'prev' in self.request.POST and prev_question_number > 0:
-
+        if 'prev' in self.request.POST and prev_question_number > 0:
             return reverse_lazy('test_player:test_player',
                                 kwargs={'quiz_id': current_quiz,
                                         'question_number': prev_question_number
                                         })
-        else:
+
+    def _handle_next_question(self):
+        """
+        :param self
+        :var current_quiz(int): id current test(form keyword argument) \
+         for accessing to session data about current test;
+        :var question_number(int): number current question \
+         (form keyword argument)
+        :var question_count(int): total quantity of questions in the test
+        :return: reverse to next question with \
+         form kwargs: id of test, number of question that will be rendered
+
+         """
+        current_quiz, question_number = self.get_quiz_data()
+        question_count = Questions.objects.filter(
+            quiz_id=current_quiz).count()
+        next_question_number = int(question_number) + 1
+
+        if 'next_to' in self.request.POST \
+                and next_question_number <= question_count:
             return reverse_lazy('test_player:test_player',
                                 kwargs={'quiz_id': current_quiz,
-                                        'question_number': question_number
+                                        'question_number': next_question_number
                                         })
 
+    @transaction.atomic()
     def test_func(self):
-        a = Shedule.objects.filter(group__user=self.request.user). \
-            filter(end__gt=datetime.datetime.now()). \
-            filter(begin__lte=datetime.datetime.now()). \
-            filter(quiz=self.kwargs['quiz_id'])
-        return a.exists()
+        date_time = datetime.datetime.now(timezone.get_current_timezone())
+        quiz_exist = Shedule.objects.filter(group__user=self.request.user,
+                                            end__gt=date_time,
+                                            begin__lte=date_time,
+                                            quiz=self.kwargs[
+                                                'quiz_id']).exists()
+        return quiz_exist
