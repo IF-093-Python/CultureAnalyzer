@@ -1,12 +1,12 @@
 from django.urls import path, re_path
 
-from .views import TestPlayer, StartTest
+from .views import TestPlayer, TestStart
 
 app_name = 'test_player'
 
 urlpatterns = [
 
-    path('', StartTest.as_view(), name='start_test'),
+    path('', TestStart.as_view(), name='start_test'),
     re_path(r'^(?P<quiz_id>[0-9]+)/(?P<question_number>[0-9]+)/',
             TestPlayer.as_view(), name='test_player'),
 ]

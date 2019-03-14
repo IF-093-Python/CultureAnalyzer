@@ -8,7 +8,6 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
-from django.http import JsonResponse
 
 from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
 from feedbacks.models import Recommendation
@@ -18,11 +17,7 @@ from quiz.forms import QuizCreateForm
 from quiz.models import Quizzes, Results
 from quiz.service import get_final_result, get_feedback
 from tutors.models import Questions
-from indicators.models import CountryIndicator
-from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
-from groups.models import Group
 from users.models import CustomUser
-from feedbacks.models import Recommendation
 
 
 class QuizzesList(PermissionRequiredMixin,
@@ -105,14 +100,14 @@ class ResultsListView(PermissionRequiredMixin, generic.ListView):
     permission_required = 'quiz.view_results'
 
     def get_queryset(self):
-        results = Results.objects.filter(user=self.kwargs['user_id'])
+        results = Results.objects.filter(user=self.kwargs['user_id']).order_by(
+            '-pass_date')
         return results
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['current'] = get_object_or_404(CustomUser, pk=self.kwargs[
             'user_id'])
-        context['back'] = self.request.META['HTTP_REFERER']
         return context
 
 
