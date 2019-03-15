@@ -97,8 +97,11 @@ env/
 venv/
 ENV/
 
-# local settings
+# settings
 local.py
+production.py
 
 deploy.tar
-production.py
+
+.scannerwork/
+pylint_report_file.txt

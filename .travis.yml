@@ -14,17 +14,16 @@ addons:
     - "$GC_DEPLOY_HOSTNAME:$GC_DEPLOY_PORT"
 
 before_install:
+  - git fetch --unshallow || true
   - export DJANGO_SETTINGS_MODULE=CultureAnalyzer.settings
 
 install:
   - pip install -r requirements.txt
-  - pip install --no-deps -r build-requirements.txt
+  - pip install -r build-requirements.txt
   - pip install -r deploy-requirements.txt
 
 script:
-  - coverage erase
-  - coverage run --branch --source='.' manage.py test
-  - coverage xml -i
+  - ./scripts/build.sh || travis_terminate 1;
   - sonar-scanner
 
 notifications:
