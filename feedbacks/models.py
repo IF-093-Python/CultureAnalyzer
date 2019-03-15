@@ -4,6 +4,8 @@ from django.urls import reverse
 
 __all__ = ['Feedback', 'Recommendation', ]
 
+TRUNCATE_TEXT = 30
+
 
 class Feedback(models.Model):
     INDICATORS = (
@@ -31,7 +33,7 @@ class Feedback(models.Model):
         return reverse('feedback-detail', args=[self.pk])
 
     def __str__(self):
-        return self.feedback[:30]
+        return self.feedback[:TRUNCATE_TEXT]
 
 
 class Recommendation(models.Model):
@@ -42,4 +44,4 @@ class Recommendation(models.Model):
         return reverse('feedback-detail', args=[self.feedback.pk])
 
     def __str__(self):
-        return self.recommendation[:30]
+        return self.recommendation[:TRUNCATE_TEXT]
