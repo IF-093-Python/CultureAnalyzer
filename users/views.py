@@ -75,7 +75,7 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
                 return super().form_invalid(form)
         else:
             form.save()
-        return redirect(reverse('profile', args=[self.request.user.id]))
+        return redirect('profile', pk=self.request.user.id)
 
 
 class PasswordChangeView(UpdateView):
