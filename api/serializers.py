@@ -2,13 +2,14 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
-from api.util import PasswordField
+from api.util import PasswordField, UniqueEmailField
 
 __all__ = ['SignUpSerializer']
 
 
 class SignUpSerializer(serializers.ModelSerializer):
     password = PasswordField()
+    email = UniqueEmailField()
 
     class Meta:
         model = get_user_model()
