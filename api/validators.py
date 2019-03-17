@@ -6,11 +6,11 @@ __all__ = ['password_validator']
 
 
 def catch_password_errors(password):
-    errors = dict()
+    errors = []
     try:
         password_validation.validate_password(password)
     except exceptions.ValidationError as e:
-        errors['password'] = list(e.messages)
+        errors = list(e.messages)
     return errors
 
 

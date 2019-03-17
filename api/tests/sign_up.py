@@ -1,9 +1,12 @@
-from ddt import ddt, data
+from ddt import ddt, data, unpack
 from django.contrib.auth import get_user_model
 from django.test import TestCase as DjangoTestCase
 from rest_framework import status
 
-from api.tests.data.data_sign_up import VALID_SIGN_UP_DATA
+from api.tests.data.sign_up import (VALID_SIGN_UP_DATA,
+                                    INVALID_SIGN_UP_FULL_DATA)
+
+__all__ = ['SignUpTest']
 
 
 @ddt
@@ -21,3 +24,10 @@ class SignUpTest(DjangoTestCase):
         is_login_successful = self.client.login(username=json['username'],
                                                 password=json['password'])
         self.assertTrue(is_login_successful)
+
+    @data(*INVALID_SIGN_UP_FULL_DATA)
+    @unpack
+    def test_sign_up_invalid(self, json, expected_error_message):
+        response = self.client.post('/api/sign-up/', json)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, expected_error_message)
