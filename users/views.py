@@ -3,6 +3,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect
 from django.views.generic import CreateView, UpdateView, DetailView
+from django.urls import reverse_lazy
 
 from users.forms import UserRegisterForm, UserUpdateForm
 
@@ -51,7 +52,6 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'users/update_profile.html'
     model = get_user_model()
     form_class = UserUpdateForm
-    success_url = '/'
 
     def test_func(self):
         """
@@ -61,6 +61,9 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         current_user = self.get_object()
 
         return self.request.user == current_user
+
+    def get_success_url(self):
+        return reverse_lazy('profile', kwargs={'pk': self.request.user.id})
 
     def form_valid(self, form):
         """Try to save form, and check if image was in form,
@@ -74,7 +77,7 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
                 return super().form_invalid(form)
         else:
             form.save()
-        return redirect('profile', pk=self.request.user.id)
+        return redirect(self.get_success_url())
 
 
 class PasswordChangeView(UpdateView):
