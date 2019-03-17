@@ -31,3 +31,18 @@ class SignUpTest(DjangoTestCase):
         response = self.client.post('/api/sign-up/', json)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data, expected_error_message)
+
+    def test_already_exist_username(self):
+        expected_error_message = {
+            'username': ['A user with that username already exists.']
+        }
+        response = self.sign_up(login='nick', password='nick_qwerty')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.sign_up(login='nick', password='some_other_pass')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, expected_error_message)
+
+    def sign_up(self, login, password):
+        return self.client.post('/api/sign-up/', {'username': login,
+                                                  'password': password})
