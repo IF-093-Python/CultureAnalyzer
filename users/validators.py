@@ -2,7 +2,6 @@ from users.exceptions import PValidationError
 
 __all__ = ['ProfileValidator']
 
-
 MIN_YEARS_OF_EXPERIENCE = 0
 MAX_YEARS_OF_EXPERIENCE = 100
 

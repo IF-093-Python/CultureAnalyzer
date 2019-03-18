@@ -1,4 +1,4 @@
-__all__ = ['PValidationError',]
+__all__ = ['PValidationError', ]
 
 
 class CAError(Exception):
@@ -7,4 +7,3 @@ class CAError(Exception):
 
 class PValidationError(CAError, ValueError):
     pass
-
