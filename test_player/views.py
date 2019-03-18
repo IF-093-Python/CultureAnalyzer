@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import (PermissionRequiredMixin,
                                         UserPassesTestMixin)
 from django.db import transaction
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.views.generic import (FormView, ListView)
@@ -64,7 +64,7 @@ class TestPlayer(UserPassesTestMixin, FormView):
         Handling user activity while passing the test
 
         """
-        current_quiz = self.kwargs['quiz_id']
+        current_quiz, _ = self.get_quiz_data()
         next_number = self.request.POST.get('next_number')
         success_url = reverse_lazy('test_player:test_player',
                                    kwargs={'quiz_id': current_quiz,
@@ -208,7 +208,6 @@ class TestPlayer(UserPassesTestMixin, FormView):
                 return reverse('test_player:test_player',
                                kwargs={'quiz_id': current_quiz,
                                        'question_number': question})
-
         self._saving_user_answers()
 
         return reverse('quiz:result-list', kwargs={
