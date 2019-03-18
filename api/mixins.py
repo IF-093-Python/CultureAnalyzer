@@ -11,5 +11,7 @@ class AccountSerializerMixin(serializers.Serializer):
     @property
     def validated_data(self):
         validated_data = super().validated_data
-        validated_data['password'] = make_password(validated_data['password'])
+        password = validated_data.get('password')
+        if password:
+            validated_data['password'] = make_password(password)
         return validated_data
