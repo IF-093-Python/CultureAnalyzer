@@ -1,7 +1,7 @@
 from django.db.utils import IntegrityError
 from django.test import TestCase
 
-from feedbacks.models import Feedback, Recommendation
+from feedbacks.models import Feedback, Recommendation, TRUNCATE_TEXT
 
 __all__ = ['FeedbackModelTest', 'RecommendationModelTest']
 
@@ -19,14 +19,14 @@ class FeedbackModelTest(TestCase):
 
     def test_object_name_is_first_30_characters_of_feedback(self):
         feedback = Feedback.objects.get(pk=1)
-        expected_object_name = feedback.feedback[:30]
+        expected_object_name = feedback.feedback[:TRUNCATE_TEXT]
         self.assertEquals(expected_object_name, str(feedback))
 
     def test_unique_together_min_max_and_indicator(self):
         with self.assertRaises(IntegrityError) as cm:
             Feedback.objects.create(feedback='Some feedback with the same data',
                                     min_value=10, max_value=20, indicator='PDI')
-        self.assertTrue(isinstance(cm.exception, IntegrityError))
+        self.assertIsInstance(cm.exception, IntegrityError)
 
 
 class RecommendationModelTest(TestCase):
@@ -46,5 +46,5 @@ class RecommendationModelTest(TestCase):
 
     def test_object_name_is_first_30_characters_of_recommendation(self):
         recommendation = Recommendation.objects.get(pk=1)
-        expected_object_name = recommendation.recommendation[:30]
+        expected_object_name = recommendation.recommendation[:TRUNCATE_TEXT]
         self.assertEquals(expected_object_name, str(recommendation))

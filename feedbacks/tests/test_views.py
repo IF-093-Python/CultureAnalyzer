@@ -8,6 +8,7 @@ from feedbacks.tests_data.test_form_data import (
 )
 from feedbacks.tests.mixins import (FeedbackCRUDViewsSetUpMixin,
                                     RecommendationCRUDViewsSetUpMixin,
+                                    FeedbackPageRetrieverMixin,
                                     SetUpUserMixin, USERNAME, PASSWORD)
 from feedbacks.models import Feedback
 
@@ -15,7 +16,8 @@ __all__ = ['FeedbackListViewTest', ]
 
 
 @ddt
-class FeedbackListViewTest(SetUpUserMixin, TestCase):
+class FeedbackListViewTest(SetUpUserMixin, FeedbackPageRetrieverMixin,
+                           TestCase):
 
     @classmethod
     def setUpTestData(cls):
@@ -41,9 +43,8 @@ class FeedbackListViewTest(SetUpUserMixin, TestCase):
     @data(*range(-10, 1))
     def test_call_view_where_page_number_less_then_1(self, page):
         self.client.login(username=USERNAME, password=PASSWORD)
-        response = self.client.get(f'{reverse("feedback-list")}?page={page}')
-        expected_response = self.client.get(
-            f'{reverse("feedback-list")}?page=1')
+        response = self.get_feedback_page(page)
+        expected_response = self.get_feedback_page(1)
         self.assertEqual(response.status_code, expected_response.status_code)
         self.assertEqual(response.rendered_content,
                          expected_response.rendered_content)
@@ -51,9 +52,8 @@ class FeedbackListViewTest(SetUpUserMixin, TestCase):
     @data(*range(10, 21))
     def test_call_view_where_page_number_is_to_large(self, page):
         self.client.login(username=USERNAME, password=PASSWORD)
-        response = self.client.get(f'{reverse("feedback-list")}?page={page}')
-        expected_response = self.client.get(
-            f'{reverse("feedback-list")}?page=2')
+        response = self.get_feedback_page(page)
+        expected_response = self.get_feedback_page(2)
         self.assertEqual(response.status_code, expected_response.status_code)
         self.assertEqual(response.rendered_content,
                          expected_response.rendered_content)
@@ -61,9 +61,8 @@ class FeedbackListViewTest(SetUpUserMixin, TestCase):
     @data(*PAGE_STRING_VALUES)
     def test_call_view_where_page_number_not_int(self, page):
         self.client.login(username=USERNAME, password=PASSWORD)
-        response = self.client.get(f'{reverse("feedback-list")}?page={page}')
-        expected_response = self.client.get(
-            f'{reverse("feedback-list")}?page=1')
+        response = self.get_feedback_page(page)
+        expected_response = self.get_feedback_page(1)
         self.assertEqual(response.status_code, expected_response.status_code)
         self.assertEqual(response.rendered_content,
                          expected_response.rendered_content)

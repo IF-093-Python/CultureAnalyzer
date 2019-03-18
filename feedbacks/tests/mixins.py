@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 from feedbacks.models import Feedback, Recommendation
 
 __all__ = ['FeedbackCRUDViewsSetUpMixin', 'RecommendationCRUDViewsSetUpMixin',
-           'SetUpUserMixin', 'USERNAME', 'PASSWORD']
+           'SetUpUserMixin', 'FeedbackPageRetrieverMixin', 'USERNAME', 'PASSWORD']
 
 USERNAME = 'test_user'
 PASSWORD = '12345'
@@ -35,6 +36,12 @@ class FeedbackCRUDViewsSetUpMixin(SetUpUserMixin):
 
     def setUp(self):
         self.pk = Feedback.objects.create(feedback='Some text',
-                                                       min_value=0,
-                                                       max_value=10,
-                                                       indicator='PDI').id
+                                          min_value=0,
+                                          max_value=10,
+                                          indicator='PDI').id
+
+
+class FeedbackPageRetrieverMixin(object):
+
+    def get_feedback_page(self, page):
+        return self.client.get(f'{reverse("feedback-list")}?page={page}')
