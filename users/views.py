@@ -4,11 +4,11 @@ from django.contrib.auth.mixins import (LoginRequiredMixin,
                                         PermissionRequiredMixin,
                                         UserPassesTestMixin)
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import render, redirect
-from django.views.generic import (CreateView, UpdateView, ListView, DeleteView,
-                                  DetailView)
-from django.contrib.auth.models import Group
+from django.shortcuts import redirect
+from django.views.generic import (CreateView, UpdateView, DetailView, ListView,
+                                  DeleteView)
 from django.urls import reverse_lazy
+from django.contrib.auth.models import Group
 
 from users.forms import UserRegisterForm, UserUpdateForm, GroupForm
 

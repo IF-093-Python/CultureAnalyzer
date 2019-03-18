@@ -4,8 +4,8 @@ from django.views.generic import TemplateView
 
 from users import views
 from users.forms import UserLoginForm
-from .views import UserRegisterView, ListGroups, UpdateGroups, DeleteGroups, \
-    CreateGroup
+from users import views
+from users.forms import UserLoginForm
 
 __all__ = ['urlpatterns']
 
@@ -38,10 +38,11 @@ urlpatterns = [
     path('login/reset/done/', auth_views.PasswordResetCompleteView.as_view(
         template_name='users/password_reset_complete.html'),
          name='password_reset_complete'),
-    path('group_page/', ListGroups.as_view(), name='group_perm-list'),
-    path('update_group/<int:pk>', UpdateGroups.as_view(),
+    path('group_page/', views.ListGroups.as_view(), name='group_perm-list'),
+    path('update_group/<int:pk>', views.UpdateGroups.as_view(),
          name='group_perm-update'),
-    path('delete_group/<int:pk>', DeleteGroups.as_view(),
+    path('delete_group/<int:pk>', views.DeleteGroups.as_view(),
          name='group_perm-delete'),
-    path('create_group', CreateGroup.as_view(), name='group_perm-create'),
-]
+    path('create_group', views.CreateGroup.as_view(),
+         name='group_perm-create'),
+    ]
