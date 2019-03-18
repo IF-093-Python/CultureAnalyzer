@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 
 from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
+from CultureAnalyzer.mixins import SafePaginationMixin
 from indicators.models import CountryIndicator
 from indicators.forms import CountryIndicatorForm
 
@@ -12,7 +13,8 @@ __all__ = ['CountryIndicatorListView', 'CountryIndicatorCreate',
            'CountryIndicatorDelete', 'CountryIndicatorUpdate']
 
 
-class CountryIndicatorListView(LoginRequiredMixin, ListView):
+class CountryIndicatorListView(LoginRequiredMixin, SafePaginationMixin,
+                               ListView):
     model = CountryIndicator
     template_name = 'indicators/list.html'
     context_object_name = 'indicators'
