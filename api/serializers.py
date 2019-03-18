@@ -17,4 +17,6 @@ class ProfileSerializer(AccountSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ('username', 'password', 'email',
-                  'first_name', 'last_name')
+                  'first_name', 'last_name',
+                  'date_of_birth', 'experience', 'gender', 'education',
+                  'image')
