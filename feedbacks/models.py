@@ -10,7 +10,7 @@ TRUNCATE_TEXT = 30
 class Feedback(models.Model):
     INDICATORS = (
         ('PDI', 'PDI'),
-        ('IND', 'IND'),
+        ('IDV', 'IDV'),
         ('MAS', 'MAS'),
         ('UAI', 'UAI'),
         ('LTO', 'LTO'),
