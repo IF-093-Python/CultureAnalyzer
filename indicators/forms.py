@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import CountryIndicator
+from indicators.models import CountryIndicator
 
 __all__ = ['CountryIndicatorForm']
 

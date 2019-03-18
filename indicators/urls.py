@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import CountryIndicatorListView, CountryIndicatorCreate, \
+from indicators.views import CountryIndicatorListView, CountryIndicatorCreate,\
     CountryIndicatorUpdate, CountryIndicatorDelete
 
 app_name = 'country_indicator'

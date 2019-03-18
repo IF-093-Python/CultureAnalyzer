@@ -1,11 +1,12 @@
-from django.views.generic import CreateView, ListView, DeleteView, UpdateView
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 
 from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
-from .models import CountryIndicator
-from .forms import CountryIndicatorForm
+from indicators.models import CountryIndicator
+from indicators.forms import CountryIndicatorForm
 
 __all__ = ['CountryIndicatorListView', 'CountryIndicatorCreate',
            'CountryIndicatorDelete', 'CountryIndicatorUpdate']
@@ -16,6 +17,21 @@ class CountryIndicatorListView(LoginRequiredMixin, ListView):
     template_name = 'indicators/list.html'
     context_object_name = 'indicators'
     paginate_by = ITEMS_ON_PAGE
+
+    def get_queryset(self):
+        indicators = CountryIndicator.objects.all().order_by('iso_code',
+                                                             'name')
+        indicator_search = self.request.GET.get("indicator_search")
+        if indicator_search:
+            return indicators.filter(
+                Q(iso_code__icontains=indicator_search) |
+                Q(name__icontains=indicator_search))
+        return indicators
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search'] = self.request.GET.get("indicator_search")
+        return context
 
 
 class CountryIndicatorCreate(LoginRequiredMixin, SuccessMessageMixin,
