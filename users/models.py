@@ -1,35 +1,22 @@
 from PIL import Image
-from django.contrib.auth.models import User
-from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.db import models, transaction
 
-from .choices import GENDER_CHOICES, EDUCATION_CHOICES
+from users.choices import GENDER_CHOICES, EDUCATION_CHOICES
 
-__all__ = ['Profile', 'Role']
-
-
-class Role(models.Model):
-    name = models.CharField(max_length=20)
-
-    def __str__(self):
-        return f'{self.name}'
-
-    class Meta:
-        db_table = "roles"
+MIN_IMAGE_HEIGHT = 300
+MIN_IMAGE_WIDTH = 300
 
 
-class Profile(models.Model):
+class CustomUser(AbstractUser):
     """
-    date_of_birth, experience, gender and education are nullable
-    in case we will use oauth2 and cannot automatically take this data
+        date_of_birth, experience, gender and education are nullable
+        in case we will use oauth2 and cannot automatically take this data
 
-    user can change the data in profile page
+        user can change the data in profile page
 
-    Django forms and serializer do not allow you to leave data empty.
-    """
-    user = models.OneToOneField(User, on_delete=models.CASCADE,
-                                db_column='user_id')
-    role = models.ForeignKey(Role, on_delete=models.PROTECT,
-                             db_column='role_id')
+        Django forms and serializer do not allow you to leave data empty.
+        """
     image = models.ImageField(upload_to='profile_pics',
                               blank=True, null=True)
     date_of_birth = models.DateField(null=True)
@@ -37,23 +24,26 @@ class Profile(models.Model):
     gender = models.CharField(choices=GENDER_CHOICES, max_length=20, null=True)
     education = models.CharField(choices=EDUCATION_CHOICES, max_length=50,
                                  null=True)
+    email = models.EmailField(blank=True, max_length=254,
+                              verbose_name='email address', unique=True)
 
+    @transaction.atomic
     def save(self, **kwargs):
         """
         if img is too big we decrease img
         because the less image is the less memory it takes
         """
-        super(Profile, self).save(**kwargs)
-        if self.image:
-            img = Image.open(self.image.path)
-
-            if img.height > 300 or img.width > 300:
-                output_size = (300, 300)
-                img.thumbnail(output_size)
-                img.save(self.image.path)
+        super(CustomUser, self).save(**kwargs)
+        try:
+            if self.image:
+                img = Image.open(self.image.path)
+                if img.height > MIN_IMAGE_HEIGHT or img.width > MIN_IMAGE_WIDTH:
+                    output_size = (MIN_IMAGE_HEIGHT, MIN_IMAGE_WIDTH)
+                    img.thumbnail(output_size, Image.ANTIALIAS)
+                    img.save(self.image.path)
+        except (OSError, IOError):
+            self.image = None
+            super(CustomUser, self).save(update_fields=['image'])
 
     def __str__(self):
-        return f'{self.user.username} => {self.role.name}'
-
-    class Meta:
-        db_table = "profiles"
+        return f'{self.username}'

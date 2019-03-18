@@ -1,5 +1,5 @@
 from ddt import ddt, data
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.test import TestCase as DjangoTestCase
 from unittest import TestCase
 
@@ -28,7 +28,7 @@ class FeedbackFormTest(TestCase):
 @ddt
 class FeedbackListViewTest(DjangoTestCase):
     def setUp(self):
-        User.objects.create_user('user', password='test').save()
+        get_user_model().objects.create_user('user', password='test').save()
         for i in range(10):
             Feedback.objects.create(feedback='Some text', min_value=i + 1,
                                     max_value=i + 5, indicator='PDI')

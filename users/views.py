@@ -1,13 +1,11 @@
-from django.contrib.auth import views as auth_views
+from django.contrib.auth import views as auth_views, get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.models import User
-from django.forms.models import inlineformset_factory
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views.generic import CreateView, UpdateView
 
-from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
-from .models import Profile
+from .forms import UserRegisterForm, UserUpdateForm
 
 __all__ = [
     'LoginView',
@@ -17,18 +15,12 @@ __all__ = [
     'index',
 ]
 
-ProfileFormSet = inlineformset_factory(User, Profile, form=ProfileUpdateForm,
-                                       can_delete=False)
-
 
 def index(request):
     return render(request, 'users/index.html')
 
 
 class LoginView(auth_views.LoginView):
-
-    def __init__(self, *args, **kwargs):
-        super(LoginView, self).__init__(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -49,7 +41,7 @@ class UserRegisterView(CreateView):
 
 class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'users/profile.html'
-    model = User
+    model = get_user_model()
     form_class = UserUpdateForm
     success_url = '/'
 
@@ -65,30 +57,19 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         else:
             return False
 
-    def get_context_data(self, **kwargs):
-        context = super(UserUpdateView, self).get_context_data(**kwargs)
-        if self.request.POST:
-            context['p_form'] = ProfileFormSet(self.request.POST,
-                                               self.request.FILES,
-                                               instance=self.object)
-            context['p_form'].full_clean()
-        else:
-            context['p_form'] = ProfileFormSet(instance=self.object)
-
-        return context
-
     def form_valid(self, form):
-        context = self.get_context_data()
-        formset = context['p_form']
-
-        if formset.is_valid():
-            self.object = form.save()
-            formset.instance = self.object
-            formset.save()
-
-            return redirect('home')
+        """Try to save form, and check if image was in form,
+        and after save image is None, then there is a error and we
+        return error to user
+        """
+        if form.cleaned_data['image']:
+            user = form.save()
+            if not user.image:
+                form.add_error('__all__', 'Image can`t be saved!')
+                return super().form_invalid(form)
         else:
-            return self.render_to_response(self.get_context_data(form=form))
+            form.save()
+        return redirect(reverse('home'))
 
 
 class PasswordChangeView(UpdateView):
