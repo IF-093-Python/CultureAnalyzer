@@ -65,10 +65,10 @@ class TestPlayer(UserPassesTestMixin, FormView):
 
         :var next_number(int): number of question, which has been selected \
          by user;
-
+        :return success_url
         """
         current_quiz, _ = self.get_quiz_data()
-        next_number = int(self.request.POST.get('next_number'))
+        next_number = self.request.POST.get('next_number')
         success_url = reverse_lazy('test_player:test_player',
                                    kwargs={'quiz_id': current_quiz,
                                            'question_number': next_number})
@@ -120,20 +120,15 @@ class TestPlayer(UserPassesTestMixin, FormView):
         question_number = self.kwargs['question_number']
         return current_quiz, question_number
 
-    def get_form_kwargs(self):
+    def get_initial(self):
         """
-        :param self
-        :var current_answers(queryset): model queryset object with answers \
-         related with current question;
-        :return additional form instance attributes;
+        :var default_answer(int): default answer which ought to be added \
+         such as initial choice in form;
+        :return: dict with updated initial values.
 
         """
-        kwargs = super().get_form_kwargs()
+        initial = super(TestPlayer, self).get_initial()
         current_quiz, question_number = self.get_quiz_data()
-        current_question = get_object_or_404(Questions,
-                                             quiz_id=current_quiz,
-                                             question_number=question_number)
-        current_answers = current_question.answers_set.all()
 
         if current_quiz in self.request.session and question_number in \
                 self.request.session[current_quiz].keys():
@@ -142,8 +137,31 @@ class TestPlayer(UserPassesTestMixin, FormView):
         else:
             default_answer = None
 
-        return dict(kwargs, answers=current_answers,
-                    default_choice=default_answer)
+        initial.update({'default_choice': default_answer})
+
+        return initial
+
+    def get_form_kwargs(self):
+        """
+        :param self
+        :var current_question(object): single object of question by \
+        lookup parameters from form keyword arguments such as quiz_id, \
+         question_number;
+        :var current_answers(queryset): queryset object with answers \
+         related with current question;
+        :return(dict): with additional form instance attributes.
+
+        """
+        kwargs = super(TestPlayer, self).get_form_kwargs()
+        current_quiz, question_number = self.get_quiz_data()
+        current_question = get_object_or_404(Questions,
+                                             quiz_id=current_quiz,
+                                             question_number=question_number)
+        current_answers = current_question.answers_set.all()
+
+        kwargs.update({'answers': current_answers})
+
+        return kwargs
 
     def form_valid(self, form):
         """
@@ -161,7 +179,7 @@ class TestPlayer(UserPassesTestMixin, FormView):
 
         # updating session data with relevant data
         session_data = self.request.session[current_quiz]
-        if answer:
+        if form.has_changed():
             session_data.update(
                 {question_number: answer}
             )
@@ -176,8 +194,8 @@ class TestPlayer(UserPassesTestMixin, FormView):
 
         :var questions(queryset object): which contain ordered questions \
          numbers;
-        :var initial_questions(dict): which contain initial values \
-         for questions.
+        :var initial_questions(dict): which contain initial key(questions),\
+         values(answers) for questions.
 
         """
         current_quiz, question_number = self.get_quiz_data()
@@ -304,10 +322,14 @@ class TestPlayer(UserPassesTestMixin, FormView):
 
     @transaction.atomic()
     def test_func(self):
+        """
+
+        :return: boolean value which mean quiz existing
+        """
         date_time = datetime.datetime.now(timezone.get_current_timezone())
+        quiz_id, _ = self.get_quiz_data()
         quiz_exist = Shedule.objects.filter(group__user=self.request.user,
                                             end__gt=date_time,
                                             begin__lte=date_time,
-                                            quiz=self.kwargs[
-                                                'quiz_id']).exists()
+                                            quiz=quiz_id).exists()
         return quiz_exist
