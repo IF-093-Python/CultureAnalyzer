@@ -1,17 +1,16 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
-# Create your views here.
 from django.urls import reverse_lazy
 from django.views import generic
 
 from quiz.forms import QuizCreateForm
-from quiz.models import *
+from quiz.models import Quizzes
 
 
 class QuizzesList(LoginRequiredMixin, generic.ListView):
     model = Quizzes
     context_object_name = 'quizzes'
-    ordering = ('title')
+    ordering = ('title',)
     template_name = 'quiz/quizzes_list.html'
 
     def get_queryset(self):

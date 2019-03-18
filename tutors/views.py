@@ -1,14 +1,13 @@
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.contrib import messages
-from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib.auth.mixins import LoginRequiredMixin
-# from django.db import models
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
-from .models import CategoryQuestion, Question, Answer
+
 from .forms import CategoryCreateForm, QuestionCreateForm, AnswerCreateForm
-from quiz.models import  Quizzes
+from .models import CategoryQuestion, Question, Answer
 
 ITEMS_PER_PAGE = 5
 
