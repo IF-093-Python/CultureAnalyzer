@@ -2,7 +2,7 @@ import datetime
 
 from django.test import TestCase
 
-from .forms import UserUpdateForm
+from users.forms import UserUpdateForm
 
 __all__ = ['ProfileFormTest']
 

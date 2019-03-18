@@ -2,8 +2,8 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
-from .choices import GENDER_CHOICES, EDUCATION_CHOICES
-from .validators import ProfileValidator
+from users.choices import GENDER_CHOICES, EDUCATION_CHOICES
+from users.validators import ProfileValidator
 
 __all__ = [
     'UserLoginForm',

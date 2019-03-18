@@ -1,23 +1,18 @@
 from django.contrib.auth import views as auth_views, get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.views.generic import CreateView, UpdateView
+from django.shortcuts import redirect
+from django.views.generic import CreateView, UpdateView, DetailView
+from django.urls import reverse_lazy
 
-from .forms import UserRegisterForm, UserUpdateForm
+from users.forms import UserRegisterForm, UserUpdateForm
 
 __all__ = [
     'LoginView',
     'UserRegisterView',
     'UserUpdateView',
     'PasswordChangeView',
-    'index',
 ]
-
-
-def index(request):
-    return render(request, 'users/index.html')
 
 
 class LoginView(auth_views.LoginView):
@@ -39,23 +34,36 @@ class UserRegisterView(CreateView):
         return super(UserRegisterView, self).get(request, *args, **kwargs)
 
 
-class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     template_name = 'users/profile.html'
     model = get_user_model()
-    form_class = UserUpdateForm
-    success_url = '/'
 
     def test_func(self):
         """
         this func check that the user which want
-        to delete the post should be author of this post
+        to update profile should have permission to only his profile
         """
         current_user = self.get_object()
 
-        if self.request.user == current_user:
-            return True
-        else:
-            return False
+        return self.request.user == current_user
+
+
+class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    template_name = 'users/update_profile.html'
+    model = get_user_model()
+    form_class = UserUpdateForm
+
+    def test_func(self):
+        """
+        this func check that the user which want
+        to update profile should have permission to only his profile
+        """
+        current_user = self.get_object()
+
+        return self.request.user == current_user
+
+    def get_success_url(self):
+        return reverse_lazy('profile', kwargs={'pk': self.request.user.id})
 
     def form_valid(self, form):
         """Try to save form, and check if image was in form,
@@ -69,7 +77,7 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
                 return super().form_invalid(form)
         else:
             form.save()
-        return redirect(reverse('home'))
+        return redirect(self.get_success_url())
 
 
 class PasswordChangeView(UpdateView):
