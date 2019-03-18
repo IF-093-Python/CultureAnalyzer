@@ -15,12 +15,12 @@ class FeedbackModelTest(TestCase):
 
     def test_get_absolute_url(self):
         feedback = Feedback.objects.get(pk=1)
-        self.assertEquals(feedback.get_absolute_url(), '/feedbacks/1')
+        self.assertEqual(feedback.get_absolute_url(), '/feedbacks/1')
 
     def test_object_name_is_first_30_characters_of_feedback(self):
         feedback = Feedback.objects.get(pk=1)
         expected_object_name = feedback.feedback[:TRUNCATE_TEXT]
-        self.assertEquals(expected_object_name, str(feedback))
+        self.assertEqual(expected_object_name, str(feedback))
 
     def test_unique_together_min_max_and_indicator(self):
         with self.assertRaises(IntegrityError) as cm:
@@ -41,10 +41,10 @@ class RecommendationModelTest(TestCase):
 
     def test_get_absolute_url(self):
         recommendation = Recommendation.objects.get(pk=1)
-        self.assertEquals(recommendation.get_absolute_url(),
+        self.assertEqual(recommendation.get_absolute_url(),
                           f'/feedbacks/{recommendation.feedback.pk}')
 
     def test_object_name_is_first_30_characters_of_recommendation(self):
         recommendation = Recommendation.objects.get(pk=1)
         expected_object_name = recommendation.recommendation[:TRUNCATE_TEXT]
-        self.assertEquals(expected_object_name, str(recommendation))
+        self.assertEqual(expected_object_name, str(recommendation))
