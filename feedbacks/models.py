@@ -2,13 +2,15 @@ from django.core.validators import MaxValueValidator
 from django.db import models
 from django.urls import reverse
 
-__all__ = ['Feedback', 'Recommendation', ]
+__all__ = ['Feedback', 'Recommendation', 'TRUNCATE_TEXT']
+
+TRUNCATE_TEXT = 30
 
 
 class Feedback(models.Model):
     INDICATORS = (
         ('PDI', 'PDI'),
-        ('IND', 'IND'),
+        ('IDV', 'IDV'),
         ('MAS', 'MAS'),
         ('UAI', 'UAI'),
         ('LTO', 'LTO'),
@@ -31,7 +33,7 @@ class Feedback(models.Model):
         return reverse('feedback-detail', args=[self.pk])
 
     def __str__(self):
-        return self.feedback[:30]
+        return self.feedback[:TRUNCATE_TEXT]
 
 
 class Recommendation(models.Model):
@@ -40,3 +42,6 @@ class Recommendation(models.Model):
 
     def get_absolute_url(self):
         return reverse('feedback-detail', args=[self.feedback.pk])
+
+    def __str__(self):
+        return self.recommendation[:TRUNCATE_TEXT]
