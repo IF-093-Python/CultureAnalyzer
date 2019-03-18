@@ -1,12 +1,6 @@
-__all__ = ['ProfileValidator', 'PValidationError']
+from users.exceptions import PValidationError
 
-
-class CAError(Exception):
-    pass
-
-
-class PValidationError(CAError, ValueError):
-    pass
+__all__ = ['ProfileValidator']
 
 
 MIN_YEARS_OF_EXPERIENCE = 0

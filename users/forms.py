@@ -3,7 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 from users.choices import GENDER_CHOICES, EDUCATION_CHOICES
-from users.validators import ProfileValidator, PValidationError
+from users.exceptions import PValidationError
+from users.validators import ProfileValidator
 
 __all__ = [
     'UserLoginForm',
