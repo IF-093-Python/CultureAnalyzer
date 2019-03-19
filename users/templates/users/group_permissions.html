@@ -7,6 +7,7 @@
     <form method="post">
         {% csrf_token %}
         <fieldset class="form-group">
+         <legend></legend>
             <p> {{ form.name|as_crispy_field }} </p>
             <select name='permissions' class="selectpicker" multiple="multiple" data-live-search="true">
                 {% for i in form.permissions %}
