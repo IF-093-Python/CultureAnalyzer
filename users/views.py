@@ -46,12 +46,10 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'users/update_profile.html'
     model = get_user_model()
     form_class = UserUpdateForm
+    success_url = reverse_lazy('profile')
 
     def get_object(self, queryset=None):
         return self.model.objects.get(pk=self.request.user.pk)
-
-    def get_success_url(self):
-        return reverse_lazy('profile', kwargs={'pk': self.request.user.id})
 
     def form_valid(self, form):
         """Try to save form, and check if image was in form,
