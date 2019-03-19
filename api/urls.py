@@ -1,7 +1,10 @@
 from django.urls import path, include
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
+
 from api.views import SignUpView
+
+__all__ = ['urlpatterns']
 
 urlpatterns = [
     path('token/', include([
