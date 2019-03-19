@@ -1,9 +1,9 @@
 from django.contrib.auth import views as auth_views, get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
-from django.views.generic import CreateView, UpdateView, DetailView
 from django.urls import reverse_lazy
+from django.views.generic import CreateView, UpdateView, DetailView
 
 from users.forms import UserRegisterForm, UserUpdateForm
 
@@ -34,33 +34,21 @@ class UserRegisterView(CreateView):
         return super(UserRegisterView, self).get(request, *args, **kwargs)
 
 
-class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+class UserDetailView(LoginRequiredMixin, DetailView):
     template_name = 'users/profile.html'
     model = get_user_model()
 
-    def test_func(self):
-        """
-        this func check that the user which want
-        to update profile should have permission to only his profile
-        """
-        current_user = self.get_object()
-
-        return self.request.user == current_user
+    def get_object(self, queryset=None):
+        return self.model.objects.get(pk=self.request.user.pk)
 
 
-class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class UserUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'users/update_profile.html'
     model = get_user_model()
     form_class = UserUpdateForm
 
-    def test_func(self):
-        """
-        this func check that the user which want
-        to update profile should have permission to only his profile
-        """
-        current_user = self.get_object()
-
-        return self.request.user == current_user
+    def get_object(self, queryset=None):
+        return self.model.objects.get(pk=self.request.user.pk)
 
     def get_success_url(self):
         return reverse_lazy('profile', kwargs={'pk': self.request.user.id})
