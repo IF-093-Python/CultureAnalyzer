@@ -4,8 +4,6 @@ from django.views.generic import TemplateView
 
 from users import views
 from users.forms import UserLoginForm
-from users import views
-from users.forms import UserLoginForm
 
 __all__ = ['urlpatterns']
 
