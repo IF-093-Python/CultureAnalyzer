@@ -30,8 +30,8 @@ class CountryIndicatorListView(LoginRequiredMixin, SafePaginationMixin,
                 Q(name__icontains=indicator_search))
         return indicators
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
         context['search'] = self.request.GET.get("indicator_search")
         return context
 
