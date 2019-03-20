@@ -8,7 +8,7 @@ from api.views import SignUpView, FeedbackViewSet, ProfileView
 __all__ = ['urlpatterns']
 
 router = DefaultRouter()
-router.register(r'feedbacks', FeedbackViewSet, basename='feedback')
+router.register(r'feedbacks', FeedbackViewSet, basename='api_feedback')
 
 urlpatterns = [
     path('token/', include([
