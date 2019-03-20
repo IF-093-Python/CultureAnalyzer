@@ -28,5 +28,6 @@ notifications:
   email:
     recipients:
       - test.mail.client008@gmail.com
+      - cultureanalyzer@gmail.com
     on_success: always
     on_failure: always
