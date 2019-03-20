@@ -16,10 +16,10 @@ urlpatterns = [
          name='login'),
     path('logout/', auth_views.LogoutView.as_view(
         template_name='users/logout.html'), name='logout'),
-    path('profile/<int:pk>', views.UserDetailView.as_view(), name='profile'),
-    path('profile_update/<int:pk>', views.UserUpdateView.as_view(),
+    path('profile/', views.UserDetailView.as_view(), name='profile'),
+    path('profile_update/', views.UserUpdateView.as_view(),
          name='profile-update'),
-    path('profile/<int:pk>/password_change', views.PasswordChangeView.as_view()
+    path('profile/password_change', views.PasswordChangeView.as_view()
          , name='password-change'),
     path('login/password-reset/', auth_views.PasswordResetView.as_view(
         template_name='users/password_reset_form.html'),
