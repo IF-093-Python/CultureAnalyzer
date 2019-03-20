@@ -45,9 +45,12 @@ class SheduleForm(forms.ModelForm):
     def clean(self):
         """Checking validity of dates"""
         cleaned_data = super(SheduleForm, self).clean()
-        start = cleaned_data.get('begin')
-        end = cleaned_data.get('end')
-        dates_validator(self, start, end, start, 'start', 'begin')
+        errors = dates_validator(data={
+            'start': cleaned_data.get('begin'),
+            'end': cleaned_data.get('end'),
+            'form': 'SheduleForm', })
+        for error in errors:
+            self.add_error(error, errors[error])
         return cleaned_data
 
     class Meta:
@@ -67,10 +70,13 @@ class InvitationForm(forms.ModelForm):
     def clean(self):
         """Checking validity of dates and number of students should be >0"""
         cleaned_data = super(InvitationForm, self).clean()
-        start = cleaned_data.get('start')
-        end = cleaned_data.get('end')
-        items = cleaned_data.get('items_left')
-        dates_validator(self, start, end, end, 'end', 'end', items)
+        errors = dates_validator(data={
+            'start': cleaned_data.get('start'),
+            'end': cleaned_data.get('end'),
+            'items': cleaned_data.get('items_left'),
+            'form': 'InvitationForm', })
+        for error in errors:
+            self.add_error(error, errors[error])
         return cleaned_data
 
     class Meta:
