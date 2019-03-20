@@ -17,6 +17,9 @@ __all__ = [
 
 class LoginView(auth_views.LoginView):
 
+    def __init__(self, *args, **kwargs):
+        super(LoginView, self).__init__(*args, **kwargs)
+
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect('home')
