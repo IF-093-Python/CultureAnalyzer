@@ -1,4 +1,4 @@
-from users.exceptions import PValidationError
+from CultureAnalyzer.exceptions import PValidationError
 
 __all__ = ['ProfileValidator']
 
