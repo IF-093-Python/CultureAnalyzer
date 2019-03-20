@@ -28,7 +28,7 @@ class StartTest(PermissionRequiredMixin, ListView):
     """
     template_name = 'test_player/start_test.html'
     context_object_name = 'quizzes'
-    __not_started_quizzes = None
+    not_started_quizzes = None
     permission_required = 'quiz.view_test_player'
 
     def get_queryset(self):
@@ -40,14 +40,14 @@ class StartTest(PermissionRequiredMixin, ListView):
         quizzes = Shedule.objects.filter(group__user=self.request.user). \
             filter(end__gt=timezone.now()). \
             order_by('quiz_id', 'begin').distinct('quiz_id')
-        self._not_started_quizzes = quizzes.filter(begin__gt=timezone.now())
+        self.not_started_quizzes = quizzes.filter(begin__gt=timezone.now())
         # we can't sort result by begin and then by end so we make it like this
         result = sorted(quizzes, key=operator.attrgetter('end'))
         return result
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['not_started'] = self._not_started_quizzes
+        context['not_started'] = self.not_started_quizzes
         return context
 
 
@@ -61,7 +61,7 @@ class TestPlayer(UserPassesTestMixin, FormView):
 
     def get_success_url(self):
         """
-        Handling user activity, while passing the test
+        Handling user activity, while passing the test.
 
         :var next_number(int): number of question, which has been selected \
          by user;
@@ -78,16 +78,16 @@ class TestPlayer(UserPassesTestMixin, FormView):
             success_url = self._handle_next_question()
         elif 'submit_finish' in self.request.POST:
             success_url = self._handle_finish_test()
+
         return success_url
 
     def get_context_data(self, **kwargs):
         """
-        :param self
-        :param kwargs: form kwargs such as \
-         self.kwargs['quiz_id'], self.kwargs['question_number'];
-        :var current_quiz(int): id current test(form keyword argument) \
-         for accessing to session data about current test;
-        :var question_number(int): number current question \
+        :param kwargs: form kwargs such as self.kwargs['quiz_id'],
+         self.kwargs['question_number'];
+        :var current_quiz(int): id current test(form keyword argument) for
+         accessing to session data about current test;
+        :var question_number(int): number of current question
          (form keyword argument);
         :return: context object for template which will be rendered that view
 
@@ -108,7 +108,9 @@ class TestPlayer(UserPassesTestMixin, FormView):
 
     def get_quiz_data(self):
         """
-        :param self
+        Method which get id of current test and number of current question from
+         form keyword arguments and return them for further use
+          in other methods.
         :var current_quiz(int): id current test(form keyword argument) \
          for accessing to session data about current test;
         :var question_number(int): number current question \
@@ -122,6 +124,8 @@ class TestPlayer(UserPassesTestMixin, FormView):
 
     def get_initial(self):
         """
+        Method, which uses for updating form instance "initial" argument with
+         default choice if it was previously selected.
         :var default_answer(int): default answer which ought to be added \
          such as initial choice in form;
         :return: dict with updated initial values.
@@ -143,13 +147,15 @@ class TestPlayer(UserPassesTestMixin, FormView):
 
     def get_form_kwargs(self):
         """
-        :param self
-        :var current_question(object): single object of question by \
-        lookup parameters from form keyword arguments such as quiz_id, \
+        Method, which uses for updating form instance keyword arguments with
+         answers related with current question;
+
+        :var current_question(object): single object of question by lookup
+         parameters from form keyword arguments such as quiz_id,
          question_number;
-        :var current_answers(queryset): queryset object with answers \
-         related with current question;
-        :return(dict): with additional form instance attributes.
+        :var current_answers(queryset): queryset object with answers related
+         with current question;
+        :return: kwargs(dict): with updated form instance keyword arguments.
 
         """
         kwargs = super(TestPlayer, self).get_form_kwargs()
@@ -177,7 +183,7 @@ class TestPlayer(UserPassesTestMixin, FormView):
         if current_quiz not in self.request.session:
             self._setting_initial_session_data()
 
-        # updating session data with relevant data
+        # updating session with relevant data
         session_data = self.request.session[current_quiz]
         if form.has_changed():
             session_data.update(
@@ -189,16 +195,16 @@ class TestPlayer(UserPassesTestMixin, FormView):
 
     def _setting_initial_session_data(self):
         """
-        Method, which set default initial values (used only once \
-        during the first request).
+        Method, which set default initial values (used only once during the
+         first request).
 
-        :var questions(queryset object): which contain ordered questions \
+        :var questions(queryset object): which contain ordered questions
          numbers;
-        :var initial_questions(dict): which contain initial key(questions),\
+        :var initial_questions(dict): which contain initial key(questions),
          values(answers) for questions.
 
         """
-        current_quiz, question_number = self.get_quiz_data()
+        current_quiz, _ = self.get_quiz_data()
 
         questions = Questions.objects.filter(quiz=current_quiz).values_list(
             'question_number', flat=True).order_by('question_number')
@@ -233,16 +239,17 @@ class TestPlayer(UserPassesTestMixin, FormView):
 
     def _count_user_answers(self, context):
         """
-        Method, which count answered questions, initialize context variable \
+        Method, which count answered questions, initialize context variable
          which uses for display finish button.
 
         :param context: 'context' object which is being rendered that view;
-        :var number_of_questions(int): number of questions \
-         related with current quiz;
+        :var number_of_questions(int): number of questions related with current
+         quiz;
         :var answers(list): with dict values which contain user answers;
-        :var answered(int): counter, which represent \
-         answered answers (not None);
-        :var context variable, which uses in template for display finish button
+        :var answered(int): counter, which represent answered answers
+         (not None);
+        :var context['is_can_be_finished']: variable, which uses in template
+         for displaying finish button.
 
         """
         current_quiz, _ = self.get_quiz_data()
@@ -261,30 +268,31 @@ class TestPlayer(UserPassesTestMixin, FormView):
         """
         Method, which handles click action for button "previous question".
 
-        :var prev_question_number(int): number of previous question which \
+        :var prev_question_number(int): number of previous question which
          ought to be rendered such as next one;
-        :return: reverse to previous question with \
-         form kwargs: id of test and number of question that will be rendered.
+        :return: reverse to previous question with form kwargs: id of test
+         and number of question that will be rendered.
 
         """
         current_quiz, question_number = self.get_quiz_data()
         prev_question_number = int(question_number) - 1
 
         if prev_question_number > 0:
-            return reverse_lazy('test_player:test_player',
-                                kwargs={'quiz_id': current_quiz,
-                                        'question_number': prev_question_number
-                                        })
+            success_url = reverse_lazy('test_player:test_player', kwargs={
+                'quiz_id': current_quiz,
+                'question_number': prev_question_number
+            })
+            return success_url
 
     def _handle_next_question(self):
         """
         Method, which handles click action for button "next question".
 
-        :var next_question_number(int): number of next question which ought \
-         to be rendered such as next one;
+        :var next_question_number(int): number of next question which ought to
+         be rendered such as next one;
         :var question_count(int): total quantity of questions in the test;
-        :return: reverse to next question with \
-         form kwargs: id of test, number of question that will be rendered.
+        :return: reverse to next question with form kwargs: id of test and
+         number of question that will be rendered.
 
          """
         current_quiz, question_number = self.get_quiz_data()
@@ -293,16 +301,17 @@ class TestPlayer(UserPassesTestMixin, FormView):
         next_question_number = int(question_number) + 1
 
         if next_question_number <= question_count:
-            return reverse_lazy('test_player:test_player',
-                                kwargs={'quiz_id': current_quiz,
-                                        'question_number': next_question_number
-                                        })
+            success_url = reverse_lazy('test_player:test_player', kwargs={
+                'quiz_id': current_quiz,
+                'question_number': next_question_number
+            })
+            return success_url
 
     def _handle_finish_test(self):
         """
         Method, which handles click action for button "Submit(test)".
 
-        :return: reverse to not answered question with \
+        :return: success_url, reverse to not answered question with
          form keyword arguments: id of test, number of not answered question.
 
         """
@@ -312,9 +321,10 @@ class TestPlayer(UserPassesTestMixin, FormView):
             if self.request.session[current_quiz].get(question) is None:
                 messages.info(self.request,
                               "You need to answer all the questions!!!")
-                return reverse('test_player:test_player',
-                               kwargs={'quiz_id': current_quiz,
-                                       'question_number': question})
+                success_url = reverse('test_player:test_player',
+                                      kwargs={'quiz_id': current_quiz,
+                                              'question_number': question})
+                return success_url
         self._saving_user_answers()
 
         return reverse('quiz:result-list', kwargs={
