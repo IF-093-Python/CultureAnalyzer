@@ -1,23 +1,18 @@
 from django.contrib.auth import views as auth_views, get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.views.generic import CreateView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, UpdateView, DetailView
 
-from .forms import UserRegisterForm, UserUpdateForm
+from users.forms import UserRegisterForm, UserUpdateForm
 
 __all__ = [
     'LoginView',
     'UserRegisterView',
     'UserUpdateView',
     'PasswordChangeView',
-    'index',
 ]
-
-
-def index(request):
-    return render(request, 'users/index.html')
 
 
 class LoginView(auth_views.LoginView):
@@ -39,23 +34,22 @@ class UserRegisterView(CreateView):
         return super(UserRegisterView, self).get(request, *args, **kwargs)
 
 
-class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class UserDetailView(LoginRequiredMixin, DetailView):
     template_name = 'users/profile.html'
     model = get_user_model()
+
+    def get_object(self, queryset=None):
+        return self.model.objects.get(pk=self.request.user.pk)
+
+
+class UserUpdateView(LoginRequiredMixin, UpdateView):
+    template_name = 'users/update_profile.html'
+    model = get_user_model()
     form_class = UserUpdateForm
-    success_url = '/'
+    success_url = reverse_lazy('profile')
 
-    def test_func(self):
-        """
-        this func check that the user which want
-        to delete the post should be author of this post
-        """
-        current_user = self.get_object()
-
-        if self.request.user == current_user:
-            return True
-        else:
-            return False
+    def get_object(self, queryset=None):
+        return self.model.objects.get(pk=self.request.user.pk)
 
     def form_valid(self, form):
         """Try to save form, and check if image was in form,
@@ -69,7 +63,7 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
                 return super().form_invalid(form)
         else:
             form.save()
-        return redirect(reverse('home'))
+        return redirect(self.get_success_url())
 
 
 class PasswordChangeView(UpdateView):
