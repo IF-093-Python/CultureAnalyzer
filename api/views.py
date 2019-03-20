@@ -6,7 +6,7 @@ from rest_framework import viewsets
 from api.serializers import SignUpSerializer, FeedbackSerializer, ProfileSerializer
 from feedbacks.models import Feedback
 
-__all__ = ['SignUpView', 'ProfileView']
+__all__ = ['SignUpView', 'ProfileView', 'FeedbackViewSet']
 
 
 class SignUpView(generics.CreateAPIView):
