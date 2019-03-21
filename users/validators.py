@@ -1,15 +1,6 @@
-from django import forms
+from CultureAnalyzer.exceptions import PValidationError
 
-__all__ = ['ProfileValidator', 'PValidationError']
-
-
-class CAError(Exception):
-    pass
-
-
-class PValidationError(CAError, ValueError):
-    pass
-
+__all__ = ['ProfileValidator']
 
 MIN_YEARS_OF_EXPERIENCE = 0
 MAX_YEARS_OF_EXPERIENCE = 100
@@ -21,10 +12,10 @@ class ProfileValidator:
         experience = rq_data.get('experience')
 
         if not isinstance(experience, int):
-            raise forms.ValidationError('Only integer values are supported')
+            raise PValidationError('Only integer values are supported')
 
-        elif not MIN_YEARS_OF_EXPERIENCE < experience < MAX_YEARS_OF_EXPERIENCE:
-            raise forms.ValidationError(
+        if not MIN_YEARS_OF_EXPERIENCE <= experience <= MAX_YEARS_OF_EXPERIENCE:
+            raise PValidationError(
                 f'Enter correct data (from {MIN_YEARS_OF_EXPERIENCE} to'
                 f' {MAX_YEARS_OF_EXPERIENCE})')
 

@@ -35,5 +35,12 @@ urlpatterns = [
         name='password_reset_confirm'),
     path('login/reset/done/', auth_views.PasswordResetCompleteView.as_view(
         template_name='users/password_reset_complete.html'),
-         name='password_reset_complete')
-]
+         name='password_reset_complete'),
+    path('group_page/', views.ListGroups.as_view(), name='group_perm-list'),
+    path('update_group/<int:pk>', views.UpdateGroups.as_view(),
+         name='group_perm-update'),
+    path('delete_group/<int:pk>', views.DeleteGroups.as_view(),
+         name='group_perm-delete'),
+    path('create_group', views.CreateGroup.as_view(),
+         name='group_perm-create'),
+    ]
