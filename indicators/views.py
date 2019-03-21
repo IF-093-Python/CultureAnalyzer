@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import (LoginRequiredMixin,
                                         PermissionRequiredMixin)
 from django.db.models import Q
 
-from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
+from CultureAnalyzer.constants import ITEMS_ON_PAGE
 from CultureAnalyzer.mixins import SafePaginationMixin
 from indicators.models import CountryIndicator
 from indicators.forms import CountryIndicatorForm
