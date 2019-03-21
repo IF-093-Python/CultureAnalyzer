@@ -3,6 +3,7 @@ from datetime import date
 from PIL import Image
 from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
+from django.db.models import CASCADE
 from django.db.transaction import atomic
 
 from users.choices import GENDER_CHOICES, EDUCATION_CHOICES
@@ -68,3 +69,18 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f'{self.username}'
+
+
+class LoggedInUser(models.Model):
+    """
+    Model to store the list of logged in users
+
+    user
+
+    """
+    user = models.OneToOneField(CustomUser, related_name='logged_in_user',
+                                on_delete=CASCADE)
+    session_key = models.CharField(max_length=32, null=True, blank=True)
+
+    def __str__(self):
+        return self.user.username
