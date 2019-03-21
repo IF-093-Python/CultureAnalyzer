@@ -10,6 +10,7 @@ __all__ = ['urlpatterns']
 urlpatterns = [
     path('', TemplateView.as_view(template_name='users/index.html'),
          name='home'),
+    path('admin_page/', views.AdminListView.as_view(), name='admin'),
     path('register/', views.UserRegisterView.as_view(), name='register'),
     path('login/', views.LoginView.as_view(
         template_name='users/login.html', authentication_form=UserLoginForm),
