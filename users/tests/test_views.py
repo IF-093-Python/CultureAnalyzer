@@ -1,11 +1,14 @@
 import datetime
 
-from django.contrib.auth.models import Group, Permission
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group, Permission
 from django.test import TestCase
 from django.urls import reverse
 
 from feedbacks.tests.mixins import SetUpUserMixin
+
+__all__ = ['LoginViewTest', 'RegisterViewTest', 'UpdateUserViewTest',
+           'PasswordChangeViewTest', 'TestViews']
 
 
 class LoginViewTest(SetUpUserMixin, TestCase):
@@ -83,7 +86,7 @@ class TestViews(TestCase):
 
     def setUp(self):
         self.user = get_user_model().objects.create_user(username='Test',
-                                                   password='testview123')
+                                                         password='testview123')
         self.response = self.client.login(username='Test',
                                           password='testview123')
 
