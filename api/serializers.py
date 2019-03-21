@@ -3,8 +3,11 @@ from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
 from api.fields import PasswordField, UniqueEmailField
+from feedbacks.exceptions import FValidationError
+from feedbacks.models import Feedback
+from feedbacks.validator import FeedbackValidator
 
-__all__ = ['SignUpSerializer', 'ProfileSerializer']
+__all__ = ['SignUpSerializer', 'ProfileSerializer', 'FeedbackSerializer']
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -34,3 +37,17 @@ class ProfileSerializer(AccountSerializer):
                   'first_name', 'last_name',
                   'date_of_birth', 'experience', 'gender', 'education',
                   'image')
+
+
+class FeedbackSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Feedback
+        fields = ('id', 'feedback', 'min_value', 'max_value', 'indicator')
+
+    def validate(self, data):
+        try:
+            FeedbackValidator.validate_min_value(data)
+        except FValidationError as err:
+            raise serializers.ValidationError({'min_value': str(err)})
+        return data

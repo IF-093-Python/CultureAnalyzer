@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_cool_paginator',
     'rest_framework',
+    'django_filters',
 
     'users.apps.UsersConfig',
     'groups',
@@ -138,6 +139,11 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
+    ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.OrderingFilter',
+        'rest_framework.filters.SearchFilter',
     ),
 }
 
