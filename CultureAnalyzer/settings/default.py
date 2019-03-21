@@ -146,3 +146,5 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
     'AUTH_HEADER_TYPES': ('JWT', 'Bearer'),
 }
+
+TEST_RUNNER = 'CultureAnalyzer.tests.CustomTestRunner'
