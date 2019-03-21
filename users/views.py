@@ -1,23 +1,26 @@
 from django.contrib.auth import views as auth_views, get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.views.generic import CreateView, UpdateView
+from django.contrib.auth.mixins import (LoginRequiredMixin,
+                                        PermissionRequiredMixin)
+from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import redirect
+from django.views.generic import (CreateView, UpdateView, DetailView, ListView,
+                                  DeleteView)
+from django.urls import reverse_lazy
+from django.contrib.auth.models import Group
 
-from .forms import UserRegisterForm, UserUpdateForm
+from users.forms import UserRegisterForm, UserUpdateForm, GroupForm
 
 __all__ = [
     'LoginView',
     'UserRegisterView',
     'UserUpdateView',
     'PasswordChangeView',
-    'index',
-]
-
-
-def index(request):
-    return render(request, 'users/index.html')
+    'ListGroups',
+    'CreateGroup',
+    'UpdateGroups',
+    'DeleteGroups',
+    ]
 
 
 class LoginView(auth_views.LoginView):
@@ -39,23 +42,22 @@ class UserRegisterView(CreateView):
         return super(UserRegisterView, self).get(request, *args, **kwargs)
 
 
-class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class UserDetailView(LoginRequiredMixin, DetailView):
     template_name = 'users/profile.html'
     model = get_user_model()
+
+    def get_object(self, queryset=None):
+        return self.model.objects.get(pk=self.request.user.pk)
+
+
+class UserUpdateView(LoginRequiredMixin, UpdateView):
+    template_name = 'users/update_profile.html'
+    model = get_user_model()
     form_class = UserUpdateForm
-    success_url = '/'
+    success_url = reverse_lazy('profile')
 
-    def test_func(self):
-        """
-        this func check that the user which want
-        to delete the post should be author of this post
-        """
-        current_user = self.get_object()
-
-        if self.request.user == current_user:
-            return True
-        else:
-            return False
+    def get_object(self, queryset=None):
+        return self.model.objects.get(pk=self.request.user.pk)
 
     def form_valid(self, form):
         """Try to save form, and check if image was in form,
@@ -69,7 +71,7 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
                 return super().form_invalid(form)
         else:
             form.save()
-        return redirect(reverse('home'))
+        return redirect(self.get_success_url())
 
 
 class PasswordChangeView(UpdateView):
@@ -84,3 +86,57 @@ class PasswordChangeView(UpdateView):
         kwargs = super(PasswordChangeView, self).get_form_kwargs()
         kwargs['user'] = kwargs.pop('instance')
         return kwargs
+
+
+class ListGroups(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    model = Group
+    context_object_name = 'group'
+    template_name = 'users/group.html'
+    permission_required = 'auth.view_group'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # In this case, only superuser will have access
+        context['can_change_permissions'] = self.request.user.has_perm(
+            perm='auth.change_group')
+        context['can_delete_permissions'] = self.request.user.has_perm(
+            perm='auth.delete_group'
+            )
+        return context
+
+
+class UpdateGroups(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    template_name = 'users/group_permissions.html'
+    model = Group
+    form_class = GroupForm
+    success_url = reverse_lazy('group_perm-list')
+    permission_required = 'auth.change_group'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['update'] = True
+        return context
+
+
+class DeleteGroups(LoginRequiredMixin, PermissionRequiredMixin,
+                   SuccessMessageMixin, DeleteView,
+                   ):
+    template_name = 'users/delete_Group.html'
+    context_object_name = 'group'
+    model = Group
+    form_class = GroupForm
+    success_url = reverse_lazy('group_perm-list')
+    success_message = 'Group: "%(name)s" was deleted successfully'
+    permission_required = 'auth.delete_group'
+
+
+class CreateGroup(LoginRequiredMixin, PermissionRequiredMixin,
+                  SuccessMessageMixin, CreateView,
+                  ):
+    model = get_user_model()
+    form_class = GroupForm
+    context_object_name = 'group'
+    template_name = 'users/group_permissions.html'
+    success_url = reverse_lazy('group_perm-list')
+    success_message = 'Group: "%(name)s" was created successfully'
+    permission_required = 'auth.add_group'

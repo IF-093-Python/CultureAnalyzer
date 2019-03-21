@@ -1,34 +1,47 @@
 {%extends 'base.html' %}
 {% load static %}
-{% load crispy_forms_tags %}
+{% block title %}{{request.user.username.capitalize}}`s profile{% endblock title %}
 {% block content%}
-<div class="content-section">
-    <div class="media">
-        {% if user.image %}
-        <img src="{{ user.image.url }}" alt="" class="circle_text" style="margin-left: -10px;">
-        {% else %}
-        <img src="{% static 'default.png' %}" alt="" class="circle_text" style="margin-left: -10px;">
-        {% endif %}
-        <div class="media-body">
-            <h2 class="account-heading">{{ user.username }}</h2>
-            <p class="text-secondary">{{ user.email }}</p>
+<div class="d-flex justify-content-center">
+        <div class="d-flex flex-wrap block-rounded bg-body-dark col-md-8 profile-section">
+            <div class="col-md-4"><div class="d-flex justify-content-center m-2">
+                {% if object.image %}
+                <img src="{{ object.image.url }}" alt="" class="circle_img img-fluid">
+                {% else %}
+                <img src="{% static 'default.png' %}" alt="" class="circle_img" style="margin-left: -10px;">
+                {% endif %}
+            </div>
+            <div class="d-flex justify-content-center flex-wrap">
+                <a class="btn btn-blue btn-block my-1" href="{% url 'profile-update'%}">Edit profile</a><br>
+                <a class="btn btn-blue btn-block my-1" href="{% url 'password-change'%}">Change password</a>
+            </div>
+            </div>
+            <div class="d-flex flex-wrap justify-content-center mt-2 col-md-6 about">
+                <div class="col-md-6">
+                    <p>First name: <span class="info-text">{{ object.first_name }}</span></p>
+                    <p>Last name: <span class="info-text">{{ object.last_name }}</span></p>
+                </div>
+                <div class="col-md-6">
+                    <p>Username: <span class="info-text">{{ object.username }}</span></p>
+                    <p>Email: <a href="mailto:{{ object.email }}" class="info-text">{{ object.email }}</a></p>
+                </div>
+                <div class="col-md-6">
+                    {% if object.date_of_birth %}
+                    <p>Date of birth: <span class="info-text">{{ object.date_of_birth }}</span></p>
+                    {% endif %}
+                    {% if object.education %}
+                    <p>Education: <span class="info-text">{{ object.education }}</span></p>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    {% if object.gender %}
+                    <p>Gender: <span class="info-text">{{ object.gender }}</span></p>
+                    {% endif %}
+                    {% if object.experience %}
+                    <p>Age of experience: <span class="info-text">{{ object.experience }}</span></p>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-    </div>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Profile Info</legend>
-            {{ form|crispy }}
-            {{ p_form|crispy }}
-        </fieldset>
-        <div class="border-top mb-3">
-                <a href="{% url 'password-change' user.id %}" class="contact_us" style="padding: 10px;">Change password</a>
-        </div>
-        <div class="form-group">
-            <button class="btn btn-outline-info" type="submit">Update</button>
-        </div>
-
-
-    </form>
 </div>
 {%endblock content%}
