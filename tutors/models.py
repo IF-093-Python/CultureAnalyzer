@@ -2,6 +2,8 @@ from django.db import models
 
 from quiz.models import Quizzes
 
+__all__ = ['Questions', 'Answers', ]
+
 
 class Questions(models.Model):
     """

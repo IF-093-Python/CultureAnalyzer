@@ -10,7 +10,7 @@
                     multiple="multiple" data-live-search="true">
                 {% for i in country_indicators%}
                 <option value="{{i.iso_code}}:{{i.pdi}} {{i.ind}} {{i.mas}} {{i.uai}} {{i.lto}} {{i.ivr}}"
-                {% if i.iso_code is countries_values.keys %}
+                {% if i.iso_code in countries_values.keys %}
                         selected="selected"
                         {% endif %}>
                     {{i.name}}</option>

@@ -1,4 +1,4 @@
-from .models import Questions, Answers
+from tutors.models import Questions, Answers
 
 __all__ = ['get_min_missing_value', 'get_numbers', ]
 
@@ -12,9 +12,9 @@ def get_min_missing_value(model, filter_id):
     list_of_number = get_numbers(model, filter_id)
     if not list_of_number:
         return 1
-    max_value = int(max(list_of_number[0]))
+    max_value = int(max(list_of_number))
     for value in range(1, max_value + 1):
-        if value not in list_of_number[0]:
+        if value not in list_of_number:
             return value
     return max_value + 1
 
@@ -25,7 +25,10 @@ def get_numbers(model, filter_id):
     tuple of values.
     """
     if model == 'Questions':
-        return list(zip(*Questions.objects.filter(quiz=filter_id).values_list(
-            'question_number').order_by('question_number')))
-    return list(zip(*Answers.objects.filter(question=filter_id).values_list(
-        'answer_number').order_by('answer_number')))
+        print(list(Questions.objects.filter(quiz=filter_id).values_list(
+                    'question_number', flat=True).order_by(
+            'question_number')))
+        return list(Questions.objects.filter(quiz=filter_id).values_list(
+            'question_number', flat=True).order_by('question_number'))
+    return list(Answers.objects.filter(question=filter_id).values_list(
+        'answer_number', flat=True).order_by('answer_number'))

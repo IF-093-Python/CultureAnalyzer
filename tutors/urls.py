@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import CreateQuestionView, UpdateQuestionView, \
+from tutors.views import CreateQuestionView, UpdateQuestionView, \
     DeleteQuestionView, AnswerListView, CreateAnswerView, UpdateAnswerView, \
     DeleteAnswerView
 

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Questions, Answers
+from tutors.models import Questions, Answers
 
 
 admin.site.register(Questions)

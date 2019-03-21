@@ -10,6 +10,9 @@ from quiz.forms import QuizCreateForm
 from quiz.models import Quizzes
 from tutors.models import Questions
 
+__all__ = ['QuizzesList', 'CreateQuizView', 'UpdateQuizView',
+           'DeleteQuizView', 'QuizDetailView', ]
+
 
 class QuizzesList(LoginRequiredMixin, generic.ListView):
     model = Quizzes

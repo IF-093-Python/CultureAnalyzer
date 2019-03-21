@@ -10,9 +10,9 @@ from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
 
 from quiz.models import Quizzes
 
-from .forms import QuestionCreateForm, AnswerCreateForm
-from .models import Questions, Answers
-from .service import get_min_missing_value
+from tutors.forms import QuestionCreateForm, AnswerCreateForm
+from tutors.models import Questions, Answers
+from tutors.service import get_min_missing_value
 
 __all__ = ['CreateQuestionView', 'UpdateQuestionView',
            'DeleteQuestionView', 'AnswerListView', 'CreateAnswerView',

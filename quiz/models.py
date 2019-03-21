@@ -3,6 +3,8 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import CASCADE
 
+__all__ = ['Quizzes', 'Results', 'TYPE_OF_QUIZ', ]
+
 TYPE_OF_QUIZ = (('Business', 'Business'), ('General', 'General'))
 
 
