@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
 from api.fields import PasswordField, UniqueEmailField
-from feedbacks.exceptions import FValidationError
+from CultureAnalyzer.exceptions import FValidationError
 from feedbacks.models import Feedback
 from feedbacks.validator import FeedbackValidator
 
