@@ -51,7 +51,8 @@ class RecommendationDeleteView(LoginRequiredMixin, DeleteView):
         """Redirect to linked feedback"""
         with transaction.atomic():
             self.success_url = reverse_lazy('feedback-detail', kwargs={
-                'pk': self.get_object().feedback.id})
+                'pk': self.get_object().feedback.id
+                })
             return super().delete(self, request, *args, **kwargs)
 
 
@@ -82,7 +83,8 @@ class RecommendationCreateView(LoginRequiredMixin, CreateView):
         """Redirect to linked feedback"""
         self.success_url = reverse_lazy('feedback-detail',
                                         kwargs={
-                                            'pk': request.GET.get('feedback')})
+                                            'pk': request.GET.get('feedback')
+                                            })
         return super().post(self, request, *args, **kwargs)
 
 
@@ -94,5 +96,6 @@ class RecommendationUpdateView(LoginRequiredMixin, UpdateView):
     def get(self, request, *args, **kwargs):
         """Set success_url to linked feedback"""
         self.success_url = reverse_lazy('feedback-detail', kwargs={
-            'pk': self.get_object().feedback.id})
+            'pk': self.get_object().feedback.id
+            })
         return super().get(request, *args, **kwargs)

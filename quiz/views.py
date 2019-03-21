@@ -1,4 +1,6 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import (LoginRequiredMixin,
+                                        PermissionRequiredMixin)
+from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 from django.db.models import Count, Q
 from django.urls import reverse_lazy
@@ -14,11 +16,13 @@ __all__ = ['QuizzesList', 'CreateQuizView', 'UpdateQuizView',
            'DeleteQuizView', 'QuizDetailView', ]
 
 
-class QuizzesList(LoginRequiredMixin, generic.ListView):
+class QuizzesList(LoginRequiredMixin, PermissionRequiredMixin,
+                  generic.ListView):
     model = Quizzes
     context_object_name = 'quizzes'
     template_name = 'quiz/quizzes_list.html'
     paginate_by = 2
+    permission_required = 'quiz.view_quizzes'
 
     def get_queryset(self):
         quizzes = Quizzes.objects.all().order_by('title')
@@ -34,11 +38,13 @@ class QuizzesList(LoginRequiredMixin, generic.ListView):
         return context
 
 
-class CreateQuizView(LoginRequiredMixin, generic.CreateView):
+class CreateQuizView(LoginRequiredMixin, PermissionRequiredMixin,
+                     generic.CreateView):
     model = Quizzes
     template_name = 'quiz/quiz_create.html'
     form_class = QuizCreateForm
     success_url = reverse_lazy('quiz:quizzes-list')
+    permission_required = 'quiz.add_quizzes'
 
 
 class QuizDetailView(LoginRequiredMixin, generic.ListView):
@@ -46,6 +52,7 @@ class QuizDetailView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'questions'
     template_name = 'quiz/quiz_detail.html'
     paginate_by = ITEMS_ON_PAGE
+    permission_required = 'quiz.detail_quiz'
 
     def get_queryset(self):
         """
@@ -72,10 +79,13 @@ class DeleteQuizView(LoginRequiredMixin, generic.DeleteView):
     context_object_name = 'quiz'
     template_name = 'quiz/quiz_delete.html'
     success_url = reverse_lazy('quiz:quizzes-list')
+    permission_required = 'quiz.delete_quizzes'
 
 
-class UpdateQuizView(LoginRequiredMixin, generic.UpdateView):
+class UpdateQuizView(LoginRequiredMixin, PermissionRequiredMixin,
+                     generic.UpdateView):
     model = Quizzes
     form_class = QuizCreateForm
     template_name = 'quiz/quiz_update.html'
     success_url = reverse_lazy('quiz:quizzes-list')
+    permission_required = 'quiz.change_quizzes'

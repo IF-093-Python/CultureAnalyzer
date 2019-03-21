@@ -1,9 +1,13 @@
 from django.db import transaction
+from django.contrib import messages
+from django.contrib.auth.mixins import (LoginRequiredMixin,
+                                        PermissionRequiredMixin)
+from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import Count
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 
 from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
@@ -19,11 +23,13 @@ __all__ = ['CreateQuestionView', 'UpdateQuestionView',
            'UpdateAnswerView', 'DeleteAnswerView', ]
 
 
-class CreateQuestionView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+class CreateQuestionView(LoginRequiredMixin, PermissionRequiredMixin,
+                         SuccessMessageMixin, CreateView):
     model = Questions
     form_class = QuestionCreateForm
     template_name = 'tutors/question_create.html'
     success_message = 'Question "#%(number)d" was created successfully!'
+    permission_required = 'tutors.add_questions'
 
     def get_success_url(self):
         return reverse_lazy('quiz:detail-quiz', kwargs={'pk': self.kwargs[
@@ -46,11 +52,13 @@ class CreateQuestionView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return kwargs
 
 
-class UpdateQuestionView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class UpdateQuestionView(LoginRequiredMixin, PermissionRequiredMixin,
+                         SuccessMessageMixin, UpdateView):
     model = Questions
     form_class = QuestionCreateForm
     template_name = 'tutors/question_create.html'
-    success_message = 'Question "№%(number)d" was updated successfully!'
+    success_message = 'Question "#%(number)d" was updated successfully!'
+    permission_required = 'tutors.change_questions'
 
     def get_success_url(self):
         return reverse_lazy('quiz:detail-quiz', kwargs={'pk': self.kwargs[
@@ -66,9 +74,11 @@ class UpdateQuestionView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return context
 
 
-class DeleteQuestionView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+class DeleteQuestionView(LoginRequiredMixin, PermissionRequiredMixin,
+                         SuccessMessageMixin, DeleteView):
     model = Questions
     template_name = 'tutors/question_delete.html'
+    permission_required = 'tutors.delete_questions'
     success_message = 'Question: "%(question_number)s" was deleted ' \
                       'successfully!'
 
@@ -86,11 +96,12 @@ class DeleteQuestionView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
-class AnswerListView(LoginRequiredMixin, ListView):
+class AnswerListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Answers
     template_name = 'tutors/answers_list.html'
     context_object_name = 'answers'
     paginate_by = ITEMS_ON_PAGE
+    permission_required = 'tutors.view_answers'
 
     def get_queryset(self):
         answers = Answers.objects.filter(
@@ -108,11 +119,13 @@ class AnswerListView(LoginRequiredMixin, ListView):
         return context
 
 
-class CreateAnswerView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+class CreateAnswerView(LoginRequiredMixin, PermissionRequiredMixin,
+                       SuccessMessageMixin, CreateView):
     model = Answers
     form_class = AnswerCreateForm
     template_name = 'tutors/answer_create.html'
-    success_message = 'Answers: "%(answer_text)s" was created successfully!'
+    success_message = 'Answers: "%(answer_text)s" was created successfully'
+    permission_required = 'tutors.add_answers'
 
     def get_success_url(self):
         return reverse_lazy('tutors:answers_list',
@@ -135,11 +148,13 @@ class CreateAnswerView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return kwargs
 
 
-class UpdateAnswerView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class UpdateAnswerView(LoginRequiredMixin, PermissionRequiredMixin,
+                       SuccessMessageMixin, UpdateView):
     model = Answers
     form_class = AnswerCreateForm
     template_name = 'tutors/answer_create.html'
-    success_message = 'Answers: "%(answer_text)s" was updated successfully!'
+    success_message = 'Answers: "%(answer_text)s" was updated successfully'
+    permission_required = 'tutors.change_answers'
 
     def get_success_url(self):
         return reverse_lazy('tutors:answers_list',
@@ -152,10 +167,12 @@ class UpdateAnswerView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return context
 
 
-class DeleteAnswerView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
-    model = Answers
+class DeleteAnswerView(LoginRequiredMixin, PermissionRequiredMixin,
+                       SuccessMessageMixin, DeleteView):
+    model = Answer
     template_name = 'tutors/answer_delete.html'
     success_message = 'Answers: "%(answer_text)s" was deleted successfully!'
+    permission_required = 'tutors.delete_answers'
 
     @transaction.atomic()
     def delete(self, request, *args, **kwargs):
