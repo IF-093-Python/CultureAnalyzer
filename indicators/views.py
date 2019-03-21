@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import (LoginRequiredMixin,
                                         PermissionRequiredMixin)
 
-from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
+from CultureAnalyzer.constants import ITEMS_ON_PAGE
 from .models import CountryIndicator
 from .forms import CountryIndicatorForm
 

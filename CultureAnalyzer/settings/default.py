@@ -128,8 +128,6 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
 
-ITEMS_ON_PAGE = 5
-
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -152,3 +150,5 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
     'AUTH_HEADER_TYPES': ('JWT', 'Bearer'),
 }
+
+TEST_RUNNER = 'CultureAnalyzer.tests.CustomTestRunner'
