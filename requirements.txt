@@ -8,3 +8,4 @@ pytz==2018.9
 ddt==1.2.0
 djangorestframework==3.9.1
 djangorestframework-simplejwt==3.3
+django-filter==2.1.0
