@@ -1,7 +1,8 @@
 from django.contrib.auth import views as auth_views, get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import (LoginRequiredMixin,
-                                        PermissionRequiredMixin)
+                                        PermissionRequiredMixin,
+                                        UserPassesTestMixin)
 from django.contrib.auth.models import Group
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect
@@ -9,10 +10,11 @@ from django.urls import reverse_lazy
 from django.views.generic import (CreateView, UpdateView, DetailView, ListView,
                                   DeleteView)
 
-from CultureAnalyzer.mixins import SafePaginationMixin
 from CultureAnalyzer.constants import ITEMS_ON_PAGE
-from users.forms import UserRegisterForm, UserUpdateForm, GroupForm
+from CultureAnalyzer.mixins import SafePaginationMixin
 from users.filters import admin_search
+from users.forms import (UserRegisterForm, UserUpdateForm, GroupForm,
+                         BlockUserForm)
 
 __all__ = [
     'LoginView',
@@ -106,6 +108,26 @@ class AdminListView(LoginRequiredMixin, PermissionRequiredMixin,
 
     def get_queryset(self):
         return admin_search(self.request).qs
+
+
+class ProfileUpdateView(LoginRequiredMixin, PermissionRequiredMixin,
+                        UserPassesTestMixin, UpdateView):
+    template_name = 'users/user_detail.html'
+    form_class = BlockUserForm
+    model = get_user_model()
+    success_url = '/admin_page'
+    permission_required = 'users.change_customuser'
+
+    def test_func(self):
+        """
+        Superuser can change every user except superuser
+        Admin can change every user except superuser and admin
+        """
+        current_user = self.get_object()
+        if current_user.is_superuser or \
+                not self.request.user.is_superuser and current_user.is_admin:
+            return False
+        return True
 
 
 class ListGroups(LoginRequiredMixin, PermissionRequiredMixin, ListView):

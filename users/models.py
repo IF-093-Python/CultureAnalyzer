@@ -1,7 +1,8 @@
 from PIL import Image
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group
 from django.db import models, transaction
 
+from CultureAnalyzer.constants import ADMIN_ID, TRAINEE_ID, MENTOR_ID
 from users.choices import GENDER_CHOICES, EDUCATION_CHOICES
 
 MIN_IMAGE_HEIGHT = 300
@@ -27,13 +28,28 @@ class CustomUser(AbstractUser):
     email = models.EmailField(blank=True, max_length=254,
                               verbose_name='email address', unique=True)
 
+    @property
+    def is_admin(self):
+        group = Group.objects.get(pk=ADMIN_ID)
+        return group in self.groups.all()
+
+    @property
+    def is_trainee(self):
+        group = Group.objects.get(pk=TRAINEE_ID)
+        return group in self.groups.all()
+
+    @property
+    def is_mentor(self):
+        group = Group.objects.get(pk=MENTOR_ID)
+        return group in self.groups.all()
+
     @transaction.atomic
-    def save(self, **kwargs):
+    def save(self, *args, **kwargs):
         """
         if img is too big we decrease img
         because the less image is the less memory it takes
         """
-        super(CustomUser, self).save(**kwargs)
+        super(CustomUser, self).save(*args, **kwargs)
         try:
             if self.image:
                 img = Image.open(self.image.path)

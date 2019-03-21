@@ -11,6 +11,8 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='users/index.html'),
          name='home'),
     path('admin_page/', views.AdminListView.as_view(), name='admin'),
+    path('admin_page/update/<int:pk>', views.ProfileUpdateView.as_view(),
+         name='change-profile'),
     path('register/', views.UserRegisterView.as_view(), name='register'),
     path('login/', views.LoginView.as_view(
         template_name='users/login.html', authentication_form=UserLoginForm),
@@ -44,4 +46,4 @@ urlpatterns = [
          name='group_perm-delete'),
     path('create_group', views.CreateGroup.as_view(),
          name='group_perm-create'),
-    ]
+]
