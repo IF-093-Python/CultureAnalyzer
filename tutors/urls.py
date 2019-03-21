@@ -1,8 +1,8 @@
 from django.urls import path
 
-from tutors.views import CreateQuestionView, UpdateQuestionView, \
-    DeleteQuestionView, AnswerListView, CreateAnswerView, UpdateAnswerView, \
-    DeleteAnswerView
+from tutors.views import (CreateQuestionView, UpdateQuestionView,
+                          DeleteQuestionView, AnswerListView, CreateAnswerView,
+                          UpdateAnswerView, DeleteAnswerView, )
 
 app_name = 'tutors'
 

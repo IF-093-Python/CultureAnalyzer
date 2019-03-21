@@ -1,9 +1,6 @@
 from django.db import transaction
-from django.contrib import messages
 from django.contrib.auth.mixins import (LoginRequiredMixin,
                                         PermissionRequiredMixin)
-from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Count
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -47,7 +44,7 @@ class CreateQuestionView(LoginRequiredMixin, PermissionRequiredMixin,
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['instance'] = Questions(question_number=get_min_missing_value(
-            'Questions', self.kwargs['quiz_id']), quiz=Quizzes(
+            Questions, self.kwargs['quiz_id']), quiz=Quizzes(
                 self.kwargs['quiz_id']))
         return kwargs
 
@@ -143,7 +140,7 @@ class CreateAnswerView(LoginRequiredMixin, PermissionRequiredMixin,
         """
         kwargs = super().get_form_kwargs()
         kwargs['instance'] = Answers(answer_number=get_min_missing_value(
-            'Answers', self.kwargs['question_id']), question=Questions(
+            Answers, self.kwargs['question_id']), question=Questions(
                 self.kwargs['question_id']))
         return kwargs
 

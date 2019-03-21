@@ -1,7 +1,7 @@
 from django.urls import path
 
-from quiz.views import QuizzesList, CreateQuizView, QuizDetailView, \
-    DeleteQuizView, UpdateQuizView
+from quiz.views import (QuizzesList, CreateQuizView, QuizDetailView,
+                        DeleteQuizView, UpdateQuizView, )
 
 app_name = "quiz"
 

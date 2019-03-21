@@ -7,8 +7,8 @@ __all__ = ['Questions', 'Answers', ]
 
 class Questions(models.Model):
     """
-    Model Question have the field 'question_number', that indicates the issue number
-    in a particular quiz.
+    Model Question have the field 'question_number', that indicates the issue
+    number in a particular quiz.
     """
     quiz = models.ForeignKey(Quizzes, on_delete=models.CASCADE, null=False)
     question_number = models.IntegerField(null=False)
@@ -27,8 +27,8 @@ class Questions(models.Model):
 
 class Answers(models.Model):
     """
-     Model Answer have the field 'answer_number', that indicates the issue number
-     in a particular question and is responsible for scores.
+     Model Answer have the field 'answer_number', that indicates the issue
+     number in a particular question and is responsible for scores.
      """
     question = models.ForeignKey(Questions, on_delete=models.CASCADE,
                                  null=False)
