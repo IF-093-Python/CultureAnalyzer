@@ -10,6 +10,11 @@ class Quizzes(models.Model):
     description = models.CharField(max_length=100, null=False)
     numbers_of_questions = models.IntegerField(null=True)
 
+    class Meta:
+        permissions = (
+            ("view_test_player", "Can view the test player"),
+            )
+
     def __str__(self):
         return self.title
 
