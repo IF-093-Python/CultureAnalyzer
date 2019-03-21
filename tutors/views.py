@@ -169,7 +169,7 @@ class UpdateAnswerView(LoginRequiredMixin, PermissionRequiredMixin,
 
 class DeleteAnswerView(LoginRequiredMixin, PermissionRequiredMixin,
                        SuccessMessageMixin, DeleteView):
-    model = Answer
+    model = Answers
     template_name = 'tutors/answer_delete.html'
     success_message = 'Answers: "%(answer_text)s" was deleted successfully!'
     permission_required = 'tutors.delete_answers'
