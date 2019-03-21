@@ -1,8 +1,8 @@
 from django import forms
 
+from CultureAnalyzer.exceptions import FValidationError
 from feedbacks.models import Feedback, Recommendation
 from feedbacks.validator import FeedbackValidator
-from feedbacks.exceptions import FValidationError
 
 __all__ = ['FeedbackForm', 'RecommendationForm']
 
@@ -21,7 +21,6 @@ class FeedbackForm(forms.ModelForm):
 
 
 class RecommendationForm(forms.ModelForm):
-
     class Meta:
         model = Recommendation
         fields = ['recommendation', ]
