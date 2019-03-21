@@ -70,7 +70,8 @@ class UserUpdateForm(forms.ModelForm):
 
     def clean_experience(self):
         try:
-            return ProfileValidator.validate(self.cleaned_data)
+            return ProfileValidator.validate(
+                self.cleaned_data.get('experience'))
         except PValidationError as err:
             self.add_error('experience', str(err))
 
