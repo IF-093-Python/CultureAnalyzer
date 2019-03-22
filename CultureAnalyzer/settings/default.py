@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django_cool_paginator',
     'rest_framework',
     'django_filters',
+    'bootstrap_datepicker_plus',
 
     'users.apps.UsersConfig',
     'groups',
