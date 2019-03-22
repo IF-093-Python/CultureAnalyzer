@@ -56,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'CultureAnalyzer.middleware.AuthRequiredMiddleware',
     'CultureAnalyzer.middleware.SwitchSessionDataMiddleware',
 ]
 
@@ -127,6 +128,9 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
+REGISTER_URL = 'register'
+LOGOUT_URL = 'logout'
+API_URL = 'api'
 
 ITEMS_ON_PAGE = 5
 
@@ -152,6 +156,9 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT', 'Bearer'),
 }
 
+LOGOUT_REDIRECT_URL = LOGIN_URL
+REDIRECT_EXCLUDE_ROUTES = (LOGIN_URL, LOGOUT_URL, REGISTER_URL, API_URL)
+
 TEST_RUNNER = 'CultureAnalyzer.tests.CustomTestRunner'
 
 BREADCRUMBS_TEMPLATE = "django_bootstrap_breadcrumbs/bootstrap4.html"
@@ -160,4 +167,3 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'users.authentication.EmailAuthBackend',
 )
-

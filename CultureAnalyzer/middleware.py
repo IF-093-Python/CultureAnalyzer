@@ -1,9 +1,20 @@
+from CultureAnalyzer.util import login_redirect
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.models import Session
 
+__all__ = ['AuthRequiredMiddleware', 'SwitchSessionDataMiddleware']
+
+
+class AuthRequiredMiddleware:
+    def __init__(self, response):
+        self.get_response = response
+
+    @login_redirect
+    def __call__(self, request):
+        return self.get_response(request)
+
 
 class SwitchSessionDataMiddleware:
-    # Called only once when the web server starts
     def __init__(self, get_response):
         self.get_response = get_response
 
@@ -29,4 +40,3 @@ class SwitchSessionDataMiddleware:
         response = self.get_response(request)
 
         return response
-
