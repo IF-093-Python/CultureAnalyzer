@@ -6,55 +6,73 @@
 
 {% block content %}
 
-    <h2>Countries' indicators</h2>
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-          <div class="alert alert-primary" role="alert">
-
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-          </div>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    <br>
-    <div class="form-group row">
-        <div class="col-sm-3">
-            <a href="{% url 'country_indicator:country_indicator_create' %}" class="btn btn-primary">Create indicator</a>
-        </div>
+{% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-primary text-center" role="alert">
+        <span{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</span>
+      </div>
+    {% endfor %}
+{% endif %}
+    <div class="d-flex justify-content-center">
+      <h2>Countries' indicators</h2>
     </div>
+    <div class="my-2">
+        <!--Indicator search-->
+        <form class="d-flex flex-wrap justify-content-between mt-n1" method="GET"
+              action="{% url 'country_indicator:country_indicator_list' %}">
+            <div class="d-flex mt-1">
+                <input class="form-control" type="text"
+                   name="indicator_search"
+                   placeholder="Search"
+                    {% if search %} value="{{ search }}" {% endif %}>
+                <button class="btn btn-blue ml-1" type="submit">
+                    <splan class="fas fa-search"></splan>
+                </button>
+                <a class="btn btn-blue ml-1" href="{% url 'country_indicator:country_indicator_list' %}">
+                    <splan class="fas fa-undo"></splan>
+                </a>
+            </div>
+            <a class="btn btn-blue mt-1" href="{% url 'country_indicator:country_indicator_create' %}">
+                    Create indicator
+            </a>
+        </form>
+    </div>
+    <hr>
     <br>
-        <table class="table">
+    <div class="table-responsive">
+        <table class="table table-hover block-rounded">
           <thead class="thead-light">
             <tr>
               <th scope="col">#</th>
               <th scope="col">ISO code</th>
               <th scope="col">Name</th>
               <th scope="col">PDI</th>
-              <th scope="col">IND</th>
+              <th scope="col">IDV</th>
               <th scope="col">MAS</th>
               <th scope="col">UAI</th>
               <th scope="col">LTO</th>
               <th scope="col">IVR</th>
-              <th scope="col">Control</th>
+              <th class="text-center" scope="col">Control</th>
             </tr>
           </thead>
           <tbody>
           {% for indicator in indicators %}
             <tr>
-              <th scope="row">{{ forloop.counter0|add:page_obj.start_index }}</th>
-              <td>{{ indicator.iso_code }}</td>
-              <td>{{ indicator.name }}</td>
-              <td>{{ indicator.pdi }}</td>
-              <td>{{ indicator.ind }}</td>
-              <td>{{ indicator.mas }}</td>
-              <td>{{ indicator.uai }}</td>
-              <td>{{ indicator.lto }}</td>
-              <td>{{ indicator.ivr }}</td>
+              <th class="align-middle" scope="row">{{ forloop.counter0|add:page_obj.start_index }}</th>
+              <td class="align-middle">{{ indicator.iso_code }}</td>
+              <td class="align-middle">{{ indicator.name }}</td>
+              <td class="align-middle">{{ indicator.pdi }}</td>
+              <td class="align-middle">{{ indicator.idv }}</td>
+              <td class="align-middle">{{ indicator.mas }}</td>
+              <td class="align-middle">{{ indicator.uai }}</td>
+              <td class="align-middle">{{ indicator.lto }}</td>
+              <td class="align-middle">{{ indicator.ivr }}</td>
 
               <td>
-                <a class="btn btn-primary" href="{% url 'country_indicator:country_indicator_update' indicator.pk %}" role="button"><span class="fas fa-edit"></span> </a>
-                <a class="btn btn-danger" href="{% url 'country_indicator:country_indicator_delete' indicator.pk %}" role="button"><span class="fas fa-trash-alt"></span></a>
+                <div class="d-flex justify-content-center">
+                  <a class="btn btn-light btn-option" href="{% url 'country_indicator:country_indicator_update' indicator.pk %}" role="button"><span class="fas fa-edit"></span> </a>
+                  <a class="btn btn-light btn-option ml-1" href="{% url 'country_indicator:country_indicator_delete' indicator.pk %}" role="button"><span class="fas fa-trash-alt"></span></a>
+                </div>
               </td>
             </tr>
           {% empty %}
@@ -62,10 +80,11 @@
           {% endfor %}
           </tbody>
         </table>
-
+    </div>
+    <div class="d-flex justify-content-center">
     {% if is_paginated %}
         {% cool_paginate page_obj=page_obj %}
     {% endif %}
-
+    </div>
 
 {% endblock %}

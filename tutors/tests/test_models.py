@@ -2,7 +2,7 @@ from django.db.utils import IntegrityError
 from django.test import TestCase
 
 from tutors.models import Questions, Answers
-from quiz.models import Quizzes, TYPE_OF_QUIZ
+from quiz.models import Quizzes
 
 __all__ = ['QuestionsModelTest', 'AnswersModelTest']
 

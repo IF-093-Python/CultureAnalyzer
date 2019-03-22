@@ -8,8 +8,7 @@ MAX_YEARS_OF_EXPERIENCE = 100
 
 class ProfileValidator:
     @staticmethod
-    def validate(rq_data):
-        experience = rq_data.get('experience')
+    def validate(experience):
 
         if not isinstance(experience, int):
             raise PValidationError('Only integer values are supported')
