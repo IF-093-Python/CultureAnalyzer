@@ -33,7 +33,6 @@ class RegisterViewTest(SetUpUserMixin, TestCase):
     def test_register_view(self):
         response = self.client.post(reverse('register'), REGISTER_DATA)
         self.assertEqual(response.status_code, 302)
-        current_user = get_user_model().objects.get(username='Yurii')
         self.assertRedirects(response, reverse('login'))
 
     def test_redirect_to_home_page_if_user_logged_in(self):
