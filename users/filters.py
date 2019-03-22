@@ -11,8 +11,8 @@ class UserFilter(FilterSet):
 
 
 def admin_search(request):
-    """Admin can see all users except other admins
-    if admin is superuser he can see all users (even admins) except himself
+    """Admin can see all users except other admins.
+    If admin is superuser he can see all users (even admins) except himself
     """
 
     users_in_view = get_user_model().objects.exclude(is_superuser=True)

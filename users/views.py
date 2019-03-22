@@ -110,12 +110,12 @@ class AdminListView(LoginRequiredMixin, PermissionRequiredMixin,
         return admin_search(self.request).qs
 
 
-class ProfileUpdateView(LoginRequiredMixin, PermissionRequiredMixin,
-                        UserPassesTestMixin, UpdateView):
+class ManageUserView(LoginRequiredMixin, PermissionRequiredMixin,
+                     UserPassesTestMixin, UpdateView):
     template_name = 'users/user_detail.html'
     form_class = BlockUserForm
     model = get_user_model()
-    success_url = '/admin_page'
+    success_url = reverse_lazy('admin')
     permission_required = 'users.change_customuser'
 
     def test_func(self):

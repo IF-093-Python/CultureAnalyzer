@@ -1,11 +1,10 @@
-import datetime
-
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.test import TestCase
 from django.urls import reverse
 
 from feedbacks.tests.mixins import SetUpUserMixin
+from users.tests_data.test_view_data import REGISTER_DATA, UPDATE_PROFILE_DATA
 
 __all__ = ['LoginViewTest', 'RegisterViewTest', 'UpdateUserViewTest',
            'PasswordChangeViewTest', 'TestViews']
@@ -35,20 +34,12 @@ class RegisterViewTest(SetUpUserMixin, TestCase):
         self.client.login(username='test_user', password='12345')
 
     def test_register_view(self):
-        response = self.client.post(reverse('register'), {
-            'username': 'Yurii',
-            'email': 'jura@mail.com',
-            'first_name': 'Yurii',
-            'last_name': 'Kulyk',
-            'password1': 'testview123',
-            'password2': 'testview123',
-        })
+        response = self.client.post(reverse('register'), REGISTER_DATA)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(get_user_model().objects.get(username='Yurii').email,
                          'jura@mail.com')
 
     def test_redirect_to_home_page_if_user_logged_in(self):
-        self.client.login(username='test_user', password='12345')
         response = self.client.get(reverse('register'))
 
         self.assertEqual(response.status_code, 302)
@@ -61,17 +52,9 @@ class UpdateUserViewTest(SetUpUserMixin, TestCase):
         self.client.login(username='test_user', password='12345')
 
     def test_valid_data_update_view(self):
-        self.client.login(username='test_user', password='12345')
         current_user = get_user_model().objects.get(username='test_user')
         response = self.client.post(reverse('profile-update'),
-                                    {
-                                        'first_name': 'Yurii',
-                                        'last_name': 'Kulyk',
-                                        'experience': 1,
-                                        'date_of_birth': datetime.date(
-                                            1999, 5, 21),
-                                        'education': 'Secondary',
-                                        'gender': 'Male', })
+                                    UPDATE_PROFILE_DATA)
 
         current_user.refresh_from_db()
         self.assertEqual(response.status_code, 302)
@@ -80,8 +63,10 @@ class UpdateUserViewTest(SetUpUserMixin, TestCase):
 
 
 class PasswordChangeViewTest(SetUpUserMixin, TestCase):
-    def test_change_password(self):
+    def setUp(self):
         self.client.login(username='test_user', password='12345')
+
+    def test_change_password(self):
         response = self.client.post(
             reverse('password-change'),
             {'old_password': '12345', 'new_password1': 'test_qwerty1',
