@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 
-from CultureAnalyzer.settings.default import ITEMS_ON_PAGE
+from CultureAnalyzer.constants import ITEMS_ON_PAGE
 
 from quiz.models import Quizzes
 
