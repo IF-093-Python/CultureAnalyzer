@@ -30,18 +30,18 @@ class CustomUser(AbstractUser):
 
     @property
     def is_admin(self):
-        group = Group.objects.get(pk=ADMIN_ID)
-        return group in self.groups.all()
+        groups = Group.objects.get(pk=ADMIN_ID)
+        return self.pk in groups.user_set.all()
 
     @property
     def is_trainee(self):
-        group = Group.objects.get(pk=TRAINEE_ID)
-        return group in self.groups.all()
+        groups = Group.objects.get(pk=TRAINEE_ID)
+        return self.pk in groups.user_set.all()
 
     @property
     def is_mentor(self):
-        group = Group.objects.get(pk=MENTOR_ID)
-        return group in self.groups.all()
+        groups = Group.objects.get(pk=MENTOR_ID)
+        return self.pk in groups.user_set.all()
 
     @transaction.atomic
     def save(self, *args, **kwargs):

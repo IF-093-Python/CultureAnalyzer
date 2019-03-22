@@ -13,6 +13,9 @@ __all__ = ['LoginViewTest', 'RegisterViewTest', 'UpdateUserViewTest',
 
 class LoginViewTest(SetUpUserMixin, TestCase):
 
+    def setUp(self):
+        self.client.login(username='test_user', password='12345')
+
     def test_redirect_when_user_logged_in(self):
         response = self.client.post(reverse('login'), {'username': 'test_user',
                                                        'password': '12345'})
@@ -20,7 +23,6 @@ class LoginViewTest(SetUpUserMixin, TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_redirect_to_home_page_if_user_logged_in(self):
-        self.client.login(username='test_user', password='12345')
         response = self.client.get(reverse('login'))
 
         self.assertEqual(response.status_code, 302)
@@ -28,6 +30,9 @@ class LoginViewTest(SetUpUserMixin, TestCase):
 
 
 class RegisterViewTest(SetUpUserMixin, TestCase):
+
+    def setUp(self):
+        self.client.login(username='test_user', password='12345')
 
     def test_register_view(self):
         response = self.client.post(reverse('register'), {
@@ -51,6 +56,9 @@ class RegisterViewTest(SetUpUserMixin, TestCase):
 
 
 class UpdateUserViewTest(SetUpUserMixin, TestCase):
+
+    def setUp(self):
+        self.client.login(username='test_user', password='12345')
 
     def test_valid_data_update_view(self):
         self.client.login(username='test_user', password='12345')
