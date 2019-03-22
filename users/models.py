@@ -12,9 +12,7 @@ class CustomUser(AbstractUser):
     """
         date_of_birth, experience, gender and education are nullable
         in case we will use oauth2 and cannot automatically take this data
-
         user can change the data in profile page
-
         Django forms and serializer do not allow you to leave data empty.
         """
     image = models.ImageField(upload_to='profile_pics',
