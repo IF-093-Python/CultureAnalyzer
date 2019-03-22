@@ -10,9 +10,8 @@ from django.views import generic
 
 from groups.forms import GroupCreateForm
 from groups.models import Group
+from CultureAnalyzer.constants import ITEMS_ON_PAGE, MENTOR_ID
 from CultureAnalyzer.mixins import SafePaginationMixin
-
-PAGINATOR = 50
 
 __all__ = ['GroupsList', 'CreateGroupView', 'UpdateGroupView',
            'DeleteGroupView']
@@ -28,7 +27,7 @@ class GroupsList(PermissionRequiredMixin, SafePaginationMixin,
     template_name = 'groups/groups_list.html'
     _search = False
     _search_label = 'Search'
-    paginate_by = PAGINATOR
+    paginate_by = ITEMS_ON_PAGE
     permission_required = 'groups.view_group'
 
     def get_context_data(self, **kwargs):
@@ -63,7 +62,7 @@ class CreateGroupView(PermissionRequiredMixin, SafePaginationMixin,
     success_url = reverse_lazy('groups:groups-list')
     _search = False
     _search_label = 'Search'
-    paginate_by = PAGINATOR
+    paginate_by = ITEMS_ON_PAGE
     permission_required = 'groups.add_group'
 
     def form_invalid(self, form):
@@ -80,7 +79,7 @@ class CreateGroupView(PermissionRequiredMixin, SafePaginationMixin,
     def get_queryset(self):
         """List of mentors. Search by last_name is available"""
         result = get_user_model().objects. \
-            filter(is_active=True, groups__name='Mentor').order_by('last_name')
+            filter(is_active=True, groups__pk=MENTOR_ID).order_by('last_name')
         if self.request.GET.get('data_search'):
             search = self.request.GET.get('data_search')
             result = result.filter(last_name__icontains=search)
@@ -102,7 +101,7 @@ class UpdateGroupView(PermissionRequiredMixin, SuccessMessageMixin,
     _search = False
     _search_label = 'Search'
     _checked_mentors = None
-    paginate_by = PAGINATOR
+    paginate_by = ITEMS_ON_PAGE
     permission_required = 'groups.change_group'
 
     def form_invalid(self, form):
@@ -134,7 +133,7 @@ class UpdateGroupView(PermissionRequiredMixin, SuccessMessageMixin,
             order_by('last_name')
         self._checked_mentors = checked_mentors
         mentors = get_user_model().objects. \
-            filter(is_active=True, groups__name='Mentor'). \
+            filter(is_active=True, groups__pk=MENTOR_ID). \
             exclude(mentor_in_group=self.kwargs['pk']). \
             order_by('last_name')
         if self.request.GET.get('data_search'):
