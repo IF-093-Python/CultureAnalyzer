@@ -12,10 +12,10 @@ from groups.forms import GroupCreateForm
 from groups.models import Group
 from CultureAnalyzer.mixins import SafePaginationMixin
 
-PAGINATOR = 3
+PAGINATOR = 50
 
 __all__ = ['GroupsList', 'CreateGroupView', 'UpdateGroupView',
-           'DeleteGroupView', ]
+           'DeleteGroupView']
 
 
 class GroupsList(PermissionRequiredMixin, SafePaginationMixin,

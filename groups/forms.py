@@ -2,8 +2,9 @@ from django import forms
 from bootstrap_datepicker_plus import DateTimePickerInput
 
 from groups.models import Group, Shedule, Invitation
-from groups.validators import dates_validator
+from groups.validators import InvitationValidator, SheduleValidator
 from quiz.models import Quizzes
+from CultureAnalyzer.exceptions import PValidationError
 
 __all__ = ['GroupCreateForm', 'GroupUpdateForm', 'SheduleForm',
            'InvitationForm']
@@ -43,21 +44,26 @@ class SheduleForm(forms.ModelForm):
                                                      initial=quizzes.first())
 
     def clean(self):
-        """Checking validity of dates"""
-        cleaned_data = super(SheduleForm, self).clean()
-        errors = dates_validator(data={
-            'start': cleaned_data.get('begin'),
-            'end': cleaned_data.get('end'),
-            'form': 'SheduleForm', })
-        for error in errors:
-            self.add_error(error, errors[error])
-        return cleaned_data
+        """Checks validity of dates"""
+        # Checking start field
+        start = self.cleaned_data.get('start')
+        end = self.cleaned_data.get('end')
+        try:
+            SheduleValidator.start_validator(start)
+        except PValidationError as err:
+            self.add_error('start', str(err))
+        # Checking end field
+        try:
+            SheduleValidator.end_validator(start, end)
+        except PValidationError as err:
+            self.add_error('end', str(err))
+        return self.cleaned_data
 
     class Meta:
         model = Shedule
-        fields = ['begin', 'end', 'quiz']
+        fields = ['start', 'end', 'quiz']
         widgets = {
-            'begin': DateTimePickerInput(options={'locale': 'en-gb', }),
+            'start': DateTimePickerInput(options={'locale': 'en-gb', }),
             'end': DateTimePickerInput(options={'locale': 'en-gb', }),
         }
 
@@ -67,23 +73,24 @@ class InvitationForm(forms.ModelForm):
     Makes URL by which users can join to group
     """
 
-    def clean(self):
-        """Checking validity of dates and number of students should be >0"""
-        cleaned_data = super(InvitationForm, self).clean()
-        errors = dates_validator(data={
-            'start': cleaned_data.get('start'),
-            'end': cleaned_data.get('end'),
-            'items': cleaned_data.get('items_left'),
-            'form': 'InvitationForm', })
-        for error in errors:
-            self.add_error(error, errors[error])
-        return cleaned_data
+    def clean_end(self):
+        """Checks validity of date"""
+        try:
+            return InvitationValidator.date_validator(
+                self.cleaned_data.get('end'))
+        except PValidationError as err:
+            self.add_error('end', str(err))
+
+    def clean_items_left(self):
+        """Checks validity of invites"""
+        try:
+            return InvitationValidator.items_validator(
+                self.cleaned_data.get('items_left'))
+        except PValidationError as err:
+            self.add_error('items_left', str(err))
 
     class Meta:
         model = Invitation
-        fields = ['start', 'end', 'items_left', 'group', 'code']
+        fields = ['end', 'items_left', 'group', 'code']
         labels = {'items_left': 'Number of students:'}
-        widgets = {
-            'start': DateTimePickerInput(options={'locale': 'en-gb', }),
-            'end': DateTimePickerInput(options={'locale': 'en-gb', }),
-        }
+        widgets = {'end': DateTimePickerInput(options={'locale': 'en-gb', }), }

@@ -1,21 +1,35 @@
 from django.utils import timezone
+from CultureAnalyzer.exceptions import PValidationError
+
+__all__ = ['SheduleValidator', 'InvitationValidator']
 
 
-def dates_validator(data):
-    errors = {}
-    start = data['start']
-    end = data['end']
-    if data['form'] == 'SheduleForm' and start < timezone.now():
-        msg = u'Start date already passed! Please enter valid date.'
-        errors['begin'] = msg
-    if data['form'] == 'InvitationForm':
+class SheduleValidator:
+    @staticmethod
+    def start_validator(start):
+        if start < timezone.now():
+            raise PValidationError(
+                'Start date already passed! Please enter valid date.')
+        return start
+
+    @staticmethod
+    def end_validator(start, end):
+        if start >= end:
+            raise PValidationError('End date should be after start date!')
+        return end
+
+
+class InvitationValidator:
+    @staticmethod
+    def date_validator(end):
         if end < timezone.now():
-            msg = u'End date already passed! Please enter valid date.'
-            errors['end'] = msg
-        if not data['items']:
-            msg = u'Input number of students to invite to this group.'
-            errors['items_left'] = msg
-    if start >= end:
-        msg = u'End date should be after start date!'
-        errors['end'] = msg
-    return errors
+            raise PValidationError(
+                'End date already passed! Please enter valid date.')
+        return end
+
+    @staticmethod
+    def items_validator(items):
+        if not items:
+            raise PValidationError(
+                'Input number of students to invite to this group.')
+        return items

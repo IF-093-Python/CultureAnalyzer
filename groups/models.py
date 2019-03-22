@@ -33,14 +33,13 @@ class Shedule(models.Model):
     """
         Model for setting date and time for passing Quiz for Group
     """
-    begin = models.DateTimeField()
+    start = models.DateTimeField()
     end = models.DateTimeField()
     quiz = models.ForeignKey(Quizzes, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
 
     def __str__(self):
-        text = str(self.group) + ' => ' + str(self.quiz)
-        return text
+        return f'{self.group} => {self.quiz}'
 
 
 class Invitation(models.Model):
@@ -49,7 +48,6 @@ class Invitation(models.Model):
     """
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     code = models.UUIDField(default=uuid.uuid4)
-    start = models.DateTimeField()
     end = models.DateTimeField()
     items_left = models.PositiveSmallIntegerField()
 
