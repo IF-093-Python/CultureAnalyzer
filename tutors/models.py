@@ -1,62 +1,46 @@
 from django.db import models
 
 from quiz.models import Quizzes
-from tutors.utils import deep_flatten
+
+__all__ = ['Questions', 'Answers', ]
 
 
-class CategoryQuestion(models.Model):
-    name = models.CharField(max_length=100, null=False)
-    parent_category = models.ForeignKey('self', on_delete=models.SET_NULL,
-                                        null=True, blank=True,
-                                        db_column='parent_id',
-                                        related_name='childrens')
+class Questions(models.Model):
+    """
+    Model Question have the field 'question_number', that indicates the issue
+    number in a particular quiz.
+    """
+    quiz = models.ForeignKey(Quizzes, on_delete=models.CASCADE, null=False)
+    question_number = models.IntegerField(null=False)
+    question_text = models.TextField(null=False)
 
     def __str__(self):
-        return f'{self.name}'
+        return self.question_text
 
-    @property
-    def childrens_pk_list(self):
-        return list(deep_flatten(self._get_childrens_pk()))
-
-    def _get_childrens_pk(self):
+    class Meta:
         """
-        Build a family of CategoryQuestion tree
-
-        :return List:
+        The tuple of the fields 'quiz' and 'question_text', which should be
+        unique together.
         """
-        children = self.childrens.all()
-
-        if not children:
-            return [self.pk]
-
-        return [self.pk, [obj._get_childrens_pk() for obj in children]]
-
-    class Meta:
-        db_table = "Categories_questions"
+        unique_together = (('quiz', 'question_text'),)
 
 
-class Question(models.Model):
-    quiz = models.ManyToManyField(Quizzes)
-    question_text = models.CharField(max_length=100, null=False)
-    category_question = models.ForeignKey(CategoryQuestion,
-                                          on_delete=models.CASCADE,
-                                          null=True, blank=True,
-                                          db_column='category_id')
+class Answers(models.Model):
+    """
+     Model Answer have the field 'answer_number', that indicates the issue
+     number in a particular question and is responsible for scores.
+     """
+    question = models.ForeignKey(Questions, on_delete=models.CASCADE,
+                                 null=False)
+    answer_number = models.IntegerField(null=False)
+    answer_text = models.TextField(null=False)
 
     def __str__(self):
-        return f'{self.question_text}'
+        return self.answer_text
 
     class Meta:
-        db_table = "Questions"
-
-
-class Answer(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE,
-                                 db_column='question_id')
-    answer_text = models.CharField(max_length=100, null=False)
-
-    def __str__(self):
-        return f'{self.question.question_text}: {self.answer_text}'
-
-    class Meta:
-        db_table = "Answers"
+        """
+        The tuple of the fields 'question' and 'answer_text', which should be
+        unique together.
+        """
+        unique_together = (('question', 'answer_text'),)

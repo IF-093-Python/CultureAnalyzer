@@ -1,26 +1,25 @@
 {% extends 'base.html' %}
 {% block menu_items %}
 
-    <li>
-        <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Navigation</a>
-        <ul class="collapse list-unstyled" id="pageSubmenu">
-            <li>
-                <a href="{% url 'country_indicator:country_indicator_list' %}">Countries Indicators</a>
-            </li>
-            <li>
-                <a href="{% url 'quiz:quizzes-list' %}">Quizzes list</a>
-            </li>
-            <li>
-                <a href="{% url 'tutors:categories_list' %}">Questions list</a>
-            </li>
-            <li>
-                <a href="#">some</a>
-            </li>
-        </ul>
-    </li>
+<ol>
+    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false"
+       class="dropdown-toggle">Navigation</a>
+    <ul class="collapse list-unstyled" id="pageSubmenu">
+        <li>
+            <a href="{% url 'country_indicator:country_indicator_list' %}">
+                Countries Indicators</a>
+        </li>
+        <li>
+            <a href="{% url 'quiz:quizzes-list' %}">Quizzes list</a>
+        </li>
+        <li>
+            <a href="#">some</a>
+        </li>
+    </ul>
+</ol>
 
 {% endblock menu_items %}
 
 {% block content %}
-    <h1>Content...</h1>
+<h1>Content...</h1>
 {% endblock content %}
