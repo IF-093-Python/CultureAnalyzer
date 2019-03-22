@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group, Permission
 from django.test import TestCase
 from django.urls import reverse
 
-from feedbacks.tests.mixins import SetUpUserMixin
+from feedbacks.tests.mixins import SetUpUserMixin, USERNAME, PASSWORD
 from users.tests_data.test_view_data import REGISTER_DATA, UPDATE_PROFILE_DATA
 
 __all__ = ['LoginViewTest', 'RegisterViewTest', 'UpdateUserViewTest',
@@ -13,11 +13,11 @@ __all__ = ['LoginViewTest', 'RegisterViewTest', 'UpdateUserViewTest',
 class LoginViewTest(SetUpUserMixin, TestCase):
 
     def setUp(self):
-        self.client.login(username='test_user', password='12345')
+        self.client.login(username=USERNAME, password=PASSWORD)
 
     def test_redirect_when_user_logged_in(self):
-        response = self.client.post(reverse('login'), {'username': 'test_user',
-                                                       'password': '12345'})
+        response = self.client.post(reverse('login'), {'username': USERNAME,
+                                                       'password': PASSWORD})
 
         self.assertEqual(response.status_code, 302)
 
@@ -30,16 +30,14 @@ class LoginViewTest(SetUpUserMixin, TestCase):
 
 class RegisterViewTest(SetUpUserMixin, TestCase):
 
-    def setUp(self):
-        self.client.login(username='test_user', password='12345')
-
     def test_register_view(self):
         response = self.client.post(reverse('register'), REGISTER_DATA)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(get_user_model().objects.get(username='Yurii').email,
-                         'jura@mail.com')
+        current_user = get_user_model().objects.get(username='Yurii')
+        self.assertRedirects(response, reverse('login'))
 
     def test_redirect_to_home_page_if_user_logged_in(self):
+        self.client.login(username=USERNAME, password=PASSWORD)
         response = self.client.get(reverse('register'))
 
         self.assertEqual(response.status_code, 302)
@@ -49,22 +47,23 @@ class RegisterViewTest(SetUpUserMixin, TestCase):
 class UpdateUserViewTest(SetUpUserMixin, TestCase):
 
     def setUp(self):
-        self.client.login(username='test_user', password='12345')
+        self.client.login(username=USERNAME, password=PASSWORD)
 
     def test_valid_data_update_view(self):
-        current_user = get_user_model().objects.get(username='test_user')
+        current_user = get_user_model().objects.get(username=USERNAME)
         response = self.client.post(reverse('profile-update'),
                                     UPDATE_PROFILE_DATA)
 
         current_user.refresh_from_db()
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('profile'))
-        self.assertEqual(current_user.first_name, 'Yurii')
+        self.assertEqual(current_user.first_name,
+                         UPDATE_PROFILE_DATA['first_name'])
 
 
 class PasswordChangeViewTest(SetUpUserMixin, TestCase):
     def setUp(self):
-        self.client.login(username='test_user', password='12345')
+        self.client.login(username=USERNAME, password=PASSWORD)
 
     def test_change_password(self):
         response = self.client.post(

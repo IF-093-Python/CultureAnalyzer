@@ -39,7 +39,7 @@ class LoginView(auth_views.LoginView):
 class UserRegisterView(CreateView):
     template_name = 'users/registration.html'
     form_class = UserRegisterForm
-    success_url = '/login'
+    success_url = reverse_lazy('login')
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -123,9 +123,9 @@ class ManageUserView(LoginRequiredMixin, PermissionRequiredMixin,
         Superuser can change every user except superuser
         Admin can change every user except superuser and admin
         """
-        current_user = self.get_object()
-        if current_user.is_superuser or \
-                not self.request.user.is_superuser and current_user.is_admin:
+        selected_user = self.get_object()
+        if selected_user.is_superuser or \
+                not self.request.user.is_superuser and selected_user.is_admin:
             return False
         return True
 
