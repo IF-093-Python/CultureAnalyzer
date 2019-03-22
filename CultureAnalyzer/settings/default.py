@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_cool_paginator',
     'rest_framework',
+    'django_filters',
 
     'users.apps.UsersConfig',
     'groups',
@@ -127,8 +128,6 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
 
-ITEMS_ON_PAGE = 5
-
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -139,6 +138,11 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.OrderingFilter',
+        'rest_framework.filters.SearchFilter',
+    ),
 }
 
 SIMPLE_JWT = {
@@ -146,3 +150,5 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
     'AUTH_HEADER_TYPES': ('JWT', 'Bearer'),
 }
+
+TEST_RUNNER = 'CultureAnalyzer.tests.CustomTestRunner'

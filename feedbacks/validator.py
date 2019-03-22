@@ -1,4 +1,4 @@
-from feedbacks.exceptions import FValidationError
+from CultureAnalyzer.exceptions import FValidationError
 
 __all__ = ['FeedbackValidator', ]
 
