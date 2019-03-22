@@ -1,12 +1,14 @@
 from django.contrib.auth import get_user_model
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework import viewsets
 
-from api.serializers import SignUpSerializer, FeedbackSerializer, ProfileSerializer
+from api.serializers import (SignUpSerializer, FeedbackSerializer,
+                             ProfileSerializer, TraineeQuizzesSerializer)
 from feedbacks.models import Feedback
+from quiz.models import Quizzes
 
-__all__ = ['SignUpView', 'ProfileView', 'FeedbackViewSet']
+__all__ = ['SignUpView', 'ProfileView', 'FeedbackViewSet',
+           'TraineeQuizzesView']
 
 
 class SignUpView(generics.CreateAPIView):
@@ -27,3 +29,10 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 class FeedbackViewSet(viewsets.ModelViewSet):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
+
+
+class TraineeQuizzesView(generics.ListAPIView):
+    queryset = Quizzes.objects.all()
+    serializer_class = TraineeQuizzesSerializer
+    filter_fields = ('title', 'description', 'type_of_quiz')
+    search_fields = ('title', 'description', 'type_of_quiz')
