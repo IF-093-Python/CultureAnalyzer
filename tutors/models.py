@@ -19,10 +19,10 @@ class Questions(models.Model):
 
     class Meta:
         """
-        The tuple of the fields 'quiz' and 'question_number', which should be
+        The tuple of the fields 'quiz' and 'question_text', which should be
         unique together.
         """
-        unique_together = (('quiz', 'question_number'),)
+        unique_together = (('quiz', 'question_text'),)
 
 
 class Answers(models.Model):

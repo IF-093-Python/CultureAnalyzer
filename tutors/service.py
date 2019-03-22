@@ -28,5 +28,4 @@ def get_min_missing_value(model, filter_id):
             if value not in list_of_number:
                 return value
         return max_value + 1
-    else:
-        return 1
+    return 1
