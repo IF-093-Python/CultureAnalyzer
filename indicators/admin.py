@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import CountryIndicator
+from indicators.models import CountryIndicator
 
 
 @admin.register(CountryIndicator)
