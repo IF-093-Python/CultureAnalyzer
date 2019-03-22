@@ -3,7 +3,8 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
-from api.views import SignUpView, FeedbackViewSet, ProfileView
+from api.views import (SignUpView, FeedbackViewSet, ProfileView,
+                       BlockProfileView, AdminListView)
 
 __all__ = ['urlpatterns']
 
@@ -17,6 +18,8 @@ urlpatterns = [
     ])),
     path('sign-up/', SignUpView.as_view()),
     path('profile/', ProfileView.as_view()),
+    path('admin_page/', AdminListView.as_view()),
+    path('admin_page/<int:pk>', BlockProfileView.as_view())
 ]
 
 urlpatterns += router.urls

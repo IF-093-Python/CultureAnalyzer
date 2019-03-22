@@ -2,12 +2,13 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
-from api.fields import PasswordField, UniqueEmailField
 from CultureAnalyzer.exceptions import FValidationError
+from api.fields import PasswordField, UniqueEmailField
 from feedbacks.models import Feedback
 from feedbacks.validator import FeedbackValidator
 
-__all__ = ['SignUpSerializer', 'ProfileSerializer', 'FeedbackSerializer']
+__all__ = ['SignUpSerializer', 'ProfileSerializer', 'FeedbackSerializer',
+           'BlockProfileSerializer']
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -40,7 +41,6 @@ class ProfileSerializer(AccountSerializer):
 
 
 class FeedbackSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Feedback
         fields = ('id', 'feedback', 'min_value', 'max_value', 'indicator')
@@ -51,3 +51,15 @@ class FeedbackSerializer(serializers.ModelSerializer):
         except FValidationError as err:
             raise serializers.ValidationError({'min_value': str(err)})
         return data
+
+
+class BlockProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ('id', 'username', 'is_active', 'groups')
+
+
+class AdminListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ('id', 'username', 'is_active', 'groups')
