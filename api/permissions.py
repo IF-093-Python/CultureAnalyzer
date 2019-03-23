@@ -2,11 +2,11 @@ from django.contrib.auth.models import Group
 from rest_framework.permissions import BasePermission
 
 
-def is_in_group(user, group_name):
+def is_in_group(user, group_id):
     try:
-        print(Group.objects.get(id=1).user_set.filter(
+        print(Group.objects.get(id=group_id).user_set.filter(
             id=user.id))
-        return Group.objects.get(name=group_name).user_set.filter(
+        return Group.objects.get(id=group_id).user_set.filter(
             id=user.id).exists()
     except Group.DoesNotExist:
         return False
@@ -20,5 +20,5 @@ class HasGroupPermission(BasePermission):
         elif '_Public' in required_groups:
             return True
         else:
-            return any([is_in_group(request.user, group_name) for group_name in
+            return any([is_in_group(request.user, group_id) for group_id in
                         required_groups])

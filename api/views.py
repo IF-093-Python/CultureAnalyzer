@@ -3,11 +3,11 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import viewsets
 
-
 from api.serializers import SignUpSerializer, FeedbackSerializer, \
     ProfileSerializer
 from api.permissions import HasGroupPermission
 from feedbacks.models import Feedback
+from CultureAnalyzer.constants import TRAINEE_ID, MENTOR_ID, ADMIN_ID
 
 __all__ = ['SignUpView', 'ProfileView', 'FeedbackViewSet']
 
@@ -33,9 +33,9 @@ class FeedbackViewSet(viewsets.ModelViewSet):
 
     permission_classes = [HasGroupPermission]
     permission_groups = {
-        'list': ['Trainee'],
-        'create': ['Mentor'],
-        'partial_update': ['Mentor'],
-        'retrieve': ['Mentor'],
-        'destroy': ['Mentor'],
+        'list': [MENTOR_ID, TRAINEE_ID],
+        'create': [MENTOR_ID],
+        'partial_update': [MENTOR_ID],
+        'retrieve': [MENTOR_ID],
+        'destroy': [ADMIN_ID],
         }
