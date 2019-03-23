@@ -1,6 +1,6 @@
 from django.test import TestCase
-from ddt import ddt, data, unpack
 from django.urls import reverse
+from ddt import ddt, data, unpack
 
 from CultureAnalyzer.constants import ADMIN_ID
 from indicators.tests.util import create_user_with_role, USERNAME, PASSWORD
