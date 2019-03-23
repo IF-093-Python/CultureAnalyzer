@@ -3,7 +3,10 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import viewsets
 
-from api.serializers import SignUpSerializer, FeedbackSerializer, ProfileSerializer
+
+from api.serializers import SignUpSerializer, FeedbackSerializer, \
+    ProfileSerializer
+from api.permissions import HasGroupPermission
 from feedbacks.models import Feedback
 
 __all__ = ['SignUpView', 'ProfileView', 'FeedbackViewSet']
@@ -27,3 +30,12 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 class FeedbackViewSet(viewsets.ModelViewSet):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
+
+    permission_classes = [HasGroupPermission]
+    permission_groups = {
+        'list': ['Trainee'],
+        'create': ['Mentor'],
+        'partial_update': ['Mentor'],
+        'retrieve': ['Mentor'],
+        'destroy': ['Mentor'],
+        }
