@@ -1,5 +1,6 @@
 from django.test import TestCase
 from ddt import ddt, data, unpack
+from django.urls import reverse
 
 from CultureAnalyzer.constants import ADMIN_ID
 from indicators.tests.util import create_user_with_role, USERNAME, PASSWORD
@@ -12,6 +13,7 @@ __all__ = ['CountryIndicatorListViewTest', 'CountryIndicatorUpdateTest']
 class CountryIndicatorListViewTest(TestCase):
 
     fixtures = ['indicators/tests_data/test_data.json']
+    test_url = reverse('country_indicator:country_indicator_list')
 
     @classmethod
     def setUpTestData(cls):
@@ -22,11 +24,12 @@ class CountryIndicatorListViewTest(TestCase):
         self.client.login(username=USERNAME, password=PASSWORD)
 
     def test_indicators_result_list_view(self):
-        response = self.client.get("/indicators/")
+        response = self.client.get(self.test_url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['object_list']), 5)
 
-        response = self.client.get("/indicators/?page=2")
+        page_number = 2
+        response = self.client.get(f'{self.test_url}?page={page_number}')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['object_list']), 2)
 
@@ -34,7 +37,7 @@ class CountryIndicatorListViewTest(TestCase):
     @data(*SEARCH_DATA)
     def test_search_results(self, search_value, expected_count,
                             expected_iso_code_list):
-        response = self.client.get(f"/indicators/?indicator_search"
+        response = self.client.get(f"{self.test_url}?indicator_search"
                                    f"={search_value}")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['object_list']), expected_count,
@@ -59,9 +62,12 @@ class CountryIndicatorUpdateTest(TestCase):
         self.client.login(username=USERNAME, password=PASSWORD)
 
     def test_context_data(self):
-        response = self.client.get("/indicators/9/update/")
+        test_url = reverse('country_indicator:country_indicator_update',
+                           kwargs={'pk': 9})
+        response = self.client.get(test_url)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['update'])
 
-        response = self.client.get("/indicators/create/")
+        response = self.client.get(reverse(
+            'country_indicator:country_indicator_create'))
         self.assertFalse('update' in response.context.keys())
