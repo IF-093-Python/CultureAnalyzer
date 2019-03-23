@@ -50,9 +50,7 @@ class CustomUser(AbstractUser):
 
 class LoggedInUser(models.Model):
     """
-    Model to store the list of logged in users
-
-    user
+    Model for store logged in users.
 
     """
     user = models.OneToOneField(CustomUser, related_name='logged_in_user',
