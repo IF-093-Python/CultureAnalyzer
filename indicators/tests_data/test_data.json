@@ -1,0 +1,100 @@
+[
+{
+  "model": "indicators.countryindicator",
+  "pk": 8,
+  "fields": {
+    "iso_code": "ALB",
+    "name": "Albania",
+    "pdi": 0,
+    "idv": 0,
+    "mas": 0,
+    "uai": 0,
+    "lto": 61,
+    "ivr": 15
+  }
+},
+{
+  "model": "indicators.countryindicator",
+  "pk": 9,
+  "fields": {
+    "iso_code": "BRA",
+    "name": "Brazil",
+    "pdi": 69,
+    "idv": 38,
+    "mas": 49,
+    "uai": 87,
+    "lto": 90,
+    "ivr": 1
+  }
+},
+{
+  "model": "indicators.countryindicator",
+  "pk": 10,
+  "fields": {
+    "iso_code": "FRA",
+    "name": "France",
+    "pdi": 100,
+    "idv": 76,
+    "mas": 10,
+    "uai": 8,
+    "lto": 1,
+    "ivr": 87
+  }
+},
+{
+  "model": "indicators.countryindicator",
+  "pk": 11,
+  "fields": {
+    "iso_code": "GER",
+    "name": "Germany",
+    "pdi": 70,
+    "idv": 40,
+    "mas": 70,
+    "uai": 10,
+    "lto": 20,
+    "ivr": 43
+  }
+},
+{
+  "model": "indicators.countryindicator",
+  "pk": 12,
+  "fields": {
+    "iso_code": "ITA",
+    "name": "Italy",
+    "pdi": 11,
+    "idv": 80,
+    "mas": 98,
+    "uai": 8,
+    "lto": 8,
+    "ivr": 0
+  }
+},
+{
+  "model": "indicators.countryindicator",
+  "pk": 13,
+  "fields": {
+    "iso_code": "USA",
+    "name": "USA",
+    "pdi": 98,
+    "idv": 78,
+    "mas": 8,
+    "uai": 35,
+    "lto": 2,
+    "ivr": 62
+  }
+},
+{
+  "model": "indicators.countryindicator",
+  "pk": 14,
+  "fields": {
+    "iso_code": "UKR",
+    "name": "Ukraine",
+    "pdi": 32,
+    "idv": 43,
+    "mas": 88,
+    "uai": 90,
+    "lto": 36,
+    "ivr": 11
+  }
+}
+]
