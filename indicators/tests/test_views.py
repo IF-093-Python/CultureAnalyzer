@@ -26,7 +26,7 @@ class CountryIndicatorListViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         role_name = 'Admin'
-        permissions = {'indicators': ['view_countryindicator']}
+        permissions = ('view_countryindicator',)
         create_user_with_role(role_name, permissions)
 
     def setUp(self):
@@ -64,8 +64,7 @@ class CountryIndicatorUpdateTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         role_name = 'Admin'
-        permissions = {'indicators': ['change_countryindicator',
-                                      'add_countryindicator']}
+        permissions = ('change_countryindicator', 'add_countryindicator')
         create_user_with_role(role_name, permissions)
 
     def setUp(self):
