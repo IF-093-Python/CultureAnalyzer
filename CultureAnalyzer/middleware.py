@@ -1,6 +1,7 @@
-from CultureAnalyzer.util import login_redirect
-from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.models import Session
+from django.db import transaction
+
+from CultureAnalyzer.util import login_redirect
 
 __all__ = ['AuthRequiredMiddleware', 'SwitchSessionDataMiddleware']
 
@@ -19,24 +20,55 @@ class SwitchSessionDataMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        # Code to be executed for each request before
-        # the view (and later middleware) are called.
-        if request.user.is_authenticated:
-            stored_session_key = request.user.logged_in_user.session_key
-
-            if stored_session_key and stored_session_key != request.session.session_key:
-                stored_session_data = Session.objects.get(
-                    session_key=stored_session_key).get_decoded()
-                expire_date = request.session.get_expiry_date()
-                encoded_data = SessionStore().encode(stored_session_data)
-                Session.objects.get(session_key=stored_session_key).delete()
-                Session.objects.update(
-                    session_key=request.session.session_key,
-                    session_data=encoded_data, expire_date=expire_date)
-
-            request.user.logged_in_user.session_key = request.session.session_key
-            request.user.logged_in_user.save()
+        self._check_session(request)
 
         response = self.get_response(request)
 
         return response
+
+    @transaction.atomic()
+    def _check_session(self, request):
+        """
+        Method, which checks if there previous session, that`s mean has changed
+         the client from which user authenticated.
+
+        :var current_session_key(str): hashed key, which identifies current
+         session;
+        :var stored_session_key(str): hashed key, which identifies previous
+         session;
+        """
+        if request.user.is_authenticated:
+            current_session_key = request.session.session_key
+            stored_session_key = request.user.logged_in_user.session_key
+
+            if stored_session_key and stored_session_key != current_session_key:
+                self._switch_session_data(request, stored_session_key)
+            request.user.logged_in_user.session_key = current_session_key
+            request.user.logged_in_user.save()
+
+    @transaction.atomic()
+    def _switch_session_data(self, request, stored_session_key):
+        """
+        Method, which get data from previous session, remove it
+        (previous session) and set this data to current session.
+
+        :param stored_session_key: hashed key, which identifies previous
+         session;
+        :var current_session_key(str): hashed key, which identifies current
+         session;
+        :var stored_session_data(str): hashed data from previous session;
+        :var expire_date(datetime): future date, which means when the session
+         becomes inactive.
+        """
+        current_session_key = request.session.session_key
+        stored_session_data = Session.objects.get(
+            session_key=stored_session_key).session_data
+        expire_date = request.session.get_expiry_date()
+
+        # delete not used anymore session
+        Session.objects.get(session_key=stored_session_key).delete()
+
+        Session.objects.update(
+            session_key=current_session_key,
+            session_data=stored_session_data,
+            expire_date=expire_date)
