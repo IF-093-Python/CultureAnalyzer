@@ -7,8 +7,8 @@ __all__ = ['AuthRequiredMiddleware', 'SwitchSessionDataMiddleware']
 
 
 class AuthRequiredMiddleware:
-    def __init__(self, response):
-        self.get_response = response
+    def __init__(self, get_response):
+        self.get_response = get_response
 
     @login_redirect
     def __call__(self, request):
@@ -22,9 +22,7 @@ class SwitchSessionDataMiddleware:
     def __call__(self, request):
         self._check_session(request)
 
-        response = self.get_response(request)
-
-        return response
+        return self.get_response(request)
 
     @transaction.atomic()
     def _check_session(self, request):
@@ -42,12 +40,12 @@ class SwitchSessionDataMiddleware:
             stored_session_key = request.user.logged_in_user.session_key
 
             if stored_session_key and stored_session_key != current_session_key:
-                self._switch_session_data(request, stored_session_key)
-            request.user.logged_in_user.session_key = current_session_key
-            request.user.logged_in_user.save()
+                self._switch_session_data(request, current_session_key,
+                                          stored_session_key)
 
     @transaction.atomic()
-    def _switch_session_data(self, request, stored_session_key):
+    def _switch_session_data(self, request, current_session_key,
+                             stored_session_key):
         """
         Method, which get data from previous session, remove it
         (previous session) and set this data to current session.
@@ -60,15 +58,17 @@ class SwitchSessionDataMiddleware:
         :var expire_date(datetime): future date, which means when the session
          becomes inactive.
         """
-        current_session_key = request.session.session_key
+        # getting previous session data
         stored_session_data = Session.objects.get(
             session_key=stored_session_key).session_data
-        expire_date = request.session.get_expiry_date()
-
-        # delete not used anymore session
+        # remove not used anymore session
         Session.objects.get(session_key=stored_session_key).delete()
-
+        # update current session
+        expire_date = request.session.get_expiry_date()
         Session.objects.update(
             session_key=current_session_key,
             session_data=stored_session_data,
             expire_date=expire_date)
+        # update LoggedInUser table with relevant session key
+        request.user.logged_in_user.session_key = current_session_key
+        request.user.logged_in_user.save()
