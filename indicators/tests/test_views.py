@@ -2,20 +2,9 @@ from django.test import TestCase
 from ddt import ddt, data, unpack
 
 from indicators.tests.util import create_user_with_role, USERNAME, PASSWORD
+from indicators.tests_data.test_views_data import SEARCH_DATA
 
 __all__ = ['CountryIndicatorListViewTest', 'CountryIndicatorUpdateTest']
-
-
-_search_data = (
-        ('bra', 1, ['BRA']),
-        ('an', 3, ['ALB', 'FRA', 'GER']),
-        ('ukr', 1, ['UKR']),
-        ('France', 1, ['FRA']),
-        ('Ukraine', 1, ['UKR']),
-        ('tuy', 0, []),
-        ('Frynce', 0, []),
-        (' fj 9', 0, [])
-    )
 
 
 @ddt
@@ -42,7 +31,7 @@ class CountryIndicatorListViewTest(TestCase):
         self.assertEqual(len(response.context['object_list']), 2)
 
     @unpack
-    @data(*_search_data)
+    @data(*SEARCH_DATA)
     def test_search_results(self, search_value, expected_count,
                             expected_iso_code_list):
         response = self.client.get(f"/indicators/?indicator_search"
