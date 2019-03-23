@@ -1,6 +1,7 @@
 from django.test import TestCase
 from ddt import ddt, data, unpack
 
+from CultureAnalyzer.constants import ADMIN_ID
 from indicators.tests.util import create_user_with_role, USERNAME, PASSWORD
 from indicators.tests_data.test_views_data import SEARCH_DATA
 
@@ -14,9 +15,8 @@ class CountryIndicatorListViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        role_name = 'Admin'
         permissions = ('view_countryindicator',)
-        create_user_with_role(role_name, permissions)
+        create_user_with_role(ADMIN_ID, permissions)
 
     def setUp(self):
         self.client.login(username=USERNAME, password=PASSWORD)
@@ -52,9 +52,8 @@ class CountryIndicatorUpdateTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        role_name = 'Admin'
         permissions = ('change_countryindicator', 'add_countryindicator')
-        create_user_with_role(role_name, permissions)
+        create_user_with_role(ADMIN_ID, permissions)
 
     def setUp(self):
         self.client.login(username=USERNAME, password=PASSWORD)
