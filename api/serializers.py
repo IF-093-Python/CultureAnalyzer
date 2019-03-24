@@ -2,12 +2,15 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
-from api.fields import PasswordField, UniqueEmailField
 from CultureAnalyzer.exceptions import FValidationError
+from api.fields import PasswordField, UniqueEmailField
 from feedbacks.models import Feedback
 from feedbacks.validator import FeedbackValidator
+from quiz.models import Quizzes
+from tutors.models import Questions, Answers
 
-__all__ = ['SignUpSerializer', 'ProfileSerializer', 'FeedbackSerializer']
+__all__ = ['SignUpSerializer', 'ProfileSerializer', 'FeedbackSerializer',
+           'TraineeQuizzesSerializer']
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -40,7 +43,6 @@ class ProfileSerializer(AccountSerializer):
 
 
 class FeedbackSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Feedback
         fields = ('id', 'feedback', 'min_value', 'max_value', 'indicator')
@@ -51,3 +53,25 @@ class FeedbackSerializer(serializers.ModelSerializer):
         except FValidationError as err:
             raise serializers.ValidationError({'min_value': str(err)})
         return data
+
+
+class TraineeAnswersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Answers
+        fields = ('answer_number', 'answer_text')
+
+
+class TraineeQuestionsSerializer(serializers.ModelSerializer):
+    answers = TraineeAnswersSerializer(many=True, source='answers_set')
+
+    class Meta:
+        model = Questions
+        fields = ('question_number', 'question_text', 'answers')
+
+
+class TraineeQuizzesSerializer(serializers.ModelSerializer):
+    questions = TraineeQuestionsSerializer(many=True, source='questions_set')
+
+    class Meta:
+        model = Quizzes
+        fields = ('title', 'description', 'type_of_quiz', 'questions')
