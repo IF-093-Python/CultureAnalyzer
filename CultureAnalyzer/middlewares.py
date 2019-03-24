@@ -43,8 +43,9 @@ class SwitchSessionDataMiddleware:
                 self._switch_session_data(request, current_session_key,
                                           stored_session_key)
 
+    @staticmethod
     @transaction.atomic()
-    def _switch_session_data(self, request, current_session_key,
+    def _switch_session_data(request, current_session_key,
                              stored_session_key):
         """
         Method, which get data from previous session, remove it
