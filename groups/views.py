@@ -8,8 +8,7 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import Count
 from django.http import Http404
-from django.shortcuts import get_object_or_404
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.views import generic
@@ -323,7 +322,8 @@ class MentorGroupAdd(PermissionRequiredMixin, SuccessMessageMixin,
         """
         users_in_group = get_user_model().objects. \
             filter(is_active=True, user_in_group=self.kwargs['pk'])
-        if not form.cleaned_data['user']:  # If we don't add any students
+        # If we don't add any students:
+        if not form.cleaned_data['user']:
             return redirect('groups:mentor_group_update',
                             pk=self.kwargs['pk'])
         form.cleaned_data['user'] = \
@@ -409,7 +409,7 @@ class SheduleGroupListView(PermissionRequiredMixin, UserPassesTestMixin,
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['group'] = get_object_or_404(Group, pk=self.kwargs['pk'])
-        context['now'] = timezone.now
+        context['now'] = timezone.now()
         return context
 
     def get_queryset(self):

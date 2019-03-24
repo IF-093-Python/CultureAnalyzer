@@ -58,9 +58,9 @@
                 <br>
                 <br>
                 {% if search %}
-                <b>Search results for "{{ search_label }}":</b>
+                <strong>Search results for "{{ search_label }}":</strong>
                 {% else %}
-                <b>Users:</b>
+                <strong>Users:</strong>
                 {% endif %}
                 {% for user in users_in_group %}
                 {% if user not in object_list %}
