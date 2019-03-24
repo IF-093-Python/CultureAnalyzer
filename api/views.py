@@ -1,16 +1,17 @@
 from django.contrib.auth import get_user_model
-from rest_framework import generics
-from rest_framework import viewsets
+from rest_framework import generics, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from api.permissions import IsAdmin, CanChangeUser
 from api.serializers import (SignUpSerializer, FeedbackSerializer,
                              ProfileSerializer, BlockProfileSerializer,
-                             AdminListSerializer)
+                             AdminListSerializer, TraineeQuizzesSerializer)
 from feedbacks.models import Feedback
+from quiz.models import Quizzes
 from users.filters import admin_search
 
-__all__ = ['SignUpView', 'ProfileView', 'FeedbackViewSet', 'BlockProfileView',
+__all__ = ['SignUpView', 'ProfileView', 'FeedbackViewSet',
+           'TraineeQuizzesView', 'BlockProfileView',
            'AdminListView']
 
 
@@ -50,3 +51,10 @@ class BlockProfileView(generics.RetrieveUpdateAPIView):
 
     def get_queryset(self):
         return get_user_model().objects.all()
+
+
+class TraineeQuizzesView(generics.ListAPIView):
+    queryset = Quizzes.objects.all()
+    serializer_class = TraineeQuizzesSerializer
+    filter_fields = ('title', 'description', 'type_of_quiz')
+    search_fields = ('title', 'description', 'type_of_quiz')
