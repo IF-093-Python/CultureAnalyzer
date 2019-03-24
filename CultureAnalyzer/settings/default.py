@@ -57,8 +57,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'CultureAnalyzer.middleware.AuthRequiredMiddleware',
-    'CultureAnalyzer.middleware.SwitchSessionDataMiddleware',
+    'CultureAnalyzer.middlewares.AuthRequiredMiddleware',
+    'CultureAnalyzer.middlewares.SwitchSessionDataMiddleware',
 ]
 
 ROOT_URLCONF = 'CultureAnalyzer.urls'

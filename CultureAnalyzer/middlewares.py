@@ -1,7 +1,7 @@
 from django.contrib.sessions.models import Session
 from django.db import transaction
 
-from CultureAnalyzer.util import login_redirect
+from CultureAnalyzer.utils import login_redirect
 
 __all__ = ['AuthRequiredMiddleware', 'SwitchSessionDataMiddleware']
 
