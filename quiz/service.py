@@ -9,9 +9,12 @@ from feedbacks.models import Feedback
 __all__ = ['check_group_indicators', 'get_average_results',
            'get_indicators_values', 'get_groups_results',
            'get_final_buisness_result',
-           'get_feedback', 'zip_list', 'NUMBER_OF_QUESTION_FOR_BUISNESS_QUIZ']
+           'get_feedback', 'zip_list', 'NUMBER_OF_QUESTION_FOR_BUSINESS_QUIZ']
 
-NUMBER_OF_QUESTION_FOR_BUISNESS_QUIZ = 24
+NUMBER_OF_QUESTION_FOR_BUSINESS_QUIZ = 24
+
+MIN_INDICATOR_VALUE = 0
+MAX_INDICATOR_VALUE = 100
 
 
 def check_group_indicators(group_indicator):
@@ -23,10 +26,10 @@ def check_group_indicators(group_indicator):
     :return:dict Dictionary with correct indicators
     """
     for indicator in group_indicator:
-        if group_indicator[indicator] < 0:
-            group_indicator[indicator] = 0
-        elif group_indicator[indicator] > 100:
-            group_indicator[indicator] = 100
+        if group_indicator[indicator] < MIN_INDICATOR_VALUE:
+            group_indicator[indicator] = MIN_INDICATOR_VALUE
+        elif group_indicator[indicator] > MAX_INDICATOR_VALUE:
+            group_indicator[indicator] = MAX_INDICATOR_VALUE
     return group_indicator
 
 
@@ -110,7 +113,7 @@ def get_final_buisness_result(data, *args):
             }
         group_answers = get_groups_results(users_results)
     average_result = get_average_results(group_answers,
-                                         NUMBER_OF_QUESTION_FOR_BUISNESS_QUIZ)
+                                         NUMBER_OF_QUESTION_FOR_BUSINESS_QUIZ)
     indicator_list = get_indicators_values(average_result)
     data = check_group_indicators(indicator_list)
     return data
