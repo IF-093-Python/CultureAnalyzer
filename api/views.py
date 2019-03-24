@@ -6,6 +6,7 @@ from api.serializers import (SignUpSerializer, FeedbackSerializer,
                              ProfileSerializer, TraineeQuizzesSerializer)
 from feedbacks.models import Feedback
 from quiz.models import Quizzes
+from api.permissions import HasGroupPermission
 from CultureAnalyzer.constants import TRAINEE_ID, MENTOR_ID, ADMIN_ID
 
 __all__ = ['SignUpView', 'ProfileView', 'FeedbackViewSet',
