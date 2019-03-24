@@ -7,8 +7,11 @@ from django.template.defaultfilters import register
 from feedbacks.models import Feedback
 
 __all__ = ['check_group_indicators', 'get_average_results',
-           'get_indicators_values', 'get_groups_results', 'get_final_result',
-           'get_feedback', 'zip_list', ]
+           'get_indicators_values', 'get_groups_results',
+           'get_final_buisness_result',
+           'get_feedback', 'zip_list', 'NUMBER_OF_QUESTION_FOR_BUISNESS_QUIZ']
+
+NUMBER_OF_QUESTION_FOR_BUISNESS_QUIZ = 24
 
 
 def check_group_indicators(group_indicator):
@@ -27,14 +30,15 @@ def check_group_indicators(group_indicator):
     return group_indicator
 
 
-def get_average_results(list_of_answer):
+def get_average_results(list_of_answer, number_of_question):
     """
     Return list of average for each answer
     each element in this list is average value for list inside list_of_answer
+    :param int number_of_question: number of quiestion in quiz
     :param list list_of_answer: List with lists of users answers
     :return: list List of average result for each answer
     """
-    number_of_questions = 24
+    number_of_questions = number_of_question
     avg_list = []
     for i in range(number_of_questions):
         avg_list.append(sum([result[i] for result in list_of_answer]) / len(
@@ -77,7 +81,7 @@ def get_groups_results(data):
     return list_of_results
 
 
-def get_final_result(data, *args):
+def get_final_buisness_result(data, *args):
     """
     Return dictionary of indicators with correct values
     If data is Profile objects then args should be id of result
@@ -105,7 +109,8 @@ def get_final_result(data, *args):
                 'ivr': 0,
             }
         group_answers = get_groups_results(users_results)
-    average_result = get_average_results(group_answers)
+    average_result = get_average_results(group_answers,
+                                         NUMBER_OF_QUESTION_FOR_BUISNESS_QUIZ)
     indicator_list = get_indicators_values(average_result)
     data = check_group_indicators(indicator_list)
     return data
