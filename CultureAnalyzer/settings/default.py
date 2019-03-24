@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -165,7 +166,6 @@ TEST_RUNNER = 'CultureAnalyzer.tests.CustomTestRunner'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'users.authentication.EmailAuthBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
