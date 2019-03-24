@@ -42,7 +42,7 @@ class RecommendationModelTest(TestCase):
     def test_get_absolute_url(self):
         recommendation = Recommendation.objects.get(pk=1)
         self.assertEqual(recommendation.get_absolute_url(),
-                          f'/feedbacks/{recommendation.feedback.pk}')
+                         f'/feedbacks/{recommendation.feedback.pk}')
 
     def test_object_name_is_first_30_characters_of_recommendation(self):
         recommendation = Recommendation.objects.get(pk=1)

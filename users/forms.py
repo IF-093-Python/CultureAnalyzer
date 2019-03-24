@@ -4,6 +4,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 from django.forms import CheckboxSelectMultiple
 
+from CultureAnalyzer.exceptions import PValidationError
 from users.choices import GENDER_CHOICES, EDUCATION_CHOICES
 from users.validators import ProfileValidator
 
@@ -68,7 +69,27 @@ class UserUpdateForm(forms.ModelForm):
                   'date_of_birth', 'education', 'gender']
 
     def clean_experience(self):
-        return ProfileValidator.validate(self.cleaned_data)
+        try:
+            return ProfileValidator.validate(
+                self.cleaned_data.get('experience'))
+        except PValidationError as err:
+            self.add_error('experience', str(err))
+
+
+class BlockUserForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['groups'].widget = CheckboxSelectMultiple()
+
+    class Meta:
+        model = get_user_model()
+        fields = ['is_active', 'groups']
+
+
+class GroupForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ['name', 'permissions']
 
 
 class BlockUserForm(forms.ModelForm):

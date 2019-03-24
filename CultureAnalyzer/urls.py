@@ -1,5 +1,5 @@
-"""CultureAnalyzer URL Configuration
-
+"""
+CultureAnalyzer URL Configuration
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.1/topics/http/urls/
 Examples:
@@ -24,10 +24,10 @@ urlpatterns = [
     path('indicators/',
          include('indicators.urls', namespace='country_indicator')),
     path('quiz/', include('quiz.urls', namespace='quiz')),
-    path('category_question/', include('tutors.urls', namespace='tutors')),
+    path('questions/', include('tutors.urls', namespace='tutors')),
     path('feedbacks/', include('feedbacks.urls')),
-
-    path('api/', include('api.urls'))
+    path('api/', include('api.urls')),
+    path('groups/', include('groups.urls', namespace='groups')),
 ]
 
 if settings.DEBUG:
