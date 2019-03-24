@@ -5,8 +5,8 @@ from django.db import models, transaction
 from CultureAnalyzer.constants import ADMIN_ID, TRAINEE_ID, MENTOR_ID
 from users.choices import GENDER_CHOICES, EDUCATION_CHOICES
 
-MIN_IMAGE_HEIGHT = 300
-MIN_IMAGE_WIDTH = 300
+MAX_IMAGE_HEIGHT = 300
+MAX_IMAGE_WIDTH = 300
 
 
 class CustomUser(AbstractUser):
@@ -51,8 +51,8 @@ class CustomUser(AbstractUser):
         try:
             if self.image:
                 img = Image.open(self.image.path)
-                if img.height > MIN_IMAGE_HEIGHT or img.width > MIN_IMAGE_WIDTH:
-                    output_size = (MIN_IMAGE_HEIGHT, MIN_IMAGE_WIDTH)
+                if img.height > MAX_IMAGE_HEIGHT or img.width > MAX_IMAGE_WIDTH:
+                    output_size = (MAX_IMAGE_HEIGHT, MAX_IMAGE_WIDTH)
                     img.thumbnail(output_size, Image.ANTIALIAS)
                     img.save(self.image.path)
         except (OSError, IOError):
