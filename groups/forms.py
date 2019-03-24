@@ -43,21 +43,22 @@ class SheduleForm(forms.ModelForm):
         self.fields['quiz'] = forms.ModelChoiceField(queryset=quizzes,
                                                      initial=quizzes.first())
 
-    def clean(self):
-        """Checks validity of dates"""
-        # Checking start field
+    def clean_start(self):
+        """Checks validity of start date"""
         start = self.cleaned_data.get('start')
-        end = self.cleaned_data.get('end')
         try:
-            SheduleValidator.start_validator(start)
+            return SheduleValidator.start_validator(start)
         except PValidationError as err:
             self.add_error('start', str(err))
-        # Checking end field
+        return start
+
+    def clean_end(self):
+        """Checks validity of end date"""
         try:
-            SheduleValidator.end_validator(start, end)
+            return SheduleValidator.end_validator(
+                self.cleaned_data.get('start'), self.cleaned_data.get('end'))
         except PValidationError as err:
             self.add_error('end', str(err))
-        return self.cleaned_data
 
     class Meta:
         model = Shedule
