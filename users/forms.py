@@ -90,19 +90,3 @@ class GroupForm(forms.ModelForm):
     class Meta:
         model = Group
         fields = ['name', 'permissions']
-
-
-class BlockUserForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['groups'].widget = CheckboxSelectMultiple()
-
-    class Meta:
-        model = get_user_model()
-        fields = ['is_active', 'groups']
-
-
-class GroupForm(forms.ModelForm):
-    class Meta:
-        model = Group
-        fields = ['name', 'permissions']

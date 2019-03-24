@@ -18,11 +18,6 @@ class Quizzes(models.Model):
             ("view_test_player", "Can view the test player"),
             )
 
-    class Meta:
-        permissions = (
-            ("view_test_player", "Can view the test player"),
-            )
-
     def __str__(self):
         return self.title
 
