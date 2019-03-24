@@ -13,24 +13,24 @@ from quiz.tests_data.test_service_data import (get_random_data,
 
 class TestService(TestCase):
 
-    def test_user_average_data_return_24_results(self):
+    def test_user_average_data(self):
         self.assertEqual(len(get_average_results([
             get_random_data(VALID_MIN_VALUE, VALID_MAX_VALUE,
                             NUMBER_OF_QUESTION)])), 24)
 
-    def test_group_average_data_return_24_results(self):
+    def test_group_average_data(self):
         self.assertEqual(len(get_average_results(
             get_group_random_data(VALID_MIN_VALUE, VALID_MAX_VALUE,
                                   NUMBER_OF_QUESTION))), 24)
 
-    def test_method_returns_6_indicators(self):
+    def test_get_average_results_method(self):
         avg_data = get_average_results(
             get_group_random_data(VALID_MIN_VALUE, VALID_MAX_VALUE,
                                   NUMBER_OF_QUESTION))
         indicators = get_indicators_values(avg_data)
         self.assertEqual(len(indicators), 6)
 
-    def test_method_return_right_indicator_values(self):
+    def test_get_indicators_values_method_with_valid_data(self):
         avg_data = get_average_results(
             get_group_random_data(VALID_MIN_VALUE, VALID_MAX_VALUE,
                                   NUMBER_OF_QUESTION))
@@ -39,7 +39,7 @@ class TestService(TestCase):
         self.assertTrue(all(100 >= i >= 0 for i in
                             check_group_indicators(indicators).values()))
 
-    def test_method_return_right_indicator_for_wrong_value(self):
+    def test_get_indicators_values_method_with_invalid_data(self):
         avg_data = get_average_results(
             get_group_random_data(INVALID_MIN_VALUE, INVALID_MAX_VALUE,
                                   NUMBER_OF_QUESTION))
