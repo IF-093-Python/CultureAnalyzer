@@ -9,7 +9,8 @@ from feedbacks.models import Feedback
 __all__ = ['check_group_indicators', 'get_average_results',
            'get_indicators_values', 'get_groups_results',
            'get_final_buisness_result',
-           'get_feedback', 'zip_list', 'NUMBER_OF_QUESTION_FOR_BUSINESS_QUIZ']
+           'get_feedback', 'zip_list', 'NUMBER_OF_QUESTION_FOR_BUSINESS_QUIZ',
+           'MAX_INDICATOR_VALUE', 'MIN_INDICATOR_VALUE']
 
 NUMBER_OF_QUESTION_FOR_BUSINESS_QUIZ = 24
 
