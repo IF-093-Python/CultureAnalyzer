@@ -26,6 +26,7 @@ urlpatterns = [
     path('quiz/', include('quiz.urls', namespace='quiz')),
     path('questions/', include('tutors.urls', namespace='tutors')),
     path('feedbacks/', include('feedbacks.urls')),
+    path('accounts/', include('allauth.urls')),
 
     path('api/', include('api.urls'))
 ]
