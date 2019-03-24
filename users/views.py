@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import (LoginRequiredMixin,
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect
 from django.views.generic import (CreateView, UpdateView, DetailView, ListView,
-                                  DeleteView)
+                                  )
 from django.urls import reverse_lazy
 from django.contrib.auth.models import Group
 
@@ -19,7 +19,6 @@ __all__ = [
     'ListGroups',
     'CreateGroup',
     'UpdateGroups',
-    'DeleteGroups',
     ]
 
 
@@ -116,18 +115,6 @@ class UpdateGroups(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context['update'] = True
         return context
-
-
-class DeleteGroups(LoginRequiredMixin, PermissionRequiredMixin,
-                   SuccessMessageMixin, DeleteView,
-                   ):
-    template_name = 'users/delete_Group.html'
-    context_object_name = 'group'
-    model = Group
-    form_class = GroupForm
-    success_url = reverse_lazy('group_perm-list')
-    success_message = 'Group: "%(name)s" was deleted successfully'
-    permission_required = 'auth.delete_group'
 
 
 class CreateGroup(LoginRequiredMixin, PermissionRequiredMixin,

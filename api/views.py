@@ -1,14 +1,16 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from rest_framework import generics, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from api.serializers import (SignUpSerializer, FeedbackSerializer,
-                             ProfileSerializer, TraineeQuizzesSerializer)
+                             ProfileSerializer, TraineeQuizzesSerializer,
+                             PermissionGroup)
 from feedbacks.models import Feedback
 from quiz.models import Quizzes
 
 __all__ = ['SignUpView', 'ProfileView', 'FeedbackViewSet',
-           'TraineeQuizzesView']
+           'TraineeQuizzesView', 'GroupViewSet']
 
 
 class SignUpView(generics.CreateAPIView):
@@ -36,3 +38,8 @@ class TraineeQuizzesView(generics.ListAPIView):
     serializer_class = TraineeQuizzesSerializer
     filter_fields = ('title', 'description', 'type_of_quiz')
     search_fields = ('title', 'description', 'type_of_quiz')
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = PermissionGroup
