@@ -1,29 +1,14 @@
 import json
+
+from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.template.defaultfilters import register
-from django.contrib.auth import get_user_model
 
 from feedbacks.models import Feedback
 
-__all__ = ['get_constant', 'check_group_indicators', 'get_average_results',
+__all__ = ['check_group_indicators', 'get_average_results',
            'get_indicators_values', 'get_groups_results', 'get_final_result',
            'get_feedback', 'zip_list', ]
-
-
-def shift_value(indicator_value):
-    """
-    Return constant for wrong indicator
-    indicator is wrong when it is < 0 or > 100
-    Example:
-    indicator = -12
-    if indicator < 0 then return 0
-    if indicator > 100 then return 100
-    :param int|float indicator_value: Indicator`s wrong value
-    :return: int|float Constant for wrong indicator
-    """
-    if indicator_value < 0:
-        return 0
-    return 100
 
 
 def check_group_indicators(group_indicator):
@@ -35,9 +20,10 @@ def check_group_indicators(group_indicator):
     :return:dict Dictionary with correct indicators
     """
     for indicator in group_indicator:
-        if not 0 < group_indicator[indicator] < 100:
-            group_indicator[indicator] = shift_value(
-                group_indicator[indicator])
+        if group_indicator[indicator] < 0:
+            group_indicator[indicator] = 0
+        elif group_indicator[indicator] > 100:
+            group_indicator[indicator] = 100
     return group_indicator
 
 
@@ -62,7 +48,7 @@ def get_indicators_values(answers_list):
     :return: dict dictionary with value for each indicator
     """
     group = {'pdi': round(35 * (answers_list[6] - answers_list[1]) + 25 * (
-                    answers_list[19] - answers_list[22]), 2),
+            answers_list[19] - answers_list[22]), 2),
              'idv': round(35 * (answers_list[3] - answers_list[0]) + 35 * (
                      answers_list[8] - answers_list[5]), 2),
              'mas': round(35 * (answers_list[4] - answers_list[2]) + 35 * (
@@ -136,9 +122,9 @@ def get_feedback(indicator_obj, dict_result, indicator_name):
     for val in range(6):
         indicators_difference = abs(indicator_obj[val] - dict_result[val])
         indicator_feedback = Feedback.objects.filter(
-                            Q(min_value__lte=indicators_difference) &
-                            Q(max_value__gte=indicators_difference),
-                            indicator__iexact=indicator_name[val])
+            Q(min_value__lte=indicators_difference) &
+            Q(max_value__gte=indicators_difference),
+            indicator__iexact=indicator_name[val])
         indicators_feedbacks[indicator_name[val]] = indicator_feedback
     return indicators_feedbacks
 
