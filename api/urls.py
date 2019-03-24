@@ -4,12 +4,18 @@ from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
 from api.views import (SignUpView, FeedbackViewSet, ProfileView,
-                       TraineeQuizzesView)
+                       TraineeQuizzesView, CountryIndicatorViewSet,
+                       MentorQuizViewSet, MentorQuestionViewSet,
+                       MentorAnswerViewSet)
 
 __all__ = ['urlpatterns']
 
 router = DefaultRouter()
 router.register(r'feedbacks', FeedbackViewSet, basename='api_feedback')
+router.register(r'quizzes', MentorQuizViewSet)
+router.register(r'questions', MentorQuestionViewSet)
+router.register(r'answers', MentorAnswerViewSet)
+router.register(r'country_indicator', CountryIndicatorViewSet)
 
 urlpatterns = [
     path('token/', include([

@@ -2,13 +2,20 @@ from django.contrib.auth import get_user_model
 from rest_framework import generics, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from api.serializers import (SignUpSerializer, FeedbackSerializer,
-                             ProfileSerializer, TraineeQuizzesSerializer)
+from api.serializers.account import (SignUpSerializer, ProfileSerializer)
+from api.serializers.country_indicator import CountryIndicatorSerializer
+from api.serializers.feedback import FeedbackSerializer
+from api.serializers.quiz import (TraineeQuizzesSerializer,
+                                  MentorQuizSerializer, MentorAnswerSerializer,
+                                  MentorQuestionSerializer)
 from feedbacks.models import Feedback
+from indicators.models import CountryIndicator
 from quiz.models import Quizzes
+from tutors.models import Questions, Answers
 
 __all__ = ['SignUpView', 'ProfileView', 'FeedbackViewSet',
-           'TraineeQuizzesView']
+           'TraineeQuizzesView', 'CountryIndicatorViewSet',
+           'MentorQuizViewSet', 'MentorQuestionViewSet', 'MentorAnswerViewSet']
 
 
 class SignUpView(generics.CreateAPIView):
@@ -36,3 +43,33 @@ class TraineeQuizzesView(generics.ListAPIView):
     serializer_class = TraineeQuizzesSerializer
     filter_fields = ('title', 'description', 'type_of_quiz')
     search_fields = ('title', 'description', 'type_of_quiz')
+
+
+class CountryIndicatorViewSet(viewsets.ModelViewSet):
+    queryset = CountryIndicator.objects.all()
+    serializer_class = CountryIndicatorSerializer
+    filter_fields = (
+        'iso_code', 'name', 'pdi', 'idv', 'mas', 'uai', 'lto', 'ivr')
+    search_fields = (
+        'iso_code', 'name', 'pdi', 'idv', 'mas', 'uai', 'lto', 'ivr')
+
+
+class MentorQuizViewSet(viewsets.ModelViewSet):
+    queryset = Quizzes.objects.all()
+    serializer_class = MentorQuizSerializer
+    filter_fields = ('title', 'description', 'type_of_quiz')
+    search_fields = ('title', 'description', 'type_of_quiz')
+
+
+class MentorQuestionViewSet(viewsets.ModelViewSet):
+    queryset = Questions.objects.all()
+    serializer_class = MentorQuestionSerializer
+    filter_fields = ('quiz', 'question_number', 'question_text')
+    search_fields = ('quiz', 'question_number', 'question_text')
+
+
+class MentorAnswerViewSet(viewsets.ModelViewSet):
+    queryset = Answers.objects.all()
+    serializer_class = MentorAnswerSerializer
+    filter_fields = ('question', 'answer_number', 'answer_text')
+    search_fields = ('question', 'answer_number', 'answer_text')
