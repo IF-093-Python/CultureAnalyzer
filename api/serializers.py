@@ -11,7 +11,7 @@ from quiz.models import Quizzes
 from tutors.models import Questions, Answers
 
 __all__ = ['SignUpSerializer', 'ProfileSerializer', 'FeedbackSerializer',
-           'TraineeQuizzesSerializer']
+           'TraineeQuizzesSerializer', 'PermissionGroupSerializer']
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -78,7 +78,7 @@ class TraineeQuizzesSerializer(serializers.ModelSerializer):
         fields = ('title', 'description', 'type_of_quiz', 'questions')
 
 
-class PermissionGroup(serializers.ModelSerializer):
+class PermissionGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = ('name', 'permissions')

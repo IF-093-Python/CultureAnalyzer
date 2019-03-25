@@ -8,7 +8,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from api.serializers import (SignUpSerializer, FeedbackSerializer,
                              ProfileSerializer, TraineeQuizzesSerializer,
-                             PermissionGroup)
+                             PermissionGroupSerializer)
 from feedbacks.models import Feedback
 from quiz.models import Quizzes
 
@@ -46,4 +46,4 @@ class TraineeQuizzesView(generics.ListAPIView):
 class GroupViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin,
                    ListModelMixin, GenericViewSet):
     queryset = Group.objects.all()
-    serializer_class = PermissionGroup
+    serializer_class = PermissionGroupSerializer
