@@ -6,6 +6,8 @@ from rest_framework.mixins import (CreateModelMixin, UpdateModelMixin,
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
+from CultureAnalyzer.constants import MENTOR_ID
+from api.permissions import HasGroupPermission
 from api.serializers.account import SignUpSerializer, ProfileSerializer
 from api.serializers.country_indicator import CountryIndicatorSerializer
 from api.serializers.feedback import FeedbackSerializer
@@ -42,6 +44,15 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 class FeedbackViewSet(viewsets.ModelViewSet):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
+
+    permission_classes = [HasGroupPermission]
+    permission_groups = {
+        'list': [MENTOR_ID],
+        'create': [MENTOR_ID],
+        'partial_update': [MENTOR_ID],
+        'retrieve': [MENTOR_ID],
+        'destroy': [MENTOR_ID],
+    }
 
 
 class TraineeQuizzesView(generics.ListAPIView):
