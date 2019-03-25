@@ -58,7 +58,6 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig'
 ]
 
-# ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
