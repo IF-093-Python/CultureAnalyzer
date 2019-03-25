@@ -218,7 +218,7 @@ class TestPlayer(UserPassesTestMixin, FormView):
 
         """
         session_user = self.request.session['_auth_user_id']
-        session_data = dict(self.request.session[current_quiz])
+        session_data = self.request.session[current_quiz]
         result = []
 
         for answer in session_data:
@@ -251,7 +251,7 @@ class TestPlayer(UserPassesTestMixin, FormView):
             quiz=current_quiz).count()
 
         if current_quiz in self.request.session.keys():
-            answers = dict(self.request.session[current_quiz]).values()
+            answers = self.request.session[current_quiz].values()
 
             answered = sum(1 for answer in answers if answer)
 
