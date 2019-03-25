@@ -60,10 +60,8 @@ class GroupViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin,
 class CountryIndicatorViewSet(viewsets.ModelViewSet):
     queryset = CountryIndicator.objects.all()
     serializer_class = CountryIndicatorSerializer
-    filter_fields = (
-        'iso_code', 'name', 'pdi', 'idv', 'mas', 'uai', 'lto', 'ivr')
-    search_fields = (
-        'iso_code', 'name', 'pdi', 'idv', 'mas', 'uai', 'lto', 'ivr')
+    filter_fields = ('pdi', 'idv', 'mas', 'uai', 'lto', 'ivr')
+    search_fields = ('iso_code', 'name')
 
 
 class MentorQuizViewSet(viewsets.ModelViewSet):
