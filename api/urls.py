@@ -6,7 +6,8 @@ from rest_framework_simplejwt.views import (TokenObtainPairView,
 from api.views import (SignUpView, FeedbackViewSet, ProfileView,
                        TraineeQuizzesView, GroupViewSet, MentorQuizViewSet,
                        MentorQuestionViewSet, MentorAnswerViewSet,
-                       CountryIndicatorViewSet)
+                       CountryIndicatorViewSet,
+                       BlockProfileView, AdminListView)
 
 __all__ = ['urlpatterns']
 
@@ -25,6 +26,8 @@ urlpatterns = [
     ])),
     path('sign-up/', SignUpView.as_view()),
     path('profile/', ProfileView.as_view()),
+    path('admin_page/', AdminListView.as_view()),
+    path('admin_page/<int:pk>', BlockProfileView.as_view()),
     path('trainee/', include([
         path('quizzes/', TraineeQuizzesView.as_view()),
     ])),
