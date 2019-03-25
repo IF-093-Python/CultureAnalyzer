@@ -1,7 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from rest_framework import generics, viewsets
+from rest_framework.mixins import CreateModelMixin, UpdateModelMixin, \
+    RetrieveModelMixin, ListModelMixin
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.viewsets import GenericViewSet
 
 from api.serializers import (SignUpSerializer, FeedbackSerializer,
                              ProfileSerializer, TraineeQuizzesSerializer,
@@ -40,6 +43,7 @@ class TraineeQuizzesView(generics.ListAPIView):
     search_fields = ('title', 'description', 'type_of_quiz')
 
 
-class GroupViewSet(viewsets.ModelViewSet):
+class GroupViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin,
+                   ListModelMixin, GenericViewSet):
     queryset = Group.objects.all()
     serializer_class = PermissionGroup
