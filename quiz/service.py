@@ -34,7 +34,7 @@ def check_group_indicators(group_indicator):
     return group_indicator
 
 
-def get_average_results(list_of_answer, number_of_question):
+def get_average_results(list_of_answer, number_of_questions):
     """
     Return list of average for each answer
     each element in this list is average value for list inside list_of_answer
@@ -42,7 +42,6 @@ def get_average_results(list_of_answer, number_of_question):
     :param list list_of_answer: List with lists of users answers
     :return: list List of average result for each answer
     """
-    number_of_questions = number_of_question
     avg_list = []
     for i in range(number_of_questions):
         avg_list.append(sum([result[i] for result in list_of_answer]) / len(
