@@ -42,8 +42,6 @@ urlpatterns = [
     path('group_page/', views.ListGroups.as_view(), name='group_perm-list'),
     path('update_group/<int:pk>', views.UpdateGroups.as_view(),
          name='group_perm-update'),
-    path('delete_group/<int:pk>', views.DeleteGroups.as_view(),
-         name='group_perm-delete'),
     path('create_group', views.CreateGroup.as_view(),
          name='group_perm-create'),
 ]

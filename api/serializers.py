@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
@@ -75,3 +76,9 @@ class TraineeQuizzesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quizzes
         fields = ('title', 'description', 'type_of_quiz', 'questions')
+
+
+class PermissionGroup(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = ('name', 'permissions')

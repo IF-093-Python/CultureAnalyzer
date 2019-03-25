@@ -28,6 +28,7 @@ urlpatterns = [
     path('feedbacks/', include('feedbacks.urls')),
     path('api/', include('api.urls')),
     path('groups/', include('groups.urls', namespace='groups')),
+    path('test-player/', include('test_player.urls', namespace='test-player')),
 ]
 
 if settings.DEBUG:

@@ -74,7 +74,8 @@ class QuizDetailView(LoginRequiredMixin, generic.ListView):
         return context
 
 
-class DeleteQuizView(LoginRequiredMixin, generic.DeleteView):
+class DeleteQuizView(LoginRequiredMixin, PermissionRequiredMixin,
+                     generic.DeleteView):
     model = Quizzes
     context_object_name = 'quiz'
     template_name = 'quiz/quiz_delete.html'
