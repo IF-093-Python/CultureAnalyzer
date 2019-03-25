@@ -38,8 +38,8 @@ class StartTest(PermissionRequiredMixin, ListView):
          """
         quizzes = Shedule.objects.filter(group__user=self.request.user,
                                          end__gt=timezone.now()). \
-            order_by('quiz_id', 'begin').distinct('quiz_id')
-        self._not_started_quizzes = quizzes.filter(begin__gt=timezone.now())
+            order_by('quiz_id', 'start').distinct('quiz_id')
+        self._not_started_quizzes = quizzes.filter(start__gt=timezone.now())
         result = sorted(quizzes, key=operator.attrgetter('end'))
         return result
 
