@@ -1,11 +1,12 @@
 from PIL import Image
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group
 from django.db import models, transaction
 
+from CultureAnalyzer.constants import ADMIN_ID, TRAINEE_ID, MENTOR_ID
 from users.choices import GENDER_CHOICES, EDUCATION_CHOICES
 
-MIN_IMAGE_HEIGHT = 300
-MIN_IMAGE_WIDTH = 300
+MAX_IMAGE_HEIGHT = 300
+MAX_IMAGE_WIDTH = 300
 
 
 class CustomUser(AbstractUser):
@@ -25,18 +26,33 @@ class CustomUser(AbstractUser):
     email = models.EmailField(blank=True, max_length=254,
                               verbose_name='email address', unique=True)
 
+    @property
+    def is_admin(self):
+        groups = Group.objects.get(pk=ADMIN_ID)
+        return self in groups.user_set.all()
+
+    @property
+    def is_trainee(self):
+        groups = Group.objects.get(pk=TRAINEE_ID)
+        return self in groups.user_set.all()
+
+    @property
+    def is_mentor(self):
+        groups = Group.objects.get(pk=MENTOR_ID)
+        return self in groups.user_set.all()
+
     @transaction.atomic
-    def save(self, **kwargs):
+    def save(self, *args, **kwargs):
         """
         if img is too big we decrease img
         because the less image is the less memory it takes
         """
-        super(CustomUser, self).save(**kwargs)
+        super(CustomUser, self).save(*args, **kwargs)
         try:
             if self.image:
                 img = Image.open(self.image.path)
-                if img.height > MIN_IMAGE_HEIGHT or img.width > MIN_IMAGE_WIDTH:
-                    output_size = (MIN_IMAGE_HEIGHT, MIN_IMAGE_WIDTH)
+                if img.height > MAX_IMAGE_HEIGHT or img.width > MAX_IMAGE_WIDTH:
+                    output_size = (MAX_IMAGE_HEIGHT, MAX_IMAGE_WIDTH)
                     img.thumbnail(output_size, Image.ANTIALIAS)
                     img.save(self.image.path)
         except (OSError, IOError):
