@@ -1,6 +1,8 @@
 from django.contrib.auth.models import Group
 from rest_framework.permissions import BasePermission
 
+__all__ = ['IsAdmin', 'CanChangeUser', 'HasGroupPermission']
+
 
 class IsAdmin(BasePermission):
     def has_permission(self, request, view):
