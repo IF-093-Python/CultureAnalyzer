@@ -1,15 +1,20 @@
 from django.contrib.auth import views as auth_views, get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import (LoginRequiredMixin,
-                                        PermissionRequiredMixin)
+                                        PermissionRequiredMixin,
+                                        UserPassesTestMixin)
+from django.contrib.auth.models import Group
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.views.generic import (CreateView, UpdateView, DetailView, ListView,
                                   DeleteView)
-from django.urls import reverse_lazy
-from django.contrib.auth.models import Group
 
-from users.forms import UserRegisterForm, UserUpdateForm, GroupForm
+from CultureAnalyzer.constants import ITEMS_ON_PAGE
+from CultureAnalyzer.mixins import SafePaginationMixin
+from users.filters import admin_search
+from users.forms import (UserRegisterForm, UserUpdateForm, GroupForm,
+                         BlockUserForm)
 
 __all__ = [
     'LoginView',
@@ -20,7 +25,7 @@ __all__ = [
     'CreateGroup',
     'UpdateGroups',
     'DeleteGroups',
-    ]
+]
 
 
 class LoginView(auth_views.LoginView):
@@ -34,7 +39,7 @@ class LoginView(auth_views.LoginView):
 class UserRegisterView(CreateView):
     template_name = 'users/registration.html'
     form_class = UserRegisterForm
-    success_url = '/login'
+    success_url = reverse_lazy('login')
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -88,6 +93,43 @@ class PasswordChangeView(UpdateView):
         return kwargs
 
 
+class AdminListView(LoginRequiredMixin, PermissionRequiredMixin,
+                    SafePaginationMixin, ListView):
+    model = get_user_model()
+    template_name = 'users/admin_page.html'
+    context_object_name = 'users'
+    paginate_by = ITEMS_ON_PAGE
+    permission_required = 'users.view_customuser'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['form'] = admin_search(self.request).form
+        return context
+
+    def get_queryset(self):
+        return admin_search(self.request).qs
+
+
+class ManageUserView(LoginRequiredMixin, PermissionRequiredMixin,
+                     UserPassesTestMixin, UpdateView):
+    template_name = 'users/user_detail.html'
+    form_class = BlockUserForm
+    model = get_user_model()
+    success_url = reverse_lazy('admin')
+    permission_required = 'users.change_customuser'
+
+    def test_func(self):
+        """
+        Superuser can change every user except superuser
+        Admin can change every user except superuser and admin
+        """
+        selected_user = self.get_object()
+        if selected_user.is_superuser or \
+                not self.request.user.is_superuser and selected_user.is_admin:
+            return False
+        return True
+
+
 class ListGroups(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Group
     context_object_name = 'group'
@@ -101,7 +143,7 @@ class ListGroups(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             perm='auth.change_group')
         context['can_delete_permissions'] = self.request.user.has_perm(
             perm='auth.delete_group'
-            )
+        )
         return context
 
 
