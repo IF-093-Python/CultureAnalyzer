@@ -58,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'CultureAnalyzer.middlewares.AuthRequiredMiddleware',
+    'CultureAnalyzer.middlewares.SwitchSessionDataMiddleware',
 ]
 
 ROOT_URLCONF = 'CultureAnalyzer.urls'
@@ -126,8 +128,12 @@ STATICFILES_DIRS = [
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
+
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
+REGISTER_URL = 'register'
+LOGOUT_URL = 'logout'
+API_URL = 'api'
 
 
 REST_FRAMEWORK = {
@@ -151,5 +157,9 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
     'AUTH_HEADER_TYPES': ('JWT', 'Bearer'),
 }
+
+LOGOUT_REDIRECT_URL = LOGIN_URL
+REDIRECT_EXCLUDE_ROUTES = (LOGIN_URL, LOGOUT_URL, REGISTER_URL, API_URL)
+
 
 TEST_RUNNER = 'CultureAnalyzer.tests.CustomTestRunner'
