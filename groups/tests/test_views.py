@@ -585,7 +585,7 @@ class SheduleGroupListTest(TestCase):
         self.assertTemplateUsed(resp, 'groups/shedule_group_list.html')
 
 
-@tag('slow')
+@tag('slow', 'now')
 class SheduleGroupTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -610,7 +610,7 @@ class SheduleGroupTest(TestCase):
 
     def test_SheduleGroup_misc(self):
         group = Group.objects.get(name='Group')
-        resp = self.client.get('/groups/group/set_quiz/' + str(group.pk) + '/')
+        resp = self.client.get('/groups/group/set-quiz/' + str(group.pk) + '/')
         self.assertEqual(resp.status_code, 200)
         # test_SheduleGroup_url_accessible_by_name:
         resp = self.client.get(
@@ -621,12 +621,12 @@ class SheduleGroupTest(TestCase):
 
     def test_SheduleGroup_with_data(self):
         group = Group.objects.get(name='Group')
-        Quizzes.objects.get(title='SomeQuiz')
+        quiz = Quizzes.objects.get(title='SomeQuiz')
         start = timezone.now() + timezone.timedelta(days=1)
         end = timezone.now() + timezone.timedelta(days=3)
         resp = self.client.post(
             reverse('groups:shedule_group', kwargs={'pk': group.pk}),
-            data={'start': start.date(), 'end': end.date(), 'quiz': group.pk})
+            data={'start': start.date(), 'end': end.date(), 'quiz': quiz.pk})
         self.assertTrue(Shedule.objects.filter(group__name='Group').exists())
         # Test of redirection after success
         self.assertEqual(resp.get('location'),

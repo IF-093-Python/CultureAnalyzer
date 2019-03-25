@@ -26,7 +26,7 @@ urlpatterns = [
          name='add_invitation'),
     path('join/<str:hash>', AddNewUser.as_view(),
          name='add_new_user'),
-    path('group/set_quiz/<int:pk>/', SheduleGroupView.as_view(),
+    path('group/set-quiz/<int:pk>/', SheduleGroupView.as_view(),
          name='shedule_group'),
     path('group/quiz/<int:pk>/', SheduleGroupListView.as_view(),
          name='shedule_group_list'),
