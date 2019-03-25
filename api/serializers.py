@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
@@ -11,7 +12,7 @@ from tutors.models import Questions, Answers
 
 __all__ = ['SignUpSerializer', 'ProfileSerializer', 'FeedbackSerializer',
            'TraineeQuizzesSerializer', 'BlockProfileSerializer',
-           'AdminListSerializer']
+           'AdminListSerializer', 'PermissionGroupSerializer']
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -88,3 +89,9 @@ class AdminListSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ('id', 'username', 'is_active', 'groups')
+
+
+class PermissionGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = ('name', 'permissions')

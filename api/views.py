@@ -1,17 +1,22 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from rest_framework import generics, viewsets
+from rest_framework.mixins import (CreateModelMixin, UpdateModelMixin,
+                                   RetrieveModelMixin, ListModelMixin)
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.viewsets import GenericViewSet
 
 from api.permissions import IsAdmin, CanChangeUser
 from api.serializers import (SignUpSerializer, FeedbackSerializer,
                              ProfileSerializer, BlockProfileSerializer,
-                             AdminListSerializer, TraineeQuizzesSerializer)
+                             AdminListSerializer, TraineeQuizzesSerializer,
+                             PermissionGroupSerializer)
 from feedbacks.models import Feedback
 from quiz.models import Quizzes
 from users.filters import admin_search
 
 __all__ = ['SignUpView', 'ProfileView', 'FeedbackViewSet',
-           'TraineeQuizzesView', 'BlockProfileView',
+           'TraineeQuizzesView', 'GroupViewSet',
            'AdminListView']
 
 
@@ -60,3 +65,9 @@ class TraineeQuizzesView(generics.ListAPIView):
     serializer_class = TraineeQuizzesSerializer
     filter_fields = ('title', 'description', 'type_of_quiz')
     search_fields = ('title', 'description', 'type_of_quiz')
+
+
+class GroupViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin,
+                   ListModelMixin, GenericViewSet):
+    queryset = Group.objects.all()
+    serializer_class = PermissionGroupSerializer
