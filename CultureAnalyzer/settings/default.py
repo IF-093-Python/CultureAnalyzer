@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'indicators',
     'quiz',
     'feedbacks',
+    'test_player',
 
     'api.apps.ApiConfig'
 ]
