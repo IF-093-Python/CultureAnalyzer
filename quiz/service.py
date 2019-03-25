@@ -38,7 +38,7 @@ def get_average_results(list_of_answer, number_of_questions):
     """
     Return list of average for each answer
     each element in this list is average value for list inside list_of_answer
-    :param int number_of_question: number of quiestion in quiz
+    :param int number_of_questions: number of questions in quiz
     :param list list_of_answer: List with lists of users answers
     :return: list List of average result for each answer
     """
