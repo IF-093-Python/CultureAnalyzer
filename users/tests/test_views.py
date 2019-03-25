@@ -1,5 +1,3 @@
-import datetime
-
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.test import TestCase
@@ -72,7 +70,7 @@ class PasswordChangeViewTest(SetUpUserMixin, TestCase):
             {'old_password': '12345', 'new_password1': 'test_qwerty1',
              'new_password2': 'test_qwerty1'})
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('home'))
+        self.assertRedirects(response, reverse('home'), target_status_code=302)
 
 
 class TestViews(TestCase):
