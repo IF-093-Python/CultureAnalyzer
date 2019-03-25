@@ -24,7 +24,10 @@
             <form method="POST" class="login_form">
                 {% csrf_token %}
                 {{ form }} <br>
-
+                {% load socialaccount %}
+                <a href="{% provider_login_url "facebook" method="oauth2" %}">Facebook</a>
+                <a href="{% provider_login_url "google" method="oauth2" %}">Google</a>
+                <a href="{% provider_login_url "github" method="oauth2" %}">GITHUB</a>
                 <button type="submit" class="button_attr">Submit</button>
                 <div class="reset_password">Forget your password? <a
                         href="{% url 'password_reset' %}">Reset it now</a>

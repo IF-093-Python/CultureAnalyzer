@@ -7,8 +7,10 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from CultureAnalyzer.constants import MENTOR_ID
-from api.permissions import HasGroupPermission
+from api.permissions import IsAdmin, CanChangeUser, HasGroupPermission
 from api.serializers.account import SignUpSerializer, ProfileSerializer
+from api.serializers.admin_page import (AdminListSerializer,
+                                        BlockProfileSerializer)
 from api.serializers.country_indicator import CountryIndicatorSerializer
 from api.serializers.feedback import FeedbackSerializer
 from api.serializers.permissions_group import PermissionGroupSerializer
@@ -20,10 +22,12 @@ from feedbacks.models import Feedback
 from indicators.models import CountryIndicator
 from quiz.models import Quizzes
 from tutors.models import Questions, Answers
+from users.filters import admin_search
 
 __all__ = ['SignUpView', 'ProfileView', 'FeedbackViewSet',
            'TraineeQuizzesView', 'GroupViewSet', 'CountryIndicatorViewSet',
-           'MentorQuizViewSet', 'MentorQuestionViewSet', 'MentorAnswerViewSet']
+           'MentorQuizViewSet', 'MentorQuestionViewSet', 'MentorAnswerViewSet',
+           'AdminListView', 'BlockProfileView']
 
 
 class SignUpView(generics.CreateAPIView):
@@ -53,6 +57,26 @@ class FeedbackViewSet(viewsets.ModelViewSet):
         'retrieve': [MENTOR_ID],
         'destroy': [MENTOR_ID],
     }
+
+
+class AdminListView(generics.ListAPIView):
+    model = get_user_model()
+    serializer_class = AdminListSerializer
+    permission_classes = (IsAdmin,)
+    filter_fields = ('is_active',)
+    search_fields = ('username',)
+
+    def get_queryset(self):
+        return admin_search(self.request).qs
+
+
+class BlockProfileView(generics.RetrieveUpdateAPIView):
+    model = get_user_model()
+    serializer_class = BlockProfileSerializer
+    permission_classes = (IsAdmin, CanChangeUser)
+
+    def get_queryset(self):
+        return get_user_model().objects.all()
 
 
 class TraineeQuizzesView(generics.ListAPIView):
