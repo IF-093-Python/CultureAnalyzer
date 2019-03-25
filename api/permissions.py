@@ -4,13 +4,13 @@ from rest_framework.permissions import BasePermission
 
 class HasGroupPermission(BasePermission):
     @staticmethod
-    def is_in_group(user, group_id):
+    def is_in_group(user, role_id):
         '''
-        Сhecking which group is the user
+        check if the allowed role corresponds to the user role
         :return: bool, is group with group_id contains user
         '''
         try:
-            return Group.objects.get(id=group_id).user_set.filter(
+            return Group.objects.get(id=role_id).user_set.filter(
                 id=user.id).exists()
         except Group.DoesNotExist:
             return False
@@ -21,7 +21,6 @@ class HasGroupPermission(BasePermission):
             return True
         elif required_groups is None:
             return False
-        else:
-            return any(
-                [self.is_in_group(request.user, group_id) for group_id in
-                 required_groups])
+        return any(
+            [self.is_in_group(request.user, role_id) for role_id in
+             required_groups])

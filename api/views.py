@@ -4,9 +4,10 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from api.serializers import (SignUpSerializer, FeedbackSerializer,
                              ProfileSerializer, TraineeQuizzesSerializer)
+from api.permissions import HasGroupPermission
+
 from feedbacks.models import Feedback
 from quiz.models import Quizzes
-from api.permissions import HasGroupPermission
 from CultureAnalyzer.constants import MENTOR_ID
 
 __all__ = ['SignUpView', 'ProfileView', 'FeedbackViewSet',
