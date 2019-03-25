@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Your quiz{% endblock %}
+{% block content %}
+  {% if messages %}
+  {% for message in messages %}
+      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+  {% endfor %}
+  {% endif %}
+    {% if quizzes %}
+        {% for quiz in quizzes %}
+            <div class="container border-top mt-3">
+                <div class="row h-100 align-items-center justify-content-center text-center">
+                    <div class="col-lg-10 align-self-end">
+                        <h1 class="text-uppercase font-weight-bold">{{ quiz.quiz.title }}</h1>
+                    </div>
+                    <div class="col-lg-3 align-self-baseline">
+                        <p class="text-white-25 font-weight-light mb-3">{{ quiz.quiz.description }}</p>
+                        {% if quiz in not_started %}
+                            <span style="color: red">Quiz starts at: <br> {{ quiz.begin }}</span>
+                        {% else %}
+                            <span>Quiz starts at: <br> <mark>Already started!</mark></span>
+                        {% endif %}
+                        {% if quiz in not_started %}
+                            <br>
+                            <span> Ends at: <br> {{ quiz.end }}</span>
+                            <br><br>
+                        {% else %}
+                            <br>
+                            <span style="color: red"> Ends at: <br> {{ quiz.end }}</span>
+                            <br><br>
+                        {% endif %}
+                        {% if quiz in not_started %}
+                            <a class="btn btn-blue btn-xl js-scroll-trigger" disabled
+                               href="">Start</a>
+                        {% else %}
+                            <a class="btn btn-blue btn-xl js-scroll-trigger"
+                               href="{% url 'test_player:test_player' quiz_id=quiz.quiz.id question_number=1 %}">Start</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="container h-50">
+            <div class="row h-100 align-items-center justify-content-center text-center">
+                <p class="text-white-25 font-weight-light mb-3">At this time, no tests has been assigned for you.</p>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
