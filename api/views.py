@@ -18,7 +18,7 @@ from users.filters import admin_search
 
 __all__ = ['SignUpView', 'ProfileView', 'FeedbackViewSet',
            'TraineeQuizzesView', 'GroupViewSet',
-           'AdminListView']
+           'AdminListView', 'BlockProfileView']
 
 
 class SignUpView(generics.CreateAPIView):
