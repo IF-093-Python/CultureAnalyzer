@@ -39,8 +39,8 @@ class AdminListView(generics.ListAPIView):
     model = get_user_model()
     serializer_class = AdminListSerializer
     permission_classes = (IsAdmin,)
-    filter_fields = ('is_active', 'username')
-    search_fields = ('is_active', 'username')
+    filter_fields = ('is_active',)
+    search_fields = ('username',)
 
     def get_queryset(self):
         return admin_search(self.request).qs

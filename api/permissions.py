@@ -8,8 +8,8 @@ class IsAdmin(BasePermission):
 
 class CanChangeUser(BasePermission):
     def has_object_permission(self, request, view, obj):
-        current_user = obj
-        if current_user.is_superuser or \
-                not request.user.is_superuser and current_user.is_admin:
+        selected_user = obj
+        if selected_user.is_superuser or \
+                not request.user.is_superuser and selected_user.is_admin:
             return False
         return True
