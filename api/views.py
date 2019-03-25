@@ -57,19 +57,23 @@ class CountryIndicatorViewSet(viewsets.ModelViewSet):
 class MentorQuizViewSet(viewsets.ModelViewSet):
     queryset = Quizzes.objects.all()
     serializer_class = MentorQuizSerializer
-    filter_fields = ('title', 'description', 'type_of_quiz')
-    search_fields = ('title', 'description', 'type_of_quiz')
+    filter_fields = ('id', 'title', 'description', 'type_of_quiz')
+    search_fields = ('id', 'title', 'description', 'type_of_quiz')
 
 
 class MentorQuestionViewSet(viewsets.ModelViewSet):
     queryset = Questions.objects.all()
     serializer_class = MentorQuestionSerializer
-    filter_fields = ('quiz', 'question_number', 'question_text')
-    search_fields = ('quiz', 'question_number', 'question_text')
+    filterset_fields = (
+        'quiz__id', 'quiz__title', 'quiz__type_of_quiz', 'question_number')
+    search_fields = {
+        'question_number': ('exact',),
+        'question_text': ('icontains',)}
 
 
 class MentorAnswerViewSet(viewsets.ModelViewSet):
     queryset = Answers.objects.all()
     serializer_class = MentorAnswerSerializer
-    filter_fields = ('question', 'answer_number', 'answer_text')
-    search_fields = ('question', 'answer_number', 'answer_text')
+    filter_fields = ('question__id', 'question__id',
+                     'question__question_number' 'answer_number',)
+    search_fields = {'answer_text': 'icontains'}
