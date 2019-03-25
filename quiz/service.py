@@ -119,24 +119,21 @@ def get_final_buisness_result(data, *args):
     return data
 
 
-def get_feedback(indicator_obj, dict_result, indicator_name):
+def get_feedback(indicators_values, result, indicators_name):
     """
-    Retrive for each indicator feedbacks based on country and result difference
-    :param indicator_obj:
-    :param dict_result: users results by each indicators
+    Retrieve for each indicator feedback based on country and result difference
+    Assuming three parameters with same length
+    :param indicators_values: values for selected country
+    :param result: users results by each indicators
+    :param indicators_name in correct order
     :return: dict with feedback for each indicator
     """
-    indicators_feedbacks = {}
-    for val in range(6):
-        indicators_difference = abs(indicator_obj[val] - dict_result[val])
+    indicators_feedback = {}
+    for i in range(len(indicators_values)):
+        indicators_difference = abs(indicators_values[i] - result[i])
         indicator_feedback = Feedback.objects.filter(
-            Q(min_value__lte=indicators_difference) &
-            Q(max_value__gte=indicators_difference),
-            indicator__iexact=indicator_name[val])
-        indicators_feedbacks[indicator_name[val]] = indicator_feedback
-    return indicators_feedbacks
-
-
-@register.filter(name='zip')
-def zip_list(a, b):
-    return zip(a, b)
+                            Q(min_value__lte=indicators_difference) &
+                            Q(max_value__gte=indicators_difference),
+                            indicator__iexact=indicators_name[i])
+        indicators_feedback[indicators_name[i]] = indicator_feedback
+    return indicators_feedback
