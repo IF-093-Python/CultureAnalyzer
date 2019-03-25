@@ -7,7 +7,7 @@ from api.serializers import (SignUpSerializer, FeedbackSerializer,
 from feedbacks.models import Feedback
 from quiz.models import Quizzes
 from api.permissions import HasGroupPermission
-from CultureAnalyzer.constants import TRAINEE_ID, MENTOR_ID, ADMIN_ID
+from CultureAnalyzer.constants import MENTOR_ID
 
 __all__ = ['SignUpView', 'ProfileView', 'FeedbackViewSet',
            'TraineeQuizzesView']
@@ -34,11 +34,11 @@ class FeedbackViewSet(viewsets.ModelViewSet):
 
     permission_classes = [HasGroupPermission]
     permission_groups = {
-        'list': [MENTOR_ID, TRAINEE_ID],
+        'list': [MENTOR_ID],
         'create': [MENTOR_ID],
         'partial_update': [MENTOR_ID],
         'retrieve': [MENTOR_ID],
-        'destroy': [ADMIN_ID],
+        'destroy': [MENTOR_ID],
         }
 
 
