@@ -1,6 +1,5 @@
 from django.contrib.auth.mixins import (LoginRequiredMixin,
                                         PermissionRequiredMixin)
-from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 from django.db.models import Count, Q
 from django.urls import reverse_lazy
@@ -47,7 +46,8 @@ class CreateQuizView(LoginRequiredMixin, PermissionRequiredMixin,
     permission_required = 'quiz.add_quizzes'
 
 
-class QuizDetailView(LoginRequiredMixin, generic.ListView):
+class QuizDetailView(LoginRequiredMixin, PermissionRequiredMixin,
+                     generic.ListView):
     model = Questions
     context_object_name = 'questions'
     template_name = 'quiz/quiz_detail.html'
