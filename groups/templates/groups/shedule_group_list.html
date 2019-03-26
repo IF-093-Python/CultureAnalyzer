@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load tz %}
+
+
+{% block title %}Quizzes for {{ group.name }}{% endblock %}
+
+{% block content %}
+{% if messages %}
+  {% for message in messages %}
+      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+<h1 class="text-center">Quizzes for "{{ group.name }}"</h1>
+<div class="d-flex justify-content-between mb-2">
+    <a class="btn btn-blue" href="{% url 'groups:shedule_group' group.pk %}">Set quiz</a>
+    <strong class="align-self-center">Now: {{ now }}</strong>
+</div>
+{% if quizzes %}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th>Test</th>
+                <th scope="col">Description</th>
+                <th>Begin</th>
+                <th>End</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for quiz in quizzes %}
+            {% if quiz.end|utc > now|utc %}
+            <tr style="color: red">
+                {% else %}
+            <tr>
+                {% endif %}
+                <td>{{ quiz.quiz.title }}</td>
+                <td>{{ quiz.quiz.description }}</td>
+                <td>{{ quiz.begin }}</td>
+                <td> {{ quiz.end }} </td>
+            </tr>
+            {% empty %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p>There had been no quizzes set for this group</p>
+{% endif %}
+
+{% endblock content %}

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load cool_paginate %}
+{% block title %}Groups of {{ user.username }}{% endblock %}
+{% block content %}
+{% block groups %}
+<div class="container-fluid col-md-10">
+    <div class="border-bottom">
+        <p class="text-center font-weight-bold" style="font-size: 2rem;">
+            Groups of {{ user.username }}
+        </p>
+    </div>
+    <div class="my-2">
+        <form class="d-flex flex-wrap justify-content-between mt-n1" method="get" action="{% url 'groups:mentor_groups_view' %}">
+            <div class="d-flex mt-1">
+                <input class="form-control" type="search" placeholder={{ search_label }} aria-label="Search" name="data_search">
+                <button class="btn btn-blue ml-1" style="margin-right: 10px;" type="submit">Search</button>
+            </div>
+            <br>
+        </form>
+    </div>
+    {% if group_list %}
+    <table class="table table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col" class="text-center w-25">Users</th>
+                <th scope="col" class="text-center w-25">Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for group in group_list %}
+            <tr>
+                <td class="align-middle">
+                    <a class="align-middle" href="{% url 'groups:mentor_group_update' group.pk %}">
+                        {{ group }}</a>
+                </td>
+                <td class="align-middle text-center"><a>{{ group.total }}</a></td>
+                <td class="align-middle">
+                    <div class="d-flex justify-content-center">
+                        <a class="btn btn-light aligned float-right btn-option" href="{% url 'groups:mentor_group_update' group.pk %}">
+                            <em class="fa fa-edit"></em></a>
+                        <a class="{% if group in has_quiz %} btn btn-warning {% else %} btn btn-light {% endif %} btn-option ml-1" href="{% url 'groups:shedule_group_list' group.pk %}">
+                            <em class="fa fa-clock"></em></a>
+                        <a class="btn btn-light btn-option ml-1" href="">
+                            <em class="fas fa-chart-bar"></em></a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            <br>
+            {% else %}
+            {% if search %}
+            <p>There are no results that match your search.</p>
+            {% else %}
+            <p>You have no groups of students yet.</p>
+            {% endif %}
+        </tbody>
+    </table>
+    {% endif %}
+    {% if is_paginated %}
+    {% cool_paginate page_obj=page_obj %}
+    {% endif %}
+</div>
+{% endblock groups %}
+{% endblock content %}
