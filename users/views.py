@@ -140,9 +140,6 @@ class ListGroups(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         # In this case, only superuser will have access
         context['can_change_permissions'] = self.request.user.has_perm(
             perm='auth.change_group')
-        context['can_delete_permissions'] = self.request.user.has_perm(
-            perm='auth.delete_group'
-        )
         return context
 
 
