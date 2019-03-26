@@ -38,8 +38,8 @@ class StartTest(PermissionRequiredMixin, ListView):
          """
         quizzes = Shedule.objects.filter(group__user=self.request.user,
                                          end__gt=timezone.now()). \
-            order_by('quiz_id', 'begin').distinct('quiz_id')
-        self._not_started_quizzes = quizzes.filter(begin__gt=timezone.now())
+            order_by('quiz_id', 'start').distinct('quiz_id')
+        self._not_started_quizzes = quizzes.filter(start__gt=timezone.now())
         result = sorted(quizzes, key=operator.attrgetter('end'))
         return result
 
@@ -346,6 +346,6 @@ class TestPlayer(UserPassesTestMixin, FormView):
         quiz_id, _ = self.get_quiz_data()
         quiz_exist = Shedule.objects.filter(group__user=self.request.user,
                                             end__gt=date_time,
-                                            begin__lte=date_time,
+                                            start__lte=date_time,
                                             quiz=quiz_id).exists()
         return quiz_exist

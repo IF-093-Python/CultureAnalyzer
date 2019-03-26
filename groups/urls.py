@@ -1,7 +1,9 @@
 from django.urls import path
-from groups.views import GroupsList, CreateGroupView, UpdateGroupView, \
-    DeleteGroupView, MentorGroupsView, MentorGroupUpdate, MentorGroupAdd, \
-    AddNewUser, SheduleGroupListView, SheduleGroupView, AddInvitation
+from groups.views import (GroupsList, CreateGroupView, UpdateGroupView,
+                          DeleteGroupView, MentorGroupsView, MentorGroupUpdate,
+                          MentorGroupAdd,
+                          AddNewUser, SheduleGroupListView, SheduleGroupView,
+                          AddInvitation)
 
 app_name = 'groups'
 

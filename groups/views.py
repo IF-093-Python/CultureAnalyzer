@@ -1,7 +1,8 @@
 from itertools import chain
 
-from django.contrib.auth.mixins import UserPassesTestMixin, \
-    LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import (UserPassesTestMixin,
+                                        LoginRequiredMixin,
+                                        PermissionRequiredMixin)
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth import get_user_model
@@ -13,8 +14,8 @@ from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.views import generic
 
-from groups.forms import GroupCreateForm, GroupUpdateForm, SheduleForm, \
-    InvitationForm
+from groups.forms import (GroupCreateForm, GroupUpdateForm, SheduleForm,
+                          InvitationForm)
 from groups.models import Group, Shedule, Invitation
 from CultureAnalyzer.constants import ITEMS_ON_PAGE, TRAINEE_ID, MENTOR_ID
 from CultureAnalyzer.mixins import SafePaginationMixin
@@ -171,7 +172,7 @@ class DeleteGroupView(PermissionRequiredMixin, generic.DeleteView):
 class MentorGroupsView(PermissionRequiredMixin, SafePaginationMixin,
                        generic.ListView):
     """
-    Makes list af all groups of students of current Mentor
+    Makes list of all groups of current Mentor
     """
     model = Group
     template_name = 'groups/mentor_groups_list.html'
@@ -190,9 +191,9 @@ class MentorGroupsView(PermissionRequiredMixin, SafePaginationMixin,
 
     def get_queryset(self):
         """
-        List of groups with number of students in them.
+        List of groups with number of students in them
         Lists only groups that are assigned to current mentor
-        Search by name of group is available.
+        Search by name of group is available
         """
         result = Group.objects.filter(mentor__id=self.request.user.pk). \
             annotate(total=Count('user')).order_by('name')
@@ -209,7 +210,7 @@ class MentorGroupUpdate(UserPassesTestMixin, PermissionRequiredMixin,
                         SuccessMessageMixin, SafePaginationMixin,
                         generic.UpdateView, generic.ListView):
     """
-    Makes list of students to add or remove from group.
+    Makes list of students to add or remove from group
     Shows also URL for joining to group if it is valid
     """
     model = Group
@@ -248,7 +249,7 @@ class MentorGroupUpdate(UserPassesTestMixin, PermissionRequiredMixin,
         return context
 
     def get_queryset(self):
-        """List of all students of group. Search by last_name is available."""
+        """List of all students of group. Search by last_name is available"""
         result = get_user_model().objects. \
             filter(is_active=True, user_in_group=self.kwargs['pk']). \
             order_by('last_name')
@@ -274,7 +275,7 @@ class MentorGroupAdd(PermissionRequiredMixin, SuccessMessageMixin,
                      SafePaginationMixin, UserPassesTestMixin,
                      generic.UpdateView, generic.ListView):
     """
-    Makes list of all students that can be added to group.
+    Makes list of all students that can be added to group
     """
     model = Group
     form_class = GroupUpdateForm
@@ -298,7 +299,7 @@ class MentorGroupAdd(PermissionRequiredMixin, SuccessMessageMixin,
     def get_queryset(self):
         """
         Gets all Trainee users that are not in group and
-        makes search in their last_name if needed.
+        makes search in their last_name if needed
         """
         result = get_user_model().objects. \
             filter(is_active=True, groups__pk=TRAINEE_ID). \
@@ -318,7 +319,7 @@ class MentorGroupAdd(PermissionRequiredMixin, SuccessMessageMixin,
     def form_valid(self, form):
         """
         Gets users that are already in group and adds to users
-        that where checked in form for adding to group.
+        that where checked in form for adding to group
         """
         users_in_group = get_user_model().objects. \
             filter(is_active=True, user_in_group=self.kwargs['pk'])
@@ -338,7 +339,7 @@ class MentorGroupAdd(PermissionRequiredMixin, SuccessMessageMixin,
 
 class AddNewUser(LoginRequiredMixin, generic.CreateView):
     """
-    Adds currently logged student to group.
+    Adds currently logged student to group
     """
     model = Group
     template_name = 'groups/add_new_user.html'

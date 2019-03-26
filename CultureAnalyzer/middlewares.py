@@ -40,20 +40,20 @@ class SwitchSessionDataMiddleware:
             stored_session_key = request.user.logged_in_user.session_key
 
             if stored_session_key and stored_session_key != current_session_key:
-                self._switch_session_data(request, current_session_key,
-                                          stored_session_key)
+                self.switch_session_data(request, current_session_key,
+                                         stored_session_key)
 
     @staticmethod
     @transaction.atomic()
-    def _switch_session_data(request, current_session_key,
-                             stored_session_key):
+    def switch_session_data(request, current_session_key,
+                            stored_session_key):
         """
         Method, which get data from previous session, remove it
         (previous session) and set this data to current session.
-
-        :param stored_session_key: hashed key, which identifies previous
+        :param request;
+        :param current_session_key: hashed key, which identifies current
          session;
-        :var current_session_key(str): hashed key, which identifies current
+        :param stored_session_key: hashed key, which identifies previous
          session;
         :var stored_session_data(str): hashed data from previous session;
         :var expire_date(datetime): future date, which means when the session
