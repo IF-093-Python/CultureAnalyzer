@@ -19,8 +19,7 @@ class CanChangeUser(BasePermission):
 
 
 class HasGroupPermission(BasePermission):
-    @staticmethod
-    def is_in_group(user, role_id):
+    def is_in_group(self, user, role_id):
         '''
         check if the allowed role corresponds to the user role
         :return: bool, is group with group_id contains user
