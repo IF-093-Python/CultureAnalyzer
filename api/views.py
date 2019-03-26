@@ -6,7 +6,7 @@ from rest_framework.mixins import (CreateModelMixin, UpdateModelMixin,
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
-from CultureAnalyzer.constants import MENTOR_ID
+from CultureAnalyzer.constants import MENTOR_ID, ADMIN_ID
 from api.permissions import IsAdmin, CanChangeUser, HasGroupPermission
 from api.serializers.account import SignUpSerializer, ProfileSerializer
 from api.serializers.admin_page import (AdminListSerializer,
@@ -56,7 +56,7 @@ class FeedbackViewSet(viewsets.ModelViewSet):
         'partial_update': [MENTOR_ID],
         'retrieve': [MENTOR_ID],
         'destroy': [MENTOR_ID],
-    }
+        }
 
 
 class AdminListView(generics.ListAPIView):
@@ -91,6 +91,11 @@ class GroupViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin,
     queryset = Group.objects.all()
     serializer_class = PermissionGroupSerializer
 
+    permission_classes = [HasGroupPermission]
+    permission_groups = {
+        'list': [ADMIN_ID],
+        }
+
 
 class CountryIndicatorViewSet(viewsets.ModelViewSet):
     queryset = CountryIndicator.objects.all()
@@ -98,12 +103,30 @@ class CountryIndicatorViewSet(viewsets.ModelViewSet):
     filter_fields = ('pdi', 'idv', 'mas', 'uai', 'lto', 'ivr')
     search_fields = ('iso_code', 'name')
 
+    permission_classes = [HasGroupPermission]
+    permission_groups = {
+        'list': [MENTOR_ID],
+        'create': [MENTOR_ID],
+        'partial_update': [MENTOR_ID],
+        'retrieve': [MENTOR_ID],
+        'destroy': [MENTOR_ID],
+        }
+
 
 class MentorQuizViewSet(viewsets.ModelViewSet):
     queryset = Quizzes.objects.all()
     serializer_class = MentorQuizSerializer
     filter_fields = ('id', 'title', 'description', 'type_of_quiz')
     search_fields = ('id', 'title', 'description', 'type_of_quiz')
+
+    permission_classes = [HasGroupPermission]
+    permission_groups = {
+        'list': [MENTOR_ID],
+        'create': [MENTOR_ID],
+        'partial_update': [MENTOR_ID],
+        'retrieve': [MENTOR_ID],
+        'destroy': [MENTOR_ID],
+        }
 
 
 class MentorQuestionViewSet(viewsets.ModelViewSet):
@@ -113,12 +136,29 @@ class MentorQuestionViewSet(viewsets.ModelViewSet):
         'quiz__id', 'quiz__title', 'quiz__type_of_quiz', 'question_number')
     search_fields = {
         'question_number': ('exact',),
-        'question_text': ('icontains',)}
+        'question_text': ('icontains',)
+        }
+    permission_classes = [HasGroupPermission]
+    permission_groups = {
+        'list': [MENTOR_ID],
+        'create': [MENTOR_ID],
+        'partial_update': [MENTOR_ID],
+        'retrieve': [MENTOR_ID],
+        'destroy': [MENTOR_ID],
+        }
 
 
 class MentorAnswerViewSet(viewsets.ModelViewSet):
     queryset = Answers.objects.all()
     serializer_class = MentorAnswerSerializer
     filter_fields = ('question__id', 'question__id',
-                     'question__question_number' 'answer_number',)
+                     'question__question_number', 'answer_number',)
     search_fields = {'answer_text': 'icontains'}
+    permission_classes = [HasGroupPermission]
+    permission_groups = {
+        'list': [MENTOR_ID],
+        'create': [MENTOR_ID],
+        'partial_update': [MENTOR_ID],
+        'retrieve': [MENTOR_ID],
+        'destroy': [MENTOR_ID],
+        }

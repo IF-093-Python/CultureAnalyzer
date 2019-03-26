@@ -1,16 +1,25 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-<h1>Update quiz </h1>
 <div class="container">
+    <h1>Update quiz</h1>
     <form method="post">{% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit" class="btn btn-primary; float-left"
-                style="margin-right: 10px; background-color: cornflowerblue"
-        >Update quiz
-        </button>
+        <div class="row">
+        <div class="col-md-6">
+            {{ form.title|as_crispy_field }}
+        </div>
+        <div class="col-md-6">
+            {{ form.type_of_quiz|as_crispy_field }}
+        </div>
+        </div>
+        {{ form.description|as_crispy_field }}
+        <div class="d-flex">
+            <button type="submit" class="btn btn-blue">
+                Update quiz
+            </button>
+            <a class="btn btn-outline-light ml-1"
+                    href="{% url 'quiz:quizzes-list' %}">Cancel</a>
+        </div>
     </form>
-    <a class="btn btn-secondary"
-       href="{% url 'quiz:quizzes-list' %}">Cancel</a>
 </div>
 {% endblock content %}
