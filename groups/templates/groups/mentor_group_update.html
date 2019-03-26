@@ -13,7 +13,7 @@
     <div class="border-bottom">
         <h1 class="text-center font-weight-bold">Update group "{{ group.name }}"</h1>
     <div class="my-2">
-        <p>Generate new URL: <a class="btn btn-outline-primary ml-1" title="Generate URL"
+        <p>Generate new URL: <a class="btn btn-outline-light ml-1" title="Generate URL"
                 href="{% url 'groups:add_invitation' group.pk %}">Make URL</a>
         </p>
 
@@ -35,8 +35,8 @@
         </form>
     </div>
     {% if not object_list %}
-    <a class="btn btn-danger" title="Back to all groups" href="{% url 'groups:mentor_groups_view' %}">&#8630; Back</a>
-    <a class="btn btn-success" title="Add user to group" href="{% url 'groups:mentor_group_add' group.pk %}">&#10010; Add</a>
+    <a class="btn btn-outline-light" title="Back to all groups" href="{% url 'groups:mentor_groups_view' %}">Back</a>
+    <a class="btn btn-blue" title="Add user to group" href="{% url 'groups:mentor_group_add' group.pk %}">Add</a>
     {% endif %}
     {% block users %}
     {% if object_list %}
@@ -51,11 +51,10 @@
         <tbody>
             <form method="post">
                 {% csrf_token %}
-                <a class="btn btn-danger" title="Back to all groups" href="{% url 'groups:mentor_groups_view' %}">&#8630; Back</a>
-                <button type="submit" class="btn btn-primary" style="margin-left: 4px;margin-right: 4px;
+                <a class="btn btn-outline-light" title="Back to all groups" href="{% url 'groups:mentor_groups_view' %}">Back</a>
+                <button type="submit" class="btn btn-blue" style="margin-left: 4px;margin-right: 4px;
             background-color: cornflowerblue">Update group</button>
-                <a class="btn btn-success" title="Add user to group" href="{% url 'groups:mentor_group_add' group.pk %}">&#10010; Add</a>
-                <br>
+                <a class="btn btn-blue" title="Add user to group" href="{% url 'groups:mentor_group_add' group.pk %}">Add user</a>
                 <br>
                 {% if search %}
                 <strong>Search results for "{{ search_label }}":</strong>

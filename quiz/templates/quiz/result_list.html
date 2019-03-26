@@ -21,7 +21,7 @@
         {% for result in results %}
             <tr>
                 <td class="align-middle"><a
-                        href="{% url 'quiz:result-chart-user' pk=result.id current_user=request.user.username %}">
+                        href="{% url 'quiz:result-chart-user' pk=result.id current_user=current.username%}">
                     {{ result.quiz.title.capitalize }}</a>
                 </td>
                 <td class="align-middle">{{ result.quiz.description|truncatechars:70 }}</td>
@@ -29,7 +29,7 @@
                 <td>
                     <div class="d-flex justify-content-center">
                     <a class="btn btn-light"
-                       href="{% url 'quiz:result-chart-user' pk=result.id current_user=request.user.username %}">
+                       href="{% url 'quiz:result-chart-user' pk=result.id current_user=current.username%}">
                         <em class="fa fa-eye"></em></a>
                     </div>
                 </td>
