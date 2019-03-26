@@ -1,6 +1,5 @@
 from itertools import chain
 from django.contrib.auth.mixins import (UserPassesTestMixin,
-                                        LoginRequiredMixin,
                                         PermissionRequiredMixin)
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -355,7 +354,7 @@ class MentorGroupAdd(PermissionRequiredMixin, SuccessMessageMixin,
             pk=self.kwargs['pk'], mentor__id=self.request.user.pk).exists()
 
 
-class AddNewUser(LoginRequiredMixin, generic.CreateView):
+class AddNewUser(generic.CreateView):
     """
     Adds currently logged student to group
     """
