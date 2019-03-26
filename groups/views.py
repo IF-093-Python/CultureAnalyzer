@@ -1,14 +1,12 @@
 from itertools import chain
-
 from django.contrib.auth.mixins import (UserPassesTestMixin,
-                                        LoginRequiredMixin,
                                         PermissionRequiredMixin)
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import Count
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
@@ -17,6 +15,8 @@ from django.views import generic
 from groups.forms import (GroupCreateForm, GroupUpdateForm, SheduleForm,
                           InvitationForm)
 from groups.models import Group, Shedule, Invitation
+from groups.service import send_email_to_members, send_email_to_mentor
+
 from CultureAnalyzer.constants import ITEMS_ON_PAGE, TRAINEE_ID, MENTOR_ID
 from CultureAnalyzer.mixins import SafePaginationMixin
 
@@ -78,6 +78,14 @@ class CreateGroupView(PermissionRequiredMixin, SafePaginationMixin,
         """Overrides parent function to take object_list if form is invalid"""
         self.object_list = self.get_queryset()
         return super().form_invalid(form=form)
+
+    def form_valid(self, form):
+        """Updates existing shedule or creates new one if it doest'n exist"""
+        group = form.save()
+        mentors = group.mentor.all()
+        domain = self.request.build_absolute_uri('/')[:-1]
+        send_email_to_mentor(domain, mentors, group)
+        return super(CreateGroupView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(CreateGroupView, self).get_context_data(**kwargs)
@@ -327,6 +335,15 @@ class MentorGroupAdd(PermissionRequiredMixin, SuccessMessageMixin,
         if not form.cleaned_data['user']:
             return redirect('groups:mentor_group_update',
                             pk=self.kwargs['pk'])
+        try:
+            schedule = Shedule.objects.get(
+                group=self.kwargs['pk'],)
+            print(schedule)
+        except Shedule.DoesNotExist:
+            schedule = None
+        if schedule and schedule.end > timezone.now():
+            domain = self.request.build_absolute_uri('/')[:-1]
+            send_email_to_members(domain, form.cleaned_data['user'], schedule)
         form.cleaned_data['user'] = \
             chain(form.cleaned_data['user'], users_in_group)
         return super(MentorGroupAdd, self).form_valid(form)
@@ -337,7 +354,7 @@ class MentorGroupAdd(PermissionRequiredMixin, SuccessMessageMixin,
             pk=self.kwargs['pk'], mentor__id=self.request.user.pk).exists()
 
 
-class AddNewUser(LoginRequiredMixin, generic.CreateView):
+class AddNewUser(generic.CreateView):
     """
     Adds currently logged student to group
     """
@@ -436,16 +453,28 @@ class SheduleGroupView(PermissionRequiredMixin, UserPassesTestMixin,
     def form_valid(self, form):
         """Updates existing shedule or creates new one if it doest'n exist"""
         group = Group.objects.get(pk=self.kwargs['pk'])
-        shedule = Shedule.objects.filter(group=group, quiz=form.instance.quiz)
+        members = group.user.all()
         form.cleaned_data['group'] = group
-        if shedule:
-            shedule.update(**form.cleaned_data)
+        try:
+            schedule = Shedule.objects.get(group=group,
+                                           quiz=form.instance.quiz)
+        except Shedule.DoesNotExist:
+            schedule = None
+        if schedule:
+            schedule.quiz = form.cleaned_data['quiz']
+            schedule.start = form.cleaned_data['start']
+            schedule.end = form.cleaned_data['end']
+            schedule.save()
         else:
-            Shedule.objects.create(**form.cleaned_data)
+            schedule = form.save(commit=False)
+            schedule.group = group
+            schedule.save()
         messages.success(request=self.request,
                          message=f'{form.instance.quiz} set '
-                                 f'for "{group}" successfully.')
-        return super(SheduleGroupView, self).form_valid(form)
+                         f'for "{group}" successfully.')
+        domain = self.request.build_absolute_uri('/')[:-1]
+        send_email_to_members(domain, members, schedule)
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -41,7 +41,7 @@
                             <em class="fa fa-edit"></em></a>
                         <a class="{% if group in has_quiz %} btn btn-warning {% else %} btn btn-light {% endif %} btn-option ml-1" href="{% url 'groups:shedule_group_list' group.pk %}">
                             <em class="fa fa-clock"></em></a>
-                        <a class="btn btn-light btn-option ml-1" href="">
+                        <a class="btn btn-light btn-option ml-1" href="{% url 'quiz:result-chart-group' group.pk group.name %}">
                             <em class="fas fa-chart-bar"></em></a>
                     </div>
                 </td>

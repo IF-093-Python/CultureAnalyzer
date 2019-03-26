@@ -9,21 +9,25 @@
 <p><strong>Range:</strong> {{feedback.min_value}}-{{feedback.max_value}}</p>
 <p><strong>Indicator:</strong> {{feedback.indicator}}</p>
 <br>
-<table class="table table-hover">
-    <caption><a href="{% url 'recommendation-create' %}?feedback={{feedback.id}}" class="btn btn-primary">Add recommendation</a></caption>
-    <thead>
+<a href="{% url 'recommendation-create' %}?feedback={{feedback.id}}" class="btn btn-blue">Add recommendation</a>
+<hr>
+<div class="table-responsive">
+<table class="table table-hover block-rounded">
+    <thead class="thead-light">
         <tr>
             <th scope="col">Text</th>
-            <th style="width: 15%">Options</th>
+            <th scope="col" style="width: 15%">Options</th>
         </tr>
     </thead>
     <tbody>
         {% for recommendation in feedback.recommendation_set.all %}
         <tr>
-            <td style="vertical-align: middle">{{ recommendation.recommendation }}</td>
-            <td class="d-flex justify-content-around">
-                <a style="min-width: 40%" class="btn btn-primary" href="{% url 'recommendation-update' recommendation.id %}"><i class="far fa-edit"></i></a>
-                <a style="min-width: 40%" class="btn btn-danger" href="{% url 'recommendation-delete' recommendation.id %}"><i class="far fa-trash-alt"></i></a>
+            <td class="align-middle">{{ recommendation.recommendation }}</td>
+            <td>
+                <div class="d-flex justify-content-center">
+                    <a class="btn btn-light btn-option" href="{% url 'recommendation-update' recommendation.id %}"><i class="far fa-edit"></i></a>
+                    <a class="btn btn-light btn-option ml-1" href="{% url 'recommendation-delete' recommendation.id %}"><i class="far fa-trash-alt"></i></a>
+                </div>
             </td>
         </tr>
         {% empty %}
@@ -34,4 +38,5 @@
         </tr>
     </tbody>
 </table>
+</div>
 {% endblock %}

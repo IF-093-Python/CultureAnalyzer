@@ -10,6 +10,15 @@ __all__ = ['LoginViewTest', 'RegisterViewTest', 'UpdateUserViewTest',
            'PasswordChangeViewTest', 'TestViews']
 
 
+def create_superuser():
+    user = get_user_model().objects.create_user(username='admin',
+                                                password='admin',
+                                                email='admin@mail.com',
+                                                is_superuser=True)
+
+    return user
+
+
 class LoginViewTest(SetUpUserMixin, TestCase):
 
     def setUp(self):
@@ -71,6 +80,41 @@ class PasswordChangeViewTest(SetUpUserMixin, TestCase):
              'new_password2': 'test_qwerty1'})
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('home'), target_status_code=302)
+
+
+class AdminListTestView(SetUpUserMixin, TestCase):
+    def test_have_not_access_to_admin_page(self):
+        self.client.login(username=USERNAME, password=PASSWORD)
+        response = self.client.get(reverse('admin'))
+        self.assertEqual(response.status_code, 403)
+
+    def test_have_access_to_admin_page(self):
+        create_superuser()
+        self.client.login(username='admin', password='admin')
+
+        response = self.client.get(reverse('admin'))
+        self.assertEqual(response.status_code, 200)
+
+
+class BlockUserTestView(TestCase):
+    def test_cannot_block_itself(self):
+        user = create_superuser()
+        self.client.login(username='admin', password='admin')
+        response = self.client.get(reverse('change-profile', args=[user.id]))
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_cannot_block_other_superuser(self):
+        create_superuser()
+        other_user = get_user_model().objects.create_user(username='admin2',
+                                                          password='admin2',
+                                                          email='admin2@mail.com',
+                                                          is_superuser=True)
+        self.client.login(username='admin', password='admin')
+        response = self.client.get(
+            reverse('change-profile', args=[other_user.id]))
+
+        self.assertEqual(response.status_code, 403)
 
 
 class TestViews(TestCase):

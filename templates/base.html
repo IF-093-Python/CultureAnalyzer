@@ -18,7 +18,8 @@
                             Menu
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item {% if not perms.quiz.view_test_player %}d-none{% endif %}" href="{% url 'test-player:start_test' %}">Start test</a>
+                            <a class="dropdown-item {% if not perms.quiz.view_test_player %}d-none{% endif %}" href="{% url 'test_player:start_test' %}">Start test</a>
+                            <a class="dropdown-item {% if not perms.quiz.view_test_player %}d-none{% endif %}" href="{% url 'quiz:result-list' request.user.id %}">Results</a>
                             <div class="dropdown-divider {% if not perms.quiz.view_test_player %}d-none{% endif %}"></div>
                             <a class="dropdown-item {% if not perms.users.view_customuser %}d-none{% endif %}" href="{% url 'admin' %}">Users</a>
                             <a class="dropdown-item {% if not perms.groups.view_group %}d-none{% endif %}" href="{% url 'groups:groups-list' %}">Groups</a>
