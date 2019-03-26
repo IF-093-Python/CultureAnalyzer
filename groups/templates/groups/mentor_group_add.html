@@ -26,9 +26,8 @@
         </form>
     </div>
         {% if not object_list %}
-        <a class="btn btn-danger" title="Back to all groups"
-           href="{% url 'groups:mentor_group_update' group.pk%}">
-           &#8630; Back</a>
+        <a class="btn btn-outline-light" title="Back to all groups"
+           href="{% url 'groups:mentor_group_update' group.pk%}">Back</a>
         {% endif %}
 
      {% if object_list %}
@@ -43,10 +42,10 @@
     <tbody>
   <form method="post">
      {% csrf_token %}
-    <a class="btn btn-danger" title="Back to group"
-       href="{% url 'groups:mentor_group_update' group.pk %}">&#8630; Back</a>
-    <button type="submit" class="btn btn-success"
-                    style="margin-left: 4px;">&#10010; Add users</button>
+    <a class="btn btn-outline-light" title="Back to group"
+       href="{% url 'groups:mentor_group_update' group.pk %}">Back</a>
+    <button type="submit" class="btn btn-blue"
+                    style="margin-left: 4px;">Add users</button>
         <br>
         <br>
         {% if search %}
