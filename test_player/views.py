@@ -333,8 +333,7 @@ class TestPlayer(UserPassesTestMixin, FormView):
                 return success_url
         self._saving_user_answers(current_quiz)
 
-        return reverse('quiz:result-list', kwargs={
-            'user_id': self.request.session['_auth_user_id']})
+        return reverse('quiz:result-list', kwargs={'pk': self.request.user.id})
 
     @transaction.atomic()
     def test_func(self):
