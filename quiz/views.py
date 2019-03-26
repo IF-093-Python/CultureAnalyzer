@@ -39,7 +39,8 @@ class QuizzesList(LoginRequiredMixin, PermissionRequiredMixin,
         return quizzes
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(QuizzesList, self).get_context_data(**kwargs)
+        context = super(QuizzesList, self).get_context_data(
+            object_list=None, **kwargs)
         context['search'] = self.request.GET.get("quiz_search")
         return context
 
@@ -75,7 +76,7 @@ class QuizDetailView(LoginRequiredMixin, PermissionRequiredMixin,
         return questions
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super().get_context_data(object_list=None, **kwargs)
         context['search'] = self.request.GET.get("question_search")
         context['quiz'] = get_object_or_404(Quizzes, pk=self.kwargs['pk'])
         return context

@@ -42,9 +42,11 @@ class SwitchSessionDataMiddleware:
             if stored_session_key and stored_session_key != current_session_key:
                 self.switch_session_data(request, current_session_key,
                                          stored_session_key)
+            # update LoggedInUser table with relevant session key
+            request.user.logged_in_user.session_key = current_session_key
+            request.user.logged_in_user.save()
 
     @staticmethod
-    @transaction.atomic()
     def switch_session_data(request, current_session_key,
                             stored_session_key):
         """
@@ -70,6 +72,3 @@ class SwitchSessionDataMiddleware:
             session_key=current_session_key,
             session_data=stored_session_data,
             expire_date=expire_date)
-        # update LoggedInUser table with relevant session key
-        request.user.logged_in_user.session_key = current_session_key
-        request.user.logged_in_user.save()
