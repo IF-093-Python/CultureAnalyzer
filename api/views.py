@@ -6,7 +6,7 @@ from rest_framework.mixins import (CreateModelMixin, UpdateModelMixin,
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
-from CultureAnalyzer.constants import MENTOR_ID, ADMIN_ID, TRAINEE_ID
+from CultureAnalyzer.constants import MENTOR_ID, ADMIN_ID
 from api.permissions import IsAdmin, CanChangeUser, HasGroupPermission
 from api.serializers.account import SignUpSerializer, ProfileSerializer
 from api.serializers.admin_page import (AdminListSerializer,
