@@ -18,7 +18,7 @@ urlpatterns = [
     path('result_list/<int:pk>/', ResultsListView.as_view(),
          name='result-list'),
     re_path('^column_chart/(?P<pk>\\d+)/', include([
-        re_path('^group=(?P<group>\\w+[\\s,-]*\\w*)/$',
+        re_path('^group=(?P<group>\\w+.*\\w*)/$',
                 ResultView.as_view(), name='result-chart-group'),
         re_path('^user=(?P<current_user>\\w+[\\s,-]*\\w*)/$',
                 ResultView.as_view(), name='result-chart-user'),
