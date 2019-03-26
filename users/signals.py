@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from CultureAnalyzer.constants import TRAINEE_ID
+from CultureAnalyzer.constants import TRAINEE_ID, ADMIN_ID
 from users.models import LoggedInUser
 
 __all__ = ['add_group']
@@ -19,7 +19,10 @@ def add_group(sender, instance, created, **kwargs):
     then we add this instance into group
     """
     if created:
-        Group.objects.get(pk=TRAINEE_ID).user_set.add(instance)
+        if instance.is_superuser:
+            Group.objects.get(pk=ADMIN_ID).user_set.add(instance)
+        else:
+            Group.objects.get(pk=TRAINEE_ID).user_set.add(instance)
 
 
 @receiver(user_logged_in)
