@@ -1,0 +1,5 @@
+Hello, {{member.first_name}} {{member.last_name }},
+For you was opened test - {{schedule.quiz.title}}. You can pass it from
+                            {{schedule.start}} to {{schedule.end}}!
+Thanks for using our site!
+The CultureAnalyzer team.

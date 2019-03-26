@@ -5,57 +5,58 @@
 <div class="container-fluid bg-1 main col-md-10">
     <h1 class="border-bottom my-3 pb-1">All quizzes:</h1>
     <div class="my-2">
-        <a class="btn btn-outline-success float-right"
-           href="{% url 'quiz:create-quiz' %}">Add new quiz</a>
-
-        <!--Quiz search function by name-->
-        <form class="form-inline" method="GET"
-              action="{% url 'quiz:quizzes-list' %}">
-            <input class="form-control col-5" type="text"
-                   name="quiz_search"
-                   placeholder="Search"
-                   {% if search %} value="{{search}}" {% endif %}>
-            <span id="searchclear" class="glyphicon-remove-circle"></span>
-            <button class="btn btn-light" type="submit">
-                <splan class="fas fa-search"></splan>
-            </button>
-        </form>
+            <!--Quiz search function by name-->
+            <form class="d-flex flex-wrap justify-content-between mt-n1" method="GET"
+                  action="{% url 'quiz:quizzes-list' %}">
+                <div class="d-flex mt-1">
+                    <input class="form-control" type="text"
+                       name="quiz_search"
+                       placeholder="Search"
+                        {% if search %} value="{{ search }}" {% endif %}>
+                    <button class="btn btn-blue ml-1" type="submit">
+                        <splan class="fas fa-search"></splan>
+                    </button>
+                </div>
+                <a class="btn btn-blue mt-1" href="{% url 'quiz:create-quiz' %}">
+                        Add new quiz
+                </a>
+            </form>
     </div>
-    {% if quizzes %}
-    <div class="row fa-align-center my-5">
-    {% for quiz in quizzes %}
-        <div class="text-center col-md-5 mx-2"
-             style="background-color:#d1e8d2;">
-            <div class="my-3 p-1" style="background-color:white; opacity:0.5;">
-                <p style="color:black;">{{quiz}}</p>
-                <a class="btn btn-light"
-                           href="{% url 'quiz:detail-quiz' quiz.pk%}">
-                    <span class="fas fa-eye"></span>
-                </a>
-                <a class="btn btn-light"
-                           href="{% url 'quiz:update-quiz' quiz.pk %}">
-                    <span class="fas fa-edit"></span>
-                </a>
-                <a class="btn btn-light"
-                           href="{% url 'quiz:delete-quiz' quiz.pk %}">
-                    <span class="fas fa-trash-alt"></span>
-                </a>
+        {% if quizzes %}
+            <div class="d-flex flex-wrap justify-content-around my-5">
+                {% for quiz in quizzes %}
+                    <div class="text-center col-md-5 block block-rounded">
+                        <div class="my-3 p-1">
+                            <p>{{ quiz }}</p>
+                            <a class="btn btn-light"
+                               href="{% url 'quiz:detail-quiz' quiz.pk %}">
+                                <span class="fas fa-eye"></span>
+                            </a>
+                            <a class="btn btn-light"
+                               href="{% url 'quiz:update-quiz' quiz.pk %}">
+                                <span class="fas fa-edit"></span>
+                            </a>
+                            <a class="btn btn-light"
+                               href="{% url 'quiz:delete-quiz' quiz.pk %}">
+                                <span class="fas fa-trash-alt"></span>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        </div>
-    {% endfor %}
+            <!--Include paginator-->
+            {% if is_paginated %}
+                <div class="d-flex justify-content-center">
+                    {% cool_paginate page_obj=page_obj %}
+                </div>
+            {% endif %}
+
+        {% else %}
+            {% if search %}
+                <p>There are no results that match your search.</p>
+            {% else %}
+                <p>You have not created any quizzes yet.</p>
+            {% endif %}
+        {% endif %}
     </div>
-
-    <!--Include paginator-->
-    {% if is_paginated %}
-        {% cool_paginate page_obj=page_obj %}
-    {% endif %}
-
-    {% else %}
-    {% if search %}
-    <p>There are no results that match your search.</p>
-    {% else %}
-    <p>You have not created any quizzes yet.</p>
-    {% endif %}
-    {% endif %}
-</div>
 {% endblock content %}

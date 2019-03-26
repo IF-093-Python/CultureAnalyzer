@@ -109,7 +109,7 @@ class AnswerListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         return answers
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super().get_context_data(object_list=None, **kwargs)
         context['question'] = get_object_or_404(Questions,
                                                 pk=self.kwargs['question_id'])
         context['search'] = self.request.GET.get("answer_search")
