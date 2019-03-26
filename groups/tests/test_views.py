@@ -619,20 +619,6 @@ class SheduleGroupTest(TestCase):
         # test_SheduleGroup_uses_correct_template:
         self.assertTemplateUsed(resp, 'groups/shedule_group.html')
 
-    def test_SheduleGroup_with_data(self):
-        group = Group.objects.get(name='Group')
-        quiz = Quizzes.objects.get(title='SomeQuiz')
-        start = timezone.now() + timezone.timedelta(days=1)
-        end = timezone.now() + timezone.timedelta(days=3)
-        resp = self.client.post(
-            reverse('groups:shedule_group', kwargs={'pk': group.pk}),
-            data={'start': start.date(), 'end': end.date(), 'quiz': quiz.pk})
-        self.assertTrue(Shedule.objects.filter(group__name='Group').exists())
-        # Test of redirection after success
-        self.assertEqual(resp.get('location'),
-                         reverse('groups:shedule_group_list',
-                                 kwargs={'pk': group.pk}))
-
 
 @tag('slow')
 class AddInvitationTest(TestCase):
