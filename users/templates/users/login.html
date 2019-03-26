@@ -1,3 +1,4 @@
+{% load socialaccount %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -144,9 +145,9 @@ body {
 							<label class="custom-control-label" for="customCheck1">Remember password</label>
 						  </div>
 						  <button class="btn btn-lg btn-blue btn-block text-uppercase" type="submit">Sign in</button>
-						  <hr class="d-none my-4"><br>
-						  <button class="btn btn-lg btn-google btn-block text-uppercase" type="submit"><i class="fab fa-google mr-2"></i> Sign in with Google</button>
-						  <button class="btn btn-lg btn-facebook btn-block text-uppercase" type="submit"><i class="fab fa-facebook-f mr-2"></i> Sign in with Facebook</button>
+						  <hr class="my-4">
+						  <a href="{% provider_login_url "google" method="oauth2" %}" class="btn btn-lg btn-google btn-block text-uppercase" type="submit"><i class="fab fa-google mr-2"></i> Sign in with Google</a>
+						  <a href="{% provider_login_url "facebook" method="oauth2" %}" class="btn btn-lg btn-facebook btn-block text-uppercase" type="submit"><i class="fab fa-facebook-f mr-2"></i> Sign in with Facebook</a>
                             <small class="text-center text-muted">
                             Forget password? <a href="{% url 'password_reset' %}" class="mx-2">Reset</a>
                             </small><br>
