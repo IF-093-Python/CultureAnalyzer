@@ -147,7 +147,7 @@ body {
 						  <button class="btn btn-lg btn-blue btn-block text-uppercase" type="submit">Sign in</button>
 						  <hr class="my-4">
 						  <a href="{% provider_login_url "google" method="oauth2" %}" class="btn btn-lg btn-google btn-block text-uppercase" type="submit"><i class="fab fa-google mr-2"></i> Sign in with Google</a>
-						  <a href="{% provider_login_url "facebook" method="oauth2" %}" class="btn btn-lg btn-facebook btn-block text-uppercase" type="submit"><i class="fab fa-facebook-f mr-2"></i> Sign in with Facebook</a>
+                            <a href="{% provider_login_url "github" method="oauth2" %}" class="btn btn-lg btn-github btn-block text-uppercase" type="submit"><i class="fab fa-github-f mr-2"></i> Sign in with GitHub</a>
                             <small class="text-center text-muted">
                             Forget password? <a href="{% url 'password_reset' %}" class="mx-2">Reset</a>
                             </small><br>
