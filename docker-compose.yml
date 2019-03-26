@@ -1,0 +1,38 @@
+version: '3.6'
+
+services:
+  app:
+    build: .
+    restart: always
+    volumes:
+      - .:/var/www/CultureAnalyzer
+      - static_volume:/var/www/CultureAnalyzer/static
+      - ./media:/var/www/CultureAnalyzer/media
+    entrypoint:
+      - /var/www/CultureAnalyzer/docker-entrypoint.sh
+    networks:
+      - nginx_network
+
+  nginx:
+    image: nginx
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./config/nginx/conf.d:/etc/nginx/conf.d
+      - /etc/letsencrypt/live/culture-analyzer.pp.ua:/etc/ssl/certs
+      - /etc/letsencrypt/archive/culture-analyzer.pp.ua:/etc/archive/culture-analyzer.pp.ua
+      - static_volume:/var/www/CultureAnalyzer/static
+      - ./media:/var/www/CultureAnalyzer/media
+    depends_on:
+      - app
+    networks:
+      - nginx_network
+
+networks:
+  nginx_network:
+    driver: bridge
+
+volumes:
+  static_volume:
