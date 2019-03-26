@@ -585,7 +585,7 @@ class SheduleGroupListTest(TestCase):
         self.assertTemplateUsed(resp, 'groups/shedule_group_list.html')
 
 
-@tag('slow', 'now')
+@tag('slow')
 class SheduleGroupTest(TestCase):
     @classmethod
     def setUpTestData(cls):
