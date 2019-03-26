@@ -1,15 +1,11 @@
 import json
 
 from django.contrib.auth import get_user_model
-from django.db.models import Q
-from django.template.defaultfilters import register
-
-from feedbacks.models import Feedback
 
 __all__ = ['check_group_indicators', 'get_average_results',
            'get_indicators_values', 'get_groups_results',
            'get_final_buisness_result',
-           'get_feedback', 'zip_list', 'NUMBER_OF_QUESTION_FOR_BUSINESS_QUIZ',
+           'NUMBER_OF_QUESTION_FOR_BUSINESS_QUIZ',
            'MAX_INDICATOR_VALUE', 'MIN_INDICATOR_VALUE']
 
 NUMBER_OF_QUESTION_FOR_BUSINESS_QUIZ = 24
@@ -117,23 +113,3 @@ def get_final_buisness_result(data, *args):
     indicator_list = get_indicators_values(average_result)
     data = check_group_indicators(indicator_list)
     return data
-
-
-def get_feedback(indicators_values, result, indicators_name):
-    """
-    Retrieve for each indicator feedback based on country and result difference
-    Assuming three parameters with same length
-    :param indicators_values: values for selected country
-    :param result: users results by each indicators
-    :param indicators_name in correct order
-    :return: dict with feedback for each indicator
-    """
-    indicators_feedback = {}
-    for i in range(len(indicators_values)):
-        indicators_difference = abs(indicators_values[i] - result[i])
-        indicator_feedback = Feedback.objects.filter(
-                            Q(min_value__lte=indicators_difference) &
-                            Q(max_value__gte=indicators_difference),
-                            indicator__iexact=indicators_name[i])
-        indicators_feedback[indicators_name[i]] = indicator_feedback
-    return indicators_feedback

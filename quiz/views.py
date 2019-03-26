@@ -12,12 +12,11 @@ from CultureAnalyzer.constants import ITEMS_ON_PAGE
 
 from quiz.forms import QuizCreateForm
 from quiz.models import Quizzes, Results
+from quiz.service import get_final_buisness_result
 from tutors.models import Questions
 from groups.models import Group
 from indicators.models import CountryIndicator, INDICATORS_ORDER
-from quiz.service import get_final_buisness_result, get_feedback
-from feedbacks.models import Recommendation
-
+from feedbacks.models import Recommendation, Feedback
 
 __all__ = ['QuizzesList', 'CreateQuizView', 'UpdateQuizView',
            'DeleteQuizView', 'QuizDetailView', 'ResultView', 'ResultsListView']
@@ -109,8 +108,8 @@ class ResultsListView(PermissionRequiredMixin, generic.ListView):
         results = Results.objects.filter(user=self.kwargs['pk'])
         return results
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
         context['current'] = get_object_or_404(get_user_model(),
                                                pk=self.kwargs['pk'])
         context['back'] = self.request.META['HTTP_REFERER']
@@ -128,15 +127,9 @@ class ResultView(PermissionRequiredMixin, UserPassesTestMixin,
         countries_feedback = {}
         countries_names = []
         if request.POST.getlist('select_indicator'):
-            iso_codes = self.request.POST.getlist('select_indicator')
-            for iso_code in iso_codes:
-                indicator_obj = context['country_indicators'].get(
-                    iso_code=iso_code)
-                countries_values.update(indicator_obj.get_indicators)
-                countries_names.append(indicator_obj.name)
-                countries_feedback[indicator_obj.name] = get_feedback(
-                    countries_values[iso_code], context['result_list'],
-                    INDICATORS_ORDER)
+            self._preparing_results_data(context, countries_values,
+                                         countries_names,
+                                         countries_feedback)
         context['countries_values'] = countries_values
         context['countries_names'] = countries_names
         context['countries_feedback'] = countries_feedback
@@ -145,14 +138,13 @@ class ResultView(PermissionRequiredMixin, UserPassesTestMixin,
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.kwargs.get('group', False):
-            result = get_final_buisness_result(get_object_or_404(Group,
-                                               id=self.kwargs['pk']))
+            result = get_final_buisness_result(
+                get_object_or_404(Group, id=self.kwargs['pk']))
             context['name'] = self.kwargs['group']
         else:
             result = get_final_buisness_result(get_object_or_404(
-                get_user_model(),
-                username=self.kwargs['current_user']),
-                                      self.kwargs['pk'])
+                get_user_model(), username=self.kwargs['current_user']),
+                                               self.kwargs['pk'])
             context['name'] = self.kwargs['current_user']
         context['result_table'] = [(ind.upper(), result[ind]) for ind in
                                    INDICATORS_ORDER]
@@ -176,18 +168,65 @@ class ResultView(PermissionRequiredMixin, UserPassesTestMixin,
                 offset = int(request.GET['offset'])
                 paginate_by = int(request.GET['paginate_by'])
             except (KeyError, ValueError):
-                message = 'Incorrect request parameters'
-                return JsonResponse({'status': 'false', 'message': message},
+                return JsonResponse({'status': 'false',
+                                     'message': 'Incorrect request parameters'
+                                     },
                                     status=400)
 
-            query = Recommendation.objects.filter(feedback__id=feedback_id) \
-                                   [offset:offset + paginate_by]
-            recommendations = list(query.values_list('recommendation',
-                                                     flat=True))
-            recommendations_count = Recommendation.objects \
-                .filter(feedback__id=feedback_id).count()
-            end = 'end' if recommendations_count <= offset + paginate_by \
-                else ''
-            return JsonResponse({'end': end,
-                                 'recommendations': recommendations})
+            return ResultView._next_recommendations_response(feedback_id,
+                                                             offset,
+                                                             paginate_by)
         return super().get(request, *args, **kwargs)
+
+    def _preparing_results_data(self, context, countries_values,
+                                countries_names, countries_feedback):
+        iso_codes = self.request.POST.getlist('select_indicator')
+        for iso_code in iso_codes:
+            indicator_obj = context['country_indicators'].get(
+                iso_code=iso_code)
+            countries_values.update(indicator_obj.get_indicators)
+            countries_names.append(indicator_obj.name)
+            countries_feedback[indicator_obj.name] = ResultView._get_feedback(
+                countries_values[iso_code], context['result_list'],
+                INDICATORS_ORDER)
+
+    @staticmethod
+    def _get_feedback(indicators_values, result, indicators_name):
+        """
+        Retrieve for each indicator feedback based on country and result
+        difference
+
+        Assuming three parameters with same length
+        :param indicators_values: values for selected country
+        :param result: users results by each indicators
+        :param indicators_name in correct order
+        :return: dict with feedback for each indicator
+        """
+        indicators_feedback = {}
+        for i in range(len(indicators_values)):
+            indicators_difference = abs(indicators_values[i] - result[i])
+            indicator_feedback = Feedback.objects.filter(
+                Q(min_value__lte=indicators_difference) &
+                Q(max_value__gte=indicators_difference),
+                indicator__iexact=indicators_name[i])
+            indicators_feedback[indicators_name[i]] = indicator_feedback
+        return indicators_feedback
+
+    @staticmethod
+    def _next_recommendations_response(feedback_id, offset, paginate_by):
+        """
+        Calculate next recommendation portion to retrieve
+        :param feedback_id:
+        :param offset: current recommendations retrieved
+        :param paginate_by:
+        :return: jsonresponse with list of recommendations and end variable if
+        no more recommendations available
+        """
+        query = Recommendation.objects.filter(feedback__id=feedback_id) \
+            [offset:offset + paginate_by]
+        recommendations = list(query.values_list('recommendation', flat=True))
+        end = 'end' if Recommendation.objects.filter(feedback__id=feedback_id)\
+                                     .count() <= offset + paginate_by else ''
+        return JsonResponse({'end': end,
+                             'recommendations': recommendations
+                             })
