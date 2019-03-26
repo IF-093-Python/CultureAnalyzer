@@ -346,6 +346,6 @@ class TestPlayer(UserPassesTestMixin, FormView):
         quiz_id, _ = self.get_quiz_data()
         quiz_exist = Shedule.objects.filter(group__user=self.request.user,
                                             end__gt=date_time,
-                                            begin__lte=date_time,
+                                            start__lte=date_time,
                                             quiz=quiz_id).exists()
         return quiz_exist
