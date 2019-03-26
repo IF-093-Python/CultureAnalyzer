@@ -60,7 +60,7 @@ class QuizDetailView(LoginRequiredMixin, PermissionRequiredMixin,
     context_object_name = 'questions'
     template_name = 'quiz/quiz_detail.html'
     paginate_by = ITEMS_ON_PAGE
-    permission_required = 'quiz.detail_quiz'
+    permission_required = 'quiz.view_quizzes'
 
     def get_queryset(self):
         """
