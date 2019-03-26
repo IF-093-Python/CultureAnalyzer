@@ -152,7 +152,7 @@ class MentorAnswerViewSet(viewsets.ModelViewSet):
     queryset = Answers.objects.all()
     serializer_class = MentorAnswerSerializer
     filter_fields = ('question__id', 'question__id',
-                     'question__question_number' 'answer_number',)
+                     'question__question_number', 'answer_number',)
     search_fields = {'answer_text': 'icontains'}
     permission_classes = [HasGroupPermission]
     permission_groups = {
