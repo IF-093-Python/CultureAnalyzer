@@ -1,0 +1,5 @@
+Hello, {{member.first_name}} {{member.last_name }},
+You must to pass {{schedule.quiz.title}}
+     test from {{schedule.start}} until {{schedule.end}}
+Thanks for using our site!
+The CultureAnalyzer team.
