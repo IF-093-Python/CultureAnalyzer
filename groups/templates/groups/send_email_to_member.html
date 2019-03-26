@@ -1,0 +1,72 @@
+{% autoescape off %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>{{schedule.quiz.title}}</title>
+
+    <style type="text/css" rel="stylesheet" media="all">
+    [styles go there not shown due to beverity]
+    </style>
+</head>
+<body>
+<table class="email-wrapper" style="width:100%">
+    <tr><td style="text-align:center">
+        <table class="email-content" style="width:100%">
+            <tr><td class="email-body" style="width:100%">
+                <table class="email-body_inner" style="background: #0a0039;
+                color: #ffffff; text-align:center; width:70%">
+                    <tr><td>
+                        <h1>Culture Analyzer</h1>
+                    </td></tr>
+                </table>
+                <table class="email-body_inner"
+                       style="text-align:center; width:70%">
+                    <tr><td class="content-cell">
+                        <h2>Hello, {{member.first_name}} {{member.last_name}} ,
+                        </h2>
+                        <p>For you was opened test -
+                            {{schedule.quiz.title}}. You can pass it from
+                            {{schedule.start}} to {{schedule.end}}!</p>
+                        <table class="email-body_inner"
+                               style="text-align:center; width:100%">
+                            <tr><td style="text-align:center">
+                                <table style="width:100%" border="0">
+                                    <tr><td style="text-align:center">
+                                        <table border="0">
+                                            <tr><td>
+                                                To view available tests,
+                                                <a href="{{ domain }}{% url 'test-player:start_test' %}"
+                                                   role="button">Click here</a>
+                                            </td></tr>
+                                        </table>
+                                    </td></tr>
+                                </table>
+                            </td></tr>
+                        </table>
+                        <p>If you have questions
+                            <a href="mailto:{{email_from}}">
+                                contact support</a></p>
+                        <p>Thanks for using our site!
+                            <br>The CultureAnalyzer Team.</p>
+                    </td></tr>
+                </table>
+            </td></tr>
+            <tr><td>
+                <table class="email-footer" style="text-align:center;
+                width:100%">
+                    <tr>
+                        <td class="content-cell" style="text-align:center">
+                            <p class="sub align-center">
+                                &copy;Culture Analyzer
+                            </p>
+                    </td></tr>
+                </table>
+            </td></tr>
+        </table>
+    </td></tr>
+</table>
+</body>
+</html>
+{% endautoescape %}

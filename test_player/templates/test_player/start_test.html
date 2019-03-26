@@ -17,7 +17,8 @@
                     <div class="col-lg-3 align-self-baseline">
                         <p class="text-white-25 font-weight-light mb-3">{{ quiz.quiz.description }}</p>
                         {% if quiz in not_started %}
-                            <span style="color: red">Quiz starts at: <br> {{ quiz.begin }}</span>
+                            <span style="color: red">Quiz starts at: <br> {{
+                                quiz.start }}</span>
                         {% else %}
                             <span>Quiz starts at: <br> <mark>Already started!</mark></span>
                         {% endif %}
