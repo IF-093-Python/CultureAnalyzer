@@ -16,10 +16,6 @@
                         <a class="btn btn-light btn-option" href="{% url 'group_perm-update' user.id %}"
                             role="button"><span class="fas fa-edit"></span> </a>
                         {% endif %}
-                        {% if can_delete_permissions %}
-                        <a class="btn btn-light btn-option" href="{% url 'group_perm-delete' user.id %}"
-                            role="button"><span class="fas fa-trash-alt"></span></a>
-                        {% endif %}
                     </div>
                 </li>
                 {% endfor %}
