@@ -108,13 +108,6 @@ class ResultsListView(PermissionRequiredMixin, generic.ListView):
         results = Results.objects.filter(user=self.kwargs['pk'])
         return results
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(object_list=object_list, **kwargs)
-        context['current'] = get_object_or_404(get_user_model(),
-                                               pk=self.kwargs['pk'])
-        context['back'] = self.request.META['HTTP_REFERER']
-        return context
-
 
 class ResultView(PermissionRequiredMixin, UserPassesTestMixin,
                  generic.TemplateView):
