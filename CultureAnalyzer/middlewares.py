@@ -42,6 +42,7 @@ class SwitchSessionDataMiddleware:
             if stored_session_key and stored_session_key != current_session_key:
                 self.switch_session_data(request, current_session_key,
                                          stored_session_key)
+
             # update LoggedInUser table with relevant session key
             request.user.logged_in_user.session_key = current_session_key
             request.user.logged_in_user.save()
@@ -66,9 +67,11 @@ class SwitchSessionDataMiddleware:
             session_key=stored_session_key).session_data
         # remove not used anymore session
         Session.objects.get(session_key=stored_session_key).delete()
-        # update current session
+
         expire_date = request.session.get_expiry_date()
-        Session.objects.update(
-            session_key=current_session_key,
-            session_data=stored_session_data,
-            expire_date=expire_date)
+
+        # update current session
+        session_object = Session.objects.get(session_key=current_session_key)
+        session_object.session_data = stored_session_data
+        session_object.expire_date = expire_date
+        session_object.save()
