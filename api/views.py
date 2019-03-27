@@ -1,9 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from rest_framework import generics, viewsets
+from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import (CreateModelMixin, UpdateModelMixin,
                                    RetrieveModelMixin, ListModelMixin)
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from CultureAnalyzer.constants import MENTOR_ID, ADMIN_ID
@@ -18,16 +20,20 @@ from api.serializers.quiz import (MentorQuizSerializer,
                                   MentorQuestionSerializer,
                                   MentorAnswerSerializer,
                                   TraineeQuizzesSerializer)
+from api.serializers.results import ResultsSerializer, \
+    CalculatedResultsSerializer
 from feedbacks.models import Feedback
 from indicators.models import CountryIndicator
-from quiz.models import Quizzes
+from quiz.models import Quizzes, Results
+from quiz.service import get_final_buisness_result
 from tutors.models import Questions, Answers
 from users.filters import admin_search
 
 __all__ = ['SignUpView', 'ProfileView', 'FeedbackViewSet',
            'TraineeQuizzesView', 'GroupViewSet', 'CountryIndicatorViewSet',
            'MentorQuizViewSet', 'MentorQuestionViewSet', 'MentorAnswerViewSet',
-           'AdminListView', 'BlockProfileView']
+           'AdminListView', 'BlockProfileView', 'ResultsCreateView',
+           'ResultsGetView']
 
 
 class SignUpView(generics.CreateAPIView):
@@ -56,7 +62,7 @@ class FeedbackViewSet(viewsets.ModelViewSet):
         'partial_update': [MENTOR_ID],
         'retrieve': [MENTOR_ID],
         'destroy': [MENTOR_ID],
-        }
+    }
 
 
 class AdminListView(generics.ListAPIView):
@@ -94,7 +100,7 @@ class GroupViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin,
     permission_classes = [HasGroupPermission]
     permission_groups = {
         'list': [ADMIN_ID],
-        }
+    }
 
 
 class CountryIndicatorViewSet(viewsets.ModelViewSet):
@@ -110,7 +116,7 @@ class CountryIndicatorViewSet(viewsets.ModelViewSet):
         'partial_update': [MENTOR_ID],
         'retrieve': [MENTOR_ID],
         'destroy': [MENTOR_ID],
-        }
+    }
 
 
 class MentorQuizViewSet(viewsets.ModelViewSet):
@@ -126,7 +132,7 @@ class MentorQuizViewSet(viewsets.ModelViewSet):
         'partial_update': [MENTOR_ID],
         'retrieve': [MENTOR_ID],
         'destroy': [MENTOR_ID],
-        }
+    }
 
 
 class MentorQuestionViewSet(viewsets.ModelViewSet):
@@ -137,7 +143,7 @@ class MentorQuestionViewSet(viewsets.ModelViewSet):
     search_fields = {
         'question_number': ('exact',),
         'question_text': ('icontains',)
-        }
+    }
     permission_classes = [HasGroupPermission]
     permission_groups = {
         'list': [MENTOR_ID],
@@ -145,7 +151,7 @@ class MentorQuestionViewSet(viewsets.ModelViewSet):
         'partial_update': [MENTOR_ID],
         'retrieve': [MENTOR_ID],
         'destroy': [MENTOR_ID],
-        }
+    }
 
 
 class MentorAnswerViewSet(viewsets.ModelViewSet):
@@ -161,4 +167,23 @@ class MentorAnswerViewSet(viewsets.ModelViewSet):
         'partial_update': [MENTOR_ID],
         'retrieve': [MENTOR_ID],
         'destroy': [MENTOR_ID],
-        }
+    }
+
+
+class ResultsGetView(RetrieveModelMixin, GenericAPIView):
+    queryset = Results.objects.all()
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = CalculatedResultsSerializer(
+            data=get_final_buisness_result(request.user, instance.pk))
+        serializer.is_valid()
+        return Response(serializer.data)
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+
+class ResultsCreateView(generics.CreateAPIView):
+    queryset = Results.objects.all()
+    serializer_class = ResultsSerializer
