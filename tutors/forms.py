@@ -18,6 +18,19 @@ class QuestionCreateForm(forms.ModelForm):
             attrs={'rows': 3, }
         )}
 
+    def full_clean(self):
+        """
+        The function validation a unique_together error from values
+        'question text' and 'quiz'.
+        Returns an error message if values are not unique together.
+        """
+        super(QuestionCreateForm, self).full_clean()
+        try:
+            self.instance.validate_unique()
+        except forms.ValidationError:
+            self.add_error('question_text', 'There is already a question with '
+                                          'this text in current quiz.')
+
 
 class AnswerCreateForm(forms.ModelForm):
     """
