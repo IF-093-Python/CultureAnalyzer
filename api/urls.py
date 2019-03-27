@@ -7,7 +7,8 @@ from api.views import (SignUpView, FeedbackViewSet, ProfileView,
                        TraineeQuizzesView, GroupViewSet, MentorQuizViewSet,
                        MentorQuestionViewSet, MentorAnswerViewSet,
                        CountryIndicatorViewSet,
-                       BlockProfileView, AdminListView)
+                       BlockProfileView, AdminListView,
+                       ResultsGetView, ResultsCreateView)
 
 __all__ = ['urlpatterns']
 
@@ -32,6 +33,8 @@ urlpatterns = [
     path('trainee/', include([
         path('quizzes/', TraineeQuizzesView.as_view()),
         ])),
+    path('results/<int:pk>', ResultsGetView.as_view()),
+    path('results', ResultsCreateView.as_view()),
     ]
 
 urlpatterns += router.urls
