@@ -61,6 +61,11 @@
         <p>There are no available mentors for this group yet.</p>
         {% endif %}
         {% endif %}
+        {% for user in checked_mentors %}
+                {% if user not in object_list %}
+                <input type="checkbox" style="visibility: hidden" name="mentor" value="{{ user.pk }}" checked>
+                {% endif %}
+                {% endfor %}
         <div class="d-flex flex-wrap">
             {% for user in object_list %}
             <div class="col-md-6 my-2">

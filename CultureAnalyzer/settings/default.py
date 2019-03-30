@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -40,15 +41,25 @@ INSTALLED_APPS = [
     'django_filters',
     'bootstrap_datepicker_plus',
 
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
+
+    'django_extensions',
     'users.apps.UsersConfig',
     'groups',
     'tutors',
     'indicators',
     'quiz',
     'feedbacks',
+    'test_player',
 
     'api.apps.ApiConfig'
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -134,7 +145,9 @@ LOGIN_URL = 'login'
 REGISTER_URL = 'register'
 LOGOUT_URL = 'logout'
 API_URL = 'api'
+GOOGLE_OAUTH_URL = 'accounts'
 
+SITE_ID = 1
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -159,7 +172,18 @@ SIMPLE_JWT = {
 }
 
 LOGOUT_REDIRECT_URL = LOGIN_URL
-REDIRECT_EXCLUDE_ROUTES = (LOGIN_URL, LOGOUT_URL, REGISTER_URL, API_URL)
+REDIRECT_EXCLUDE_ROUTES = (GOOGLE_OAUTH_URL,
+                           LOGIN_URL, LOGOUT_URL, REGISTER_URL, API_URL)
 
 
 TEST_RUNNER = 'CultureAnalyzer.tests.CustomTestRunner'
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False

@@ -44,7 +44,7 @@ class CreateQuestionView(LoginRequiredMixin, PermissionRequiredMixin,
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['instance'] = Questions(question_number=get_min_missing_value(
-            Questions, self.kwargs['quiz_id']), quiz=Quizzes(
+            'Questions', self.kwargs['quiz_id']), quiz=Quizzes(
                 self.kwargs['quiz_id']))
         return kwargs
 
@@ -109,7 +109,7 @@ class AnswerListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         return answers
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super().get_context_data(object_list=None, **kwargs)
         context['question'] = get_object_or_404(Questions,
                                                 pk=self.kwargs['question_id'])
         context['search'] = self.request.GET.get("answer_search")
@@ -140,7 +140,7 @@ class CreateAnswerView(LoginRequiredMixin, PermissionRequiredMixin,
         """
         kwargs = super().get_form_kwargs()
         kwargs['instance'] = Answers(answer_number=get_min_missing_value(
-            Answers, self.kwargs['question_id']), question=Questions(
+            'Answers', self.kwargs['question_id']), question=Questions(
                 self.kwargs['question_id']))
         return kwargs
 

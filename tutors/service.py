@@ -8,7 +8,7 @@ def get_numbers(model, filter_id):
     :return: values from column 'question_number'/ 'answer_number' as a
     tuple of values.
     """
-    if isinstance(model, Questions):
+    if model == 'Questions':
         return list(Questions.objects.filter(quiz=filter_id).values_list(
             'question_number', flat=True).order_by('question_number'))
     return list(Answers.objects.filter(question=filter_id).values_list(
