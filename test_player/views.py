@@ -102,7 +102,7 @@ class TestPlayer(UserPassesTestMixin, FormView):
 
         return context
 
-    def get_quiz_data(self):
+    def get_quiz_data(self) -> tuple:
         """
         Method which get id of current test and number of current question from
          form keyword arguments and return them for further use
@@ -173,23 +173,23 @@ class TestPlayer(UserPassesTestMixin, FormView):
 
         """
         current_quiz, question_number = self.get_quiz_data()
-        answer = form.cleaned_data.get('answers')
+        answer: str = form.cleaned_data.get('answers')
         # checking if session variable exist, if not - call method, which \
         # set default initial values (used only once during the first request)
         if current_quiz not in self.request.session:
-            self._setting_initial_session_data()
+            self._setting_initial_session_data(current_quiz)
 
         # updating session with relevant data
-        session_data = self.request.session[current_quiz]
+        session_data: dict = self.request.session[current_quiz]
         if form.has_changed():
             session_data.update(
                 {question_number: answer}
             )
-        self.request.session[current_quiz] = session_data
+        self.request.session[current_quiz]: dict = session_data
 
         return super(TestPlayer, self).form_valid(form)
 
-    def _setting_initial_session_data(self):
+    def _setting_initial_session_data(self, current_quiz: str) -> None:
         """
         Method, which set default initial values (used only once during the
          first request).
@@ -200,7 +200,6 @@ class TestPlayer(UserPassesTestMixin, FormView):
          values(answers) for questions.
 
         """
-        current_quiz, _ = self.get_quiz_data()
 
         questions = Questions.objects.filter(quiz=current_quiz).values_list(
             'question_number', flat=True).order_by('question_number')
@@ -209,7 +208,7 @@ class TestPlayer(UserPassesTestMixin, FormView):
         self.request.session.setdefault(current_quiz, None)
         self.request.session[current_quiz] = initial_questions
 
-    def _saving_user_answers(self, current_quiz):
+    def _saving_user_answers(self, current_quiz: str) -> None:
         """
         Method, which save user answers to database such as json object.
 
@@ -219,10 +218,8 @@ class TestPlayer(UserPassesTestMixin, FormView):
         """
         session_user = self.request.session['_auth_user_id']
         session_data = self.request.session[current_quiz]
-        result = []
 
-        for answer in session_data:
-            result.append(int(session_data.get(answer)))
+        result = [int(session_data.get(answer)) for answer in session_data]
         result = json.dumps(result, ensure_ascii=False)
 
         Results.objects.create(user_id=int(session_user),
@@ -230,9 +227,10 @@ class TestPlayer(UserPassesTestMixin, FormView):
                                pass_date=datetime.datetime.now(
                                    timezone.get_current_timezone()),
                                result=result)
+        # delete unnecessary session variable
         self.request.session.pop(current_quiz, None)
 
-    def _count_user_answers(self, current_quiz, context):
+    def _count_user_answers(self, current_quiz: str, context: dict) -> None:
         """
         Method, which count answered questions, initialize context variable
          which uses for display finish button.
@@ -269,7 +267,7 @@ class TestPlayer(UserPassesTestMixin, FormView):
 
         """
         current_quiz, question_number = self.get_quiz_data()
-        prev_question_number = int(question_number) - 1
+        prev_question_number: int = int(question_number) - 1
 
         if prev_question_number > 0:
             success_url = reverse_lazy(
@@ -299,7 +297,7 @@ class TestPlayer(UserPassesTestMixin, FormView):
         current_quiz, question_number = self.get_quiz_data()
         question_count = Questions.objects.filter(
             quiz_id=current_quiz).count()
-        next_question_number = int(question_number) + 1
+        next_question_number: int = int(question_number) + 1
 
         if next_question_number <= question_count:
             success_url = reverse_lazy(
@@ -331,12 +329,13 @@ class TestPlayer(UserPassesTestMixin, FormView):
                                       kwargs={'quiz_id': current_quiz,
                                               'question_number': question})
                 return success_url
+
         self._saving_user_answers(current_quiz)
 
         return reverse('quiz:result-list', kwargs={'pk': self.request.user.id})
 
     @transaction.atomic()
-    def test_func(self):
+    def test_func(self) -> bool:
         """
 
         :return: boolean value which mean quiz existing
