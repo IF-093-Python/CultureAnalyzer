@@ -3,7 +3,10 @@ version: '3.6'
 services:
   db:
     image: postgres
-    container_name: ps01
+    container_name: pg01
+    restart: always
+    ports:
+      - 5433:5432
     volumes:
       - db_data:/var/lib/postgresql/data/
     networks:

@@ -3,7 +3,10 @@ import sys
 from .default import *
 
 try:
-    from .local import *
+    if 'runserver' in sys.argv:
+        from .local import *
+    else:
+        from .docker import *
 except ImportError:
     pass
 
