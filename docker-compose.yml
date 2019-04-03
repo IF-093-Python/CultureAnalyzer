@@ -4,13 +4,22 @@ services:
   db:
     image: postgres
     container_name: ps01
+    volumes:
+      - db_data:/var/lib/postgresql/data/
+    networks:
+      - database_network
 
   app:
     build: .
     container_name: app01
     restart: always
     volumes:
-      - .:/var/www/CultureAnalyzer
+      - .:/opt/services/CultureAnalyzer
+      - static:/opt/services/CultureAnalyzer/static
+      - media:/opt/services/CultureAnalyzer/media
+    networks:
+      - database_network
+      - nginx_network
     depends_on:
       - db
 
@@ -20,9 +29,25 @@ services:
     restart: always
     ports:
       - 80:80
+      - 443:443
     volumes:
       - ./config/nginx/local-conf.d:/etc/nginx/conf.d
-      - ./static:/var/www/CultureAnalyzer/static
-      - ./media:/var/www/CultureAnalyzer/media
+      - static:/opt/services/CultureAnalyzer/static
+      - media:/opt/services/CultureAnalyzer/media
+      - /etc/letsencrypt/live/culture-analyzer.pp.ua:/etc/ssl/certs
+      - /etc/letsencrypt/archive/culture-analyzer.pp.ua:/etc/archive/culture-analyzer.pp.ua
+    networks:
+      - nginx_network
     depends_on:
       - app
+
+networks:
+  database_network:
+    driver: bridge
+  nginx_network:
+    driver: bridge
+
+volumes:
+  db_data:
+  static:
+  media:
