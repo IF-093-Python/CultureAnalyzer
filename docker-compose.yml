@@ -5,10 +5,14 @@ services:
     image: postgres
     container_name: pg01
     restart: always
+    environment:
+      POSTGRES_DB: ${PG_DB}
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
     ports:
-      - 5433:5432
+      - ${PG_PORT_OUT}:${PG_PORT_IN}
     volumes:
-      - db_data:/var/lib/postgresql/data/
+      - pg_data:/var/lib/postgresql/data/
     networks:
       - database_network
 
@@ -16,6 +20,7 @@ services:
     build: .
     container_name: app01
     restart: always
+    env_file: .env
     volumes:
       - .:/opt/services/CultureAnalyzer
       - static:/opt/services/CultureAnalyzer/static
@@ -51,6 +56,6 @@ networks:
     driver: bridge
 
 volumes:
-  db_data:
+  pg_data:
   static:
   media:
