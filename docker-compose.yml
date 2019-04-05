@@ -36,8 +36,8 @@ services:
     container_name: ng01
     restart: always
     ports:
-      - 80:80
-      - 443:443
+      - ${NG_PORT_OUT}:${NG_PORT_IN}
+      - ${HG_HTTPS_PORT_OUT}:${HG_HTTPS_PORT_IN}
     volumes:
       - ./config/nginx/local-conf.d:/etc/nginx/conf.d
       - static:/opt/services/CultureAnalyzer/static
