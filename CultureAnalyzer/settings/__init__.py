@@ -3,10 +3,11 @@ import sys
 from .default import *
 
 try:
-    if 'runserver' in sys.argv:
-        from .local import *
-    else:
+    docker_enable = os.getenv('DOCKER_ENABLE', 'False') == 'True'
+    if docker_enable:
         from .docker import *
+    else:
+        from .local import *
 except ImportError:
     pass
 

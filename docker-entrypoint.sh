@@ -5,6 +5,8 @@ touch ./logs/gunicorn.log
 touch ./logs/gunicorn-access.log
 tail -n 0 -f ./logs/gunicorn*.log &
 
+export DOCKER_ENABLE=True
+
 python manage.py collectstatic --noinput
 python manage.py migrate --no-input
 python manage.py loaddata users/fixtures/fixtures.json
