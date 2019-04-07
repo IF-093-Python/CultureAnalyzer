@@ -5,7 +5,7 @@ from os import environ as env
 
 def echo_info(text, with_line=True):
     line = '-' * 100 if with_line else ''
-    text = text + '\n' if text.startswith('$') else text
+    text = text + ('\n' if text.startswith('$') else '')
     return f'echo -e "{line}\n{text}"'
 
 
@@ -13,18 +13,41 @@ def command(text):
     return echo_info(f'$ {text}') + '&&' + text
 
 
-DEV_DEPLOY_COMMANDS = (echo_info('Deploy...'),
-                       command('cd CultureAnalyzer-8080'),
-                       command('git checkout -f dev'),
-                       command('git pull'),
-                       command('docker-compose stop'),
-                       command('docker-compose up --build -d'),
-                       command('docker-compose ps'))
+def open_project(folder):
+    return (echo_info('Deploy running...'),
+            command(f'cd {folder}'))
+
+
+def update_project(branch):
+    return (command(f'git checkout -f {branch}'),
+            command('git pull'))
+
+
+def update_docker():
+    return (command('docker-compose stop'),
+            command('docker-compose build'),
+            command('docker-compose up -d'),
+            command('docker-compose ps'))
+
+
+MASTER_DEPLOY_COMMANDS = (*open_project('CultureAnalyzer'),
+                          *update_project('master'),
+                          *update_docker())
+
+DEV_DEPLOY_COMMANDS = (*open_project('CultureAnalyzer-8080'),
+                       *update_project('dev'),
+                       *update_docker())
 
 USER = env['GC_DEPLOY_USERNAME']
 HOST = env['GC_DEPLOY_HOSTNAME']
 PORT = env['GC_DEPLOY_PORT']
 KEY_FILE = env['GC_DEPLOY_KEY_FILENAME']
+
+
+@task
+def gc_deploy_master(_ctx):
+    deploy(username=USER, hostname=HOST, port=PORT, key_filename=KEY_FILE,
+           deploy_commands=MASTER_DEPLOY_COMMANDS)
 
 
 @task
