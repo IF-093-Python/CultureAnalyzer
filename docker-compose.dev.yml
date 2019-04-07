@@ -35,10 +35,12 @@ services:
     image: nginx
     container_name: ng02
     restart: always
+    command: ./wait-for-it.sh app:8000 -s -t 70 -- /bin/sh -c "nginx -g 'daemon off;'"
     ports:
       - ${NG_PORT_OUT}:${NG_PORT_IN}
     volumes:
       - ./config/nginx/dev.conf:/etc/nginx/conf.d/default.conf
+      - ./scripts/wait-for-it.sh:/wait-for-it.sh
       - static:/opt/services/CultureAnalyzer/static
       - media:/opt/services/CultureAnalyzer/media
     networks:
