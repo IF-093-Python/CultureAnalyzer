@@ -3,8 +3,9 @@ import sys
 from .default import *
 
 try:
-    docker_enable = os.getenv('DOCKER_ENABLE', 'False') == 'True'
-    if docker_enable:
+    # Flag DOCKER_ENABLE switch in docker-entrypoint.sh file to 'True'
+    # after docker-compose up
+    if os.getenv('DOCKER_ENABLE') == 'True':
         from .docker import *
     else:
         from .local import *

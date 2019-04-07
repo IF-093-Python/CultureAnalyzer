@@ -1,18 +1,5 @@
 #!/usr/bin/env bash
 
-mkdir logs
-touch ./logs/gunicorn.log ./logs/gunicorn-access.log
-tail -n 0 -f ./logs/gunicorn*.log &
-
 export DOCKER_ENABLE=True
 
-python manage.py collectstatic --noinput
-python manage.py migrate --no-input
-python manage.py loaddata users/fixtures/fixtures.json
-
-gunicorn --bind :8000 CultureAnalyzer.wsgi:application \
-         --log-level=info \
-         --log-file=./logs/gunicorn.log \
-         --access-logfile=./logs/gunicorn-access.log
-
-exec "$@"
+./scripts/wait-for-it.sh ${PG_HOST}:${PG_PORT_IN} -s -t 40 -- ./scripts/bind-gunicorn.sh

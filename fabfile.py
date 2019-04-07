@@ -24,9 +24,8 @@ def update_project(branch):
 
 
 def update_docker():
-    return (command('docker-compose stop'),
-            command('docker-compose build'),
-            command('docker-compose up -d'),
+    return (command('docker-compose down'),
+            command('docker-compose up -d --build'),
             command('docker-compose ps'))
 
 
