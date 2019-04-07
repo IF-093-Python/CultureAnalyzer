@@ -23,19 +23,23 @@ def update_project(branch):
             command('git pull'))
 
 
-def update_docker():
+def update_docker(docker_compose_file):
     return (command('docker-compose down'),
-            command('docker-compose up -d --build'),
+            command(f'docker-compose -f {docker_compose_file} up -d --build'),
             command('docker-compose ps'))
 
 
-MASTER_DEPLOY_COMMANDS = (*open_project('CultureAnalyzer'),
-                          *update_project('master'),
-                          *update_docker())
+MASTER_DEPLOY_COMMANDS = (
+    *open_project(folder='CultureAnalyzer'),
+    *update_project(branch='master'),
+    *update_docker(docker_compose_file='docker-compose.prod.yml')
+)
 
-DEV_DEPLOY_COMMANDS = (*open_project('CultureAnalyzer-8080'),
-                       *update_project('dev'),
-                       *update_docker())
+DEV_DEPLOY_COMMANDS = (
+    *open_project(folder='CultureAnalyzer-8080'),
+    *update_project(branch='dev'),
+    *update_docker(docker_compose_file='docker-compose.dev.yml')
+)
 
 USER = env['GC_DEPLOY_USERNAME']
 HOST = env['GC_DEPLOY_HOSTNAME']
