@@ -43,6 +43,6 @@ before_deploy:
 
 deploy:
   - provider: script
-    script: fab gc-deploy-dev
+    script: fab gc-deploy-dev && fab gc-deploy-master
     on:
       branch: dockerize/dev

@@ -31,7 +31,7 @@ def update_docker(docker_compose_file):
 
 MASTER_DEPLOY_COMMANDS = (
     *open_project(folder='CultureAnalyzer'),
-    *update_project(branch='master'),
+    *update_project(branch='dockerize/dev'),
     *update_docker(docker_compose_file='docker-compose.prod.yml')
 )
 
