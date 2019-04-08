@@ -103,3 +103,4 @@ production.py
 
 .scannerwork/
 pylint_report_file.txt
+deploy.tar.enc

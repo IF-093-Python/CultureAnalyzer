@@ -37,7 +37,7 @@ MASTER_DEPLOY_COMMANDS = (
 
 DEV_DEPLOY_COMMANDS = (
     *open_project(folder='CultureAnalyzer-8080'),
-    *update_project(branch='dev'),
+    *update_project(branch='dockerize/dev'),
     *update_docker(docker_compose_file='docker-compose.dev.yml')
 )
 
