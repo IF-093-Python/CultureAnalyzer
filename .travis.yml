@@ -22,9 +22,8 @@ install:
   - pip install -r config/requirements/deploy.pip
 
 script:
-  - echo "Skip it..."
-#  - ./scripts/build.sh || travis_terminate 1;
-#  - sonar-scanner
+  - ./scripts/build.sh || travis_terminate 1;
+  - sonar-scanner
 
 notifications:
   email:
@@ -43,6 +42,10 @@ before_deploy:
 
 deploy:
   - provider: script
-    script: fab gc-deploy-dev && fab gc-deploy-master
+    script: fab gc-deploy-master
     on:
-      branch: dockerize/dev
+      branch: master
+  - provider: script
+    script: fab gc-deploy-dev
+    on:
+      branch: dev

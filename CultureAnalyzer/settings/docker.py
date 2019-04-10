@@ -1,8 +1,8 @@
 import os
 
 ALLOWED_HOSTS = ['*']
-
-STATIC_ROOT = "/opt/services/CultureAnalyzer/static"
+DEBUG = False
+STATIC_ROOT = "/opt/services/CultureAnalyzer/static/"
 MEDIA_ROOT = "/opt/services/CultureAnalyzer/media/"
 
 DATABASES = {
