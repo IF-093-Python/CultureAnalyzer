@@ -2,6 +2,8 @@ import os
 
 ALLOWED_HOSTS = ['*']
 DEBUG = False
+
+STATICFILES_DIRS = []
 STATIC_ROOT = "/opt/services/CultureAnalyzer/static/"
 MEDIA_ROOT = "/opt/services/CultureAnalyzer/media/"
 
