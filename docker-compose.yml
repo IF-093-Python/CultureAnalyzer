@@ -16,6 +16,14 @@ services:
     networks:
       - database_network
 
+  redis:
+    image: redis
+    container_name: rd
+    ports:
+      - ${RD_PORT_OUT}:${RD_PORT_IN}
+    networks:
+      - redis_network
+
   app:
     build: .
     container_name: app
@@ -27,9 +35,11 @@ services:
       - media:/opt/services/CultureAnalyzer/media
     networks:
       - database_network
+      - redis_network
       - nginx_network
     depends_on:
       - db
+      - redis
 
   nginx:
     image: nginx
@@ -50,6 +60,8 @@ services:
 
 networks:
   database_network:
+    driver: bridge
+  redis_network:
     driver: bridge
   nginx_network:
     driver: bridge
