@@ -19,8 +19,11 @@ services:
   redis:
     image: redis
     container_name: rd02
+    command: redis-server --appendonly yes
     ports:
       - ${RD_PORT_OUT}:${RD_PORT_IN}
+    volumes:
+      - redis_data:/data
     networks:
       - redis_network
 
@@ -68,5 +71,6 @@ networks:
 
 volumes:
   db_data:
+  redis_data:
   static:
   media:
