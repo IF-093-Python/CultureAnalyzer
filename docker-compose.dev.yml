@@ -3,7 +3,7 @@ version: '3.6'
 services:
   db:
     image: postgres
-    container_name: pg
+    container_name: pg02
     restart: always
     environment:
       POSTGRES_DB: ${PG_DB}
@@ -18,7 +18,7 @@ services:
 
   app:
     build: .
-    container_name: app
+    container_name: app02
     restart: always
     env_file: .env
     volumes:
@@ -33,13 +33,13 @@ services:
 
   nginx:
     image: nginx
-    container_name: ng
+    container_name: ng02
     restart: always
     command: ./wait-for-it.sh app:8000 -s -t 70 -- /bin/sh -c "nginx -g 'daemon off;'"
     ports:
       - ${NG_PORT_OUT}:${NG_PORT_IN}
     volumes:
-      - ./config/nginx/local.conf:/etc/nginx/conf.d/default.conf
+      - ./config/nginx/dev.conf:/etc/nginx/conf.d/default.conf
       - ./scripts/wait-for-it.sh:/wait-for-it.sh
       - static:/opt/services/CultureAnalyzer/static
       - media:/opt/services/CultureAnalyzer/media

@@ -10,7 +10,6 @@ addons:
     token:
       secure: "$SONAR_TOKEN"
   ssh_known_hosts:
-    - "$AWS_DEPLOY_HOSTNAME:$AWS_DEPLOY_PORT"
     - "$GC_DEPLOY_HOSTNAME:$GC_DEPLOY_PORT"
 
 before_install:
@@ -18,9 +17,9 @@ before_install:
   - export DJANGO_SETTINGS_MODULE=CultureAnalyzer.settings
 
 install:
-  - pip install -r requirements.txt
-  - pip install -r build-requirements.txt
-  - pip install -r deploy-requirements.txt
+  - pip install -r config/requirements/app.pip
+  - pip install -r config/requirements/build.pip
+  - pip install -r config/requirements/deploy.pip
 
 script:
   - ./scripts/build.sh || travis_terminate 1;
@@ -43,6 +42,10 @@ before_deploy:
 
 deploy:
   - provider: script
-    script: fab deploy-gc
+    script: fab gc-deploy-master
+    on:
+      branch: master
+  - provider: script
+    script: fab gc-deploy-dev
     on:
       branch: dev
