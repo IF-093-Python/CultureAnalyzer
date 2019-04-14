@@ -3,11 +3,8 @@ all: help
 help:				## Show this help.
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 
-# Application
-# ----------------------------------------------------------------------------------------------------------------------
-install:			## Run install script => requirements, migrate, load fixtures, createsuperuser
-	@./scripts/install.sh
-
+## ---------------------------------------------------------------------------------------------------------------------
+## 		Django application
 requirements:			## Install requirements for running
 	@pip install -r config/requirements/app.pip
 
@@ -18,6 +15,9 @@ requirements-all:		## Install requirements for running, building and deploying
 
 runserver:			## Run server on localhost:8000
 	@./manage.py runserver localhost:8000
+
+install:			## Run install script => requirements, migrate, load fixtures, createsuperuser
+	@./scripts/install.sh
 
 fakeusers:			## Create fake users, store them in DB => 3 admins, 8 mentors, 20 trainees
 	@./manage.py createfakeusers 20 --prefix Trainee --role trainee
@@ -37,8 +37,8 @@ build: tests pylint
 
 
 
-# Docker-compose
-# ----------------------------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------------------------------------------------------------
+## 		Docker-compose
 docker-ps:			## Show container names, status, ports
 	@docker ps -a --format="table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}"
 
