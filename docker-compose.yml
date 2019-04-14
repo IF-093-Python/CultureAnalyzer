@@ -19,6 +19,7 @@ services:
   redis:
     image: redis
     container_name: rd
+    restart: always
     command: redis-server --appendonly yes
     ports:
       - ${RD_PORT_OUT}:${RD_PORT_IN}

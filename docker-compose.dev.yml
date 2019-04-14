@@ -20,6 +20,7 @@ services:
     image: redis
     container_name: rd02
     command: redis-server --appendonly yes
+    restart: always
     ports:
       - ${RD_PORT_OUT}:${RD_PORT_IN}
     volumes:
