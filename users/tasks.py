@@ -1,9 +1,9 @@
 from celery.utils.log import get_task_logger
 from datetime import datetime
 from django.contrib.sessions.models import Session
+from django.utils.timezone import get_current_timezone
 
 from CultureAnalyzer import celery_app
-from django.utils.timezone import get_current_timezone
 
 logger = get_task_logger(__name__)
 
