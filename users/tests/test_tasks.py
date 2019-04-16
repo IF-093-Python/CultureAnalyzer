@@ -1,25 +1,22 @@
 import uuid
-from datetime import timedelta, datetime
+from datetime import timedelta
 from django.contrib.sessions.models import Session
 from django.test import TestCase as DjangoTestCase
-from django.utils.timezone import get_current_timezone as tz
 
 from users.tasks import clear_expired_sessions
-from users.tests.utils import mock_datetime_now
+from users.tests.utils import mock_datetime_now, tz_datetime
 
 
 class TaskClearSessionsTest(DjangoTestCase):
-    @mock_datetime_now(year=2018, month=1, day=1, hour=12)
+    @mock_datetime_now("users.tasks.datetime",
+                       year=2018, month=1, day=1)
     def test_clear_expired_sessions(self):
-        old_and_expired = self.dt(year=2017, month=1, day=1)
-        new_and_not_expired = self.dt(year=2018, month=1, day=1)
+        old_and_expired = tz_datetime(year=2017, month=1, day=1)
+        new_and_not_expired = tz_datetime(year=2018, month=2, day=1)
         self.generate_sessions(old_and_expired, limit=10)
         self.generate_sessions(new_and_not_expired, limit=3)
         clear_expired_sessions()
         self.assertIs(Session.objects.count(), 3)
-
-    def dt(self, **dt_kwargs):
-        return datetime(tzinfo=tz(), **dt_kwargs)
 
     def generate_sessions(self, initial_datetime,
                           days_interval=1, minutes_interval=0, limit=5):
