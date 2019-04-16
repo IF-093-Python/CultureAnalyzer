@@ -9,7 +9,7 @@ def mock_now_from(**datetime_kwargs):
     return mock.Mock(return_value=mock_value)
 
 
-def mock_now(**datetime_kwargs):
+def mock_datetime_now(**datetime_kwargs):
     def decorator(fun):
         @mock.patch("users.tasks.datetime")
         def wrapper(*args, **kwargs):
@@ -21,4 +21,3 @@ def mock_now(**datetime_kwargs):
         return wrapper
 
     return decorator
-
