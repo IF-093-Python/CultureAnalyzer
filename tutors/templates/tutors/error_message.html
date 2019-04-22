@@ -1,0 +1,16 @@
+{% block success_message %}
+{% if messages %}
+<ul class="alert alert-danger alert-dismissible fade show my-1"
+    role="alert">
+    {% for message in messages %}
+    <a {% if message.tags %} class="{{message.tags}}" {% endif %}>
+        {{message}}
+    </a>
+    <button type="button" class="close" data-dismiss="alert"
+            aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

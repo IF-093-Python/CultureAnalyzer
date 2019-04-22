@@ -1,0 +1,4 @@
+Hello, {{mentor.first_name}} {{mentor.last_name}},
+You were appointed mentor of the group {{group.name}}!
+Thanks for using our site!
+The CultureAnalyzer team.

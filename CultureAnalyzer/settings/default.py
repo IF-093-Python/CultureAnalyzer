@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -37,16 +38,28 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_cool_paginator',
     'rest_framework',
+    'django_filters',
+    'bootstrap_datepicker_plus',
 
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
+
+    'django_extensions',
     'users.apps.UsersConfig',
     'groups',
     'tutors',
     'indicators',
     'quiz',
     'feedbacks',
+    'test_player',
 
     'api.apps.ApiConfig'
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -56,6 +69,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'CultureAnalyzer.middlewares.AuthRequiredMiddleware',
+    'CultureAnalyzer.middlewares.SwitchSessionDataMiddleware',
 ]
 
 ROOT_URLCONF = 'CultureAnalyzer.urls'
@@ -102,7 +117,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Kiev'
 
 USE_I18N = True
 
@@ -124,11 +139,15 @@ STATICFILES_DIRS = [
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
+
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
+REGISTER_URL = 'register'
+LOGOUT_URL = 'logout'
+API_URL = 'api'
+GOOGLE_OAUTH_URL = 'accounts'
 
-ITEMS_ON_PAGE = 5
-
+SITE_ID = 1
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -139,6 +158,11 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.OrderingFilter',
+        'rest_framework.filters.SearchFilter',
+    ),
 }
 
 SIMPLE_JWT = {
@@ -146,3 +170,20 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
     'AUTH_HEADER_TYPES': ('JWT', 'Bearer'),
 }
+
+LOGOUT_REDIRECT_URL = LOGIN_URL
+REDIRECT_EXCLUDE_ROUTES = (GOOGLE_OAUTH_URL,
+                           LOGIN_URL, LOGOUT_URL, REGISTER_URL, API_URL)
+
+
+TEST_RUNNER = 'CultureAnalyzer.tests.CustomTestRunner'
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False

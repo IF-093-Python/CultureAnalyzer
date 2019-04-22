@@ -4,21 +4,22 @@ language: python
 python:
   - "3.6"
 
-
 addons:
   sonarcloud:
-    organization: $ORGANIZATION
-  token:
-      secure: $SONAR_TOKEN
-
+    organization: "$ORGANIZATION"
+    token:
+      secure: "$SONAR_TOKEN"
+  ssh_known_hosts:
+    - "$GC_DEPLOY_HOSTNAME:$GC_DEPLOY_PORT"
 
 before_install:
   - git fetch --unshallow || true
   - export DJANGO_SETTINGS_MODULE=CultureAnalyzer.settings
 
 install:
-  - pip install -r requirements.txt
-  - pip install -r build-requirements.txt
+  - pip install -r config/requirements/app.pip
+  - pip install -r config/requirements/build.pip
+  - pip install -r config/requirements/deploy.pip
 
 script:
   - ./scripts/build.sh || travis_terminate 1;
@@ -28,5 +29,23 @@ notifications:
   email:
     recipients:
       - test.mail.client008@gmail.com
+      - cultureanalyzer@gmail.com
     on_success: always
     on_failure: always
+
+before_deploy:
+  - openssl aes-256-cbc -K $encrypted_95903a489ee5_key -iv $encrypted_95903a489ee5_iv -in deploy.tar.enc -out ./deploy.tar -d
+  - tar xvf deploy.tar -C /tmp/ > /dev/null 2>&1
+  - eval "$(ssh-agent -s)"
+  - chmod 600 "$GC_DEPLOY_KEY_FILENAME"
+  - ssh-add "$GC_DEPLOY_KEY_FILENAME"
+
+deploy:
+  - provider: script
+    script: fab gc-deploy-master
+    on:
+      branch: master
+  - provider: script
+    script: fab gc-deploy-dev
+    on:
+      branch: dev

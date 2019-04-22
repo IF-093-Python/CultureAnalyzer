@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% load cool_paginate %}
+{% block content %}
+  {% if messages %}
+  {% for message in messages %}
+      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+  {% endfor %}
+  {% endif %}
+<br>
+<div class="container-fluid col-md-10">
+    <div class="border-bottom">
+        <h1 class="text-center font-weight-bold">Update group "{{ group.name }}"</h1>
+    <div class="my-2">
+        <p>Generate new URL: <a class="btn btn-outline-light ml-1" title="Generate URL"
+                href="{% url 'groups:add_invitation' group.pk %}">Make URL</a>
+        </p>
+
+    </div>
+    {% if url %}
+        <p>Link avialable until {{ time }}:
+            <br>
+            {{ left }}
+            <br>
+            <a style="color: #cd0a0a" href="{{ url }}">{{ url }}</a></p>
+    {% endif %}
+    </div>
+    <div class="my-2">
+        <form class="d-flex flex-wrap justify-content-between mt-n1" method="get">
+            <div class="d-flex mt-1">
+                <input class="form-control" type="search" placeholder="{{ search_label }}" aria-label="Search" name="data_search">
+                <button class="btn btn-blue ml-1" style="margin-right: 10px;" type="submit">Search</button>
+            </div>
+        </form>
+    </div>
+    {% if not object_list %}
+    <a class="btn btn-outline-light" title="Back to all groups" href="{% url 'groups:mentor_groups_view' %}">Back</a>
+    <a class="btn btn-blue" title="Add user to group" href="{% url 'groups:mentor_group_add' group.pk %}">Add</a>
+    {% endif %}
+    {% block users %}
+    {% if object_list %}
+    <table class="table table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th style="width: 1%"> </th>
+                <th>Name</th>
+                <th style="text-align: center; width: 1%">Photo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <form method="post">
+                {% csrf_token %}
+                <a class="btn btn-outline-light" title="Back to all groups" href="{% url 'groups:mentor_groups_view' %}">Back</a>
+                <button type="submit" class="btn btn-blue" style="margin-left: 4px;margin-right: 4px;
+            background-color: cornflowerblue">Update group</button>
+                <a class="btn btn-blue" title="Add user to group" href="{% url 'groups:mentor_group_add' group.pk %}">Add user</a>
+                <br>
+                {% if search %}
+                <strong>Search results for "{{ search_label }}":</strong>
+                {% else %}
+                <strong>Users:</strong>
+                {% endif %}
+                {% for user in users_in_group %}
+                {% if user not in object_list %}
+                <input type="checkbox" style="visibility: hidden" name="user" value="{{ user.pk }}" checked>
+                {% endif %}
+                {% endfor %}
+                {% for user in object_list %}
+                <tr>
+                    <td class="align-middle">
+                        <input type="checkbox" name="user" value="{{ user.pk }}" checked>
+                    </td>
+                    <td class="align-middle">
+                        <h4>{{ user.last_name }} {{ user.first_name }} ({{ user.username }})</h4>
+                    </td>
+                    <td>
+                        {% if user.image %}
+                        <img src="{{ user.image.url }}" alt="" class="circle_img" style="text-align: center">
+                        {% else %}
+                        <img src="{%static 'default.png'%}" alt="" class="circle_img" style="text-align: center">
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </form>
+            <br>
+            {% else %}
+            {% if search %}
+            <p>There are no results that match your search.</p>
+            {% else %}
+            <p>You have no students in this group yet.</p>
+            {% endif %}
+            {% endif %}
+            {% if is_paginated %}
+            {% cool_paginate page_obj=page_obj %}
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock users %}
+{% endblock content %}

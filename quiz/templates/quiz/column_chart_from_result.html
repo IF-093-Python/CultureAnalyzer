@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load filters %}
+{% block title %}Your result{% endblock %}
+{% block content %}
+<div class="d-flex justiy-content-between flex-wrap">
+    <div class="form-group col-md-4">
+    <form method="post" class="mb-1">
+        {% csrf_token %}
+        <input type="submit" class="btn btn-blue" value="Result">
+        <select name='select_indicator' class="selectpicker"
+                multiple="multiple" data-live-search="true" data-max-options="5">
+            {% for i in country_indicators%}
+            <option value="{{ i.iso_code }}"
+                    {% if i.iso_code in countries_values.keys %}
+                        selected="selected"
+                    {% endif %}>
+                {{i.name}}
+            </option>
+            {% endfor %}
+        </select>
+    </form>
+        <!--Table with indicators -->
+        <table class="table table-hover">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col" class="text-center w-50">Indicator</th>
+                <th scope="col" class="text-center w-50">Value</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for result in result_table %}
+            <tr>
+                <td class="text-center">{{ result.0 }}</td>
+                <td class="text-center">{{ result.1 }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <!--End table-->
+        {% include "quiz/explanation_indicators.html" %}
+    </div>
+
+
+        <div class="form-group col-md-8">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                       aria-controls="home"
+                       aria-selected="true">Chart</a>
+                </li>
+                {% if countries_names %}
+                    {% for country_name in countries_names %}
+                        <li class="nav-item">
+                            <a class="nav-link" id="{{ country_name|cut:" " }}-tab" data-toggle="tab" href="#{{ country_name|cut:" " }}"
+                               role="tab"
+                               aria-controls="{{ country_name|cut:" " }}"
+                               aria-selected="false">
+                                {{ country_name|truncatechars:12 }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <div id="container"
+                         style="min-width: 310px; height: 400px; margin: 0 auto;"></div>
+                </div>
+                {% if countries_values %}
+                    {% for country_name in countries_names %}
+                        <div class="tab-pane fade" id="{{ country_name|cut:" " }}" role="tabpanel"
+                             aria-labelledby="{{ country_name|cut:" " }}-tab">
+                            <!--Creating views of feedback and recommendations-->
+                            <div class="container">
+                                {% with feedback_by_ind=countries_feedback|lookup:country_name %}
+                                    {% for indicator, feedback in feedback_by_ind.items %}
+                                        {% if feedback %}
+                                            <h5>Feedback for {{ indicator }}:</h5>
+                                            {% for feedback_obj in feedback %}
+
+                                                <p>- {{ feedback_obj.feedback }}</p>
+                                                {% with recommendations=feedback_obj.recommendation_set.all|slice:":5" first_load=5 %}
+                                                    {% if recommendations %}
+                                                        <p>Recommendations:</p>
+                                                    {% endif %}
+
+                                                    <ul class="recommendation">
+                                                    {% for r in recommendations %}
+                                                       <li> {{ r.recommendation }}</li>
+                                                    {% endfor %}
+                                                    </ul>
+
+                                                    {% if feedback_obj.recommendation_set.count > first_load %}
+                                                        <button type="button" class="btn btn-link load_recommendation_button"
+                                                            data-url="{{ request.get_full_path }}"
+                                                            data-feedback-id="{{ feedback_obj.pk }}"
+                                                            data-offset="{{ first_load }}">Load more</button>
+                                                    {% endif %}
+                                                {% endwith %}
+
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endwith %}
+                            </div>
+                            <!--End of feedback, recommendations-->
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+            </div>
+        </div>
+
+        <script>
+            Highcharts.chart('container', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Culture Analyzer diagram'
+                },
+                xAxis: {
+                    categories: {{ categories_chart|safe }},
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    max: 100,
+                    title: {
+                        text: 'Value'
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span>' +
+                        '<table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">' +
+                        '{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.1,
+                        borderWidth: 0
+                    }
+                },
+                series: [{
+                    name: '{{ name }}',
+                    data: {{ result_list }},
+                },{%for k, ind in countries_values.items %}
+                    {
+                        name: '{{ k }}',
+                        data: {{ ind }}
+                    },
+                {% endfor %} ]
+            });
+
+        </script>
+</div>
+{% endblock %}

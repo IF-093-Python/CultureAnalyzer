@@ -99,6 +99,9 @@ ENV/
 
 # local settings
 local.py
+production.py
 
 .scannerwork/
 pylint_report_file.txt
+deploy.tar.enc
+deploy.tar

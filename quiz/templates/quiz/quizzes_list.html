@@ -1,37 +1,62 @@
 {% extends 'base.html' %}
+{% load cool_paginate %}
 {% block title %}All quizzes{% endblock %}
 {% block content %}
-    <h1>Quizzes</h1>
-    {% block all_quizzes %}
-        <div class="container-fluid bg-1 main col-md-10">
-            <div class="float-right">
-                <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'quiz:quizzes-list' %}">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
-                           name="data_search">
-                    <div class="btn-toolbar">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                        <button class="btn btn-outline-danger my-2 my-sm-0" name="clear" type="submit">Clear</button>
-                    </div>
-                    <br>
-                </form>
-            </div><br>
-
-            <p>All quizzes:</p>
-            <a class="btn btn-primary" style="margin-bottom: 10px; background-color: cornflowerblue" href="{% url 'quiz:create-quiz' %}">Create quiz</a>
-            {% if quizzes %}
+<div class="container-fluid bg-1 main col-md-10">
+    <h1 class="border-bottom my-3 pb-1">All quizzes:</h1>
+    <div class="my-2">
+            <!--Quiz search function by name-->
+            <form class="d-flex flex-wrap justify-content-between mt-n1" method="GET"
+                  action="{% url 'quiz:quizzes-list' %}">
+                <div class="d-flex mt-1">
+                    <input class="form-control" type="text"
+                       name="quiz_search"
+                       placeholder="Search"
+                        {% if search %} value="{{ search }}" {% endif %}>
+                    <button class="btn btn-blue ml-1" type="submit">
+                        <splan class="fas fa-search"></splan>
+                    </button>
+                </div>
+                <a class="btn btn-blue mt-1" href="{% url 'quiz:create-quiz' %}">
+                        Add new quiz
+                </a>
+            </form>
+    </div>
+        {% if quizzes %}
+            <div class="d-flex flex-wrap justify-content-around my-5">
                 {% for quiz in quizzes %}
-                    <li class="list-group-item">
-                        <a href="">{{ quiz }} :</a>
-                        <a class="btn-outline-info"
-                           href="{% url 'quiz:update-quiz' quiz.pk %}">&#9998;</a>
-                        <a class="btn-outline-info"
-                           href="{% url 'quiz:delete-quiz' quiz.pk %}">&#10006;</a>
-                    </li>
+                    <div class="text-center col-md-5 block block-rounded">
+                        <div class="my-3 p-1">
+                            <p>{{ quiz }}</p>
+                            <a class="btn btn-light"
+                               href="{% url 'quiz:detail-quiz' quiz.pk %}">
+                                <span class="fas fa-eye"></span>
+                            </a>
+                            <a class="btn btn-light"
+                               href="{% url 'quiz:update-quiz' quiz.pk %}">
+                                <span class="fas fa-edit"></span>
+                            </a>
+                            <a class="btn btn-light"
+                               href="{% url 'quiz:delete-quiz' quiz.pk %}">
+                                <span class="fas fa-trash-alt"></span>
+                            </a>
+                        </div>
+                    </div>
                 {% endfor %}
-                <br>
+            </div>
+            <!--Include paginator-->
+            {% if is_paginated %}
+                <div class="d-flex justify-content-center">
+                    {% cool_paginate page_obj=page_obj %}
+                </div>
+            {% endif %}
+
+        {% else %}
+            {% if search %}
+                <p>There are no results that match your search.</p>
             {% else %}
                 <p>You have not created any quizzes yet.</p>
             {% endif %}
-        </div>
-    {% endblock all_quizzes %}
+        {% endif %}
+    </div>
 {% endblock content %}

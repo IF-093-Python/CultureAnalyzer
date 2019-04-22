@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
-pip install -r requirements.txt
+pip install -r config/requirements/app.pip
 python manage.py migrate
+python manage.py loaddata users/fixtures/fixtures.json
 python manage.py createsuperuser

@@ -1,95 +1,59 @@
 {% extends 'abstract.html' %}
 {% load static %}
-{% block sidebar %}
-    <nav id="sidebar">
-        <div class="sidebar-header">
-            <h3>Culture Analyzer</h3>
-        </div>
-
-        <ul class="list-unstyled components">
-            <li>
-                <div class="row" style="margin: 0 auto">
-                    <p>
-                {% if user.image %}
-                    <img src="{{ user.image.url }}" alt="" class="circle_text">
-                {% else %}
-                    <img src="{% static 'default.png' %}" alt="" class="circle_text">
-                {% endif %}</p>
-                    {% if user.is_authenticated %}
-                        <p style="margin-top: 15px;">{{ user.username }}</p>
-                    {% else %}
-                        <p style="margin-top: 15px;">Anonymous user</p>
-                    {% endif %}
-                </div>
-            </li>
-
-            <li>
-
-                <a href="{% url 'home' %}">Home</a>
-            </li>
-
-            {% if user.is_authenticated %}
-                <li>
-                    <a href="{% url 'feedback-list' %}">Feedbacks</a>
-                </li>
-                <li>
-                    <a href="{% url 'quiz:quizzes-list' %}">Quizzes</a>
-                </li>
-                {% block menu_items %}
-                {% endblock menu_items %}
-            {% endif %}
-
-            <li>
-                <a href="#">About</a>
-            </li>
-        </ul>
-
-        <ul class="list-unstyled CTAs">
-            {% if user.is_authenticated %}
-                <li>
-                    <a href="#" class="feedback">Send feedback</a>
-                </li>
-            {% endif %}
-            <li>
-                <a href="#" class="contact_us">Contact us</a>
-            </li>
-        </ul>
-    </nav>
-{% endblock sidebar %}
-
 
 {% block navbar %}
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg block-rounded navbar-custom">
         <div class="container-fluid">
-
-            <button type="button" id="sidebarCollapse" class="navbar-btn">
-                <span></span>
-                <span></span>
-                <span></span>
+            <a class="navbar-brand mr-4" href="{% url 'home' %}">Culture Analyzer</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
+            <div class="collapse navbar-collapse" id="navbarToggle">
 
-            <div class="row">
-                <ul class="nav ml-auto">
+                <!-- Navbar Right Side -->
+                <div class="navbar-nav ml-auto">
                     {% if user.is_authenticated %}
-                        <li class="nav-item"><a  class="nav-link" href="{% url 'home' %}">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'profile' user.id %}">
-                            {{ user.username }}
-                        </a></li>
-
-                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"> <span> Sign out</span> </a>
-                        </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle ite" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
+                            Menu
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item {% if not perms.quiz.view_test_player %}d-none{% endif %}" href="{% url 'test_player:start_test' %}">Start test</a>
+                            <a class="dropdown-item {% if not perms.quiz.view_test_player %}d-none{% endif %}" href="{% url 'quiz:result-list' request.user.id %}">Results</a>
+                            <div class="dropdown-divider {% if not perms.quiz.view_test_player %}d-none{% endif %}"></div>
+                            <a class="dropdown-item {% if not perms.users.view_customuser %}d-none{% endif %}" href="{% url 'admin' %}">Users</a>
+                            <a class="dropdown-item {% if not perms.groups.view_group %}d-none{% endif %}" href="{% url 'groups:groups-list' %}">Groups</a>
+                            <a class="dropdown-item {% if not perms.groups.view_mentor_group %}d-none{% endif %}" href="{% url 'groups:mentor_groups_view' %}">Mentor</a>
+                            <div class="dropdown-divider {% if not perms.groups.view_group and not perms.users.view_customuser and not perms.groups.view_mentor_group %}d-none{% endif %}"></div>
+                            <a class="dropdown-item {% if not perms.quiz.view_quizzes %}d-none{% endif %}" href="{% url 'quiz:quizzes-list' %}">Quizzes</a>
+                            <a class="dropdown-item {% if not perms.feedbacks.view_feedback %}d-none{% endif %}" href="{% url 'feedback-list' %}">Feedback</a>
+                            <a class="dropdown-item {% if not perms.indicators.view_countryindicator %}d-none{% endif %}" href="{% url 'country_indicator:country_indicator_list' %}">Indicators</a>
+                            <a class="dropdown-item {% if not perms.auth.view_group%}d-none{% endif %}" href="{% url 'group_perm-list' %}">Permissions</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-item nav-link dropdown-toggle ite" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-decoration: none;">
+                            {{ request.user.username }}
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
+                            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                        </div>
+                    </li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"> <span>Sign in</span> </a>
-                        </li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'register' %}"> <span>Sign up</span> </a>
-                        </li>
+                    <a class="nav-item nav-link" href="{% url 'login' %}">Sign in</a>
+                    <a class="nav-item nav-link" href="{% url 'register' %}">Sign up</a>
                     {% endif %}
-                </ul>
+                </div>
             </div>
         </div>
     </nav>
 {% endblock navbar %}
 
-{% block content %}
-    <h1>Content</h1>
-{% endblock content %}
+{% block breadcrumb %}
+<nav aria-label="breadcrumb" class="mb-2">
+    <ol class="breadcrumb navbar-custom">
+        <li class="breadcrumb-item active" aria-current="page">Home</li>
+    </ol>
+</nav>
+{% endblock breadcrumb %}
